@@ -6,7 +6,7 @@ package gov.pnnl.prosser.api.gld.module;
 import gov.pnnl.prosser.api.GLDSerializable;
 
 /**
- * Module marker interface
+ * GridLabD Modules
  *
  * @author nord229
  */

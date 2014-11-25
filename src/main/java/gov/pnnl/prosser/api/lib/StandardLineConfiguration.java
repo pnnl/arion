@@ -6,8 +6,9 @@ package gov.pnnl.prosser.api.lib;
 import gov.pnnl.prosser.api.GLDUtils;
 
 /**
- * @author nord229
+ * Standard Line configuration for Overhead and other lines
  *
+ * @author nord229
  */
 public class StandardLineConfiguration<T extends Conductor> extends LineConfiguration<T> {
 
@@ -116,11 +117,11 @@ public class StandardLineConfiguration<T extends Conductor> extends LineConfigur
 
     @Override
     protected void writeGLDProperties(final StringBuilder sb) {
-        GLDUtils.appendProperty(sb, "conductor_A", this.phaseAConductor);
-        GLDUtils.appendProperty(sb, "conductor_B", this.phaseBConductor);
-        GLDUtils.appendProperty(sb, "conductor_C", this.phaseCConductor);
-        GLDUtils.appendProperty(sb, "conductor_N", this.phaseNConductor);
-        GLDUtils.appendProperty(sb, "spacing", this.spacing);
+        GLDUtils.writeProperty(sb, "conductor_A", this.phaseAConductor);
+        GLDUtils.writeProperty(sb, "conductor_B", this.phaseBConductor);
+        GLDUtils.writeProperty(sb, "conductor_C", this.phaseCConductor);
+        GLDUtils.writeProperty(sb, "conductor_N", this.phaseNConductor);
+        GLDUtils.writeProperty(sb, "spacing", this.spacing);
     }
 
 }

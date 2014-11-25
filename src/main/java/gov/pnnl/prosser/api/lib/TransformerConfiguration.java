@@ -266,18 +266,18 @@ public class TransformerConfiguration extends PowerflowLibrary {
 
     @Override
     protected void writeGLDProperties(final StringBuilder sb) {
-        GLDUtils.appendProperty(sb, "connect_type", this.connectionType);
-        GLDUtils.appendProperty(sb, "install_type", this.installationType);
-        GLDUtils.appendProperty(sb, "power_rating", this.powerRating);
-        GLDUtils.appendProperty(sb, "powerA_rating", this.phaseARating, "kVA");
-        GLDUtils.appendProperty(sb, "powerB_rating", this.phaseBRating);
-        GLDUtils.appendProperty(sb, "powerC_rating", this.phaseCRating);
-        GLDUtils.appendProperty(sb, "primary_voltage", this.primaryVoltage);
-        GLDUtils.appendProperty(sb, "secondary_voltage", this.secondaryVoltage);
-        // GLDUtils.appendProperty(sb, "resistance", this.impedance.getReal());
-        // GLDUtils.appendProperty(sb, "reactance", this.impedance.getImaginary());
-        GLDUtils.appendProperty(sb, "impedance", this.impedance);
-        GLDUtils.appendProperty(sb, "shunt_impedance", this.shuntImpedance);
+        GLDUtils.writeProperty(sb, "connect_type", this.connectionType);
+        GLDUtils.writeProperty(sb, "install_type", this.installationType);
+        GLDUtils.writeProperty(sb, "power_rating", this.powerRating);
+        GLDUtils.writeProperty(sb, "powerA_rating", this.phaseARating, "kVA");
+        GLDUtils.writeProperty(sb, "powerB_rating", this.phaseBRating);
+        GLDUtils.writeProperty(sb, "powerC_rating", this.phaseCRating);
+        GLDUtils.writeProperty(sb, "primary_voltage", this.primaryVoltage);
+        GLDUtils.writeProperty(sb, "secondary_voltage", this.secondaryVoltage);
+        // GLDUtils.writeProperty(sb, "resistance", this.impedance.getReal());
+        // GLDUtils.writeProperty(sb, "reactance", this.impedance.getImaginary());
+        GLDUtils.writeProperty(sb, "impedance", this.impedance);
+        GLDUtils.writeProperty(sb, "shunt_impedance", this.shuntImpedance);
     }
 
 }

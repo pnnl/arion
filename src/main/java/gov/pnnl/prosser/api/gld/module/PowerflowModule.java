@@ -8,7 +8,7 @@ import gov.pnnl.prosser.api.GLDUtils;
 import java.util.Objects;
 
 /**
- * Powerflow Module
+ * GridLabD Powerflow Module
  *
  * @author nord229
  */
@@ -76,7 +76,7 @@ public class PowerflowModule extends Module {
 
     @Override
     protected void writeGLDProperties(final StringBuilder sb) {
-        GLDUtils.appendProperty(sb, "solver_method", this.solverMethod);
+        GLDUtils.writeProperty(sb, "solver_method", this.solverMethod);
     }
 
 }

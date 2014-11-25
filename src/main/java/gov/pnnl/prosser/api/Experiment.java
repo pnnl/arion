@@ -7,6 +7,7 @@ import gov.pnnl.prosser.api.gld.Clock;
 import gov.pnnl.prosser.api.gld.module.Module;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Experiment Interface
@@ -22,4 +23,6 @@ public interface Experiment {
     public Clock getGLDClock();
 
     public List<Module> getGLDModules();
+
+    public Map<String, String> getGLDSettings();
 }

@@ -68,8 +68,8 @@ public class TriplexLineConductor extends Conductor {
 
     @Override
     protected void writeGLDProperties(final StringBuilder sb) {
-        GLDUtils.appendProperty(sb, "resistance", this.resistance);
-        GLDUtils.appendProperty(sb, "geometric_mean_radius", this.geometricMeanRadius);
+        GLDUtils.writeProperty(sb, "resistance", this.resistance);
+        GLDUtils.writeProperty(sb, "geometric_mean_radius", this.geometricMeanRadius);
     }
 
 }

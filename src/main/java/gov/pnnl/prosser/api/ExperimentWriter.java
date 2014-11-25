@@ -7,8 +7,9 @@ import java.io.IOException;
 import java.nio.file.Path;
 
 /**
- * @author nord229
+ * Writer interface for writing Experiments as certain types of configuration
  *
+ * @author nord229
  */
 public interface ExperimentWriter {
 

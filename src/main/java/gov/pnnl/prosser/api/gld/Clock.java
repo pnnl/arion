@@ -11,8 +11,9 @@ import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 
 /**
- * @author nord229
+ * GridLabD clock specification
  *
+ * @author nord229
  */
 public class Clock implements GLDSerializable {
 
@@ -94,9 +95,9 @@ public class Clock implements GLDSerializable {
     @Override
     public void writeGLDString(final StringBuilder sb) {
         sb.append("clock {\n");
-        GLDUtils.appendProperty(sb, "timezone", this.timezone);
-        GLDUtils.appendProperty(sb, "starttime", "'" + formatter.format(this.startTime) + "'");
-        GLDUtils.appendProperty(sb, "stoptime", "'" + formatter.format(this.stopTime) + "'");
+        GLDUtils.writeProperty(sb, "timezone", this.timezone);
+        GLDUtils.writeProperty(sb, "starttime", "'" + formatter.format(this.startTime) + "'");
+        GLDUtils.writeProperty(sb, "stoptime", "'" + formatter.format(this.stopTime) + "'");
         sb.append("}\n");
     }
 

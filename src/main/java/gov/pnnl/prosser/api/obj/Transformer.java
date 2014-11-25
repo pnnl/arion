@@ -56,7 +56,7 @@ public class Transformer extends LinkObject {
     @Override
     protected void writeGLDProperties(final StringBuilder sb) {
         super.writeGLDProperties(sb);
-        GLDUtils.appendProperty(sb, "configuration", this.configuration);
+        GLDUtils.writeProperty(sb, "configuration", this.configuration);
     }
 
 }

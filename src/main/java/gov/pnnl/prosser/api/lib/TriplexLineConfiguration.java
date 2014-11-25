@@ -79,11 +79,11 @@ public class TriplexLineConfiguration extends LineConfiguration<TriplexLineCondu
 
     @Override
     protected void writeGLDProperties(final StringBuilder sb) {
-        GLDUtils.appendProperty(sb, "conductor_1", this.phase1Conductor);
-        GLDUtils.appendProperty(sb, "conductor_2", this.phase2Conductor);
-        GLDUtils.appendProperty(sb, "conductor_N", this.phaseNConductor);
-        GLDUtils.appendProperty(sb, "insulation_thickness", this.insulationThickness);
-        GLDUtils.appendProperty(sb, "diameter", this.diameter);
+        GLDUtils.writeProperty(sb, "conductor_1", this.phase1Conductor);
+        GLDUtils.writeProperty(sb, "conductor_2", this.phase2Conductor);
+        GLDUtils.writeProperty(sb, "conductor_N", this.phaseNConductor);
+        GLDUtils.writeProperty(sb, "insulation_thickness", this.insulationThickness);
+        GLDUtils.writeProperty(sb, "diameter", this.diameter);
     }
 
 }

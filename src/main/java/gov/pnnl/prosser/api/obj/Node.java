@@ -99,9 +99,9 @@ public class Node extends PowerflowObject {
     @Override
     protected void writeGLDProperties(final StringBuilder sb) {
         super.writeGLDProperties(sb);
-        GLDUtils.appendProperty(sb, "voltage_A", this.voltageA);
-        GLDUtils.appendProperty(sb, "voltage_B", this.voltageB);
-        GLDUtils.appendProperty(sb, "voltage_C", this.voltageC);
+        GLDUtils.writeProperty(sb, "voltage_A", this.voltageA);
+        GLDUtils.writeProperty(sb, "voltage_B", this.voltageB);
+        GLDUtils.writeProperty(sb, "voltage_C", this.voltageC);
     }
 
 }

@@ -72,8 +72,8 @@ public abstract class LinkObject extends PowerflowObject {
     @Override
     protected void writeGLDProperties(final StringBuilder sb) {
         super.writeGLDProperties(sb);
-        GLDUtils.appendProperty(sb, "from", this.from);
-        GLDUtils.appendProperty(sb, "to", this.to);
+        GLDUtils.writeProperty(sb, "from", this.from);
+        GLDUtils.writeProperty(sb, "to", this.to);
     }
 
 }

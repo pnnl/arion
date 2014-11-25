@@ -9,8 +9,9 @@ import gov.pnnl.prosser.api.GLDUtils;
 import java.util.Objects;
 
 /**
- * @author nord229
+ * GridLabD Climate Object
  *
+ * @author nord229
  */
 public class ClimateObject extends AbstractProsserObject {
 
@@ -66,7 +67,7 @@ public class ClimateObject extends AbstractProsserObject {
 
     @Override
     protected void writeGLDProperties(final StringBuilder sb) {
-        GLDUtils.appendProperty(sb, "tmyfile", this.tmyFile);
+        GLDUtils.writeProperty(sb, "tmyfile", this.tmyFile);
     }
 
 }

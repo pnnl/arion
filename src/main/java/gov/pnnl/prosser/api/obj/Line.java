@@ -68,8 +68,8 @@ public abstract class Line<T extends LineConfiguration<? extends Conductor>> ext
     @Override
     protected void writeGLDProperties(final StringBuilder sb) {
         super.writeGLDProperties(sb);
-        GLDUtils.appendProperty(sb, "length", this.length, "ft");
-        GLDUtils.appendProperty(sb, "configuration", this.configuration);
+        GLDUtils.writeProperty(sb, "length", this.length, "ft");
+        GLDUtils.writeProperty(sb, "configuration", this.configuration);
     }
 
 }

@@ -64,10 +64,11 @@ public abstract class AbstractProsserObject implements GLDSerializable {
     @Override
     public void writeGLDString(final StringBuilder sb) {
         sb.append("object ").append(getGLDObjectType()).append(" {\n");
-        GLDUtils.appendProperty(sb, "name", this.name);
+        GLDUtils.writeProperty(sb, "name", this.name);
         this.writeGLDProperties(sb);
         sb.append("}\n");
     }
 
     protected abstract void writeGLDProperties(final StringBuilder sb);
+
 }

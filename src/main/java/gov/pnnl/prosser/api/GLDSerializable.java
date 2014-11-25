@@ -3,10 +3,10 @@
  */
 package gov.pnnl.prosser.api;
 
-
 /**
- * @author nord229
+ * GridLabD specific serialization interface
  *
+ * @author nord229
  */
 public interface GLDSerializable {
 

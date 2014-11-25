@@ -4,7 +4,7 @@
 package gov.pnnl.prosser.api.gld.module;
 
 /**
- * Climate module
+ * GridLabD Climate module
  *
  * @author nord229
  */

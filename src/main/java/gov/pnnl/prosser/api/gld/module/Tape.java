@@ -4,7 +4,7 @@
 package gov.pnnl.prosser.api.gld.module;
 
 /**
- * Tape Module
+ * GridLabD Tape Module
  *
  * @author nord229
  */

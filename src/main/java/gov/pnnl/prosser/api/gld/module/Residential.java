@@ -8,7 +8,7 @@ import gov.pnnl.prosser.api.GLDUtils;
 import java.util.Objects;
 
 /**
- * Residential module
+ * GridLabD Residential module
  *
  * @author nord229
  */
@@ -70,7 +70,7 @@ public class Residential extends Module {
 
     @Override
     protected void writeGLDProperties(final StringBuilder sb) {
-        GLDUtils.appendProperty(sb, "implicit_enduses", this.implicitEnduses);
+        GLDUtils.writeProperty(sb, "implicit_enduses", this.implicitEnduses);
     }
 
 }

@@ -34,16 +34,21 @@ import gov.pnnl.prosser.api.obj.TriplexNode;
 import gov.pnnl.prosser.api.obj.ZIPLoad;
 
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.EnumSet;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.math3.complex.Complex;
 
 /**
+ * Test Experiment
+ *
  * @author nord229
  *
  */
@@ -54,6 +59,7 @@ public class TestExperiment implements Experiment {
         final double oneMileInFeet = 5280;
         final EnumSet<PhaseCode> phaseAS = EnumSet.copyOf(PhaseCode.S);
         phaseAS.add(PhaseCode.A);
+
         final List<AbstractProsserObject> objects = new ArrayList<>();
         objects.add(new ClimateObject("MyClimate", "WA-Yakima.tmy2"));
 
@@ -156,14 +162,26 @@ public class TestExperiment implements Experiment {
         return modules;
     }
 
-    public static void main(final String... args) {
-        final Path path = Paths.get("C:/tmp/prosser.out");
+    public static void main(final String... args) throws Exception {
+        final Path dir = Paths.get(System.getProperty("user.dir"));
+        final Path file = dir.resolve("test/prosser.out");
+        if (!Files.exists(file.getParent())) {
+            Files.createDirectory(file.getParent());
+        }
         final TestExperiment experiment = new TestExperiment();
         final GLDExperimentWriter writer = new GLDExperimentWriter();
         try {
-            writer.writeExperiment(path, experiment);
+            writer.writeExperiment(file, experiment);
         } catch (final IOException e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public Map<String, String> getGLDSettings() {
+        final Map<String, String> map = new HashMap<>();
+        map.put("savefile", "testSean.xml");
+        map.put("profiler", "1");
+        return map;
     }
 }

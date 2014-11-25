@@ -141,7 +141,7 @@ public abstract class PowerflowObject extends AbstractProsserObject {
             phaseBuilder.append("S");
         }
 
-        GLDUtils.appendProperty(sb, "phases", phaseBuilder.toString());
-        GLDUtils.appendProperty(sb, "nominal_voltage", this.nominalVoltage);
+        GLDUtils.writeProperty(sb, "phases", phaseBuilder.toString());
+        GLDUtils.writeProperty(sb, "nominal_voltage", this.nominalVoltage);
     }
 }

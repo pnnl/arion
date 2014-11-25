@@ -62,7 +62,7 @@ public class House extends ResidentialEnduse {
 
     @Override
     protected void writeGLDProperties(final StringBuilder sb) {
-        GLDUtils.appendProperty(sb, "parent", this.parent);
+        GLDUtils.writeProperty(sb, "parent", this.parent);
         load.writeGLDString(sb);
         // Handle special case since we need a semicolon here
         sb.insert(sb.length() - 1, ';');

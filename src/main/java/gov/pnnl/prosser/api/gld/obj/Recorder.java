@@ -9,8 +9,9 @@ import gov.pnnl.prosser.api.GLDUtils;
 import java.util.Objects;
 
 /**
- * @author nord229
+ * GridLabD Recorder Object
  *
+ * @author nord229
  */
 public class Recorder extends AbstractProsserObject {
 
@@ -122,10 +123,10 @@ public class Recorder extends AbstractProsserObject {
 
     @Override
     protected void writeGLDProperties(final StringBuilder sb) {
-        GLDUtils.appendProperty(sb, "interval", this.interval, "s");
-        GLDUtils.appendProperty(sb, "file", this.file);
-        GLDUtils.appendProperty(sb, "property", this.property);
-        GLDUtils.appendProperty(sb, "parent", this.parent);
+        GLDUtils.writeProperty(sb, "interval", this.interval, "s");
+        GLDUtils.writeProperty(sb, "file", this.file);
+        GLDUtils.writeProperty(sb, "property", this.property);
+        GLDUtils.writeProperty(sb, "parent", this.parent);
     }
 
 }
