@@ -1,11 +1,9 @@
 /**
  *
  */
-package gov.pnnl.prosser.api.test;
 
 import gov.pnnl.prosser.api.AbstractProsserObject;
 import gov.pnnl.prosser.api.Experiment;
-import gov.pnnl.prosser.api.GLDExperimentWriter;
 import gov.pnnl.prosser.api.gld.Clock;
 import gov.pnnl.prosser.api.gld.module.ClimateModule;
 import gov.pnnl.prosser.api.gld.module.Module;
@@ -33,10 +31,6 @@ import gov.pnnl.prosser.api.obj.TriplexMeter;
 import gov.pnnl.prosser.api.obj.TriplexNode;
 import gov.pnnl.prosser.api.obj.ZIPLoad;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.EnumSet;
@@ -160,21 +154,6 @@ public class TestExperiment implements Experiment {
         modules.add(new ClimateModule());
         modules.add(new Tape());
         return modules;
-    }
-
-    public static void main(final String... args) throws Exception {
-        final Path dir = Paths.get(System.getProperty("user.dir"));
-        final Path file = dir.resolve("test/prosser.out");
-        if (!Files.exists(file.getParent())) {
-            Files.createDirectory(file.getParent());
-        }
-        final TestExperiment experiment = new TestExperiment();
-        final GLDExperimentWriter writer = new GLDExperimentWriter();
-        try {
-            writer.writeExperiment(file, experiment);
-        } catch (final IOException e) {
-            e.printStackTrace();
-        }
     }
 
     @Override
