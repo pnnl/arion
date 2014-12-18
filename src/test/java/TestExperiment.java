@@ -4,15 +4,10 @@
 
 import gov.pnnl.prosser.api.AbstractProsserObject;
 import gov.pnnl.prosser.api.Experiment;
+import gov.pnnl.prosser.api.ExperimentBuilder;
 import gov.pnnl.prosser.api.gld.Clock;
-import gov.pnnl.prosser.api.gld.module.ClimateModule;
 import gov.pnnl.prosser.api.gld.module.Module;
-import gov.pnnl.prosser.api.gld.module.PowerflowModule;
 import gov.pnnl.prosser.api.gld.module.PowerflowModule.SolverMethod;
-import gov.pnnl.prosser.api.gld.module.Residential;
-import gov.pnnl.prosser.api.gld.module.Tape;
-import gov.pnnl.prosser.api.gld.obj.ClimateObject;
-import gov.pnnl.prosser.api.gld.obj.Recorder;
 import gov.pnnl.prosser.api.lib.LineSpacing;
 import gov.pnnl.prosser.api.lib.OverheadLineConductor;
 import gov.pnnl.prosser.api.lib.StandardLineConfiguration;
@@ -34,7 +29,6 @@ import gov.pnnl.prosser.api.obj.ZIPLoad;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.EnumSet;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -55,7 +49,7 @@ public class TestExperiment implements Experiment {
         phaseAS.add(PhaseCode.A);
 
         final List<AbstractProsserObject> objects = new ArrayList<>();
-        objects.add(new ClimateObject("MyClimate", "WA-Yakima.tmy2"));
+        objects.add(ExperimentBuilder.climate().name("MyClimate").tmyFile("WA-Yakima.tmy2").build());
 
         final OverheadLineConductor phaseConductor = new OverheadLineConductor("phase_conductor", 0.0313, 0.1859, 0.927);
         objects.add(phaseConductor);
@@ -131,36 +125,40 @@ public class TestExperiment implements Experiment {
         final House house = new House("house1", tripMeter1, zipLoad);
         objects.add(house);
 
-        final Recorder recorder = new Recorder(1800L, "test_outputs.csv", "air_temperature", house);
-        objects.add(recorder);
+        objects.add(ExperimentBuilder.recorder()
+                .interval(1800L)
+                .file("test_outputs.csv")
+                .property("air_temperature")
+                .parent(house)
+                .build());
 
         return objects;
     }
 
     @Override
     public Clock getGLDClock() {
-        final Clock clock = new Clock();
-        clock.setTimezone("PST+8PDT");
-        clock.setStartTime(LocalDateTime.of(2000, 1, 1, 0, 0, 0));
-        clock.setStopTime(LocalDateTime.of(2000, 2, 1, 0, 0, 0));
-        return clock;
+        return ExperimentBuilder.clock()
+                .timezone("PST+8PDT")
+                .startTime(LocalDateTime.of(2000, 1, 1, 0, 0, 0))
+                .stopTime(LocalDateTime.of(2000, 2, 1, 0, 0, 0))
+                .build();
     }
 
     @Override
     public List<Module> getGLDModules() {
-        final List<Module> modules = new ArrayList<>();
-        modules.add(new PowerflowModule(SolverMethod.FBS));
-        modules.add(new Residential("NONE"));
-        modules.add(new ClimateModule());
-        modules.add(new Tape());
-        return modules;
+        return ExperimentBuilder.module()
+                .addClimate()
+                .addTape()
+                .addPowerflow().solverMethod(SolverMethod.FBS).and()
+                .addResidential().implicitEnduses("NONE").and()
+                .build();
     }
 
     @Override
     public Map<String, String> getGLDSettings() {
-        final Map<String, String> map = new HashMap<>();
-        map.put("savefile", "testSean.xml");
-        map.put("profiler", "1");
-        return map;
+        return ExperimentBuilder.gldSettings()
+                .put("savefile", "testSean.xml")
+                .put("profiler", "1")
+                .build();
     }
 }

@@ -15,6 +15,34 @@ import java.util.Objects;
  */
 public class Recorder extends AbstractProsserObject {
 
+    public static class RecorderBuilder {
+        protected final Recorder recorder = new Recorder();
+
+        public RecorderBuilder interval(final Long interval) {
+            this.recorder.setInterval(interval);
+            return this;
+        }
+
+        public RecorderBuilder file(final String file) {
+            this.recorder.setFile(file);
+            return this;
+        }
+
+        public RecorderBuilder property(final String property) {
+            this.recorder.setProperty(property);
+            return this;
+        }
+
+        public RecorderBuilder parent(final AbstractProsserObject parent) {
+            this.recorder.setParent(parent);
+            return this;
+        }
+
+        public Recorder build() {
+            return this.recorder;
+        }
+    }
+
     private Long interval;
 
     private String file;

@@ -15,6 +15,25 @@ import java.util.Objects;
  */
 public class ClimateObject extends AbstractProsserObject {
 
+    public static class ClimateBuilder {
+
+        protected final ClimateObject climateObject = new ClimateObject();
+
+        public ClimateBuilder name(final String name) {
+            this.climateObject.setName(name);
+            return this;
+        }
+
+        public ClimateBuilder tmyFile(final String tmyFile) {
+            this.climateObject.setTmyFile(tmyFile);
+            return this;
+        }
+
+        public ClimateObject build() {
+            return this.climateObject;
+        }
+    }
+
     private String tmyFile;
 
     public ClimateObject() {
