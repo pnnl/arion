@@ -15,13 +15,18 @@ public abstract class AbstractProsserObject implements GLDSerializable {
     /**
      * Object name for referencing in files
      */
-    private String name;
+    private final String name;
 
     public AbstractProsserObject() {
+        this.name = null;
     }
 
     public AbstractProsserObject(final String name) {
         this.name = name;
+    }
+
+    public <T extends AbstractProsserObject, Z extends AbstractBuilder<T, Z>> AbstractProsserObject(final AbstractBuilder<T, Z> builder) {
+        this.name = builder.name;
     }
 
     /**
@@ -29,14 +34,6 @@ public abstract class AbstractProsserObject implements GLDSerializable {
      */
     public String getName() {
         return name;
-    }
-
-    /**
-     * @param name
-     *            the name to set
-     */
-    public void setName(final String name) {
-        this.name = name;
     }
 
     @Override
@@ -70,5 +67,18 @@ public abstract class AbstractProsserObject implements GLDSerializable {
     }
 
     protected abstract void writeGLDProperties(final StringBuilder sb);
+
+    public static abstract class AbstractBuilder<T extends AbstractProsserObject, Z extends AbstractBuilder<T, Z>> {
+        protected String name;
+
+        protected abstract Z self();
+
+        public abstract T build();
+
+        public Z name(final String name) {
+            this.name = name;
+            return self();
+        }
+    }
 
 }

@@ -2,37 +2,14 @@
  *
  */
 
-import gov.pnnl.prosser.api.AbstractProsserObject;
-import gov.pnnl.prosser.api.Experiment;
-import gov.pnnl.prosser.api.ExperimentBuilder;
-import gov.pnnl.prosser.api.gld.Clock;
-import gov.pnnl.prosser.api.gld.module.Module;
-import gov.pnnl.prosser.api.gld.module.PowerflowModule.SolverMethod;
-import gov.pnnl.prosser.api.lib.LineSpacing;
-import gov.pnnl.prosser.api.lib.OverheadLineConductor;
-import gov.pnnl.prosser.api.lib.StandardLineConfiguration;
-import gov.pnnl.prosser.api.lib.TransformerConfiguration;
-import gov.pnnl.prosser.api.lib.TransformerConfiguration.ConnectionType;
-import gov.pnnl.prosser.api.lib.TransformerConfiguration.InstallationType;
-import gov.pnnl.prosser.api.lib.TriplexLineConductor;
-import gov.pnnl.prosser.api.lib.TriplexLineConfiguration;
-import gov.pnnl.prosser.api.obj.House;
-import gov.pnnl.prosser.api.obj.Node;
-import gov.pnnl.prosser.api.obj.OverheadLine;
-import gov.pnnl.prosser.api.obj.PowerflowObject.PhaseCode;
-import gov.pnnl.prosser.api.obj.Transformer;
-import gov.pnnl.prosser.api.obj.TriplexLine;
-import gov.pnnl.prosser.api.obj.TriplexMeter;
-import gov.pnnl.prosser.api.obj.TriplexNode;
-import gov.pnnl.prosser.api.obj.ZIPLoad;
+import gov.pnnl.prosser.api.*;
+import gov.pnnl.prosser.api.gld.*;
+import gov.pnnl.prosser.api.gld.module.*;
+import gov.pnnl.prosser.api.lib.*;
+import gov.pnnl.prosser.api.obj.*;
 
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.EnumSet;
-import java.util.List;
-import java.util.Map;
-
-import org.apache.commons.math3.complex.Complex;
+import java.time.*;
+import java.util.*;
 
 /**
  * Test Experiment
@@ -51,78 +28,198 @@ public class TestExperiment implements Experiment {
         final List<AbstractProsserObject> objects = new ArrayList<>();
         objects.add(ExperimentBuilder.climate().name("MyClimate").tmyFile("WA-Yakima.tmy2").build());
 
-        final OverheadLineConductor phaseConductor = new OverheadLineConductor("phase_conductor", 0.0313, 0.1859, 0.927);
+        final OverheadLineConductor phaseConductor = ExperimentBuilder.overheadLineConductor()
+                .name("phase_conductor")
+                .geometricMeanRadius(0.0313)
+                .resistance(0.1859)
+                .diameter(0.927)
+                .build();
         objects.add(phaseConductor);
 
-        final OverheadLineConductor neutralConductor = new OverheadLineConductor("neutral_conductor", 0.00814, 0.492, 0.563);
+        final OverheadLineConductor neutralConductor = ExperimentBuilder.overheadLineConductor()
+                .name("neutral_conductor")
+                .geometricMeanRadius(0.00814)
+                .resistance(0.492)
+                .diameter(0.563)
+                .build();
         objects.add(neutralConductor);
 
-        final LineSpacing standardSpacing = new LineSpacing("standard_spacing", 7.0, 4.5, 2.5, 5.656854, 5.0, 4.272002);
+        final LineSpacing standardSpacing = ExperimentBuilder.lineSpacing()
+                .name("standard_spacing")
+                .distanceAToB(7.0)
+                .distanceBToC(4.5)
+                .distanceAToC(2.5)
+                .distanceAToN(5.656854)
+                .distanceBToN(5.0)
+                .distanceCToN(4.272002)
+                .build();
         objects.add(standardSpacing);
 
-        final StandardLineConfiguration<OverheadLineConductor> lineConfig1 = new StandardLineConfiguration<>("line_config1",
-                phaseConductor, phaseConductor, phaseConductor, neutralConductor, standardSpacing);
+        final StandardLineConfiguration<OverheadLineConductor> lineConfig1 = ExperimentBuilder.overheadLineConfiguration()
+                .name("line_config1")
+                .phaseAConductor(phaseConductor)
+                .phaseBConductor(phaseConductor)
+                .phaseCConductor(phaseConductor)
+                .phaseNConductor(neutralConductor)
+                .spacing(standardSpacing)
+                .build();
         objects.add(lineConfig1);
 
-        final Node node1 = new Node("node1", PhaseCode.ABCN, 7200, new Complex(7199.558, 0.000),
-                new Complex(-3599.779, -6235.000), new Complex(-3599.779, 6235.000));
+        final Node node1 = ExperimentBuilder.node()
+                .name("node1")
+                .phases(PhaseCode.ABCN)
+                .nominalVoltage(7200)
+                .voltageA(7199.558, 0.000)
+                .voltageB(-3599.779, -6235.000)
+                .voltageC(-3599.779, 6235.000)
+                .build();
         objects.add(node1);
 
-        final Node node2 = new Node("node2", PhaseCode.ABCN, 7200, new Complex(7199.558, 0.000),
-                new Complex(-3599.779, -6235.000), new Complex(-3599.779, 6235.000));
+        final Node node2 = ExperimentBuilder.node()
+                .name("node2")
+                .phases(PhaseCode.ABCN)
+                .nominalVoltage(7200)
+                .voltageA(7199.558, 0.000)
+                .voltageB(-3599.779, -6235.000)
+                .voltageC(-3599.779, 6235.000)
+                .build();
 
-        final OverheadLine line1 = new OverheadLine(PhaseCode.ABCN, node1, node2, oneMileInFeet, lineConfig1);
+        final OverheadLine line1 = ExperimentBuilder.overheadLine()
+                .phases(PhaseCode.ABCN)
+                .from(node1)
+                .to(node2)
+                .length(oneMileInFeet)
+                .configuration(lineConfig1)
+                .build();
         objects.add(line1);
         // TODO For some reason GLD pushes the node here?
         objects.add(node2);
 
-        final TransformerConfiguration transformerConfig1 = new TransformerConfiguration("transformer_config1",
-                ConnectionType.WYE_WYE, 6000.0, 2000.0, 2000.0, 2000.0, 12470.0, 4160.0, new Complex(0.01, 0.06));
+        final TransformerConfiguration transformerConfig1 = ExperimentBuilder.transformerConfiguration()
+                .name("transformer_config1")
+                .connectionType(ConnectionType.WYE_WYE)
+                .powerRating(6000.0)
+                .phaseARating(2000.0)
+                .phaseBRating(2000.0)
+                .phaseCRating(2000.0)
+                .primaryVoltage(12470.0)
+                .secondaryVoltage(4160.0)
+                .impedance(0.01, 0.06)
+                .build();
         objects.add(transformerConfig1);
 
-        final Node node3 = new Node("node3", PhaseCode.ABCN, 2400);
+        final Node node3 = ExperimentBuilder.node()
+                .name("node3")
+                .phases(PhaseCode.ABCN)
+                .nominalVoltage(2400)
+                .build();
 
-        final Transformer transformer1 = new Transformer(PhaseCode.ABCN, node2, node3, transformerConfig1);
+        final Transformer transformer1 = ExperimentBuilder.transformer()
+                .phases(PhaseCode.ABCN)
+                .from(node2)
+                .to(node3)
+                .configuration(transformerConfig1)
+                .build();
         objects.add(transformer1);
         // TODO For some reason GLD pushes the node here?
         objects.add(node3);
 
-        final Node node4 = new Node("node4", PhaseCode.ABCN, 2400);
+        final Node node4 = ExperimentBuilder.node()
+                .name("node4")
+                .phases(PhaseCode.ABCN)
+                .nominalVoltage(2400)
+                .build();
 
-        final OverheadLine line2 = new OverheadLine(PhaseCode.ABCN, node3, node4, 500, lineConfig1);
+        final OverheadLine line2 = ExperimentBuilder.overheadLine()
+                .phases(PhaseCode.ABCN)
+                .from(node3)
+                .to(node4)
+                .length(500)
+                .configuration(lineConfig1)
+                .build();
         objects.add(line2);
         // TODO For some reason GLD pushes the node here?
         objects.add(node4);
 
-        final TransformerConfiguration transformerConfig2 = new TransformerConfiguration("transformer_config2",
-                ConnectionType.SINGLE_PHASE_CENTER_TAPPED, InstallationType.POLETOP, 100, 2401.777, 120,
-                new Complex(0.00033, 0.0022), new Complex(10000, 10000));
+        final TransformerConfiguration transformerConfig2 = ExperimentBuilder.transformerConfiguration()
+                .name("transformer_config2")
+                .connectionType(ConnectionType.SINGLE_PHASE_CENTER_TAPPED)
+                .installationType(InstallationType.POLETOP)
+                .phaseARating(100)
+                .primaryVoltage(2401.777)
+                .secondaryVoltage(120)
+                .impedance(0.00033, 0.0022)
+                .shuntImpedance(10000, 10000)
+                .build();
         objects.add(transformerConfig2);
 
-        final TriplexNode tripNode1 = new TriplexNode("trip_node1", phaseAS, 120);
+        final TriplexNode tripNode1 = ExperimentBuilder.triplexNode()
+                .name("trip_node1")
+                .phases(phaseAS)
+                .nominalVoltage(120)
+                .build();
 
-        final Transformer transformer2 = new Transformer("distribution_transformer", phaseAS, node4, tripNode1, transformerConfig2);
+        final Transformer transformer2 = ExperimentBuilder.transformer()
+                .name("distribution_transformer")
+                .phases(phaseAS)
+                .from(node4)
+                .to(tripNode1)
+                .configuration(transformerConfig2)
+                .build();
         objects.add(transformer2);
         // TODO For some reason GLD pushes the node here?
         objects.add(tripNode1);
 
-        final TriplexLineConductor tripConductor1 = new TriplexLineConductor("trip_conductor1", 0.97, 0.01111);
+        final TriplexLineConductor tripConductor1 = ExperimentBuilder.triplexLineConductor()
+                .name("trip_conductor1")
+                .resistance(0.97)
+                .geometricMeanRadius(0.01111)
+                .build();
 
-        final TriplexLineConfiguration tripLineConfiguration = new TriplexLineConfiguration("trip_line_config", tripConductor1,
-                tripConductor1, tripConductor1, 0.08, 0.522);
+        final TriplexLineConfiguration tripLineConfiguration = ExperimentBuilder.triplexLineConfiguration()
+                .name("trip_line_config")
+                .phase1Conductor(tripConductor1)
+                .phase2Conductor(tripConductor1)
+                .phaseNConductor(tripConductor1)
+                .insulationThickness(0.08)
+                .diameter(0.522)
+                .build();
         objects.add(tripLineConfiguration);
         // TODO For some reason GLD pushes the node here?
         objects.add(tripConductor1);
 
-        final TriplexMeter tripMeter1 = new TriplexMeter("trip_meter1", phaseAS, 120);
+        final TriplexMeter tripMeter1 = ExperimentBuilder.triplexMeter()
+                .name("trip_meter1")
+                .phases(phaseAS)
+                .nominalVoltage(120)
+                .build();
 
-        final TriplexLine tripLine = new TriplexLine(phaseAS, tripNode1, tripMeter1, 25, tripLineConfiguration);
+        final TriplexLine tripLine = ExperimentBuilder.triplexLine()
+                .phases(phaseAS)
+                .from(tripNode1)
+                .to(tripMeter1)
+                .length(25)
+                .configuration(tripLineConfiguration)
+                .build();
         objects.add(tripLine);
         // TODO For some reason GLD pushes the node here?
         objects.add(tripMeter1);
 
-        final ZIPLoad zipLoad = new ZIPLoad(0.8, 1, -0.9, 0.25, 0.85, 0.25, 1, .5);
-        final House house = new House("house1", tripMeter1, zipLoad);
+        final ZIPLoad zipLoad = ExperimentBuilder.zipLoad()
+                .heatFraction(0.8)
+                .basePower(1)
+                .powerPf(-0.9)
+                .powerFraction(0.25)
+                .currentPf(0.85)
+                .currentFraction(0.25)
+                .impedancePf(1)
+                .impedanceFraction(.5)
+                .build();
+        final House house = ExperimentBuilder.house()
+                .name("house1")
+                .parent(tripMeter1)
+                .load(zipLoad)
+                .build();
         objects.add(house);
 
         objects.add(ExperimentBuilder.recorder()
@@ -136,7 +233,7 @@ public class TestExperiment implements Experiment {
     }
 
     @Override
-    public Clock getGLDClock() {
+    public GldClock getGLDClock() {
         return ExperimentBuilder.clock()
                 .timezone("PST+8PDT")
                 .startTime(LocalDateTime.of(2000, 1, 1, 0, 0, 0))
@@ -147,10 +244,10 @@ public class TestExperiment implements Experiment {
     @Override
     public List<Module> getGLDModules() {
         return ExperimentBuilder.module()
-                .addClimate()
-                .addTape()
                 .addPowerflow().solverMethod(SolverMethod.FBS).and()
                 .addResidential().implicitEnduses("NONE").and()
+                .addClimate()
+                .addTape()
                 .build();
     }
 

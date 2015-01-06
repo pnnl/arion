@@ -19,9 +19,27 @@ public class TriplexMeter extends TriplexNode {
         super(name, phases, nominalVoltage);
     }
 
+    public TriplexMeter(final Builder builder) {
+        super(builder);
+    }
+
     @Override
     public String getGLDObjectType() {
         return "triplex_meter";
+    }
+
+    public static class Builder extends TriplexNode.AbstractBuilder<TriplexMeter, Builder> {
+
+        @Override
+        protected Builder self() {
+            return this;
+        }
+
+        @Override
+        public TriplexMeter build() {
+            return new TriplexMeter(this);
+        }
+
     }
 
 }

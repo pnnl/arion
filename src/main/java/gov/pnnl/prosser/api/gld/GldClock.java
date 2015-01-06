@@ -15,62 +15,33 @@ import java.util.Objects;
  *
  * @author nord229
  */
-public class Clock implements GLDSerializable {
+public class GldClock implements GLDSerializable {
 
     private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
-    public static class ClockBuilder {
-        protected final Clock clock = new Clock();
+    private final String timezone;
 
-        public ClockBuilder timezone(final String timezone) {
-            this.clock.setTimezone(timezone);
-            return this;
-        }
+    private final LocalDateTime startTime;
 
-        public ClockBuilder startTime(final LocalDateTime startTime) {
-            this.clock.setStartTime(startTime);
-            return this;
-        }
+    private final LocalDateTime stopTime;
 
-        public ClockBuilder startTime(final String startTime) {
-            this.clock.setStartTime(LocalDateTime.from(formatter.parse(startTime)));
-            return this;
-        }
-
-        public ClockBuilder stopTime(final LocalDateTime stopTime) {
-            this.clock.setStopTime(stopTime);
-            return this;
-        }
-
-        public ClockBuilder stopTime(final String stopTime) {
-            this.clock.setStartTime(LocalDateTime.from(formatter.parse(stopTime)));
-            return this;
-        }
-
-        public Clock build() {
-            return this.clock;
-        }
+    public GldClock() {
+        this.timezone = null;
+        this.startTime = null;
+        this.stopTime = null;
     }
 
-    private String timezone;
-
-    private LocalDateTime startTime;
-
-    private LocalDateTime stopTime;
+    public GldClock(final GldClockBuilder clockBuilder) {
+        this.timezone = clockBuilder.timezone;
+        this.startTime = clockBuilder.startTime;
+        this.stopTime = clockBuilder.stopTime;
+    }
 
     /**
      * @return the timezone
      */
     public String getTimezone() {
         return timezone;
-    }
-
-    /**
-     * @param timezone
-     *            the timezone to set
-     */
-    public void setTimezone(final String timezone) {
-        this.timezone = timezone;
     }
 
     /**
@@ -81,26 +52,10 @@ public class Clock implements GLDSerializable {
     }
 
     /**
-     * @param startTime
-     *            the startTime to set
-     */
-    public void setStartTime(final LocalDateTime startTime) {
-        this.startTime = startTime;
-    }
-
-    /**
      * @return the stopTime
      */
     public LocalDateTime getStopTime() {
         return stopTime;
-    }
-
-    /**
-     * @param stopTime
-     *            the stopTime to set
-     */
-    public void setStopTime(final LocalDateTime stopTime) {
-        this.stopTime = stopTime;
     }
 
     @Override
@@ -119,7 +74,7 @@ public class Clock implements GLDSerializable {
         if (getClass() != obj.getClass()) {
             return false;
         }
-        final Clock other = (Clock) obj;
+        final GldClock other = (GldClock) obj;
         return Objects.equals(this.startTime, other.startTime)
                 && Objects.equals(this.stopTime, other.stopTime)
                 && Objects.equals(this.timezone, other.timezone);
@@ -132,6 +87,44 @@ public class Clock implements GLDSerializable {
         GLDUtils.writeProperty(sb, "starttime", "'" + formatter.format(this.startTime) + "'");
         GLDUtils.writeProperty(sb, "stoptime", "'" + formatter.format(this.stopTime) + "'");
         sb.append("}\n");
+    }
+
+    public static class GldClockBuilder {
+
+        protected String timezone;
+
+        protected LocalDateTime startTime;
+
+        protected LocalDateTime stopTime;
+
+        public GldClockBuilder timezone(final String timezone) {
+            this.timezone = timezone;
+            return this;
+        }
+
+        public GldClockBuilder startTime(final LocalDateTime startTime) {
+            this.startTime = startTime;
+            return this;
+        }
+
+        public GldClockBuilder startTime(final String startTime) {
+            this.startTime = LocalDateTime.from(formatter.parse(startTime));
+            return this;
+        }
+
+        public GldClockBuilder stopTime(final LocalDateTime stopTime) {
+            this.stopTime = stopTime;
+            return this;
+        }
+
+        public GldClockBuilder stopTime(final String stopTime) {
+            this.stopTime = LocalDateTime.from(formatter.parse(stopTime));
+            return this;
+        }
+
+        public GldClock build() {
+            return new GldClock(this);
+        }
     }
 
 }

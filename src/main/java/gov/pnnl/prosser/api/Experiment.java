@@ -3,7 +3,7 @@
  */
 package gov.pnnl.prosser.api;
 
-import gov.pnnl.prosser.api.gld.Clock;
+import gov.pnnl.prosser.api.gld.GldClock;
 import gov.pnnl.prosser.api.gld.module.Module;
 
 import java.util.List;
@@ -20,7 +20,7 @@ public interface Experiment {
 
     public List<AbstractProsserObject> getExperimentObjects();
 
-    public Clock getGLDClock();
+    public GldClock getGLDClock();
 
     public List<Module> getGLDModules();
 

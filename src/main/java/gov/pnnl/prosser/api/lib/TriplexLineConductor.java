@@ -15,20 +15,28 @@ public class TriplexLineConductor extends Conductor {
     /**
      * resistance of cable in ohm/mile
      */
-    private double resistance;
+    private final double resistance;
 
     /**
      * geometric mean radius of the cable
      */
-    private double geometricMeanRadius;
+    private final double geometricMeanRadius;
 
     public TriplexLineConductor() {
+        this.resistance = 0;
+        this.geometricMeanRadius = 0;
     }
 
     public TriplexLineConductor(final String name, final double resistance, final double geometricMeanRadius) {
         super(name);
         this.resistance = resistance;
         this.geometricMeanRadius = geometricMeanRadius;
+    }
+
+    public TriplexLineConductor(final Builder builder) {
+        super(builder);
+        this.resistance = builder.resistance;
+        this.geometricMeanRadius = builder.geometricMeanRadius;
     }
 
     /**
@@ -39,26 +47,10 @@ public class TriplexLineConductor extends Conductor {
     }
 
     /**
-     * @param resistance
-     *            the resistance to set
-     */
-    public void setResistance(final double resistance) {
-        this.resistance = resistance;
-    }
-
-    /**
      * @return the geometricMeanRadius
      */
     public double getGeometricMeanRadius() {
         return geometricMeanRadius;
-    }
-
-    /**
-     * @param geometricMeanRadius
-     *            the geometricMeanRadius to set
-     */
-    public void setGeometricMeanRadius(final double geometricMeanRadius) {
-        this.geometricMeanRadius = geometricMeanRadius;
     }
 
     @Override
@@ -70,6 +62,34 @@ public class TriplexLineConductor extends Conductor {
     protected void writeGLDProperties(final StringBuilder sb) {
         GLDUtils.writeProperty(sb, "resistance", this.resistance);
         GLDUtils.writeProperty(sb, "geometric_mean_radius", this.geometricMeanRadius);
+    }
+
+    public static class Builder extends Conductor.AbstractBuilder<TriplexLineConductor, Builder> {
+
+        private double resistance;
+
+        private double geometricMeanRadius;
+
+        public Builder resistance(final double resistance) {
+            this.resistance = resistance;
+            return this;
+        }
+
+        public Builder geometricMeanRadius(final double geometricMeanRadius) {
+            this.geometricMeanRadius = geometricMeanRadius;
+            return this;
+        }
+
+        @Override
+        protected Builder self() {
+            return this;
+        }
+
+        @Override
+        public TriplexLineConductor build() {
+            return new TriplexLineConductor(this);
+        }
+
     }
 
 }

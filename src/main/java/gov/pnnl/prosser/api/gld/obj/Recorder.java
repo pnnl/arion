@@ -15,43 +15,19 @@ import java.util.Objects;
  */
 public class Recorder extends AbstractProsserObject {
 
-    public static class RecorderBuilder {
-        protected final Recorder recorder = new Recorder();
+    private final Long interval;
 
-        public RecorderBuilder interval(final Long interval) {
-            this.recorder.setInterval(interval);
-            return this;
-        }
+    private final String file;
 
-        public RecorderBuilder file(final String file) {
-            this.recorder.setFile(file);
-            return this;
-        }
+    private final String property;
 
-        public RecorderBuilder property(final String property) {
-            this.recorder.setProperty(property);
-            return this;
-        }
-
-        public RecorderBuilder parent(final AbstractProsserObject parent) {
-            this.recorder.setParent(parent);
-            return this;
-        }
-
-        public Recorder build() {
-            return this.recorder;
-        }
-    }
-
-    private Long interval;
-
-    private String file;
-
-    private String property;
-
-    private AbstractProsserObject parent;
+    private final AbstractProsserObject parent;
 
     public Recorder() {
+        this.interval = null;
+        this.file = null;
+        this.property = null;
+        this.parent = null;
     }
 
     public Recorder(final Long interval, final String file, final String property, final AbstractProsserObject parent) {
@@ -59,6 +35,14 @@ public class Recorder extends AbstractProsserObject {
         this.file = file;
         this.property = property;
         this.parent = parent;
+    }
+
+    public Recorder(final Builder builder) {
+        super(builder);
+        this.interval = builder.interval;
+        this.file = builder.file;
+        this.property = builder.property;
+        this.parent = builder.parent;
     }
 
     /**
@@ -69,26 +53,10 @@ public class Recorder extends AbstractProsserObject {
     }
 
     /**
-     * @param interval
-     *            the interval to set
-     */
-    public void setInterval(final Long interval) {
-        this.interval = interval;
-    }
-
-    /**
      * @return the file
      */
     public String getFile() {
         return file;
-    }
-
-    /**
-     * @param file
-     *            the file to set
-     */
-    public void setFile(final String file) {
-        this.file = file;
     }
 
     /**
@@ -99,26 +67,10 @@ public class Recorder extends AbstractProsserObject {
     }
 
     /**
-     * @param property
-     *            the property to set
-     */
-    public void setProperty(final String property) {
-        this.property = property;
-    }
-
-    /**
      * @return the parent
      */
     public AbstractProsserObject getParent() {
         return parent;
-    }
-
-    /**
-     * @param parent
-     *            the parent to set
-     */
-    public void setParent(final AbstractProsserObject parent) {
-        this.parent = parent;
     }
 
     @Override
@@ -155,6 +107,47 @@ public class Recorder extends AbstractProsserObject {
         GLDUtils.writeProperty(sb, "file", this.file);
         GLDUtils.writeProperty(sb, "property", this.property);
         GLDUtils.writeProperty(sb, "parent", this.parent);
+    }
+
+    public static class Builder extends AbstractProsserObject.AbstractBuilder<Recorder, Builder> {
+
+        private Long interval;
+
+        private String file;
+
+        private String property;
+
+        private AbstractProsserObject parent;
+
+        public Builder interval(final Long interval) {
+            this.interval = interval;
+            return this;
+        }
+
+        public Builder file(final String file) {
+            this.file = file;
+            return this;
+        }
+
+        public Builder property(final String property) {
+            this.property = property;
+            return this;
+        }
+
+        public Builder parent(final AbstractProsserObject parent) {
+            this.parent = parent;
+            return this;
+        }
+
+        @Override
+        public Recorder build() {
+            return new Recorder(this);
+        }
+
+        @Override
+        protected Builder self() {
+            return this;
+        }
     }
 
 }

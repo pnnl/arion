@@ -12,17 +12,25 @@ import gov.pnnl.prosser.api.GLDUtils;
  */
 public class House extends ResidentialEnduse {
 
-    private Node parent;
+    private final Node parent;
 
-    private ZIPLoad load;
+    private final ZIPLoad load;
 
     public House() {
+        this.parent = null;
+        this.load = null;
     }
 
     public House(final String name, final Node parent, final ZIPLoad load) {
         super(name);
         this.parent = parent;
         this.load = load;
+    }
+
+    public House(final Builder builder) {
+        super(builder);
+        this.parent = builder.parent;
+        this.load = builder.load;
     }
 
     /**
@@ -33,26 +41,10 @@ public class House extends ResidentialEnduse {
     }
 
     /**
-     * @param parent
-     *            the parent to set
-     */
-    public void setParent(final Node parent) {
-        this.parent = parent;
-    }
-
-    /**
      * @return the load
      */
     public ZIPLoad getLoad() {
         return load;
-    }
-
-    /**
-     * @param load
-     *            the load to set
-     */
-    public void setLoad(final ZIPLoad load) {
-        this.load = load;
     }
 
     @Override
@@ -66,6 +58,34 @@ public class House extends ResidentialEnduse {
         load.writeGLDString(sb);
         // Handle special case since we need a semicolon here
         sb.insert(sb.length() - 1, ';');
+    }
+
+    public static class Builder extends ResidentialEnduse.AbstractBuilder<House, Builder> {
+
+        private Node parent;
+
+        private ZIPLoad load;
+
+        public Builder parent(final Node parent) {
+            this.parent = parent;
+            return this;
+        }
+
+        public Builder load(final ZIPLoad load) {
+            this.load = load;
+            return this;
+        }
+
+        @Override
+        protected Builder self() {
+            return this;
+        }
+
+        @Override
+        public House build() {
+            return new House(this);
+        }
+
     }
 
 }

@@ -14,25 +14,33 @@ import java.util.EnumSet;
  *
  * @author nord229
  */
-public abstract class Line<T extends LineConfiguration<? extends Conductor>> extends LinkObject {
+public abstract class Line<C extends Conductor, Q extends LineConfiguration<C>> extends LinkObject {
 
     /**
      * length of line in feet
      */
-    private double length;
+    private final double length;
 
     /**
      * Line Configuration
      */
-    private T configuration;
+    private final Q configuration;
 
     public Line() {
+        this.length = 0;
+        this.configuration = null;
     }
 
-    public Line(final EnumSet<PhaseCode> phases, final Node from, final Node to, final double length, final T configuration) {
+    public Line(final EnumSet<PhaseCode> phases, final Node from, final Node to, final double length, final Q configuration) {
         super(phases, from, to);
         this.length = length;
         this.configuration = configuration;
+    }
+
+    public <T extends Line<C, Q>, Z extends AbstractBuilder<C, Q, T, Z>> Line(final AbstractBuilder<C, Q, T, Z> builder) {
+        super(builder);
+        this.length = builder.length;
+        this.configuration = builder.configuration;
     }
 
     /**
@@ -43,26 +51,10 @@ public abstract class Line<T extends LineConfiguration<? extends Conductor>> ext
     }
 
     /**
-     * @param length
-     *            the length to set
-     */
-    public void setLength(final double length) {
-        this.length = length;
-    }
-
-    /**
      * @return the configuration
      */
-    public T getConfiguration() {
+    public Q getConfiguration() {
         return configuration;
-    }
-
-    /**
-     * @param configuration
-     *            the configuration to set
-     */
-    public void setConfiguration(final T configuration) {
-        this.configuration = configuration;
     }
 
     @Override
@@ -70,6 +62,23 @@ public abstract class Line<T extends LineConfiguration<? extends Conductor>> ext
         super.writeGLDProperties(sb);
         GLDUtils.writeProperty(sb, "length", this.length, "ft");
         GLDUtils.writeProperty(sb, "configuration", this.configuration);
+    }
+
+    public static abstract class AbstractBuilder<C extends Conductor, Q extends LineConfiguration<C>, T extends Line<C, Q>, Z extends AbstractBuilder<C, Q, T, Z>> extends LinkObject.AbstractBuilder<T, Z> {
+
+        private double length;
+
+        private Q configuration;
+
+        public Z length(final double length) {
+            this.length = length;
+            return self();
+        }
+
+        public Z configuration(final Q configuration) {
+            this.configuration = configuration;
+            return self();
+        }
     }
 
 }

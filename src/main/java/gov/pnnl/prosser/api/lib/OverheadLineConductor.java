@@ -15,19 +15,22 @@ public class OverheadLineConductor extends Conductor {
     /**
      * radius of the conductor in feet
      */
-    private double geometricMeanRadius;
+    private final double geometricMeanRadius;
 
     /**
      * resistance in Ohms/mile of the conductor
      */
-    private double resistance;
+    private final double resistance;
 
     /**
      * Diameter of line for capacitance calculations in inches
      */
-    private double diameter;
+    private final double diameter;
 
     public OverheadLineConductor() {
+        this.geometricMeanRadius = 0;
+        this.resistance = 0;
+        this.diameter = 0;
     }
 
     public OverheadLineConductor(final String name, final double geometricMeanRadius, final double resistance, final double diameter) {
@@ -35,6 +38,13 @@ public class OverheadLineConductor extends Conductor {
         this.geometricMeanRadius = geometricMeanRadius;
         this.resistance = resistance;
         this.diameter = diameter;
+    }
+
+    public OverheadLineConductor(final Builder builder) {
+        super(builder);
+        this.geometricMeanRadius = builder.geometricMeanRadius;
+        this.resistance = builder.resistance;
+        this.diameter = builder.diameter;
     }
 
     /**
@@ -45,14 +55,6 @@ public class OverheadLineConductor extends Conductor {
     }
 
     /**
-     * @param geometricMeanRadius
-     *            the geometricMeanRadius to set
-     */
-    public void setGeometricMeanRadius(final double geometricMeanRadius) {
-        this.geometricMeanRadius = geometricMeanRadius;
-    }
-
-    /**
      * @return the resistance
      */
     public double getResistance() {
@@ -60,26 +62,10 @@ public class OverheadLineConductor extends Conductor {
     }
 
     /**
-     * @param resistance
-     *            the resistance to set
-     */
-    public void setResistance(final double resistance) {
-        this.resistance = resistance;
-    }
-
-    /**
      * @return the diameter
      */
     public double getDiameter() {
         return diameter;
-    }
-
-    /**
-     * @param diameter
-     *            the diameter to set
-     */
-    public void setDiameter(final double diameter) {
-        this.diameter = diameter;
     }
 
     @Override
@@ -92,6 +78,39 @@ public class OverheadLineConductor extends Conductor {
         GLDUtils.writeProperty(sb, "geometric_mean_radius", this.geometricMeanRadius, "ft");
         GLDUtils.writeProperty(sb, "resistance", this.resistance, "Ohm/mile");
         GLDUtils.writeProperty(sb, "diameter", this.diameter, "in");
+    }
+
+    public static class Builder extends Conductor.AbstractBuilder<OverheadLineConductor, Builder> {
+        private double geometricMeanRadius;
+
+        private double resistance;
+
+        private double diameter;
+
+        public Builder geometricMeanRadius(final double geometricMeanRadius) {
+            this.geometricMeanRadius = geometricMeanRadius;
+            return this;
+        }
+
+        public Builder resistance(final double resistance) {
+            this.resistance = resistance;
+            return this;
+        }
+
+        public Builder diameter(final double diameter) {
+            this.diameter = diameter;
+            return this;
+        }
+
+        @Override
+        public OverheadLineConductor build() {
+            return new OverheadLineConductor(this);
+        }
+
+        @Override
+        protected Builder self() {
+            return this;
+        }
     }
 
 }

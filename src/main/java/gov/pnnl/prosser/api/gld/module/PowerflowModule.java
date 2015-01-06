@@ -14,15 +14,10 @@ import java.util.Objects;
  */
 public class PowerflowModule extends Module {
 
-    public enum SolverMethod {
-        FBS,
-        GS,
-        NR;
-    }
-
-    private SolverMethod solverMethod;
+    private final SolverMethod solverMethod;
 
     public PowerflowModule() {
+        this.solverMethod = null;
     }
 
     public PowerflowModule(final SolverMethod solverMethod) {
@@ -34,14 +29,6 @@ public class PowerflowModule extends Module {
      */
     public SolverMethod getSolverMethod() {
         return solverMethod;
-    }
-
-    /**
-     * @param solverMethod
-     *            the solverMethod to set
-     */
-    public void setSolverMethod(final SolverMethod solverMethod) {
-        this.solverMethod = solverMethod;
     }
 
     @Override

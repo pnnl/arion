@@ -16,51 +16,42 @@ import java.util.Objects;
  */
 public abstract class PowerflowObject extends AbstractProsserObject {
 
-    // TODO ABC, ABCN, S are all combinations - what do I do?
-    public enum PhaseCode {
-        A,
-        B,
-        C,
-        N,
-        S1,
-        S2,
-        SN,
-        GROUND;
-
-        public static final EnumSet<PhaseCode> ABCN = EnumSet.of(A, B, C, N);
-
-        public static final EnumSet<PhaseCode> ABC = EnumSet.of(A, B, C);
-
-        public static final EnumSet<PhaseCode> S = EnumSet.of(S1, S2, SN);
-
-        public static final EnumSet<PhaseCode> NONE = EnumSet.noneOf(PhaseCode.class);
-    }
-
     /**
      * Nominal Voltage
      */
-    private Double nominalVoltage;
+    private final Double nominalVoltage;
 
     /**
      * Never null
      */
-    private EnumSet<PhaseCode> phases;
+    private final EnumSet<PhaseCode> phases;
 
     public PowerflowObject() {
-    }
-
-    public PowerflowObject(final EnumSet<PhaseCode> phases) {
-        this.phases = phases;
+        this.nominalVoltage = null;
+        this.phases = EnumSet.noneOf(PhaseCode.class);
     }
 
     public PowerflowObject(final String name, final EnumSet<PhaseCode> phases) {
         super(name);
         this.phases = phases;
+        this.nominalVoltage = null;
+    }
+
+    public PowerflowObject(final EnumSet<PhaseCode> phases) {
+        this.phases = phases;
+        this.nominalVoltage = null;
     }
 
     public PowerflowObject(final String name, final EnumSet<PhaseCode> phases, final Double nominalVoltage) {
-        this(name, phases);
+        super(name);
+        this.phases = phases;
         this.nominalVoltage = nominalVoltage;
+    }
+
+    public <T extends PowerflowObject, Z extends AbstractBuilder<T, Z>> PowerflowObject(final AbstractBuilder<T, Z> builder) {
+        super(builder);
+        this.phases = builder.phases;
+        this.nominalVoltage = builder.nominalVoltage;
     }
 
     /**
@@ -71,26 +62,10 @@ public abstract class PowerflowObject extends AbstractProsserObject {
     }
 
     /**
-     * @param nominalVoltage
-     *            the nominalVoltage to set
-     */
-    public void setNominalVoltage(final Double nominalVoltage) {
-        this.nominalVoltage = nominalVoltage;
-    }
-
-    /**
      * @return the phases
      */
     public EnumSet<PhaseCode> getPhases() {
         return phases;
-    }
-
-    /**
-     * @param phases
-     *            the phases to set
-     */
-    public void setPhases(final EnumSet<PhaseCode> phases) {
-        this.phases = phases;
     }
 
     @Override
@@ -143,5 +118,22 @@ public abstract class PowerflowObject extends AbstractProsserObject {
 
         GLDUtils.writeProperty(sb, "phases", phaseBuilder.toString());
         GLDUtils.writeProperty(sb, "nominal_voltage", this.nominalVoltage);
+    }
+
+    public static abstract class AbstractBuilder<T extends PowerflowObject, Z extends AbstractBuilder<T, Z>> extends AbstractProsserObject.AbstractBuilder<T, Z> {
+
+        private Double nominalVoltage;
+
+        private EnumSet<PhaseCode> phases;
+
+        public Z nominalVoltage(final double nominalVoltage) {
+            this.nominalVoltage = nominalVoltage;
+            return self();
+        }
+
+        public Z phases(final EnumSet<PhaseCode> phases) {
+            this.phases = phases;
+            return self();
+        }
     }
 }

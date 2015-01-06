@@ -3,7 +3,7 @@
  */
 package gov.pnnl.prosser.api;
 
-import gov.pnnl.prosser.api.gld.Clock;
+import gov.pnnl.prosser.api.gld.GldClock;
 import gov.pnnl.prosser.api.gld.module.Module;
 
 import java.io.BufferedWriter;
@@ -25,7 +25,7 @@ public class GLDExperimentWriter implements ExperimentWriter {
     @Override
     public void writeExperiment(final Path path, final Experiment experiment) throws IOException {
         final Map<String, String> properties = experiment.getGLDSettings();
-        final Clock clock = Objects.requireNonNull(experiment.getGLDClock(), "GLD clock must be non null");
+        final GldClock clock = Objects.requireNonNull(experiment.getGLDClock(), "GLD clock must be non null");
         final List<Module> modules = experiment.getGLDModules();
         final List<AbstractProsserObject> objects = experiment.getExperimentObjects();
         final StringBuilder sb = new StringBuilder();

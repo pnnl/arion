@@ -14,72 +14,68 @@ import org.apache.commons.math3.complex.Complex;
  */
 public class TransformerConfiguration extends PowerflowLibrary {
 
-    public enum ConnectionType {
-        WYE_WYE,
-        DELTA_DELTA,
-        DELTA_GWYE,
-        SINGLE_PHASE,
-        SINGLE_PHASE_CENTER_TAPPED;
-    }
-
-    public enum InstallationType {
-        POLETOP,
-        PADMOUNT,
-        VAULT;
-    }
-
     /**
      * connect type enum: Wye-Wye, single-phase, etc.
      */
-    private ConnectionType connectionType;
+    private final ConnectionType connectionType;
 
     /**
      * Defines location of the transformer installation
      */
-    private InstallationType installationType;
+    private final InstallationType installationType;
 
     /**
      * primary voltage level in L-L value kV
      */
-    private double primaryVoltage;
+    private final double primaryVoltage;
 
     /**
      * secondary voltage level kV
      */
-    private double secondaryVoltage;
+    private final double secondaryVoltage;
 
     /**
      * kVA rating of transformer, total
      */
 
-    private Double powerRating;
+    private final Double powerRating;
 
     /**
      * kVA rating of transformer, phase A
      */
-    private double phaseARating;
+    private final double phaseARating;
 
     /**
      * kVA rating of transformer, phase B
      */
-    private Double phaseBRating;
+    private final Double phaseBRating;
 
     /**
      * kVA rating of transformer, phase C
      */
-    private Double phaseCRating;
+    private final Double phaseCRating;
 
     /**
      * Series impedance, pu
      */
-    private Complex impedance;
+    private final Complex impedance;
 
     /**
      * Shunt impedance on primary side, pu
      */
-    private Complex shuntImpedance;
+    private final Complex shuntImpedance;
 
     public TransformerConfiguration() {
+        this.connectionType = null;
+        this.installationType = null;
+        this.phaseARating = 0;
+        this.primaryVoltage = 0;
+        this.secondaryVoltage = 0;
+        this.impedance = null;
+        this.shuntImpedance = null;
+        this.powerRating = null;
+        this.phaseCRating = null;
+        this.phaseBRating = null;
     }
 
     public TransformerConfiguration(final String name, final ConnectionType connectionType, final Double powerRating,
@@ -94,6 +90,8 @@ public class TransformerConfiguration extends PowerflowLibrary {
         this.primaryVoltage = primaryVoltage;
         this.secondaryVoltage = secondaryVoltage;
         this.impedance = impedance;
+        this.shuntImpedance = null;
+        this.installationType = null;
     }
 
     public TransformerConfiguration(final String name, final ConnectionType connectionType, final InstallationType installationType,
@@ -107,6 +105,23 @@ public class TransformerConfiguration extends PowerflowLibrary {
         this.secondaryVoltage = secondaryVoltage;
         this.impedance = impedance;
         this.shuntImpedance = shuntImpedance;
+        this.powerRating = null;
+        this.phaseCRating = null;
+        this.phaseBRating = null;
+    }
+
+    public TransformerConfiguration(final Builder builder) {
+        super(builder);
+        this.connectionType = builder.connectionType;
+        this.installationType = builder.installationType;
+        this.primaryVoltage = builder.primaryVoltage;
+        this.secondaryVoltage = builder.secondaryVoltage;
+        this.powerRating = builder.powerRating;
+        this.phaseARating = builder.phaseARating;
+        this.phaseBRating = builder.phaseBRating;
+        this.phaseCRating = builder.phaseCRating;
+        this.impedance = builder.impedance;
+        this.shuntImpedance = builder.shuntImpedance;
     }
 
     /**
@@ -117,26 +132,10 @@ public class TransformerConfiguration extends PowerflowLibrary {
     }
 
     /**
-     * @param connectionType
-     *            the connectionType to set
-     */
-    public void setConnectionType(final ConnectionType connectionType) {
-        this.connectionType = connectionType;
-    }
-
-    /**
      * @return the installationType
      */
     public InstallationType getInstallationType() {
         return installationType;
-    }
-
-    /**
-     * @param installationType
-     *            the installationType to set
-     */
-    public void setInstallationType(final InstallationType installationType) {
-        this.installationType = installationType;
     }
 
     /**
@@ -147,26 +146,10 @@ public class TransformerConfiguration extends PowerflowLibrary {
     }
 
     /**
-     * @param primaryVoltage
-     *            the primaryVoltage to set
-     */
-    public void setPrimaryVoltage(final double primaryVoltage) {
-        this.primaryVoltage = primaryVoltage;
-    }
-
-    /**
      * @return the secondaryVoltage
      */
     public double getSecondaryVoltage() {
         return secondaryVoltage;
-    }
-
-    /**
-     * @param secondaryVoltage
-     *            the secondaryVoltage to set
-     */
-    public void setSecondaryVoltage(final double secondaryVoltage) {
-        this.secondaryVoltage = secondaryVoltage;
     }
 
     /**
@@ -177,26 +160,10 @@ public class TransformerConfiguration extends PowerflowLibrary {
     }
 
     /**
-     * @param powerRating
-     *            the powerRating to set
-     */
-    public void setPowerRating(final Double powerRating) {
-        this.powerRating = powerRating;
-    }
-
-    /**
      * @return the phaseARating
      */
     public double getPhaseARating() {
         return phaseARating;
-    }
-
-    /**
-     * @param phaseARating
-     *            the phaseARating to set
-     */
-    public void setPhaseARating(final double phaseARating) {
-        this.phaseARating = phaseARating;
     }
 
     /**
@@ -207,26 +174,10 @@ public class TransformerConfiguration extends PowerflowLibrary {
     }
 
     /**
-     * @param phaseBRating
-     *            the phaseBRating to set
-     */
-    public void setPhaseBRating(final Double phaseBRating) {
-        this.phaseBRating = phaseBRating;
-    }
-
-    /**
      * @return the phaseCRating
      */
     public Double getPhaseCRating() {
         return phaseCRating;
-    }
-
-    /**
-     * @param phaseCRating
-     *            the phaseCRating to set
-     */
-    public void setPhaseCRating(final Double phaseCRating) {
-        this.phaseCRating = phaseCRating;
     }
 
     /**
@@ -237,26 +188,10 @@ public class TransformerConfiguration extends PowerflowLibrary {
     }
 
     /**
-     * @param impedance
-     *            the impedance to set
-     */
-    public void setImpedance(final Complex impedance) {
-        this.impedance = impedance;
-    }
-
-    /**
      * @return the shuntImpedance
      */
     public Complex getShuntImpedance() {
         return shuntImpedance;
-    }
-
-    /**
-     * @param shuntImpedance
-     *            the shuntImpedance to set
-     */
-    public void setShuntImpedance(final Complex shuntImpedance) {
-        this.shuntImpedance = shuntImpedance;
     }
 
     @Override
@@ -278,6 +213,100 @@ public class TransformerConfiguration extends PowerflowLibrary {
         // GLDUtils.writeProperty(sb, "reactance", this.impedance.getImaginary());
         GLDUtils.writeProperty(sb, "impedance", this.impedance);
         GLDUtils.writeProperty(sb, "shunt_impedance", this.shuntImpedance);
+    }
+
+    public static class Builder extends PowerflowLibrary.AbstractBuilder<TransformerConfiguration, Builder> {
+
+        private ConnectionType connectionType;
+
+        private InstallationType installationType;
+
+        private double primaryVoltage;
+
+        private double secondaryVoltage;
+
+        private Double powerRating;
+
+        private double phaseARating;
+
+        private Double phaseBRating;
+
+        private Double phaseCRating;
+
+        private Complex impedance;
+
+        private Complex shuntImpedance;
+
+        public Builder connectionType(final ConnectionType connectionType) {
+            this.connectionType = connectionType;
+            return this;
+        }
+
+        public Builder installationType(final InstallationType installationType) {
+            this.installationType = installationType;
+            return this;
+        }
+
+        public Builder primaryVoltage(final double primaryVoltage) {
+            this.primaryVoltage = primaryVoltage;
+            return this;
+        }
+
+        public Builder secondaryVoltage(final double secondaryVoltage) {
+            this.secondaryVoltage = secondaryVoltage;
+            return this;
+        }
+
+        public Builder powerRating(final Double powerRating) {
+            this.powerRating = powerRating;
+            return this;
+        }
+
+        public Builder phaseARating(final double phaseARating) {
+            this.phaseARating = phaseARating;
+            return this;
+        }
+
+        public Builder phaseBRating(final Double phaseBRating) {
+            this.phaseBRating = phaseBRating;
+            return this;
+        }
+
+        public Builder phaseCRating(final Double phaseCRating) {
+            this.phaseCRating = phaseCRating;
+            return this;
+        }
+
+        public Builder impedance(final Complex impedance) {
+            this.impedance = impedance;
+            return this;
+        }
+
+        public Builder impedance(final double real, final double imaginary) {
+            this.impedance = new Complex(real, imaginary);
+            return this;
+        }
+
+        public Builder shuntImpedance(final Complex shuntImpedance) {
+            this.shuntImpedance = shuntImpedance;
+            return this;
+        }
+
+        public Builder shuntImpedance(final double real, final double imaginary) {
+            this.shuntImpedance = new Complex(real, imaginary);
+            return this;
+        }
+
+        @Override
+        protected Builder self() {
+            return this;
+        }
+
+        @Override
+        public TransformerConfiguration build() {
+            return new TransformerConfiguration(this);
+        }
+
     }
 
 }

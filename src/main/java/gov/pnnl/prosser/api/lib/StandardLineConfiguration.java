@@ -10,23 +10,28 @@ import gov.pnnl.prosser.api.GLDUtils;
  *
  * @author nord229
  */
-public class StandardLineConfiguration<T extends Conductor> extends LineConfiguration<T> {
+public class StandardLineConfiguration<C extends Conductor> extends LineConfiguration<C> {
 
-    private T phaseAConductor;
+    private final C phaseAConductor;
 
-    private T phaseBConductor;
+    private final C phaseBConductor;
 
-    private T phaseCConductor;
+    private final C phaseCConductor;
 
-    private T phaseNConductor;
+    private final C phaseNConductor;
 
-    private LineSpacing spacing;
+    private final LineSpacing spacing;
 
     public StandardLineConfiguration() {
+        this.phaseAConductor = null;
+        this.phaseBConductor = null;
+        this.phaseCConductor = null;
+        this.phaseNConductor = null;
+        this.spacing = null;
     }
 
-    public StandardLineConfiguration(final String name, final T phaseAConductor, final T phaseBConductor,
-            final T phaseCConductor, final T phaseNConductor, final LineSpacing spacing) {
+    public StandardLineConfiguration(final String name, final C phaseAConductor, final C phaseBConductor,
+            final C phaseCConductor, final C phaseNConductor, final LineSpacing spacing) {
         super(name);
         this.phaseAConductor = phaseAConductor;
         this.phaseBConductor = phaseBConductor;
@@ -35,64 +40,41 @@ public class StandardLineConfiguration<T extends Conductor> extends LineConfigur
         this.spacing = spacing;
     }
 
-    /**
-     * @return the phaseAConductor
-     */
-    public T getPhaseAConductor() {
-        return phaseAConductor;
+    public StandardLineConfiguration(final Builder<C> builder) {
+        super(builder);
+        this.phaseAConductor = builder.phaseAConductor;
+        this.phaseBConductor = builder.phaseBConductor;
+        this.phaseCConductor = builder.phaseCConductor;
+        this.phaseNConductor = builder.phaseNConductor;
+        this.spacing = builder.spacing;
     }
 
     /**
-     * @param phaseAConductor
-     *            the phaseAConductor to set
+     * @return the phaseAConductor
      */
-    public void setPhaseAConductor(final T phaseAConductor) {
-        this.phaseAConductor = phaseAConductor;
+    public C getPhaseAConductor() {
+        return phaseAConductor;
     }
 
     /**
      * @return the phaseBConductor
      */
-    public T getPhaseBConductor() {
+    public C getPhaseBConductor() {
         return phaseBConductor;
-    }
-
-    /**
-     * @param phaseBConductor
-     *            the phaseBConductor to set
-     */
-    public void setPhaseBConductor(final T phaseBConductor) {
-        this.phaseBConductor = phaseBConductor;
     }
 
     /**
      * @return the phaseCConductor
      */
-    public T getPhaseCConductor() {
+    public C getPhaseCConductor() {
         return phaseCConductor;
-    }
-
-    /**
-     * @param phaseCConductor
-     *            the phaseCConductor to set
-     */
-    public void setPhaseCConductor(final T phaseCConductor) {
-        this.phaseCConductor = phaseCConductor;
     }
 
     /**
      * @return the phaseNConductor
      */
-    public T getPhaseNConductor() {
+    public C getPhaseNConductor() {
         return phaseNConductor;
-    }
-
-    /**
-     * @param phaseNConductor
-     *            the phaseNConductor to set
-     */
-    public void setPhaseNConductor(final T phaseNConductor) {
-        this.phaseNConductor = phaseNConductor;
     }
 
     /**
@@ -100,14 +82,6 @@ public class StandardLineConfiguration<T extends Conductor> extends LineConfigur
      */
     public LineSpacing getSpacing() {
         return spacing;
-    }
-
-    /**
-     * @param spacing
-     *            the spacing to set
-     */
-    public void setSpacing(final LineSpacing spacing) {
-        this.spacing = spacing;
     }
 
     @Override
@@ -122,6 +96,54 @@ public class StandardLineConfiguration<T extends Conductor> extends LineConfigur
         GLDUtils.writeProperty(sb, "conductor_C", this.phaseCConductor);
         GLDUtils.writeProperty(sb, "conductor_N", this.phaseNConductor);
         GLDUtils.writeProperty(sb, "spacing", this.spacing);
+    }
+
+    public static class Builder<C extends Conductor> extends LineConfiguration.AbstractBuilder<C, StandardLineConfiguration<C>, Builder<C>> {
+
+        private C phaseAConductor;
+
+        private C phaseBConductor;
+
+        private C phaseCConductor;
+
+        private C phaseNConductor;
+
+        private LineSpacing spacing;
+
+        public Builder<C> phaseAConductor(final C phaseAConductor) {
+            this.phaseAConductor = phaseAConductor;
+            return this;
+        }
+
+        public Builder<C> phaseBConductor(final C phaseBConductor) {
+            this.phaseBConductor = phaseBConductor;
+            return this;
+        }
+
+        public Builder<C> phaseCConductor(final C phaseCConductor) {
+            this.phaseCConductor = phaseCConductor;
+            return this;
+        }
+
+        public Builder<C> phaseNConductor(final C phaseNConductor) {
+            this.phaseNConductor = phaseNConductor;
+            return this;
+        }
+
+        public Builder<C> spacing(final LineSpacing spacing) {
+            this.spacing = spacing;
+            return this;
+        }
+
+        @Override
+        public StandardLineConfiguration<C> build() {
+            return new StandardLineConfiguration<C>(this);
+        }
+
+        @Override
+        protected Builder<C> self() {
+            return this;
+        }
     }
 
 }

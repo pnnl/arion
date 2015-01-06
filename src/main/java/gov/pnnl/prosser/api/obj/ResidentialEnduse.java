@@ -19,4 +19,11 @@ public abstract class ResidentialEnduse extends AbstractProsserObject {
         super(name);
     }
 
+    public <T extends ResidentialEnduse, Z extends AbstractBuilder<T, Z>> ResidentialEnduse(final AbstractBuilder<T, Z> builder) {
+        super(builder);
+    }
+
+    public static abstract class AbstractBuilder<T extends ResidentialEnduse, Z extends AbstractBuilder<T, Z>> extends AbstractProsserObject.AbstractBuilder<T, Z> {
+
+    }
 }

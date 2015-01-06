@@ -3,6 +3,7 @@
  */
 package gov.pnnl.prosser.api.obj;
 
+import gov.pnnl.prosser.api.lib.TriplexLineConductor;
 import gov.pnnl.prosser.api.lib.TriplexLineConfiguration;
 
 import java.util.EnumSet;
@@ -12,7 +13,7 @@ import java.util.EnumSet;
  *
  * @author nord229
  */
-public class TriplexLine extends Line<TriplexLineConfiguration> {
+public class TriplexLine extends Line<TriplexLineConductor, TriplexLineConfiguration> {
 
     public TriplexLine() {
     }
@@ -22,9 +23,27 @@ public class TriplexLine extends Line<TriplexLineConfiguration> {
         super(phases, from, to, length, configuration);
     }
 
+    public TriplexLine(final Builder builder) {
+        super(builder);
+    }
+
     @Override
     public String getGLDObjectType() {
         return "triplex_line";
+    }
+
+    public static class Builder extends Line.AbstractBuilder<TriplexLineConductor, TriplexLineConfiguration, TriplexLine, Builder> {
+
+        @Override
+        protected Builder self() {
+            return this;
+        }
+
+        @Override
+        public TriplexLine build() {
+            return new TriplexLine(this);
+        }
+
     }
 
 }

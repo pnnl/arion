@@ -17,4 +17,12 @@ public abstract class Conductor extends PowerflowLibrary {
         super(name);
     }
 
+    public <T extends Conductor, Z extends AbstractBuilder<T, Z>> Conductor(final AbstractBuilder<T, Z> builder) {
+        super(builder);
+    }
+
+    public static abstract class AbstractBuilder<T extends Conductor, Z extends AbstractBuilder<T, Z>> extends PowerflowLibrary.AbstractBuilder<T, Z> {
+
+    }
+
 }

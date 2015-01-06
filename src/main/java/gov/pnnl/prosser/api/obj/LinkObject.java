@@ -17,14 +17,16 @@ public abstract class LinkObject extends PowerflowObject {
     /**
      * from_node - source node
      */
-    private Node from;
+    private final Node from;
 
     /**
      * to_node - load node
      */
-    private Node to;
+    private final Node to;
 
     public LinkObject() {
+        this.from = null;
+        this.to = null;
     }
 
     public LinkObject(final EnumSet<PhaseCode> phases, final Node from, final Node to) {
@@ -39,19 +41,17 @@ public abstract class LinkObject extends PowerflowObject {
         this.to = to;
     }
 
+    public <T extends LinkObject, Z extends AbstractBuilder<T, Z>> LinkObject(final AbstractBuilder<T, Z> builder) {
+        super(builder);
+        this.from = builder.from;
+        this.to = builder.to;
+    }
+
     /**
      * @return the from
      */
     public Node getFrom() {
         return from;
-    }
-
-    /**
-     * @param from
-     *            the from to set
-     */
-    public void setFrom(final Node from) {
-        this.from = from;
     }
 
     /**
@@ -61,19 +61,27 @@ public abstract class LinkObject extends PowerflowObject {
         return to;
     }
 
-    /**
-     * @param to
-     *            the to to set
-     */
-    public void setTo(final Node to) {
-        this.to = to;
-    }
-
     @Override
     protected void writeGLDProperties(final StringBuilder sb) {
         super.writeGLDProperties(sb);
         GLDUtils.writeProperty(sb, "from", this.from);
         GLDUtils.writeProperty(sb, "to", this.to);
+    }
+
+    public static abstract class AbstractBuilder<T extends LinkObject, Z extends AbstractBuilder<T, Z>> extends PowerflowObject.AbstractBuilder<T, Z> {
+        private Node from;
+
+        private Node to;
+
+        public Z from(final Node from) {
+            this.from = from;
+            return self();
+        }
+
+        public Z to(final Node to) {
+            this.to = to;
+            return self();
+        }
     }
 
 }

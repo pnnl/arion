@@ -19,31 +19,44 @@ public class Node extends PowerflowObject {
     /**
      * bus voltage, Phase A to ground
      */
-    private Complex voltageA;
+    private final Complex voltageA;
 
     /**
      * bus voltage, Phase B to ground
      */
-    private Complex voltageB;
+    private final Complex voltageB;
 
     /**
      * bus voltage, Phase C to ground
      */
-    private Complex voltageC;
+    private final Complex voltageC;
 
     public Node() {
+        this.voltageA = null;
+        this.voltageB = null;
+        this.voltageC = null;
     }
 
     public Node(final String name, final EnumSet<PhaseCode> phases, final double nominalVoltage) {
         super(name, phases, nominalVoltage);
+        this.voltageA = null;
+        this.voltageB = null;
+        this.voltageC = null;
     }
 
     public Node(final String name, final EnumSet<PhaseCode> phases, final double nominalVoltage,
             final Complex voltageA, final Complex voltageB, final Complex voltageC) {
-        this(name, phases, nominalVoltage);
+        super(name, phases, nominalVoltage);
         this.voltageA = voltageA;
         this.voltageB = voltageB;
         this.voltageC = voltageC;
+    }
+
+    public <T extends Node, Z extends AbstractBuilder<T, Z>> Node(final AbstractBuilder<T, Z> builder) {
+        super(builder);
+        this.voltageA = builder.voltageA;
+        this.voltageB = builder.voltageB;
+        this.voltageC = builder.voltageC;
     }
 
     /**
@@ -54,14 +67,6 @@ public class Node extends PowerflowObject {
     }
 
     /**
-     * @param voltageA
-     *            the voltageA to set
-     */
-    public void setVoltageA(final Complex voltageA) {
-        this.voltageA = voltageA;
-    }
-
-    /**
      * @return the voltageB
      */
     public Complex getVoltageB() {
@@ -69,26 +74,10 @@ public class Node extends PowerflowObject {
     }
 
     /**
-     * @param voltageB
-     *            the voltageB to set
-     */
-    public void setVoltageB(final Complex voltageB) {
-        this.voltageB = voltageB;
-    }
-
-    /**
      * @return the voltageC
      */
     public Complex getVoltageC() {
         return voltageC;
-    }
-
-    /**
-     * @param voltageC
-     *            the voltageC to set
-     */
-    public void setVoltageC(final Complex voltageC) {
-        this.voltageC = voltageC;
     }
 
     @Override
@@ -102,6 +91,59 @@ public class Node extends PowerflowObject {
         GLDUtils.writeProperty(sb, "voltage_A", this.voltageA);
         GLDUtils.writeProperty(sb, "voltage_B", this.voltageB);
         GLDUtils.writeProperty(sb, "voltage_C", this.voltageC);
+    }
+
+    public static abstract class AbstractBuilder<T extends Node, Z extends AbstractBuilder<T, Z>> extends PowerflowObject.AbstractBuilder<T, Z> {
+        private Complex voltageA;
+
+        private Complex voltageB;
+
+        private Complex voltageC;
+
+        public Z voltageA(final Complex voltageA) {
+            this.voltageA = voltageA;
+            return self();
+        }
+
+        public Z voltageA(final double real, final double imaginary) {
+            this.voltageA = new Complex(real, imaginary);
+            return self();
+        }
+
+        public Z voltageB(final Complex voltageB) {
+            this.voltageB = voltageB;
+            return self();
+        }
+
+        public Z voltageB(final double real, final double imaginary) {
+            this.voltageB = new Complex(real, imaginary);
+            return self();
+        }
+
+        public Z voltageC(final Complex voltageC) {
+            this.voltageC = voltageC;
+            return self();
+        }
+
+        public Z voltageC(final double real, final double imaginary) {
+            this.voltageC = new Complex(real, imaginary);
+            return self();
+        }
+
+    }
+
+    public static class Builder extends AbstractBuilder<Node, Builder> {
+
+        @Override
+        protected Builder self() {
+            return this;
+        }
+
+        @Override
+        public Node build() {
+            return new Node(this);
+        }
+
     }
 
 }

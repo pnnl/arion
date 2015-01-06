@@ -14,9 +14,10 @@ import java.util.Objects;
  */
 public class Residential extends Module {
 
-    private String implicitEnduses;
+    private final String implicitEnduses;
 
     public Residential() {
+        this.implicitEnduses = null;
     }
 
     public Residential(final String implicitEnduses) {
@@ -28,14 +29,6 @@ public class Residential extends Module {
      */
     public String getImplicitEnduses() {
         return implicitEnduses;
-    }
-
-    /**
-     * @param implicitEnduses
-     *            the implicitEnduses to set
-     */
-    public void setImplicitEnduses(final String implicitEnduses) {
-        this.implicitEnduses = implicitEnduses;
     }
 
     @Override

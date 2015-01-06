@@ -1,7 +1,5 @@
 package gov.pnnl.prosser.api.gld.module;
 
-import gov.pnnl.prosser.api.gld.module.PowerflowModule.SolverMethod;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,14 +18,16 @@ public class ModuleBuilder {
 
     public ModuleBuilder.PowerflowModuleBuilder addPowerflow() {
         final ModuleBuilder.PowerflowModuleBuilder builder = new PowerflowModuleBuilder(this);
-        this.modules.add(builder.getModule());
         return builder;
     }
 
     public ModuleBuilder.ResidentialModuleBuilder addResidential() {
         final ModuleBuilder.ResidentialModuleBuilder builder = new ResidentialModuleBuilder(this);
-        this.modules.add(builder.getModule());
         return builder;
+    }
+
+    protected void addModule(final Module module) {
+        this.modules.add(module);
     }
 
     public List<Module> build() {
@@ -36,47 +36,41 @@ public class ModuleBuilder {
 
     public static class PowerflowModuleBuilder {
 
-        protected ModuleBuilder parent;
+        private final ModuleBuilder parent;
 
-        protected final PowerflowModule module = new PowerflowModule();
+        private SolverMethod solverMethod;
 
         protected PowerflowModuleBuilder(final ModuleBuilder parent) {
             this.parent = parent;
         }
 
-        public PowerflowModule getModule() {
-            return module;
-        }
-
         public ModuleBuilder.PowerflowModuleBuilder solverMethod(final SolverMethod solverMethod) {
-            this.module.setSolverMethod(solverMethod);
+            this.solverMethod = solverMethod;
             return this;
         }
 
         public ModuleBuilder and() {
+            this.parent.addModule(new PowerflowModule(solverMethod));
             return this.parent;
         }
     }
 
     public static class ResidentialModuleBuilder {
-        protected ModuleBuilder parent;
+        private final ModuleBuilder parent;
 
-        protected final Residential module = new Residential();
+        private String implicitEnduses;
 
         protected ResidentialModuleBuilder(final ModuleBuilder parent) {
             this.parent = parent;
         }
 
-        public Residential getModule() {
-            return module;
-        }
-
         public ModuleBuilder.ResidentialModuleBuilder implicitEnduses(final String implicitEnduses) {
-            this.module.setImplicitEnduses(implicitEnduses);
+            this.implicitEnduses = implicitEnduses;
             return this;
         }
 
         public ModuleBuilder and() {
+            this.parent.addModule(new Residential(implicitEnduses));
             return this.parent;
         }
     }

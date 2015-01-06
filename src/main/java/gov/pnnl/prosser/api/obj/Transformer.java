@@ -18,9 +18,10 @@ public class Transformer extends LinkObject {
     /**
      * Configuration library used for transformer setup
      */
-    private TransformerConfiguration configuration;
+    private final TransformerConfiguration configuration;
 
     public Transformer() {
+        this.configuration = null;
     }
 
     public Transformer(final EnumSet<PhaseCode> phases, final Node from, final Node to, final TransformerConfiguration configuration) {
@@ -33,19 +34,16 @@ public class Transformer extends LinkObject {
         this.configuration = configuration;
     }
 
+    public Transformer(final Builder builder) {
+        super(builder);
+        this.configuration = builder.configuration;
+    }
+
     /**
      * @return the configuration
      */
     public TransformerConfiguration getConfiguration() {
         return configuration;
-    }
-
-    /**
-     * @param configuration
-     *            the configuration to set
-     */
-    public void setConfiguration(final TransformerConfiguration configuration) {
-        this.configuration = configuration;
     }
 
     @Override
@@ -57,6 +55,25 @@ public class Transformer extends LinkObject {
     protected void writeGLDProperties(final StringBuilder sb) {
         super.writeGLDProperties(sb);
         GLDUtils.writeProperty(sb, "configuration", this.configuration);
+    }
+
+    public static class Builder extends LinkObject.AbstractBuilder<Transformer, Builder> {
+        private TransformerConfiguration configuration;
+
+        public Builder configuration(final TransformerConfiguration configuration) {
+            this.configuration = configuration;
+            return this;
+        }
+
+        @Override
+        protected Builder self() {
+            return this;
+        }
+
+        @Override
+        public Transformer build() {
+            return new Transformer(this);
+        }
     }
 
 }

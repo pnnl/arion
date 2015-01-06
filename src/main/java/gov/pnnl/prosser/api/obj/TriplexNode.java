@@ -19,9 +19,31 @@ public class TriplexNode extends Node {
         super(name, phases, nominalVoltage);
     }
 
+    public <T extends Node, Z extends AbstractBuilder<T, Z>> TriplexNode(final AbstractBuilder<T, Z> builder) {
+        super(builder);
+    }
+
     @Override
     public String getGLDObjectType() {
         return "triplex_node";
+    }
+
+    public static abstract class AbstractBuilder<T extends Node, Z extends AbstractBuilder<T, Z>> extends Node.AbstractBuilder<T, Z> {
+
+    }
+
+    public static class Builder extends TriplexNode.AbstractBuilder<TriplexNode, Builder> {
+
+        @Override
+        protected Builder self() {
+            return this;
+        }
+
+        @Override
+        public TriplexNode build() {
+            return new TriplexNode(this);
+        }
+
     }
 
 }

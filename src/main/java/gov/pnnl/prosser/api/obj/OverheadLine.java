@@ -13,7 +13,7 @@ import java.util.EnumSet;
  *
  * @author nord229
  */
-public class OverheadLine extends Line<LineConfiguration<OverheadLineConductor>> {
+public class OverheadLine extends Line<OverheadLineConductor, LineConfiguration<OverheadLineConductor>> {
 
     public OverheadLine() {
     }
@@ -22,9 +22,27 @@ public class OverheadLine extends Line<LineConfiguration<OverheadLineConductor>>
         super(phases, from, to, length, configuration);
     }
 
+    public OverheadLine(final Builder builder) {
+        super(builder);
+    }
+
     @Override
     public String getGLDObjectType() {
         return "overhead_line";
+    }
+
+    public static class Builder extends Line.AbstractBuilder<OverheadLineConductor, LineConfiguration<OverheadLineConductor>, OverheadLine, Builder> {
+
+        @Override
+        protected Builder self() {
+            return this;
+        }
+
+        @Override
+        public OverheadLine build() {
+            return new OverheadLine(this);
+        }
+
     }
 
 }
