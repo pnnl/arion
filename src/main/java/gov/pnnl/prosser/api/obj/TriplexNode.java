@@ -32,7 +32,7 @@ public class TriplexNode extends Node {
 
     }
 
-    public static class Builder extends TriplexNode.AbstractBuilder<TriplexNode, Builder> {
+    public static class Builder extends AbstractBuilder<TriplexNode, Builder> {
 
         @Override
         protected Builder self() {

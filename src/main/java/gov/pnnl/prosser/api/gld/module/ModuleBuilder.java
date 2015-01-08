@@ -40,6 +40,8 @@ public class ModuleBuilder {
 
         private SolverMethod solverMethod;
 
+        private Long nrIterationLimit;
+
         protected PowerflowModuleBuilder(final ModuleBuilder parent) {
             this.parent = parent;
         }
@@ -49,8 +51,13 @@ public class ModuleBuilder {
             return this;
         }
 
+        public ModuleBuilder.PowerflowModuleBuilder nrIterationLimit(final Long nrIterationLimit) {
+            this.nrIterationLimit = nrIterationLimit;
+            return this;
+        }
+
         public ModuleBuilder and() {
-            this.parent.addModule(new PowerflowModule(solverMethod));
+            this.parent.addModule(new PowerflowModule(solverMethod, nrIterationLimit));
             return this.parent;
         }
     }

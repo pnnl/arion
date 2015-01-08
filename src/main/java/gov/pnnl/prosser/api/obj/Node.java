@@ -31,10 +31,13 @@ public class Node extends PowerflowObject {
      */
     private final Complex voltageC;
 
+    private final BusType busType;
+
     public Node() {
         this.voltageA = null;
         this.voltageB = null;
         this.voltageC = null;
+        this.busType = null;
     }
 
     public Node(final String name, final EnumSet<PhaseCode> phases, final double nominalVoltage) {
@@ -42,6 +45,7 @@ public class Node extends PowerflowObject {
         this.voltageA = null;
         this.voltageB = null;
         this.voltageC = null;
+        this.busType = null;
     }
 
     public Node(final String name, final EnumSet<PhaseCode> phases, final double nominalVoltage,
@@ -50,6 +54,7 @@ public class Node extends PowerflowObject {
         this.voltageA = voltageA;
         this.voltageB = voltageB;
         this.voltageC = voltageC;
+        this.busType = null;
     }
 
     public <T extends Node, Z extends AbstractBuilder<T, Z>> Node(final AbstractBuilder<T, Z> builder) {
@@ -57,6 +62,7 @@ public class Node extends PowerflowObject {
         this.voltageA = builder.voltageA;
         this.voltageB = builder.voltageB;
         this.voltageC = builder.voltageC;
+        this.busType = builder.busType;
     }
 
     /**
@@ -80,6 +86,13 @@ public class Node extends PowerflowObject {
         return voltageC;
     }
 
+    /**
+     * @return the busType
+     */
+    public BusType getBusType() {
+        return busType;
+    }
+
     @Override
     public String getGLDObjectType() {
         return "node";
@@ -91,6 +104,7 @@ public class Node extends PowerflowObject {
         GLDUtils.writeProperty(sb, "voltage_A", this.voltageA);
         GLDUtils.writeProperty(sb, "voltage_B", this.voltageB);
         GLDUtils.writeProperty(sb, "voltage_C", this.voltageC);
+        GLDUtils.writeProperty(sb, "bustype", this.busType);
     }
 
     public static abstract class AbstractBuilder<T extends Node, Z extends AbstractBuilder<T, Z>> extends PowerflowObject.AbstractBuilder<T, Z> {
@@ -99,6 +113,8 @@ public class Node extends PowerflowObject {
         private Complex voltageB;
 
         private Complex voltageC;
+
+        private BusType busType;
 
         public Z voltageA(final Complex voltageA) {
             this.voltageA = voltageA;
@@ -127,6 +143,11 @@ public class Node extends PowerflowObject {
 
         public Z voltageC(final double real, final double imaginary) {
             this.voltageC = new Complex(real, imaginary);
+            return self();
+        }
+
+        public Z busType(final BusType busType) {
+            this.busType = busType;
             return self();
         }
 

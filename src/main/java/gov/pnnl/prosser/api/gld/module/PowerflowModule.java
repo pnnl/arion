@@ -16,12 +16,16 @@ public class PowerflowModule extends Module {
 
     private final SolverMethod solverMethod;
 
+    private final Long nrIterationLimit;
+
     public PowerflowModule() {
         this.solverMethod = null;
+        this.nrIterationLimit = null;
     }
 
-    public PowerflowModule(final SolverMethod solverMethod) {
+    public PowerflowModule(final SolverMethod solverMethod, final Long nrIterationLimit) {
         this.solverMethod = solverMethod;
+        this.nrIterationLimit = nrIterationLimit;
     }
 
     /**
@@ -31,9 +35,16 @@ public class PowerflowModule extends Module {
         return solverMethod;
     }
 
+    /**
+     * @return the nrIterationLimit
+     */
+    public Long getNrIterationLimit() {
+        return nrIterationLimit;
+    }
+
     @Override
     public int hashCode() {
-        return Objects.hash(solverMethod);
+        return Objects.hash(solverMethod, nrIterationLimit);
     }
 
     @Override
@@ -48,7 +59,8 @@ public class PowerflowModule extends Module {
             return false;
         }
         final PowerflowModule other = (PowerflowModule) obj;
-        return Objects.equals(this.solverMethod, other.solverMethod);
+        return Objects.equals(this.solverMethod, other.solverMethod)
+                && Objects.equals(this.nrIterationLimit, other.nrIterationLimit);
     }
 
     @Override
@@ -64,6 +76,7 @@ public class PowerflowModule extends Module {
     @Override
     protected void writeGLDProperties(final StringBuilder sb) {
         GLDUtils.writeProperty(sb, "solver_method", this.solverMethod);
+        GLDUtils.writeProperty(sb, "NR_iteration_limit", this.nrIterationLimit);
     }
 
 }
