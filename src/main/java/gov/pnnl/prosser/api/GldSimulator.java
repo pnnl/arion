@@ -10,19 +10,19 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Experiment Interface
+ * GLD Simulator Interface
  *
  * Users will implement this interface to declare a configuration they want to use for Prosser to generate configuration files
  *
  * @author nord229
  */
-public interface Experiment {
+public interface GldSimulator {
 
-    public List<AbstractProsserObject> getExperimentObjects();
+    public List<AbstractProsserObject> getSimulatorObjects();
 
-    public GldClock getGLDClock();
+    public GldClock getGldClock();
 
-    public List<Module> getGLDModules();
+    public List<Module> getGldModules();
 
-    public Map<String, String> getGLDSettings();
+    public Map<String, String> getGldSettings();
 }

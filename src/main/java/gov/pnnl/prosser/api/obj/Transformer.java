@@ -3,7 +3,7 @@
  */
 package gov.pnnl.prosser.api.obj;
 
-import gov.pnnl.prosser.api.GLDUtils;
+import gov.pnnl.prosser.api.GldUtils;
 import gov.pnnl.prosser.api.lib.TransformerConfiguration;
 
 import java.util.EnumSet;
@@ -54,7 +54,7 @@ public class Transformer extends LinkObject {
     @Override
     protected void writeGLDProperties(final StringBuilder sb) {
         super.writeGLDProperties(sb);
-        GLDUtils.writeProperty(sb, "configuration", this.configuration);
+        GldUtils.writeProperty(sb, "configuration", this.configuration);
     }
 
     public static class Builder extends LinkObject.AbstractBuilder<Transformer, Builder> {

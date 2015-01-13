@@ -3,7 +3,7 @@
  */
 package gov.pnnl.prosser.api.obj;
 
-import gov.pnnl.prosser.api.GLDUtils;
+import gov.pnnl.prosser.api.GldUtils;
 
 /**
  * @author nord229
@@ -32,7 +32,7 @@ public class Substation extends Node {
     @Override
     protected void writeGLDProperties(final StringBuilder sb) {
         super.writeGLDProperties(sb);
-        GLDUtils.writeProperty(sb, "reference_phase", "PHASE_" + this.referencePhase.name());
+        GldUtils.writeProperty(sb, "reference_phase", "PHASE_" + this.referencePhase.name());
     }
 
     @Override

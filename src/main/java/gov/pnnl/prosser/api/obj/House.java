@@ -3,7 +3,7 @@
  */
 package gov.pnnl.prosser.api.obj;
 
-import gov.pnnl.prosser.api.GLDUtils;
+import gov.pnnl.prosser.api.GldUtils;
 
 /**
  * House Object
@@ -54,8 +54,8 @@ public class House extends ResidentialEnduse {
 
     @Override
     protected void writeGLDProperties(final StringBuilder sb) {
-        GLDUtils.writeProperty(sb, "parent", this.parent);
-        load.writeGLDString(sb);
+        GldUtils.writeProperty(sb, "parent", this.parent);
+        load.writeGldString(sb);
         // Handle special case since we need a semicolon here
         sb.insert(sb.length() - 1, ';');
     }

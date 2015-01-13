@@ -17,10 +17,10 @@ import java.util.*;
  * @author nord229
  *
  */
-public class TestExperiment implements Experiment {
+public class TestExperiment implements GldSimulator {
 
     @Override
-    public List<AbstractProsserObject> getExperimentObjects() {
+    public List<AbstractProsserObject> getSimulatorObjects() {
         final double oneMileInFeet = 5280;
         final EnumSet<PhaseCode> phaseAS = EnumSet.copyOf(PhaseCode.S);
         phaseAS.add(PhaseCode.A);
@@ -233,7 +233,7 @@ public class TestExperiment implements Experiment {
     }
 
     @Override
-    public GldClock getGLDClock() {
+    public GldClock getGldClock() {
         return ExperimentBuilder.clock()
                 .timezone("PST+8PDT")
                 .startTime(LocalDateTime.of(2000, 1, 1, 0, 0, 0))
@@ -242,7 +242,7 @@ public class TestExperiment implements Experiment {
     }
 
     @Override
-    public List<Module> getGLDModules() {
+    public List<Module> getGldModules() {
         return ExperimentBuilder.module()
                 .addPowerflow().solverMethod(SolverMethod.FBS).and()
                 .addResidential().implicitEnduses("NONE").and()
@@ -252,7 +252,7 @@ public class TestExperiment implements Experiment {
     }
 
     @Override
-    public Map<String, String> getGLDSettings() {
+    public Map<String, String> getGldSettings() {
         return ExperimentBuilder.gldSettings()
                 .put("savefile", "testSean.xml")
                 .put("profiler", "1")

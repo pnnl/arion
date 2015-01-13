@@ -4,7 +4,7 @@
 package gov.pnnl.prosser.api.obj;
 
 import gov.pnnl.prosser.api.AbstractProsserObject;
-import gov.pnnl.prosser.api.GLDUtils;
+import gov.pnnl.prosser.api.GldUtils;
 
 import java.util.EnumSet;
 import java.util.Objects;
@@ -116,8 +116,8 @@ public abstract class PowerflowObject extends AbstractProsserObject {
             phaseBuilder.append("S");
         }
 
-        GLDUtils.writeProperty(sb, "phases", phaseBuilder.toString());
-        GLDUtils.writeProperty(sb, "nominal_voltage", this.nominalVoltage);
+        GldUtils.writeProperty(sb, "phases", phaseBuilder.toString());
+        GldUtils.writeProperty(sb, "nominal_voltage", this.nominalVoltage);
     }
 
     public static abstract class AbstractBuilder<T extends PowerflowObject, Z extends AbstractBuilder<T, Z>> extends AbstractProsserObject.AbstractBuilder<T, Z> {

@@ -4,7 +4,7 @@
 package gov.pnnl.prosser.api.gld.obj;
 
 import gov.pnnl.prosser.api.AbstractProsserObject;
-import gov.pnnl.prosser.api.GLDUtils;
+import gov.pnnl.prosser.api.GldUtils;
 
 import java.util.Objects;
 
@@ -103,10 +103,10 @@ public class Recorder extends AbstractProsserObject {
 
     @Override
     protected void writeGLDProperties(final StringBuilder sb) {
-        GLDUtils.writeProperty(sb, "interval", this.interval, "s");
-        GLDUtils.writeProperty(sb, "file", this.file);
-        GLDUtils.writeProperty(sb, "property", this.property);
-        GLDUtils.writeProperty(sb, "parent", this.parent);
+        GldUtils.writeProperty(sb, "interval", this.interval, "s");
+        GldUtils.writeProperty(sb, "file", this.file);
+        GldUtils.writeProperty(sb, "property", this.property);
+        GldUtils.writeProperty(sb, "parent", this.parent);
     }
 
     public static class Builder extends AbstractProsserObject.AbstractBuilder<Recorder, Builder> {

@@ -3,7 +3,7 @@
  */
 package gov.pnnl.prosser.api.lib;
 
-import gov.pnnl.prosser.api.GLDUtils;
+import gov.pnnl.prosser.api.GldUtils;
 
 /**
  * Triplex Line Conductor
@@ -60,8 +60,8 @@ public class TriplexLineConductor extends Conductor {
 
     @Override
     protected void writeGLDProperties(final StringBuilder sb) {
-        GLDUtils.writeProperty(sb, "resistance", this.resistance);
-        GLDUtils.writeProperty(sb, "geometric_mean_radius", this.geometricMeanRadius);
+        GldUtils.writeProperty(sb, "resistance", this.resistance);
+        GldUtils.writeProperty(sb, "geometric_mean_radius", this.geometricMeanRadius);
     }
 
     public static class Builder extends Conductor.AbstractBuilder<TriplexLineConductor, Builder> {

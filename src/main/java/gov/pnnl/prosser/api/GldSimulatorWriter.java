@@ -20,31 +20,30 @@ import java.util.Objects;
  *
  * @author nord229
  */
-public class GLDExperimentWriter implements ExperimentWriter {
+public class GldSimulatorWriter {
 
-    @Override
-    public void writeExperiment(final Path path, final Experiment experiment) throws IOException {
-        final Map<String, String> properties = experiment.getGLDSettings();
-        final GldClock clock = Objects.requireNonNull(experiment.getGLDClock(), "GLD clock must be non null");
-        final List<Module> modules = experiment.getGLDModules();
-        final List<AbstractProsserObject> objects = experiment.getExperimentObjects();
+    public static void writeGldSimulator(final Path path, final GldSimulator gldSimulator) throws IOException {
+        final Map<String, String> properties = gldSimulator.getGldSettings();
+        final GldClock clock = Objects.requireNonNull(gldSimulator.getGldClock(), "GLD clock must be non null");
+        final List<Module> modules = gldSimulator.getGldModules();
+        final List<AbstractProsserObject> objects = gldSimulator.getSimulatorObjects();
         final StringBuilder sb = new StringBuilder();
         sb.append("//\n");
         sb.append("// BEGIN\n");
         sb.append("//\n\n");
         properties.forEach((k, v) -> {
-            GLDUtils.writeGLDSetting(sb, k, v);
+            GldUtils.writeSetting(sb, k, v);
         });
         sb.append('\n');
-        clock.writeGLDString(sb);
+        clock.writeGldString(sb);
         sb.append('\n');
         if (modules != null) {
-            modules.forEach(m -> m.writeGLDString(sb));
+            modules.forEach(m -> m.writeGldString(sb));
         }
         if (objects != null) {
             objects.forEach(o -> {
                 sb.append('\n');
-                o.writeGLDString(sb);
+                o.writeGldString(sb);
             });
         }
         try (final BufferedWriter writer = Files.newBufferedWriter(path, StandardCharsets.UTF_8)) {

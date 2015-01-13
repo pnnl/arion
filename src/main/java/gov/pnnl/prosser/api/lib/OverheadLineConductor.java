@@ -3,7 +3,7 @@
  */
 package gov.pnnl.prosser.api.lib;
 
-import gov.pnnl.prosser.api.GLDUtils;
+import gov.pnnl.prosser.api.GldUtils;
 
 /**
  * Overhead Line Conductor definition
@@ -75,9 +75,9 @@ public class OverheadLineConductor extends Conductor {
 
     @Override
     protected void writeGLDProperties(final StringBuilder sb) {
-        GLDUtils.writeProperty(sb, "geometric_mean_radius", this.geometricMeanRadius, "ft");
-        GLDUtils.writeProperty(sb, "resistance", this.resistance, "Ohm/mile");
-        GLDUtils.writeProperty(sb, "diameter", this.diameter, "in");
+        GldUtils.writeProperty(sb, "geometric_mean_radius", this.geometricMeanRadius, "ft");
+        GldUtils.writeProperty(sb, "resistance", this.resistance, "Ohm/mile");
+        GldUtils.writeProperty(sb, "diameter", this.diameter, "in");
     }
 
     public static class Builder extends Conductor.AbstractBuilder<OverheadLineConductor, Builder> {

@@ -10,7 +10,7 @@ import java.util.Objects;
  *
  * @author nord229
  */
-public abstract class AbstractProsserObject implements GLDSerializable {
+public abstract class AbstractProsserObject implements GldSerializable {
 
     /**
      * Object name for referencing in files
@@ -72,10 +72,10 @@ public abstract class AbstractProsserObject implements GLDSerializable {
     public abstract String getGLDObjectType();
 
     @Override
-    public void writeGLDString(final StringBuilder sb) {
+    public void writeGldString(final StringBuilder sb) {
         sb.append("object ").append(getGLDObjectType()).append(" {\n");
-        GLDUtils.writeProperty(sb, "name", this.name);
-        GLDUtils.writeProperty(sb, "groupId", this.groupId);
+        GldUtils.writeProperty(sb, "name", this.name);
+        GldUtils.writeProperty(sb, "groupId", this.groupId);
         this.writeGLDProperties(sb);
         sb.append("}\n");
     }

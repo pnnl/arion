@@ -13,7 +13,7 @@ import org.apache.commons.math3.complex.Complex;
  * @author nord229
  *
  */
-public abstract class GLDUtils {
+public abstract class GldUtils {
 
     private static final DecimalFormat complexFormat;
 
@@ -26,7 +26,7 @@ public abstract class GLDUtils {
         doubleFormat.setMaximumFractionDigits(10);
     }
 
-    public static void writeGLDSetting(final StringBuilder sb, final String key, final String value) {
+    public static void writeSetting(final StringBuilder sb, final String key, final String value) {
         sb.append("#set ");
         sb.append(key);
         sb.append('=');

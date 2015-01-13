@@ -3,7 +3,7 @@
  */
 package gov.pnnl.prosser.api.lib;
 
-import gov.pnnl.prosser.api.GLDUtils;
+import gov.pnnl.prosser.api.GldUtils;
 
 /**
  * Standard Line configuration for Overhead and other lines
@@ -91,11 +91,11 @@ public class StandardLineConfiguration<C extends Conductor> extends LineConfigur
 
     @Override
     protected void writeGLDProperties(final StringBuilder sb) {
-        GLDUtils.writeProperty(sb, "conductor_A", this.phaseAConductor);
-        GLDUtils.writeProperty(sb, "conductor_B", this.phaseBConductor);
-        GLDUtils.writeProperty(sb, "conductor_C", this.phaseCConductor);
-        GLDUtils.writeProperty(sb, "conductor_N", this.phaseNConductor);
-        GLDUtils.writeProperty(sb, "spacing", this.spacing);
+        GldUtils.writeProperty(sb, "conductor_A", this.phaseAConductor);
+        GldUtils.writeProperty(sb, "conductor_B", this.phaseBConductor);
+        GldUtils.writeProperty(sb, "conductor_C", this.phaseCConductor);
+        GldUtils.writeProperty(sb, "conductor_N", this.phaseNConductor);
+        GldUtils.writeProperty(sb, "spacing", this.spacing);
     }
 
     public static class Builder<C extends Conductor> extends LineConfiguration.AbstractBuilder<C, StandardLineConfiguration<C>, Builder<C>> {

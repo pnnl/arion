@@ -8,7 +8,7 @@ package gov.pnnl.prosser.api;
  *
  * @author nord229
  */
-public interface GLDSerializable {
+public interface GldSerializable {
 
-    public void writeGLDString(StringBuilder sb);
+    public void writeGldString(StringBuilder sb);
 }

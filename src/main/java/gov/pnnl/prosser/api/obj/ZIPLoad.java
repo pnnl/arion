@@ -3,7 +3,7 @@
  */
 package gov.pnnl.prosser.api.obj;
 
-import gov.pnnl.prosser.api.GLDUtils;
+import gov.pnnl.prosser.api.GldUtils;
 
 /**
  * ZipLoad Object
@@ -143,14 +143,14 @@ public class ZIPLoad extends ResidentialEnduse {
 
     @Override
     protected void writeGLDProperties(final StringBuilder sb) {
-        GLDUtils.writeProperty(sb, "heat_fraction", this.heatFraction);
-        GLDUtils.writeProperty(sb, "base_power", this.basePower, "kW");
-        GLDUtils.writeProperty(sb, "power_pf", this.powerPf);
-        GLDUtils.writeProperty(sb, "power_fraction", this.powerFraction);
-        GLDUtils.writeProperty(sb, "current_pf", this.currentPf);
-        GLDUtils.writeProperty(sb, "current_fraction", this.currentFraction);
-        GLDUtils.writeProperty(sb, "impedance_pf", this.impedancePf);
-        GLDUtils.writeProperty(sb, "impedance_fraction", this.impedanceFraction);
+        GldUtils.writeProperty(sb, "heat_fraction", this.heatFraction);
+        GldUtils.writeProperty(sb, "base_power", this.basePower, "kW");
+        GldUtils.writeProperty(sb, "power_pf", this.powerPf);
+        GldUtils.writeProperty(sb, "power_fraction", this.powerFraction);
+        GldUtils.writeProperty(sb, "current_pf", this.currentPf);
+        GldUtils.writeProperty(sb, "current_fraction", this.currentFraction);
+        GldUtils.writeProperty(sb, "impedance_pf", this.impedancePf);
+        GldUtils.writeProperty(sb, "impedance_fraction", this.impedanceFraction);
     }
 
     public static class Builder extends ResidentialEnduse.AbstractBuilder<ZIPLoad, Builder> {

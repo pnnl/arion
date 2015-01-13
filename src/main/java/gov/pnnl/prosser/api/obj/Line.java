@@ -3,7 +3,7 @@
  */
 package gov.pnnl.prosser.api.obj;
 
-import gov.pnnl.prosser.api.GLDUtils;
+import gov.pnnl.prosser.api.GldUtils;
 import gov.pnnl.prosser.api.lib.Conductor;
 import gov.pnnl.prosser.api.lib.LineConfiguration;
 
@@ -60,8 +60,8 @@ public abstract class Line<C extends Conductor, Q extends LineConfiguration<C>> 
     @Override
     protected void writeGLDProperties(final StringBuilder sb) {
         super.writeGLDProperties(sb);
-        GLDUtils.writeProperty(sb, "length", this.length, "ft");
-        GLDUtils.writeProperty(sb, "configuration", this.configuration);
+        GldUtils.writeProperty(sb, "length", this.length, "ft");
+        GldUtils.writeProperty(sb, "configuration", this.configuration);
     }
 
     public static abstract class AbstractBuilder<C extends Conductor, Q extends LineConfiguration<C>, T extends Line<C, Q>, Z extends AbstractBuilder<C, Q, T, Z>> extends LinkObject.AbstractBuilder<T, Z> {

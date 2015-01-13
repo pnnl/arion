@@ -3,7 +3,7 @@
  */
 package gov.pnnl.prosser.api.gld.module;
 
-import gov.pnnl.prosser.api.GLDUtils;
+import gov.pnnl.prosser.api.GldUtils;
 
 import java.util.Objects;
 
@@ -75,8 +75,8 @@ public class PowerflowModule extends Module {
 
     @Override
     protected void writeGLDProperties(final StringBuilder sb) {
-        GLDUtils.writeProperty(sb, "solver_method", this.solverMethod);
-        GLDUtils.writeProperty(sb, "NR_iteration_limit", this.nrIterationLimit);
+        GldUtils.writeProperty(sb, "solver_method", this.solverMethod);
+        GldUtils.writeProperty(sb, "NR_iteration_limit", this.nrIterationLimit);
     }
 
 }

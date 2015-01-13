@@ -3,8 +3,8 @@
  */
 package gov.pnnl.prosser.api.gld;
 
-import gov.pnnl.prosser.api.GLDSerializable;
-import gov.pnnl.prosser.api.GLDUtils;
+import gov.pnnl.prosser.api.GldSerializable;
+import gov.pnnl.prosser.api.GldUtils;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -15,7 +15,7 @@ import java.util.Objects;
  *
  * @author nord229
  */
-public class GldClock implements GLDSerializable {
+public class GldClock implements GldSerializable {
 
     private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
@@ -81,11 +81,11 @@ public class GldClock implements GLDSerializable {
     }
 
     @Override
-    public void writeGLDString(final StringBuilder sb) {
+    public void writeGldString(final StringBuilder sb) {
         sb.append("clock {\n");
-        GLDUtils.writeProperty(sb, "timezone", this.timezone);
-        GLDUtils.writeProperty(sb, "starttime", "'" + formatter.format(this.startTime) + "'");
-        GLDUtils.writeProperty(sb, "stoptime", "'" + formatter.format(this.stopTime) + "'");
+        GldUtils.writeProperty(sb, "timezone", this.timezone);
+        GldUtils.writeProperty(sb, "starttime", "'" + formatter.format(this.startTime) + "'");
+        GldUtils.writeProperty(sb, "stoptime", "'" + formatter.format(this.stopTime) + "'");
         sb.append("}\n");
     }
 

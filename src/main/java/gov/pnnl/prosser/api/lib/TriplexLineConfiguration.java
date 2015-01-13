@@ -3,7 +3,7 @@
  */
 package gov.pnnl.prosser.api.lib;
 
-import gov.pnnl.prosser.api.GLDUtils;
+import gov.pnnl.prosser.api.GldUtils;
 
 /**
  * Triplex Line Configuration
@@ -77,11 +77,11 @@ public class TriplexLineConfiguration extends LineConfiguration<TriplexLineCondu
 
     @Override
     protected void writeGLDProperties(final StringBuilder sb) {
-        GLDUtils.writeProperty(sb, "conductor_1", this.phase1Conductor);
-        GLDUtils.writeProperty(sb, "conductor_2", this.phase2Conductor);
-        GLDUtils.writeProperty(sb, "conductor_N", this.phaseNConductor);
-        GLDUtils.writeProperty(sb, "insulation_thickness", this.insulationThickness);
-        GLDUtils.writeProperty(sb, "diameter", this.diameter);
+        GldUtils.writeProperty(sb, "conductor_1", this.phase1Conductor);
+        GldUtils.writeProperty(sb, "conductor_2", this.phase2Conductor);
+        GldUtils.writeProperty(sb, "conductor_N", this.phaseNConductor);
+        GldUtils.writeProperty(sb, "insulation_thickness", this.insulationThickness);
+        GldUtils.writeProperty(sb, "diameter", this.diameter);
     }
 
     public static class Builder extends LineConfiguration.AbstractBuilder<TriplexLineConductor, TriplexLineConfiguration, Builder> {

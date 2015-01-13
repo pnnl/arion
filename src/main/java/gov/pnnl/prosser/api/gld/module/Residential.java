@@ -3,7 +3,7 @@
  */
 package gov.pnnl.prosser.api.gld.module;
 
-import gov.pnnl.prosser.api.GLDUtils;
+import gov.pnnl.prosser.api.GldUtils;
 
 import java.util.Objects;
 
@@ -63,7 +63,7 @@ public class Residential extends Module {
 
     @Override
     protected void writeGLDProperties(final StringBuilder sb) {
-        GLDUtils.writeProperty(sb, "implicit_enduses", this.implicitEnduses);
+        GldUtils.writeProperty(sb, "implicit_enduses", this.implicitEnduses);
     }
 
 }

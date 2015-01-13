@@ -3,7 +3,7 @@
  */
 package gov.pnnl.prosser.api.lib;
 
-import gov.pnnl.prosser.api.GLDUtils;
+import gov.pnnl.prosser.api.GldUtils;
 
 /**
  * Generic Line Spacing
@@ -121,12 +121,12 @@ public class LineSpacing extends PowerflowLibrary {
 
     @Override
     protected void writeGLDProperties(final StringBuilder sb) {
-        GLDUtils.writeProperty(sb, "distance_AB", this.distanceAToB);
-        GLDUtils.writeProperty(sb, "distance_BC", this.distanceBToC);
-        GLDUtils.writeProperty(sb, "distance_AC", this.distanceAToC);
-        GLDUtils.writeProperty(sb, "distance_AN", this.distanceAToN);
-        GLDUtils.writeProperty(sb, "distance_BN", this.distanceBToN);
-        GLDUtils.writeProperty(sb, "distance_CN", this.distanceCToN);
+        GldUtils.writeProperty(sb, "distance_AB", this.distanceAToB);
+        GldUtils.writeProperty(sb, "distance_BC", this.distanceBToC);
+        GldUtils.writeProperty(sb, "distance_AC", this.distanceAToC);
+        GldUtils.writeProperty(sb, "distance_AN", this.distanceAToN);
+        GldUtils.writeProperty(sb, "distance_BN", this.distanceBToN);
+        GldUtils.writeProperty(sb, "distance_CN", this.distanceCToN);
     }
 
     public static class Builder extends PowerflowLibrary.AbstractBuilder<LineSpacing, Builder> {

@@ -50,11 +50,10 @@ public class ExperimentMain {
         final URLClassLoader child = new URLClassLoader(new URL[] { inPath.getParent().toUri().toURL() }, ExperimentMain.class.getClassLoader());
 
         final Class<?> compiledClass = Class.forName(name, true, child);
-        final Class<? extends Experiment> experimentClass = compiledClass.asSubclass(Experiment.class);
-        final Experiment experiment = experimentClass.getConstructor().newInstance();
+        final Class<? extends GldSimulator> gldSimulatorClass = compiledClass.asSubclass(GldSimulator.class);
+        final GldSimulator gldSimulator = gldSimulatorClass.getConstructor().newInstance();
 
-        final GLDExperimentWriter writer = new GLDExperimentWriter();
-        writer.writeExperiment(outPath.resolve("prosser.out"), experiment);
+        GldSimulatorWriter.writeGldSimulator(outPath.resolve("prosser.out"), gldSimulator);
         System.out.println("Written!");
     }
 }

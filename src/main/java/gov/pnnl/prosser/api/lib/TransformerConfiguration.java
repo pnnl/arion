@@ -3,7 +3,7 @@
  */
 package gov.pnnl.prosser.api.lib;
 
-import gov.pnnl.prosser.api.GLDUtils;
+import gov.pnnl.prosser.api.GldUtils;
 
 import org.apache.commons.math3.complex.Complex;
 
@@ -201,18 +201,18 @@ public class TransformerConfiguration extends PowerflowLibrary {
 
     @Override
     protected void writeGLDProperties(final StringBuilder sb) {
-        GLDUtils.writeProperty(sb, "connect_type", this.connectionType);
-        GLDUtils.writeProperty(sb, "install_type", this.installationType);
-        GLDUtils.writeProperty(sb, "power_rating", this.powerRating);
-        GLDUtils.writeProperty(sb, "powerA_rating", this.phaseARating, "kVA");
-        GLDUtils.writeProperty(sb, "powerB_rating", this.phaseBRating);
-        GLDUtils.writeProperty(sb, "powerC_rating", this.phaseCRating);
-        GLDUtils.writeProperty(sb, "primary_voltage", this.primaryVoltage);
-        GLDUtils.writeProperty(sb, "secondary_voltage", this.secondaryVoltage);
+        GldUtils.writeProperty(sb, "connect_type", this.connectionType);
+        GldUtils.writeProperty(sb, "install_type", this.installationType);
+        GldUtils.writeProperty(sb, "power_rating", this.powerRating);
+        GldUtils.writeProperty(sb, "powerA_rating", this.phaseARating, "kVA");
+        GldUtils.writeProperty(sb, "powerB_rating", this.phaseBRating);
+        GldUtils.writeProperty(sb, "powerC_rating", this.phaseCRating);
+        GldUtils.writeProperty(sb, "primary_voltage", this.primaryVoltage);
+        GldUtils.writeProperty(sb, "secondary_voltage", this.secondaryVoltage);
         // GLDUtils.writeProperty(sb, "resistance", this.impedance.getReal());
         // GLDUtils.writeProperty(sb, "reactance", this.impedance.getImaginary());
-        GLDUtils.writeProperty(sb, "impedance", this.impedance);
-        GLDUtils.writeProperty(sb, "shunt_impedance", this.shuntImpedance);
+        GldUtils.writeProperty(sb, "impedance", this.impedance);
+        GldUtils.writeProperty(sb, "shunt_impedance", this.shuntImpedance);
     }
 
     public static class Builder extends PowerflowLibrary.AbstractBuilder<TransformerConfiguration, Builder> {

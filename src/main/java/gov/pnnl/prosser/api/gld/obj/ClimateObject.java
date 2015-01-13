@@ -4,7 +4,7 @@
 package gov.pnnl.prosser.api.gld.obj;
 
 import gov.pnnl.prosser.api.AbstractProsserObject;
-import gov.pnnl.prosser.api.GLDUtils;
+import gov.pnnl.prosser.api.GldUtils;
 
 import java.util.Objects;
 
@@ -65,7 +65,7 @@ public class ClimateObject extends AbstractProsserObject {
 
     @Override
     protected void writeGLDProperties(final StringBuilder sb) {
-        GLDUtils.writeProperty(sb, "tmyfile", this.tmyFile);
+        GldUtils.writeProperty(sb, "tmyfile", this.tmyFile);
     }
 
     public static class Builder extends AbstractProsserObject.AbstractBuilder<ClimateObject, Builder> {

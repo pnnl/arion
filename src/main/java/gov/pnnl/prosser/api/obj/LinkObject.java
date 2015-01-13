@@ -3,7 +3,7 @@
  */
 package gov.pnnl.prosser.api.obj;
 
-import gov.pnnl.prosser.api.GLDUtils;
+import gov.pnnl.prosser.api.GldUtils;
 
 import java.util.EnumSet;
 
@@ -64,8 +64,8 @@ public abstract class LinkObject extends PowerflowObject {
     @Override
     protected void writeGLDProperties(final StringBuilder sb) {
         super.writeGLDProperties(sb);
-        GLDUtils.writeProperty(sb, "from", this.from);
-        GLDUtils.writeProperty(sb, "to", this.to);
+        GldUtils.writeProperty(sb, "from", this.from);
+        GldUtils.writeProperty(sb, "to", this.to);
     }
 
     public static abstract class AbstractBuilder<T extends LinkObject, Z extends AbstractBuilder<T, Z>> extends PowerflowObject.AbstractBuilder<T, Z> {

@@ -3,7 +3,7 @@
  */
 package gov.pnnl.prosser.api.obj;
 
-import gov.pnnl.prosser.api.GLDUtils;
+import gov.pnnl.prosser.api.GldUtils;
 
 import java.util.EnumSet;
 
@@ -101,10 +101,10 @@ public class Node extends PowerflowObject {
     @Override
     protected void writeGLDProperties(final StringBuilder sb) {
         super.writeGLDProperties(sb);
-        GLDUtils.writeProperty(sb, "voltage_A", this.voltageA);
-        GLDUtils.writeProperty(sb, "voltage_B", this.voltageB);
-        GLDUtils.writeProperty(sb, "voltage_C", this.voltageC);
-        GLDUtils.writeProperty(sb, "bustype", this.busType);
+        GldUtils.writeProperty(sb, "voltage_A", this.voltageA);
+        GldUtils.writeProperty(sb, "voltage_B", this.voltageB);
+        GldUtils.writeProperty(sb, "voltage_C", this.voltageC);
+        GldUtils.writeProperty(sb, "bustype", this.busType);
     }
 
     public static abstract class AbstractBuilder<T extends Node, Z extends AbstractBuilder<T, Z>> extends PowerflowObject.AbstractBuilder<T, Z> {
