@@ -23,10 +23,10 @@ import java.util.Objects;
 public class GldSimulatorWriter {
 
     public static void writeGldSimulator(final Path path, final GldSimulator gldSimulator) throws IOException {
-        final Map<String, String> properties = gldSimulator.getGldSettings();
-        final GldClock clock = Objects.requireNonNull(gldSimulator.getGldClock(), "GLD clock must be non null");
-        final List<Module> modules = gldSimulator.getGldModules();
-        final List<AbstractProsserObject> objects = gldSimulator.getSimulatorObjects();
+        final Map<String, String> properties = gldSimulator.getSettings();
+        final GldClock clock = Objects.requireNonNull(gldSimulator.getClock(), "GLD clock must be non null");
+        final List<Module> modules = gldSimulator.getModules();
+        final List<AbstractProsserObject> objects = gldSimulator.getObjects();
         final StringBuilder sb = new StringBuilder();
         sb.append("//\n");
         sb.append("// BEGIN\n");

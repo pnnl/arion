@@ -10,5 +10,10 @@ package gov.pnnl.prosser.api;
  */
 public interface GldSerializable {
 
+    /**
+     * Write the string representation of this object to a StringBuilder
+     * 
+     * @param sb
+     */
     public void writeGldString(StringBuilder sb);
 }

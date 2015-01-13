@@ -17,6 +17,10 @@ public abstract class AbstractProsserObject implements GldSerializable {
      */
     private final String name;
 
+    // TODO find this groupid in the source of GLD to figure out its purpose
+    /**
+     * Object groupid referenced in files
+     */
     private final String groupId;
 
     public AbstractProsserObject() {

@@ -18,11 +18,28 @@ import java.util.Map;
  */
 public interface GldSimulator {
 
-    public List<AbstractProsserObject> getSimulatorObjects();
+    /**
+     * Get the Name of this simulator object - Used when naming the file on disk in an Experiment
+     */
+    public String getName();
 
-    public GldClock getGldClock();
+    /**
+     * Get the Simulator objects that comprise this simulation
+     */
+    public List<AbstractProsserObject> getObjects();
 
-    public List<Module> getGldModules();
+    /**
+     * Get the Clock for this simulation
+     */
+    public GldClock getClock();
 
-    public Map<String, String> getGldSettings();
+    /**
+     * Get the Modules for this simulation
+     */
+    public List<Module> getModules();
+
+    /**
+     * Get the Settings for this simulation
+     */
+    public Map<String, String> getSettings();
 }
