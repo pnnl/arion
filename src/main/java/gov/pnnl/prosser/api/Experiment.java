@@ -21,7 +21,7 @@ public interface Experiment {
     /**
      * Get the NS-3 Simulators
      */
-    public Ns3Simulator getNs3Simulator();
+    public List<Ns3Simulator> getNs3Simulators();
 
     /**
      * Get the FNCS Simulators
