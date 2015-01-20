@@ -29,6 +29,6 @@ public interface Ns3Simulator {
      * Get the Simulator objects that comprise this simulation
      * TODO Need to modify AbPrObj to include ns3 objs or create new abstract ns3 obj
      */
-	public List<AbstractProsserObject> getObjects();
+	public List<AbstractNs3Object> getObjects();
 	
 }

@@ -24,7 +24,7 @@ public class Ns3SimulatorWriter {
 		
 		final List<Module> modules = ns3Simulator.getModules();
 		final List<Namespace> namespaces = ns3Simulator.getNamespaces();
-        final List<AbstractProsserObject> objects = ns3Simulator.getObjects();
+        final List<AbstractNs3Object> objects = ns3Simulator.getObjects();
 		final StringBuilder sb = new StringBuilder();
 		
 		// Ns-3 file header stuff; need this
@@ -60,7 +60,7 @@ public class Ns3SimulatorWriter {
         if (objects != null) {
             objects.forEach(o -> {
                 sb.append("\n\t");
-                o.writeGldString(sb); //TODO implement writeNs3String in AbProssserObj or create new abstract class for ns-3
+                o.writeNs3String(sb);
             });
         }
         

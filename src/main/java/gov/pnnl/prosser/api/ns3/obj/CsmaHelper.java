@@ -3,6 +3,8 @@
  */
 package gov.pnnl.prosser.api.ns3.obj;
 
+import gov.pnnl.prosser.api.AbstractNs3Object;
+
 import java.io.FileOutputStream;
 import java.io.PrintWriter;
 
@@ -10,13 +12,14 @@ import java.io.PrintWriter;
  * @author happ546
  *
  */
-public class CsmaHelper {
+public class CsmaHelper extends AbstractNs3Object {
 	
 	// Data rate can be StringValue or DataRateValue, delay can be StringValue or TimeValue in ns3
-	private String datarate, delay, name;
+	private String datarate, delay, name, objInfo;
 	
 	public CsmaHelper(String name) {
 		this.name = name;
+		objInfo = "CsmaHelper " + this.name + ";\n";
 	}
 	
 	public void setChannelAttribute (String attr, String value) {
@@ -30,24 +33,20 @@ public class CsmaHelper {
 	
 	public void dataRate(String datarate) {
 		this.datarate = datarate;
+		objInfo += this.name + ".SetChannelAttribute(\"DataRate\", StringValue(\"" + this.datarate + "\"));\n";
 	}
 	
 	public void delay(String delay) {
 		this.delay = delay;
+		objInfo += this.name + ".SetChannelAttribute(\"Delay\", StringValue(\"" + this.delay + "\");\n";
 	}
 	
 	/** 
-	 * Output characteristics of this object to given file
+	 * Append characteristics of this object to given stringbuilder
 	 */
-	public void print(FileOutputStream fs) {
-//		String result = String.format("DataRate: %s\n", datarate);
-//		result += String.format("Delay: %s\n", delay);
-		
-		String result = "CsmaHelper " + this.name + ";\n";
-		result += this.name + ".SetChannelAttribute(\"DataRate\", StringValue(\"" + this.datarate + "\"));\n";
-		result += this.name + ".SetChannelAttribute(\"Delay\", StringValue(\"" + this.delay + "\");\n";
-		PrintWriter pw = new PrintWriter(fs);
-		pw.write(result);
+	@Override
+	public void writeNs3Properties(StringBuilder sb) {
+		sb.append(objInfo);
 	}
 	
 }
