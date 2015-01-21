@@ -45,7 +45,7 @@ public class Ns3SimulatorWriter {
 		sb.append(" * along with this program; if not, write to the Free Software\n");
 		sb.append(" * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA\n");
 		sb.append(" */\n\n");
-
+		
 		if (namespaces != null) {
 			namespaces.forEach(n -> n.writeNamespace(sb));
 		}

@@ -10,20 +10,9 @@ import gov.pnnl.prosser.api.AbstractNs3Object;
  *
  */
 public class NetDeviceContainer extends AbstractNs3Object {
-	private String name, objInfo;
 	
-	public NetDeviceContainer(String name) {
-		this.name = name;
-		objInfo = "NetDeviceContainer " + this.name + ";\n";
-
-	}
-	
-	/** 
-	 * Append characteristics of this object to given stringbuilder
-	 */
-	@Override
-	public void writeNs3Properties(StringBuilder sb) {
-		sb.append(objInfo);
-	}
+	public NetDeviceContainer() {
+		setPrintObj("NetDeviceContainer " + this.getName() + ";\n");
+	}	
 	
 }

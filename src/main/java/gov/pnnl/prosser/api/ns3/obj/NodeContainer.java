@@ -10,66 +10,48 @@ import gov.pnnl.prosser.api.gld.obj.ClimateObject.Builder;
 
 import java.io.FileOutputStream;
 import java.io.PrintWriter;
+import java.util.ArrayList;
 
 /**
  * @author happ546
  *
  */
 public class NodeContainer extends AbstractNs3Object {
-	private String name, printObj;
+	/**
+	 * The number of nodes in this NodeContainer
+	 */
 	private int numNodes;
+	/**
+	 * An array of the Nodes in this NodeContainer
+	 */
+	private ArrayList<Node> nodes;
 	
-	public NodeContainer(String name) {
-		this.name = name;
-		printObj = "NodeContainer " + this.name + ";\n";
-	}
-	
-	public NodeContainer(Builder builder) {
-		super(builder);
+	/**
+	 * Initialize an empty NodeContainer
+	 */
+	public NodeContainer() {
+		this.numNodes = 0;
+		this.nodes = new ArrayList<Node>();
 	}
 
 	/**
-	 * Create specified number of nodes in NC
+	 * Create specified number of nodes in this NodeContainer
 	 * @param numNodes
 	 */
 	public void create(int numNodes) {
 		this.numNodes = numNodes;
-		printObj += name + ".Create(" + this.numNodes + ");\n";
-
+		for (int i = 0; i < numNodes; i++) {
+			this.addNode();
+		}
+		setPrintObj(getPrintObj() + (getName() + ".Create(" + this.numNodes + ");\n"));
 	}
 
-	public String getName() {
-		return this.name;
-	}
-
-	/** 
-	 * Append characteristics of this object to given stringbuilder
+	/**
+	 * Appends a new node to the end of the nodes array
 	 */
-	@Override
-	public void writeNs3Properties(StringBuilder sb) {
-		sb.append(printObj);
+	public void addNode() {
+		Node temp = new Node();
+		nodes.add(temp);
 	}
 	
-   public static class Builder extends AbstractNs3Object.AbstractBuilder<NodeContainer, Builder> {
-
-        private Object numNodes;
-		private String printObj;
-
-		@Override
-        public NodeContainer build() {
-            return new NodeContainer(this);
-        }
-
-        @Override
-        protected Builder self() {
-            return this;
-        }
-
-		public Builder create(int i) {
-			this.numNodes = numNodes;
-			this.printObj += name + ".Create(" + this.numNodes + ");\n";
-			return this;
-		}
-
-    }	
 }

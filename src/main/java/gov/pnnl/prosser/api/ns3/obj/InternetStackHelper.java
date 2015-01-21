@@ -10,22 +10,15 @@ import gov.pnnl.prosser.api.AbstractNs3Object;
  *
  */
 public class InternetStackHelper extends AbstractNs3Object {
-	private String name, objInfo;
 	private NodeContainer nodes;
 	
-	public InternetStackHelper(String name) {
-		this.name = name;
-		objInfo += this.getClass().getTypeName() + " " + this.name + ";\n"; //TODO test this generalization for class name
-	}
-	
-	public void install(NodeContainer nodes) {
-		this.nodes = nodes;
-		objInfo += name + ".Install(" + nodes.getName() + ");\n";
+	public InternetStackHelper() {
+		setPrintObj(this.getClass().getTypeName() + " " + this.getName() + ";\n"); //TODO test this generalization for class name
 	}
 
-	@Override
-	public void writeNs3Properties(StringBuilder sb) {
-		sb.append(objInfo);
+	public void install(NodeContainer nodes) {
+		this.nodes = nodes;
+		setPrintObj(getPrintObj() + " " + this.getName() + ".Install(" + nodes.getName() + ");\n");
 	}
 	
 }

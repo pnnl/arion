@@ -10,45 +10,58 @@ package gov.pnnl.prosser.api;
 public abstract class AbstractNs3Object {
 	
 	private String name;
+	private String printObj;
 
 	public AbstractNs3Object() {
-		
+		this.name = null;
+		this.printObj = null;
 	}
-
-    public <T extends AbstractNs3Object, Z extends AbstractBuilder<T, Z>> AbstractNs3Object(final AbstractBuilder<T, Z> builder) {
-    	
-    }
+	
+	public AbstractNs3Object(String name) {
+		this.name = name;
+		this.printObj = null;
+	}
 
 	public void writeNs3String(final StringBuilder sb) {
 		this.writeNs3Properties(sb);
 	}
 
-	public abstract void writeNs3Properties(StringBuilder sb);
+	/** 
+	 * Append characteristics of this object to given stringbuilder
+	 * @param StringBuilder
+	 */
+	public void writeNs3Properties(StringBuilder sb) {
+		sb.append(getPrintObj());
+	}
 	
 	//public abstract void assignment(AbstractNs3Object right);
 
+	/**
+	 * @return the name
+	 */
 	public String getName() {
 		return this.name;
 	}
 	
-    public static abstract class AbstractBuilder<T extends AbstractNs3Object, Z extends AbstractBuilder<T, Z>> {
-        protected String name;
+	/**
+	 * @param name the name to set
+	 */
+	public void setName(String name) {
+		this.name = name;
+	}
 
-        protected String groupId;
+	/**
+	 * @return the printObj
+	 */
+	public String getPrintObj() {
+		return printObj;
+	}
 
-        protected abstract Z self();
-
-        public abstract T build();
-
-        public Z name(final String name) {
-            this.name = name;
-            return self();
-        }
-
-        public Z groupId(final String groupId) {
-            this.groupId = groupId;
-            return self();
-        }
-    }
+	/**
+	 * @param printObj the printObj to set
+	 */
+	public void setPrintObj(String printObj) {
+		this.printObj = printObj;
+	}
 	
 }
