@@ -3,22 +3,18 @@
  */
 package gov.pnnl.prosser.api;
 
+import java.util.Objects;
+
 /**
  * @author happ546
  *
  */
 public abstract class AbstractNs3Object {
 	
-	private String name;
-	private String printObj;
+	private String name, printObj;
 
 	public AbstractNs3Object() {
 		this.name = null;
-		this.printObj = null;
-	}
-	
-	public AbstractNs3Object(String name) {
-		this.name = name;
 		this.printObj = null;
 	}
 
@@ -33,8 +29,6 @@ public abstract class AbstractNs3Object {
 	public void writeNs3Properties(StringBuilder sb) {
 		sb.append(getPrintObj());
 	}
-	
-	//public abstract void assignment(AbstractNs3Object right);
 
 	/**
 	 * @return the name
@@ -44,11 +38,16 @@ public abstract class AbstractNs3Object {
 	}
 	
 	/**
+	 * Sets the name of this AbstractNs3Object and adds the constructor text to this object's information field,
+	 * printObj, to later output to a c++ ns-3 file.
+	 * Must be called immediately after the constructor.
 	 * @param name the name to set
 	 */
 	public void setName(String name) {
 		this.name = name;
+		setPrintObj(this.getClass().getSimpleName() + " " + this.name + ";\n");
 	}
+	
 
 	/**
 	 * @return the printObj
@@ -58,10 +57,39 @@ public abstract class AbstractNs3Object {
 	}
 
 	/**
-	 * @param printObj the printObj to set
+	 * @param text the text printObj (stored c++ implementation text for this object) is set to
 	 */
-	public void setPrintObj(String printObj) {
-		this.printObj = printObj;
+	public void setPrintObj(String text) {
+		this.printObj = text;
 	}
+	
+	/**
+	 * 
+	 * @param text the text to append to this object's printObj string
+	 */
+	public void appendPrintObj(String text) {
+		setPrintObj(getPrintObj() + text);
+	}
+	
+ @Override
+    public int hashCode() {
+        return Objects.hash(this.name, this.printObj);
+    }
+
+    @Override
+    public boolean equals(final Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final AbstractNs3Object other = (AbstractNs3Object) obj;
+        return Objects.equals(this.name, other.name) 
+        		&& Objects.equals(this.printObj, other.printObj);
+    }
 	
 }

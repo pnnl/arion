@@ -18,7 +18,7 @@ public class PointToPointHelper extends AbstractNs3Object {
 	private Map<String, String> deviceAttributes;
 	
 	/**
-	 * Contruct a new point to point helper to handle creation of a p2p node/channel
+	 * Construct a new point to point helper to handle creation of a p2p node/channel
 	 */
 	public PointToPointHelper() {
 		this.channelAttributes = new HashMap<String, String>();
@@ -31,25 +31,27 @@ public class PointToPointHelper extends AbstractNs3Object {
 	 */
 	public void install(NodeContainer nodes) {
 		this.nodes = nodes;
-		setPrintObj(getPrintObj() + this.getName() + ".Install(" + nodes.getName() + ");\n");
+		appendPrintObj(this.getName() + ".Install(" + nodes.getName() + ");\n");
 	}
 
 	/**
 	 * Set attributes for this point to point channel
-	 * @param attr
+	 * @param attr the attribute to set the value to
 	 * @param value
 	 */
 	public void setChannelAttribute(String attr, String value) {
 		channelAttributes.put(attr, value);
+		appendPrintObj(this.getName() + ".SetChannelAttribute(\"" + attr + "\", StringValue(\"" + value + "\"));\n");
 	}
 	
 	/**
 	 * Set attributes for this point to point device
-	 * @param attr
+	 * @param attr the attribute to set the value to
 	 * @param value
 	 */
 	public void setDeviceAttribute(String attr, String value) {
 		deviceAttributes.put(attr, value);
+		appendPrintObj(this.getName() + ".SetDeviceAttribute(\"" + attr + "\", StringValue(\"" + value + "\"));\n");
 	}
 	
 }

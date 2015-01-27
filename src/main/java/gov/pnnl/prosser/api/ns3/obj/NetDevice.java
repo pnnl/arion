@@ -9,6 +9,6 @@ import gov.pnnl.prosser.api.AbstractNs3Object;
  * @author happ546
  *
  */
-public class Device extends AbstractNs3Object {
+public class NetDevice extends AbstractNs3Object {
 
 }

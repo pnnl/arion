@@ -13,13 +13,19 @@ public class Ipv4AddressHelper extends AbstractNs3Object {
 	private String ipBase, mask;
 	
 	public Ipv4AddressHelper() {
-		setPrintObj("Ipv4AddressHelper " + this.getName() + ";\n");
+		
 	}
 	
 	public void setBase(String ipBase, String mask) {
 		this.ipBase = ipBase;
 		this.mask = mask;
-		setPrintObj(getPrintObj() + this.getName() + ".SetBase(\"" + ipBase + "\", " + mask + "\" );\n");
+		appendPrintObj(".SetBase(\"" + ipBase + "\", " + mask + "\" );\n");
+	}
+
+	public void assign(NetDeviceContainer devices) {
+		// TODO Auto-generated method stub
+		appendPrintObj(this.getName() + ".Assign(" + devices.getName() + ");\n");
+		
 	}
 
 }

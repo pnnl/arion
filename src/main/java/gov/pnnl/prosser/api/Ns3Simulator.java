@@ -16,18 +16,17 @@ import java.util.List;
 public interface Ns3Simulator {
 	
     /**
-     * Get the Modules for this simulation
+     * Gets the Modules used in this simulation
      */
 	public List<Module> getModules();
 	
     /**
-     * Get the Namespaces used for this simulation
+     * Gets the Namespaces used in this simulation
      */
 	public List<Namespace> getNamespaces();
 	
     /**
-     * Get the Simulator objects that comprise this simulation
-     * TODO Need to modify AbPrObj to include ns3 objs or create new abstract ns3 obj
+     * Gets the ns-3 objects used in this simulation
      */
 	public List<AbstractNs3Object> getObjects();
 	

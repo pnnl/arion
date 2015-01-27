@@ -5,8 +5,8 @@ package gov.pnnl.prosser.api.ns3.obj;
 
 import gov.pnnl.prosser.api.AbstractNs3Object;
 
-import java.io.FileOutputStream;
-import java.io.PrintWriter;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author happ546
@@ -14,39 +14,32 @@ import java.io.PrintWriter;
  */
 public class CsmaHelper extends AbstractNs3Object {
 	
-	// Data rate can be StringValue or DataRateValue, delay can be StringValue or TimeValue in ns3
-	private String datarate, delay, name, objInfo;
+	private Map<String, String> channelAttributes;
+	private Map<String, String> deviceAttributes;
 	
-	public CsmaHelper(String name) {
-		this.name = name;
-		objInfo = "CsmaHelper " + this.name + ";\n";
+	public CsmaHelper() {
+		channelAttributes = new HashMap<String, String>();
+		deviceAttributes = new HashMap<String, String>();
 	}
 	
-	public void setChannelAttribute (String attr, String value) {
-		attr.toLowerCase();
-		if (attr.equals("datarate")) {
-			this.datarate = value;
-		} else if (attr.equals("delay")) {
-			this.delay = value;
-		}
-	}
-	
-	public void dataRate(String datarate) {
-		this.datarate = datarate;
-		objInfo += this.name + ".SetChannelAttribute(\"DataRate\", StringValue(\"" + this.datarate + "\"));\n";
-	}
-	
-	public void delay(String delay) {
-		this.delay = delay;
-		objInfo += this.name + ".SetChannelAttribute(\"Delay\", StringValue(\"" + this.delay + "\");\n";
-	}
-	
-	/** 
-	 * Append characteristics of this object to given stringbuilder
+	/**
+	 * Set attributes for this CSMA channel
+	 * @param attr the attribute to set the value to
+	 * @param value
 	 */
-	@Override
-	public void writeNs3Properties(StringBuilder sb) {
-		sb.append(objInfo);
+	public void setChannelAttribute(String attr, String value) {
+		channelAttributes.put(attr, value);
+		appendPrintObj(this.getName() + ".SetChannelAttribute(\"" + attr + "\", StringValue(\"" + value + "\"));\n");
+	}
+	
+	/**
+	 * Set attributes for this CSMA device
+	 * @param attr the attribute to set the value to
+	 * @param value
+	 */
+	public void setDeviceAttribute(String attr, String value) {
+		deviceAttributes.put(attr, value);
+		appendPrintObj(this.getName() + ".SetDeviceAttribute(\"" + attr + "\", StringValue(\"" + value + "\"));\n");
 	}
 	
 }

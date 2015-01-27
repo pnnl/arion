@@ -9,10 +9,6 @@ import gov.pnnl.prosser.api.AbstractNs3Object;
  * @author happ546
  *
  */
-public class NetDeviceContainer extends AbstractNs3Object {
-	
-	public NetDeviceContainer() {
-		
-	}
-	
+public class Ipv4NixVectorHelper extends AbstractNs3Object {
+
 }

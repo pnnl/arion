@@ -4,12 +4,6 @@
 package gov.pnnl.prosser.api.ns3.obj;
 
 import gov.pnnl.prosser.api.AbstractNs3Object;
-import gov.pnnl.prosser.api.AbstractProsserObject;
-import gov.pnnl.prosser.api.gld.obj.ClimateObject;
-import gov.pnnl.prosser.api.gld.obj.ClimateObject.Builder;
-
-import java.io.FileOutputStream;
-import java.io.PrintWriter;
 import java.util.ArrayList;
 
 /**
@@ -22,12 +16,12 @@ public class NodeContainer extends AbstractNs3Object {
 	 */
 	private int numNodes;
 	/**
-	 * An array of the Nodes in this NodeContainer
+	 * An array containing the Nodes in this NodeContainer
 	 */
 	private ArrayList<Node> nodes;
 	
 	/**
-	 * Initialize an empty NodeContainer
+	 * Initializes an empty NodeContainer
 	 */
 	public NodeContainer() {
 		this.numNodes = 0;
@@ -35,23 +29,52 @@ public class NodeContainer extends AbstractNs3Object {
 	}
 
 	/**
-	 * Create specified number of nodes in this NodeContainer
+	 * Creates specified number of nodes in this NodeContainer
 	 * @param numNodes
 	 */
 	public void create(int numNodes) {
 		this.numNodes = numNodes;
 		for (int i = 0; i < numNodes; i++) {
-			this.addNode();
+			this.addNode(new Node());
 		}
-		setPrintObj(getPrintObj() + (getName() + ".Create(" + this.numNodes + ");\n"));
+		//appendPrintObj(this.getName() + ".Create(" + this.numNodes + ");\n")); //TODO
 	}
 
 	/**
 	 * Appends a new node to the end of the nodes array
 	 */
-	public void addNode() {
-		Node temp = new Node();
-		nodes.add(temp);
+	public void addNode(Node node) {
+		this.numNodes++;
+		this.nodes.add(node);
+	}
+	
+	/**
+	 * 
+	 * @param container the NodeContainer containing the Node to add to this NodeContainer
+	 * @param index the index of the Node to be added
+	 */
+	public void addNode(NodeContainer container, int index) {
+		this.addNode(container.getNode(index));
+		appendPrintObj(this.getName() + " = " + container.getName() + ".Get(0);\n");
+	}
+
+	/**
+	 * @return the number of Nodes in this NodeContainer
+	 */
+	public int getNumNodes() {
+		return numNodes;
+	}
+
+	/**
+	 * 
+	 * @param index the integer index of the Node to retrieve from the NodeContainer
+	 * @return the Node at the given index or null if there is no node at that index
+	 */
+	public Node getNode(int index) {
+		if (index > this.nodes.size() || this.nodes.get(index) == null) {
+			return null;
+		}
+		return nodes.get(index);
 	}
 	
 }
