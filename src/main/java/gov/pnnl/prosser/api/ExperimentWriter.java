@@ -13,6 +13,12 @@ import java.nio.file.Path;
  */
 public class ExperimentWriter {
 
+    /**
+     *
+     * @param directory
+     * @param experiment
+     * @throws IOException
+     */
     public static void writeExperiment(final Path directory, final Experiment experiment) throws IOException {
         if (!Files.isDirectory(directory)) {
             throw new RuntimeException("Experiment writer not passed a directory");

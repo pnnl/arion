@@ -4,7 +4,8 @@
 package gov.pnnl.prosser.api.lib;
 
 /**
- *
+ * Transformer installation type
+ * 
  * @author nord229
  *
  */
