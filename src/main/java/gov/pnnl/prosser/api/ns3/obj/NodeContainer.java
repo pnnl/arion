@@ -37,7 +37,7 @@ public class NodeContainer extends AbstractNs3Object {
 		for (int i = 0; i < numNodes; i++) {
 			this.addNode(new Node());
 		}
-		//appendPrintObj(this.getName() + ".Create(" + this.numNodes + ");\n")); //TODO
+		appendPrintObj(this.getName() + ".Create(" + this.numNodes + ");\n");
 	}
 
 	/**

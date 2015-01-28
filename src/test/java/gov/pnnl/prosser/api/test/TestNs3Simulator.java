@@ -1,3 +1,4 @@
+package gov.pnnl.prosser.api.test;
 /**
  * 
  */
@@ -40,12 +41,12 @@ public class TestNs3Simulator implements Ns3Simulator {
 		
 		// User inputs basic params (Network type, addr base & mask, # of nodes [or infer from gldList?])
 		Ns3Network network1 = new Ns3Network();
-		network1.setType(NetworkType.IPV4);
-		network1.setAddrBase("10.1.0.0");
+		network1.setType(NetworkType.CSMA);
+		network1.setAddrBase("10.1."); // First 2 values of IPV4 address to use as base in IP addr distribution
 		network1.setAddrMask("255.255.255.0");
-		network1.setNumNodes(20); //TODO Infer this from gldList or user specification?
-		//network1.setGldObjects(gldList);
-		network1.build(); // Not a real builder pattern; after all necessary params, use network type to do type-specific method to construct nodes, install devices/applications, etc.
+		network1.setNumNodes(200); //TODO Infer this from gldList or user specification?
+		//network1.setGldObjects(gldList); //TODO
+		network1.build(); // Not a real builder pattern; after necessary params, use network type for type-specific method to construct nodes, install devices/applications, etc.
 		
 		// List of ns-3 Nodes to keep track of specific ones
 		List<Node> nodes = network1.getNodes();
@@ -114,5 +115,5 @@ public class TestNs3Simulator implements Ns3Simulator {
 		
 		return objects;
 	}
-
+	
 }

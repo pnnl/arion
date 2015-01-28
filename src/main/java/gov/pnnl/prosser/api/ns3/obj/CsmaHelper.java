@@ -18,8 +18,13 @@ public class CsmaHelper extends AbstractNs3Object {
 	private Map<String, String> deviceAttributes;
 	
 	public CsmaHelper() {
-		channelAttributes = new HashMap<String, String>();
-		deviceAttributes = new HashMap<String, String>();
+		this.channelAttributes = new HashMap<String, String>();
+		this.deviceAttributes = new HashMap<String, String>();
+	}
+	
+	public void install(NodeContainer sourceNodes, NetDeviceContainer destinationContainer) {
+		destinationContainer.setNodes(sourceNodes);
+		appendPrintObj(destinationContainer.getName() + " = " + this.getName() + ".Install(" + sourceNodes.getName() + ");\n");
 	}
 	
 	/**

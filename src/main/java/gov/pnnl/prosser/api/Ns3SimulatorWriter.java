@@ -57,14 +57,20 @@ public class Ns3SimulatorWriter {
         sb.append("main (int argc, char *argv[])\n");
         sb.append("{\n");
         
+        
         if (objects != null) {
+        	objects.get(0).writeNs3Properties(sb);
+        	
+        	/*
             objects.forEach(o -> {
                 sb.append("\n\t");
                 o.writeNs3String(sb);
             });
+            */
         }
         
         // This stuff doesn't seem to vary from sim to sim
+        // TODO could put into logic areas to allow for customization if necessary
         sb.append("\tSimulator::Run();\n");
         sb.append("\tSimulator::Destroy();\n");
         sb.append("\treturn 0;\n");

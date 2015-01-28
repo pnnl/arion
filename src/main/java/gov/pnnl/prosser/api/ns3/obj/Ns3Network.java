@@ -23,7 +23,7 @@ public class Ns3Network {
 	 *
 	 */
 	public enum NetworkType {
-		CSMA, IPV4, LTE, P2P, WIFI  //TODO ipv6? others?
+		CSMA, LTE, P2P, WIFI  //TODO ipv4? IPV4 currently assumed to be used. others?
 	}
 	
 	private NetworkType type;
@@ -35,7 +35,7 @@ public class Ns3Network {
 	public Ns3Network() {
 		this.type = null;
 		this.nodes = new ArrayList<Node>();
-		this.gldObjects = new ArrayList<AbstractProsserObject>();
+		this.setGldObjects(new ArrayList<AbstractProsserObject>());
 	}
 	
 	/**
@@ -99,6 +99,35 @@ public class Ns3Network {
 	public List<Node> getNodes() {
 		return nodes;
 	}
+	
+	/**
+	 * @return the list of gldObjects used in this simulator
+	 */
+	public List<AbstractProsserObject> getGldObjects() {
+		return gldObjects;
+	}
+
+	/**
+	 * @param gldObjects the list of GridLab-D objects to set
+	 */
+	public void setGldObjects(List<AbstractProsserObject> gldObjects) {
+		this.gldObjects = gldObjects;
+	}
+
+	private void setupIp(InternetStackHelper iHelper) {
+		Ipv4NixVectorHelper nixRouting = new Ipv4NixVectorHelper();
+		nixRouting.setName("nixRouting");
+		
+		Ipv4StaticRoutingHelper staticRouting = new Ipv4StaticRoutingHelper();
+		staticRouting.setName("staticRouting");
+		
+		Ipv4ListRoutingHelper list = new Ipv4ListRoutingHelper();
+		list.setName("list");
+		list.add(staticRouting, 0);
+		list.add(nixRouting, 10);
+		
+		iHelper.setRoutingHelper(list);
+	}
 
 	/**
 	 * Creates the nodes and installs devices/applications to create a network of the 
@@ -107,38 +136,85 @@ public class Ns3Network {
 	 */
 	public void build() {
 		switch (this.type) {
-			case CSMA:
+		
+			default:
+				
 				break;
 				
-			case IPV4:
-				Ipv4NixVectorHelper nixRouting = new Ipv4NixVectorHelper();
-				nixRouting.setName("nixRouting");
-				Ipv4StaticRoutingHelper staticRouting = new Ipv4StaticRoutingHelper();
-				staticRouting.setName("staticRouting");
-				Ipv4AddressHelper adresses = new Ipv4AddressHelper();
-				adresses.setName("adresses");
+			case CSMA:
+				
+				// IP setup
+				Ipv4AddressHelper addresses = new Ipv4AddressHelper();
+				addresses.setName("addresses");
 				InternetStackHelper iHelper = new InternetStackHelper();
 				iHelper.setName("iHelper");
-				Ipv4ListRoutingHelper list = new Ipv4ListRoutingHelper();
-				list.setName("list");
-				list.add(staticRouting, 0);
-				list.add(nixRouting, 10);
+				setupIp(iHelper);
 				
-				iHelper.setRoutingHelper(list);
+				// max of 20 nodes per NodeContainer to prevent poor performance, according to researchers
+				int numConts = numNodes/20 + 1;
 				
-				//TODO More IPV4 setup required after construction of base (CSMA, WIFI, etc.) nodes
+				List<NodeContainer> csmaNodeConts = new ArrayList<NodeContainer>();
+				
+				for (int i = 0; i < numConts; i++) {
+					NodeContainer temp = new NodeContainer();
+					temp.setName("csmaNodes_" + i);
+					temp.create(21); // Create 21 Nodes in this NodeContainer
+					csmaNodeConts.add(temp);
+					
+					// Add each Node from temp NodeContainer to Nodes global list of nodes
+					for (int j = 0; j < 21; j++) {
+						nodes.add(temp.getNode(j));
+					}
+				}
+				
+				//ihelper.install(markcon); install IP stack on Market Container
+				
+				//TODO get dataRate and delay from user
+				String dataRate = "10Mbps";
+				String delay = "3ms";
+				
+				CsmaHelper csmaHelper = new CsmaHelper();
+				csmaHelper.setName("csmaHelper");
+				csmaHelper.setChannelAttribute("DataRate", dataRate);
+				csmaHelper.setChannelAttribute("Delay", delay);
+				
+				List<NetDeviceContainer> netDeviceConts = new ArrayList<NetDeviceContainer>();
+				
+				for (int i = 0; i < numConts; i++) {
+					String ipBase = this.addrBase + i + ".0"; // Sets IP address base to use for devices in this NetDeviceContainer
+					NetDeviceContainer temp = new NetDeviceContainer();
+					temp.setName("netDevices_" + i);
+					csmaHelper.install(csmaNodeConts.get(i), temp); // Install the CSMA devices & channel onto the temp NodeContainer
+					
+					addresses.setBase(ipBase, "255.255.255.0"); // IPbase, mask
+					addresses.assign(temp);
+					
+					netDeviceConts.add(temp);
+				}
 				
 				break;
 				
 			case LTE:
+				
+				
+				
 				break;
 				
 			case P2P:
+				
 				NodeContainer p2pNodes = new NodeContainer();
+				//TODO finish this
+				
+				// Add all Nodes from each NodeContainer to Nodes global list of nodes
+				for (int i = 0; i < p2pNodes.getNumNodes(); i++) {
+					nodes.add(p2pNodes.getNode(i));
+				}
+				
 				break;
 				
 			case WIFI:
-				p2pNodes = new NodeContainer();
+				
+				p2pNodes = new NodeContainer(); //TODO need p2pNodes, csmaNodes, or other NC from previous section
 				NodeContainer wifiStaNodes = new NodeContainer();
 				wifiStaNodes.setName("wifiStaNodes");
 				wifiStaNodes.create(this.numNodes); //TODO get appropriate number of nodes for WiFi devices
@@ -169,7 +245,7 @@ public class Ns3Network {
 				ssid.setSsid("wifi1"); //TODO have user-entered param for this or auto generate?
 				
 				// MAC helper for station nodes
-				mac.setType("ns3::StaWifiMac", ssid, false); //Type, ssid value, active probing
+				mac.setType("ns3::StaWifiMac", ssid, false); //Type, ssid, active probing
 				
 				NetDeviceContainer staDevices = new NetDeviceContainer();
 				staDevices.setName("staDevices");
@@ -186,10 +262,16 @@ public class Ns3Network {
 				
 				// End of WiFi setup unless simulated Mobility (random movement of staNodes) is required (likely not for most GLD objects)
 				
+				// Add all Nodes from each NodeContainer to Nodes global list of nodes
+				for (int i = 0; i < wifiStaNodes.getNumNodes(); i++) {
+					nodes.add(wifiStaNodes.getNode(i));
+				}
+				for (int i = 0; i < wifiApNodes.getNumNodes(); i++) {
+					nodes.add(wifiApNodes.getNode(i));
+				}				
+				
 				break;
-			
-			default:
-				break;
+
 		}
 	}	
 	

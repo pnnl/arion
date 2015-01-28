@@ -11,15 +11,12 @@ import java.util.Objects;
  */
 public abstract class AbstractNs3Object {
 	
-	private String name, printObj;
+	private String name;
+	private static String printObj;
 
 	public AbstractNs3Object() {
 		this.name = null;
 		this.printObj = null;
-	}
-
-	public void writeNs3String(final StringBuilder sb) {
-		this.writeNs3Properties(sb);
 	}
 
 	/** 
@@ -50,14 +47,14 @@ public abstract class AbstractNs3Object {
 	
 
 	/**
-	 * @return the printObj
+	 * @return printObj the string containing the c++ implementation text for all ns-3 objects
 	 */
 	public String getPrintObj() {
 		return printObj;
 	}
 
 	/**
-	 * @param text the text printObj (stored c++ implementation text for this object) is set to
+	 * @param text the text printObj (stored c++ implementation text for all ns-3 objects) is set to
 	 */
 	public void setPrintObj(String text) {
 		this.printObj = text;
