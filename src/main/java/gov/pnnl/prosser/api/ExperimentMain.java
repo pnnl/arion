@@ -39,7 +39,7 @@ public class ExperimentMain {
             throw new Exception("Please run with a JDK");
         }
 
-        final int result = compiler.run(null, null, null, "-classpath", jarPath.toString(), inPath.toString());
+        final int result = compiler.run(null, null, null, "-classpath", jarPath.toString(), inPath.toString(), "-d", outPath.toString());
         if (result != 0) {
             throw new Exception("Unable to compile");
         }
@@ -47,7 +47,7 @@ public class ExperimentMain {
         System.out.println("Compiled!");
         final String name = FilenameUtils.getBaseName(inPath.toString());
         // final Path compiledClassPath = inPath.resolveSibling(name + ".class");
-        final URLClassLoader child = new URLClassLoader(new URL[] { inPath.getParent().toUri().toURL() }, ExperimentMain.class.getClassLoader());
+        final URLClassLoader child = new URLClassLoader(new URL[] { outPath.toUri().toURL() }, ExperimentMain.class.getClassLoader());
 
         final Class<?> compiledClass = Class.forName(name, true, child);
         final Class<? extends GldSimulator> gldSimulatorClass = compiledClass.asSubclass(GldSimulator.class);

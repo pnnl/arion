@@ -1,7 +1,4 @@
-package gov.pnnl.prosser.api.test;
-/**
- * 
- */
+
 
 import gov.pnnl.prosser.api.AbstractNs3Object;
 import gov.pnnl.prosser.api.Ns3Simulator;
