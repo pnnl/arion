@@ -15,27 +15,21 @@ import java.util.Objects;
  */
 public class ClimateObject extends AbstractProsserObject {
 
-    private final String tmyFile;
-
-    public ClimateObject() {
-        this.tmyFile = null;
-    }
-
-    public ClimateObject(final String name, final String tmyFile) {
-        super(name);
-        this.tmyFile = tmyFile;
-    }
-
-    public ClimateObject(final Builder builder) {
-        super(builder);
-        this.tmyFile = builder.tmyFile;
-    }
+    private String tmyFile;
 
     /**
      * @return the tmyFile
      */
     public String getTmyFile() {
         return tmyFile;
+    }
+
+    /**
+     * @param tmyFile
+     *            the tmyFile to set
+     */
+    public void setTmyFile(final String tmyFile) {
+        this.tmyFile = tmyFile;
     }
 
     @Override
@@ -66,26 +60,6 @@ public class ClimateObject extends AbstractProsserObject {
     @Override
     protected void writeGLDProperties(final StringBuilder sb) {
         GldUtils.writeProperty(sb, "tmyfile", this.tmyFile);
-    }
-
-    public static class Builder extends AbstractProsserObject.AbstractBuilder<ClimateObject, Builder> {
-
-        private String tmyFile;
-
-        public Builder tmyFile(final String tmyFile) {
-            this.tmyFile = tmyFile;
-            return this;
-        }
-
-        @Override
-        public ClimateObject build() {
-            return new ClimateObject(this);
-        }
-
-        @Override
-        protected Builder self() {
-            return this;
-        }
     }
 
 }

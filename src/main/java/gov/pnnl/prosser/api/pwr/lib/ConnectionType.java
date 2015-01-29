@@ -1,7 +1,7 @@
 /**
  *
  */
-package gov.pnnl.prosser.api.lib;
+package gov.pnnl.prosser.api.pwr.lib;
 
 /**
  *

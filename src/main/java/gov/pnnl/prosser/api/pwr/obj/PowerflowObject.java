@@ -1,7 +1,7 @@
 /**
  *
  */
-package gov.pnnl.prosser.api.obj;
+package gov.pnnl.prosser.api.pwr.obj;
 
 import gov.pnnl.prosser.api.AbstractProsserObject;
 import gov.pnnl.prosser.api.GldUtils;
@@ -19,40 +19,12 @@ public abstract class PowerflowObject extends AbstractProsserObject {
     /**
      * Nominal Voltage
      */
-    private final Double nominalVoltage;
+    private Double nominalVoltage;
 
     /**
      * Never null
      */
-    private final EnumSet<PhaseCode> phases;
-
-    public PowerflowObject() {
-        this.nominalVoltage = null;
-        this.phases = EnumSet.noneOf(PhaseCode.class);
-    }
-
-    public PowerflowObject(final String name, final EnumSet<PhaseCode> phases) {
-        super(name);
-        this.phases = phases;
-        this.nominalVoltage = null;
-    }
-
-    public PowerflowObject(final EnumSet<PhaseCode> phases) {
-        this.phases = phases;
-        this.nominalVoltage = null;
-    }
-
-    public PowerflowObject(final String name, final EnumSet<PhaseCode> phases, final Double nominalVoltage) {
-        super(name);
-        this.phases = phases;
-        this.nominalVoltage = nominalVoltage;
-    }
-
-    public <T extends PowerflowObject, Z extends AbstractBuilder<T, Z>> PowerflowObject(final AbstractBuilder<T, Z> builder) {
-        super(builder);
-        this.phases = builder.phases;
-        this.nominalVoltage = builder.nominalVoltage;
-    }
+    private EnumSet<PhaseCode> phases;
 
     /**
      * @return the nominalVoltage
@@ -62,10 +34,26 @@ public abstract class PowerflowObject extends AbstractProsserObject {
     }
 
     /**
+     * @param nominalVoltage
+     *            the nominalVoltage to set
+     */
+    public void setNominalVoltage(final Double nominalVoltage) {
+        this.nominalVoltage = nominalVoltage;
+    }
+
+    /**
      * @return the phases
      */
     public EnumSet<PhaseCode> getPhases() {
         return phases;
+    }
+
+    /**
+     * @param phases
+     *            the phases to set
+     */
+    public void setPhases(final EnumSet<PhaseCode> phases) {
+        this.phases = phases;
     }
 
     @Override
@@ -118,22 +106,5 @@ public abstract class PowerflowObject extends AbstractProsserObject {
 
         GldUtils.writeProperty(sb, "phases", phaseBuilder.toString());
         GldUtils.writeProperty(sb, "nominal_voltage", this.nominalVoltage);
-    }
-
-    public static abstract class AbstractBuilder<T extends PowerflowObject, Z extends AbstractBuilder<T, Z>> extends AbstractProsserObject.AbstractBuilder<T, Z> {
-
-        private Double nominalVoltage;
-
-        private EnumSet<PhaseCode> phases;
-
-        public Z nominalVoltage(final double nominalVoltage) {
-            this.nominalVoltage = nominalVoltage;
-            return self();
-        }
-
-        public Z phases(final EnumSet<PhaseCode> phases) {
-            this.phases = phases;
-            return self();
-        }
     }
 }

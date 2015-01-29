@@ -15,41 +15,27 @@ import java.util.Objects;
  */
 public class Recorder extends AbstractProsserObject {
 
-    private final Long interval;
+    private Long interval;
 
-    private final String file;
+    private String file;
 
-    private final String property;
+    private String property;
 
-    private final AbstractProsserObject parent;
-
-    public Recorder() {
-        this.interval = null;
-        this.file = null;
-        this.property = null;
-        this.parent = null;
-    }
-
-    public Recorder(final Long interval, final String file, final String property, final AbstractProsserObject parent) {
-        this.interval = interval;
-        this.file = file;
-        this.property = property;
-        this.parent = parent;
-    }
-
-    public Recorder(final Builder builder) {
-        super(builder);
-        this.interval = builder.interval;
-        this.file = builder.file;
-        this.property = builder.property;
-        this.parent = builder.parent;
-    }
+    private AbstractProsserObject parent;
 
     /**
      * @return the interval
      */
     public Long getInterval() {
         return interval;
+    }
+
+    /**
+     * @param interval
+     *            the interval to set
+     */
+    public void setInterval(final Long interval) {
+        this.interval = interval;
     }
 
     /**
@@ -60,6 +46,14 @@ public class Recorder extends AbstractProsserObject {
     }
 
     /**
+     * @param file
+     *            the file to set
+     */
+    public void setFile(final String file) {
+        this.file = file;
+    }
+
+    /**
      * @return the property
      */
     public String getProperty() {
@@ -67,10 +61,26 @@ public class Recorder extends AbstractProsserObject {
     }
 
     /**
+     * @param property
+     *            the property to set
+     */
+    public void setProperty(final String property) {
+        this.property = property;
+    }
+
+    /**
      * @return the parent
      */
     public AbstractProsserObject getParent() {
         return parent;
+    }
+
+    /**
+     * @param parent
+     *            the parent to set
+     */
+    public void setParent(final AbstractProsserObject parent) {
+        this.parent = parent;
     }
 
     @Override
@@ -107,47 +117,6 @@ public class Recorder extends AbstractProsserObject {
         GldUtils.writeProperty(sb, "file", this.file);
         GldUtils.writeProperty(sb, "property", this.property);
         GldUtils.writeProperty(sb, "parent", this.parent);
-    }
-
-    public static class Builder extends AbstractProsserObject.AbstractBuilder<Recorder, Builder> {
-
-        private Long interval;
-
-        private String file;
-
-        private String property;
-
-        private AbstractProsserObject parent;
-
-        public Builder interval(final Long interval) {
-            this.interval = interval;
-            return this;
-        }
-
-        public Builder file(final String file) {
-            this.file = file;
-            return this;
-        }
-
-        public Builder property(final String property) {
-            this.property = property;
-            return this;
-        }
-
-        public Builder parent(final AbstractProsserObject parent) {
-            this.parent = parent;
-            return this;
-        }
-
-        @Override
-        public Recorder build() {
-            return new Recorder(this);
-        }
-
-        @Override
-        protected Builder self() {
-            return this;
-        }
     }
 
 }

@@ -3,24 +3,24 @@
  */
 package gov.pnnl.prosser.api;
 
-import gov.pnnl.prosser.api.gld.GldClock.GldClockBuilder;
+import gov.pnnl.prosser.api.gld.GldClock;
 import gov.pnnl.prosser.api.gld.module.ModuleBuilder;
 import gov.pnnl.prosser.api.gld.obj.ClimateObject;
 import gov.pnnl.prosser.api.gld.obj.Recorder;
-import gov.pnnl.prosser.api.lib.LineSpacing;
-import gov.pnnl.prosser.api.lib.OverheadLineConductor;
-import gov.pnnl.prosser.api.lib.StandardLineConfiguration;
-import gov.pnnl.prosser.api.lib.TransformerConfiguration;
-import gov.pnnl.prosser.api.lib.TriplexLineConductor;
-import gov.pnnl.prosser.api.lib.TriplexLineConfiguration;
-import gov.pnnl.prosser.api.obj.House;
-import gov.pnnl.prosser.api.obj.Node;
-import gov.pnnl.prosser.api.obj.OverheadLine;
-import gov.pnnl.prosser.api.obj.Transformer;
-import gov.pnnl.prosser.api.obj.TriplexLine;
-import gov.pnnl.prosser.api.obj.TriplexMeter;
-import gov.pnnl.prosser.api.obj.TriplexNode;
-import gov.pnnl.prosser.api.obj.ZIPLoad;
+import gov.pnnl.prosser.api.pwr.lib.LineSpacing;
+import gov.pnnl.prosser.api.pwr.lib.OverheadLineConductor;
+import gov.pnnl.prosser.api.pwr.lib.StandardLineConfiguration;
+import gov.pnnl.prosser.api.pwr.lib.TransformerConfiguration;
+import gov.pnnl.prosser.api.pwr.lib.TriplexLineConductor;
+import gov.pnnl.prosser.api.pwr.lib.TriplexLineConfiguration;
+import gov.pnnl.prosser.api.pwr.obj.House;
+import gov.pnnl.prosser.api.pwr.obj.Node;
+import gov.pnnl.prosser.api.pwr.obj.OverheadLine;
+import gov.pnnl.prosser.api.pwr.obj.Transformer;
+import gov.pnnl.prosser.api.pwr.obj.TriplexLine;
+import gov.pnnl.prosser.api.pwr.obj.TriplexMeter;
+import gov.pnnl.prosser.api.pwr.obj.TriplexNode;
+import gov.pnnl.prosser.api.pwr.obj.ZIPLoad;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -31,8 +31,8 @@ import java.util.Map;
  */
 public class ExperimentBuilder {
 
-    public static GldClockBuilder clock() {
-        return new GldClockBuilder();
+    public static GldClock clock() {
+        return new GldClock();
     }
 
     public static ModuleBuilder module() {
@@ -56,68 +56,68 @@ public class ExperimentBuilder {
         }
     }
 
-    public static ClimateObject.Builder climate() {
-        return new ClimateObject.Builder();
+    public static ClimateObject climate() {
+        return new ClimateObject();
     }
 
-    public static Recorder.Builder recorder() {
-        return new Recorder.Builder();
+    public static Recorder recorder() {
+        return new Recorder();
     }
 
-    public static OverheadLineConductor.Builder overheadLineConductor() {
-        return new OverheadLineConductor.Builder();
+    public static OverheadLineConductor overheadLineConductor() {
+        return new OverheadLineConductor();
     }
 
-    public static OverheadLine.Builder overheadLine() {
-        return new OverheadLine.Builder();
+    public static OverheadLine overheadLine() {
+        return new OverheadLine();
     }
 
-    public static LineSpacing.Builder lineSpacing() {
-        return new LineSpacing.Builder();
+    public static LineSpacing lineSpacing() {
+        return new LineSpacing();
     }
 
-    public static StandardLineConfiguration.Builder<OverheadLineConductor> overheadLineConfiguration() {
-        return new StandardLineConfiguration.Builder<OverheadLineConductor>();
+    public static StandardLineConfiguration<OverheadLineConductor> overheadLineConfiguration() {
+        return new StandardLineConfiguration<OverheadLineConductor>();
     }
 
-    public static Node.Builder node() {
-        return new Node.Builder();
+    public static Node node() {
+        return new Node();
     }
 
-    public static TransformerConfiguration.Builder transformerConfiguration() {
-        return new TransformerConfiguration.Builder();
+    public static TransformerConfiguration transformerConfiguration() {
+        return new TransformerConfiguration();
     }
 
-    public static Transformer.Builder transformer() {
-        return new Transformer.Builder();
+    public static Transformer transformer() {
+        return new Transformer();
     }
 
-    public static TriplexNode.Builder triplexNode() {
-        return new TriplexNode.Builder();
+    public static TriplexNode triplexNode() {
+        return new TriplexNode();
     }
 
-    public static TriplexLine.Builder triplexLine() {
-        return new TriplexLine.Builder();
+    public static TriplexLine triplexLine() {
+        return new TriplexLine();
     }
 
-    public static TriplexLineConductor.Builder triplexLineConductor() {
-        return new TriplexLineConductor.Builder();
+    public static TriplexLineConductor triplexLineConductor() {
+        return new TriplexLineConductor();
     }
 
-    public static TriplexLineConfiguration.Builder triplexLineConfiguration() {
-        return new TriplexLineConfiguration.Builder();
+    public static TriplexLineConfiguration triplexLineConfiguration() {
+        return new TriplexLineConfiguration();
     }
 
-    public static TriplexMeter.Builder triplexMeter() {
-        return new TriplexMeter.Builder();
+    public static TriplexMeter triplexMeter() {
+        return new TriplexMeter();
     }
 
-    public static House.Builder house() {
-        return new House.Builder();
+    public static House house() {
+        return new House();
     }
 
-    public static ZIPLoad.Builder zipLoad() {
-        return new ZIPLoad.Builder();
+    public static ZIPLoad zipLoad() {
+        return new ZIPLoad();
     }
 
 }

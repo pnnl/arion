@@ -15,28 +15,13 @@ public abstract class AbstractProsserObject implements GldSerializable {
     /**
      * Object name for referencing in files
      */
-    private final String name;
+    private String name;
 
     // TODO find this groupid in the source of GLD to figure out its purpose
     /**
      * Object groupid referenced in files
      */
-    private final String groupId;
-
-    public AbstractProsserObject() {
-        this.name = null;
-        this.groupId = null;
-    }
-
-    public AbstractProsserObject(final String name) {
-        this.name = name;
-        this.groupId = null;
-    }
-
-    public <T extends AbstractProsserObject, Z extends AbstractBuilder<T, Z>> AbstractProsserObject(final AbstractBuilder<T, Z> builder) {
-        this.name = builder.name;
-        this.groupId = builder.groupId;
-    }
+    private String groupId;
 
     /**
      * @return the name
@@ -46,10 +31,26 @@ public abstract class AbstractProsserObject implements GldSerializable {
     }
 
     /**
+     * @param name
+     *            the name to set
+     */
+    public void setName(final String name) {
+        this.name = name;
+    }
+
+    /**
      * @return the groupId
      */
     public String getGroupId() {
         return groupId;
+    }
+
+    /**
+     * @param groupId
+     *            the groupId to set
+     */
+    public void setGroupId(final String groupId) {
+        this.groupId = groupId;
     }
 
     @Override
@@ -85,25 +86,5 @@ public abstract class AbstractProsserObject implements GldSerializable {
     }
 
     protected abstract void writeGLDProperties(final StringBuilder sb);
-
-    public static abstract class AbstractBuilder<T extends AbstractProsserObject, Z extends AbstractBuilder<T, Z>> {
-        protected String name;
-
-        protected String groupId;
-
-        protected abstract Z self();
-
-        public abstract T build();
-
-        public Z name(final String name) {
-            this.name = name;
-            return self();
-        }
-
-        public Z groupId(final String groupId) {
-            this.groupId = groupId;
-            return self();
-        }
-    }
 
 }
