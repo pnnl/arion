@@ -47,6 +47,16 @@ public abstract class AbstractNs3Object {
 		this.appendPrintObj("\n\t" + this.getClass().getSimpleName() + " " + this.name + ";\n");
 	}
 	
+	/**
+	 * Sets this AbstractNs3Object's name string
+	 * Used by EpsBearer and possibly other ns-3 objects that supply parameters to 
+	 * their ns-3 constructors
+	 * @param name
+	 */
+	public void setNameString(String name) {
+		this.name = name;
+	}
+	
 
 	/**
 	 * @return printObj the string containing the c++ implementation text for all ns-3 objects

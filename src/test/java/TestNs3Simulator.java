@@ -1,4 +1,6 @@
-
+/**
+ * 
+ */
 
 import gov.pnnl.prosser.api.AbstractNs3Object;
 import gov.pnnl.prosser.api.Ns3Simulator;
@@ -17,7 +19,6 @@ import java.util.List;
  */
 public class TestNs3Simulator implements Ns3Simulator {
 	
-	private double startTime, stopTime;
 	private Ns3Network network;
 	
 	@Override
@@ -27,7 +28,7 @@ public class TestNs3Simulator implements Ns3Simulator {
 		
 		// User inputs basic params (Network type, addr base & mask, # of nodes [or infer from gldList?])
 		network = new Ns3Network();
-		network.setType(NetworkType.CSMA);
+		network.setType(NetworkType.CSMA); //TODO Set up backbone & subnetwork functionality
 		network.setAddrBase("10.1."); // First 2 values of IPV4 address to use as base in IP addr distribution
 		network.setAddrMask("255.255.255.0");
 		network.setNumNodes(200); //TODO Infer this from gldList or user specification?

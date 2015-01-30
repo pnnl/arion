@@ -3,9 +3,6 @@
  */
 package gov.pnnl.prosser.api.ns3.obj;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import gov.pnnl.prosser.api.AbstractNs3Object;
 
 /**

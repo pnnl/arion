@@ -11,6 +11,8 @@ import gov.pnnl.prosser.api.AbstractNs3Object;
  */
 public class LteHelper extends AbstractNs3Object {
 
+	private EpsBearer bearer;
+
 	/**
 	 * Installs an LTE protocol stack on the given NetDeviceContainer devices
 	 * @param enbNodes
@@ -21,7 +23,7 @@ public class LteHelper extends AbstractNs3Object {
 	}
 	
 	/**
-	 * Install an LTE protocol stack on the eNB(s)
+	 * Installs an LTE protocol stack on the eNB(s)
 	 * @param sourceNodes
 	 * @param destinationContainer
 	 */
@@ -30,7 +32,7 @@ public class LteHelper extends AbstractNs3Object {
 	}
 	
 	/**
-	 * Install an LTE protocol stack on the UE(s)
+	 * Installs an LTE protocol stack on the UE(s)
 	 * @param sourceNodes
 	 * @param destinationContainer
 	 */
@@ -46,7 +48,18 @@ public class LteHelper extends AbstractNs3Object {
 	public void attach(NetDeviceContainer ueDevices, NetDeviceContainer enbDevices, int index) {
 		//TODO any actual data storage here
 		this.appendPrintObj(this.getName() + ".Attach(" + ueDevices.getName() + ", " + enbDevices.getName() + ".Get(" + index + "));\n");
-	}	
+	}
+	
+	/**
+	 * Adds the given EpsBearer to the given NetDeviceContainer of LTE devices
+	 * 
+	 * @param ueDevices the NetDeviceContainer of LTE devices
+	 * @param bearer the EpsBearer to attach to ueDevices
+	 */
+	public void activateDataRadioBearer(NetDeviceContainer ueDevices, EpsBearer bearer) {
+		this.bearer = bearer;
+		this.appendPrintObj(this.getName() + ".ActivateDataRadioBearer(" + ueDevices.getName() + ", " + bearer.getName() + ");\n");
+	}
 	
 
 }

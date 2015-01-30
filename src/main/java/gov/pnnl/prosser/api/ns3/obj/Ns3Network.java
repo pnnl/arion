@@ -20,12 +20,42 @@ import java.util.List;
 public class Ns3Network {
 	
 	/**
+	 * Type of networks available
 	 * 
 	 * @author happ546
 	 *
 	 */
 	public enum NetworkType {
 		CSMA, LTE, P2P, WIFI  //TODO ipv4? IPV4 currently assumed to be used. others?
+	}
+	
+	/**
+	 * Quality of Service Class Indicator types, used by LTE network EPS Bearers, a 
+	 * radio link between User Equipment (UE) devices and Evolved Node B (eNB) base station devices
+	 * 
+	 * @author happ546
+	 *
+	 */
+	public enum Qci {		
+		GBR_CONV_VOICE,
+		GBR_CONV_VIDEO,
+		GBR_GAMING,
+		GBR_NON_CONV_VIDEO,
+		NGBR_IMS,
+		NGBR_VIDEO_TCP_OPERATOR,
+		NGBR_VOICE_VIDEO_GAMING,
+		NGBR_VIDEO_TCP_PREMIUM,
+		NGBR_VIDEO_TCP_DEFAULT;
+		
+		private String name;
+		
+		public String getName() {
+			return this.name;
+		}
+		
+		public void setName(String name) {
+			this.name = name;
+		}
 	}
 	
 	private NetworkType type;
@@ -192,8 +222,8 @@ public class Ns3Network {
 		this.addModule("applications-module");
 		
 		// For FNCS
-		this.addModule("fncs");
-		this.addModule("fncsapplication-helper");
+/*		this.addModule("fncs");
+		this.addModule("fncsapplication-helper");*/
 		
 		switch (this.type) {
 				
@@ -265,14 +295,28 @@ public class Ns3Network {
 				
 			case LTE:
 				
+				//TODO may need to add Mobility in order to compile under ns-3. See error message below
+/*				[sean@siftworkstation ns-3.21]$ ./waf --run scratch/ns3
+				Waf: Entering directory `/home/sean/workspace/ns-allinone-3.21/ns-3.21/build'
+				Waf: Leaving directory `/home/sean/workspace/ns-allinone-3.21/ns-3.21/build'
+				'build' finished successfully (1.764s)
+				assert failed. cond="uid <= m_information.size () && uid != 0", file=../src/core/model/type-id.cc, line=230
+				terminate called without an active exception
+				Command ['/home/sean/workspace/ns-allinone-3.21/ns-3.21/build/scratch/ns3'] terminated with signal SIGIOT. Run it under a debugger to get more information (./waf --run <program> --command-template="gdb --args %s <args>").*/
+
+				
 				this.addModule("lte-module");
 				
 				LteHelper lte = new LteHelper();
+				lte.setName("lte");
+				objects.add(lte);
 				
-				List<NodeContainer> lteNodeContainers = new ArrayList<NodeContainer>();
+				List<NetDeviceContainer> lteDeviceContainers = new ArrayList<NetDeviceContainer>();
 				
 				NodeContainer enbNodes = new NodeContainer();
 				enbNodes.setName("enbNodes");
+				objects.add(enbNodes);
+
 				
 				int numUeNodes = 200; //TODO get real value of LTE user equipment nodes
 				int numEnbNodes = numUeNodes / 50; //TODO get real value of LTE base (towers) nodes
@@ -280,19 +324,45 @@ public class Ns3Network {
 				NetDeviceContainer enbDevices = new NetDeviceContainer();
 				enbDevices.setName("enbDevices");
 				enbNodes.create(numEnbNodes);
-				lte.installEnbDevice(enbNodes, enbDevices); //TODO check other implementations of .install and model after those
+				objects.add(enbDevices);
+				
+				lte.installEnbDevice(enbNodes, enbDevices); // Install the LTE protocol stack on the eNB nodes
+				
+				lteDeviceContainers.add(enbDevices);
+				
+				// Add all Nodes from this NodeContainer to Nodes global list of nodes
+				for (int i = 0; i < numUeNodes; i++) {
+					nodes.add(enbNodes.getNode(i));
+				}
+				
+				// Setup QoS Class Indicator 
+				Qci q = Qci.GBR_CONV_VOICE;
+				q.setName("q");
+				
+				EpsBearer bearer = new EpsBearer();
+				bearer.setName("bearer");
+				bearer.setQci(q);
+				objects.add(bearer);
 				
 				for (int i = 0; i < numEnbNodes; i++) {
 					NodeContainer ueNodes = new NodeContainer();
 					ueNodes.setName("ueNodes_" + i);
 					ueNodes.create(numUeNodes);
+					objects.add(ueNodes);
 					
-					NetDeviceContainer temp = new NetDeviceContainer();
-					enbDevices.setName("ueDevices_" + i);
-					lte.installUeDevice(ueNodes, temp);
-					lte.attach(temp, enbDevices, i);
+					NetDeviceContainer ueDevices = new NetDeviceContainer();
+					ueDevices.setName("ueDevices_" + i);
+					lte.installUeDevice(ueNodes, ueDevices); // Install the LTE protocol stack on the UE nodes
+					lte.attach(ueDevices, enbDevices, i); // Attach the newly created UE devices to an eNB device
+					lte.activateDataRadioBearer(ueDevices, bearer);
+					objects.add(ueDevices);
 					
-					lteNodeContainers.add(ueNodes);
+					lteDeviceContainers.add(ueDevices);
+					
+					// Add all Nodes from this NodeContainer to Nodes global list of nodes
+					for (int j = 0; j < numUeNodes; j++) {
+						nodes.add(ueNodes.getNode(j));
+					}
 				}
 				
 				break;
@@ -304,7 +374,7 @@ public class Ns3Network {
 				NodeContainer p2pNodes = new NodeContainer();
 				//TODO finish this
 				
-				// Add all Nodes from each NodeContainer to Nodes global list of nodes
+				// Add all Nodes from this NodeContainer to Nodes global list of nodes
 				for (int i = 0; i < p2pNodes.getNumNodes(); i++) {
 					nodes.add(p2pNodes.getNode(i));
 				}
@@ -392,8 +462,7 @@ public class Ns3Network {
 		AbstractNs3Object ns3 = nodes.get(0);
 		
 		ns3.appendPrintObj("\n");
-		// Output simulator start, stop, run, & destroy
-		ns3.appendPrintObj("Simulator::Start(Seconds(" + this.startTime + "));\n");
+		// Output simulator stop, run, & destroy
 		ns3.appendPrintObj("Simulator::Stop(Seconds(" + this.stopTime + "));\n");
         // This stuff doesn't seem to vary from sim to sim
 		ns3.appendPrintObj("Simulator::Run();\n");
