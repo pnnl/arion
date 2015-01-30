@@ -22,8 +22,13 @@ public class CsmaHelper extends AbstractNs3Object {
 		this.deviceAttributes = new HashMap<String, String>();
 	}
 	
+	/**
+	 * 
+	 * @param sourceNodes the NodeContainer holding the Nodes to install this CSMA device on
+	 * @param destinationContainer the NetDeviceContainer to add the Nodes from sourceNodes to
+	 */
 	public void install(NodeContainer sourceNodes, NetDeviceContainer destinationContainer) {
-		destinationContainer.setNodes(sourceNodes);
+		destinationContainer.addNodes(sourceNodes);
 		appendPrintObj(destinationContainer.getName() + " = " + this.getName() + ".Install(" + sourceNodes.getName() + ");\n");
 	}
 	

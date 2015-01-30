@@ -21,7 +21,7 @@ public class Module {
 	 * @param sb
 	 */
 	public void writeNs3String(final StringBuilder sb) {
-		sb.append("#include ns3/" + this.name + ".h\n");
+		sb.append("#include \"ns3/" + this.name + ".h\"\n");
 	}
 
 }

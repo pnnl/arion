@@ -15,7 +15,7 @@ public class InternetStackHelper extends AbstractNs3Object {
 
 	public void install(NodeContainer nodes) {
 		this.nodes = nodes;
-		appendPrintObj(" " + this.getName() + ".Install(" + nodes.getName() + ");\n");
+		appendPrintObj(this.getName() + ".Install(" + nodes.getName() + ");\n");
 	}
 
 	/**

@@ -19,7 +19,7 @@ public class Ipv4AddressHelper extends AbstractNs3Object {
 	public void setBase(String ipBase, String mask) {
 		this.ipBase = ipBase;
 		this.mask = mask;
-		appendPrintObj(".SetBase(\"" + ipBase + "\", " + mask + "\" );\n");
+		appendPrintObj(this.getName() + ".SetBase(\"" + ipBase + "\", \"" + mask + "\");\n");
 	}
 
 	public void assign(NetDeviceContainer devices) {

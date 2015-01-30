@@ -15,6 +15,12 @@ import java.util.List;
  */
 public interface Ns3Simulator {
 	
+	/**
+	 * Initializes the modules, namespaces, and objects used in this network based on 
+	 * the user specified parameters TODO supply user params
+	 */
+	public void setup();
+	
     /**
      * Gets the Modules used in this simulation
      */
@@ -29,5 +35,5 @@ public interface Ns3Simulator {
      * Gets the ns-3 objects used in this simulation
      */
 	public List<AbstractNs3Object> getObjects();
-	
+
 }

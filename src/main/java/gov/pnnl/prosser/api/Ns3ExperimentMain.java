@@ -27,7 +27,7 @@ public class Ns3ExperimentMain {
         final String input = args[0];
         final String output = args[1];
 
-        final Path inPath = Paths.get(input).toRealPath(); //TODO What is the inPath?
+        final Path inPath = Paths.get(input).toRealPath();
         final Path outPath = Paths.get(output).toAbsolutePath();
         if (!Files.exists(outPath)) {
             Files.createDirectories(outPath);
@@ -53,13 +53,9 @@ public class Ns3ExperimentMain {
         final Class<? extends Ns3Simulator> ns3SimulatorClass = compiledClass.asSubclass(Ns3Simulator.class);
         final Ns3Simulator ns3Simulator = ns3SimulatorClass.getConstructor().newInstance();
 
-        Ns3SimulatorWriter.writeNs3Simulator(outPath.resolve("prosser.out"), ns3Simulator);
+        Ns3SimulatorWriter.writeNs3Simulator(outPath.resolve("ns3.cc"), ns3Simulator);
         System.out.println("Written!");
 		
-        
-/*		TestNs3Simulator sim = new TestNs3Simulator();
-		
-		List<AbstractNs3Object> objects = sim.getObjects();*/
 	}
 
 }

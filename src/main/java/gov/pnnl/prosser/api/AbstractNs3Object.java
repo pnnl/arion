@@ -16,7 +16,9 @@ public abstract class AbstractNs3Object {
 
 	public AbstractNs3Object() {
 		this.name = null;
-		this.printObj = null;
+		if (AbstractNs3Object.printObj == null) {
+			AbstractNs3Object.printObj = "";
+		}
 	}
 
 	/** 
@@ -42,7 +44,7 @@ public abstract class AbstractNs3Object {
 	 */
 	public void setName(String name) {
 		this.name = name;
-		setPrintObj(this.getClass().getSimpleName() + " " + this.name + ";\n");
+		this.appendPrintObj("\n\t" + this.getClass().getSimpleName() + " " + this.name + ";\n");
 	}
 	
 
@@ -50,14 +52,14 @@ public abstract class AbstractNs3Object {
 	 * @return printObj the string containing the c++ implementation text for all ns-3 objects
 	 */
 	public String getPrintObj() {
-		return printObj;
+		return AbstractNs3Object.printObj;
 	}
 
 	/**
 	 * @param text the text printObj (stored c++ implementation text for all ns-3 objects) is set to
 	 */
 	public void setPrintObj(String text) {
-		this.printObj = text;
+		AbstractNs3Object.printObj = text;
 	}
 	
 	/**
@@ -65,12 +67,12 @@ public abstract class AbstractNs3Object {
 	 * @param text the text to append to this object's printObj string
 	 */
 	public void appendPrintObj(String text) {
-		setPrintObj(getPrintObj() + text);
+		this.setPrintObj(this.getPrintObj() + "\t" + text);
 	}
 	
  @Override
     public int hashCode() {
-        return Objects.hash(this.name, this.printObj);
+        return Objects.hash(this.name, AbstractNs3Object.printObj);
     }
 
     @Override
@@ -86,7 +88,7 @@ public abstract class AbstractNs3Object {
         }
         final AbstractNs3Object other = (AbstractNs3Object) obj;
         return Objects.equals(this.name, other.name) 
-        		&& Objects.equals(this.printObj, other.printObj);
+        		&& Objects.equals(AbstractNs3Object.printObj, AbstractNs3Object.printObj);
     }
 	
 }
