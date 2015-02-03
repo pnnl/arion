@@ -38,7 +38,7 @@ public class NetDeviceContainer extends AbstractNs3Object {
 	 * @param index
 	 * @return the Node in this net device at the given index
 	 */
-	public AbstractNs3Object getNode(int index) {
+	public Node getNode(int index) {
 		return this.nodes.getNode(index);
 	}
 	

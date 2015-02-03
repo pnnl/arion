@@ -34,13 +34,14 @@ public class TestExperimentNs3Simulator implements Ns3Simulator {
         // Get list of end devices from Peter
         // List<..AbstractProsserObject?..> gldList = peter'sList;
 
-        // User inputs basic params (Network type, addr base & mask, # of nodes [or infer from gldList?])
+        // User inputs basic params (Network type, addr base & mask, # of nodes)
         network = new Ns3Network();
         network.setType(NetworkType.CSMA); // TODO Set up backbone & subnetwork functionality
         network.setAddrBase("10.1."); // First 2 values of IPV4 address to use as base in IP addr distribution
-        network.setAddrMask("255.255.255.0");
-        network.setNumNodes(200); // TODO Infer this from gldList or user specification?
+        network.setNumNodes(200); // TODO Infer this from gldList or user specification
         // network.setGldObjects(gldList); //TODO
+        network.setMarketNI(this.marketNI);
+        network.setControllerNIs(this.controllerNIs);
 
         // TODO get start and stop times from user
         network.setStartTime(0.0);
@@ -65,7 +66,8 @@ public class TestExperimentNs3Simulator implements Ns3Simulator {
     @Override
     public List<AbstractNs3Object> getObjects() {
 
-        final List<AbstractNs3Object> objects = network.build(); // Not a real builder pattern; after necessary params, use network type for type-specific method to construct nodes, install devices/applications, etc.
+    	// Not a real builder pattern; after necessary params, use network type for type-specific method to construct nodes, install devices/applications, etc.
+        final List<AbstractNs3Object> objects = network.build();
 
         // List of ns-3 Nodes to keep track of specific Nodes
         final List<Node> nodes = network.getNodes();

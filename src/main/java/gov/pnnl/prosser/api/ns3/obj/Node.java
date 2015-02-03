@@ -5,6 +5,7 @@ package gov.pnnl.prosser.api.ns3.obj;
 
 import gov.pnnl.prosser.api.AbstractNs3Object;
 import gov.pnnl.prosser.api.AbstractProsserObject;
+import gov.pnnl.prosser.api.pwr.obj.ControllerNetworkInterface;
 
 import java.util.ArrayList;
 
@@ -28,9 +29,14 @@ public class Node extends AbstractNs3Object {
 	 */
 	private ArrayList<NetDevice> devices;
 	/**
-	 * The GridLab-D object installed/connected to on this Node (if present)
+	 * The GridLab-D object installed on this Node (if present)
 	 */
-	private AbstractProsserObject gldObject;
+	private AbstractProsserObject gldObject; //TODO remove if not used
+	/**
+	 * The ControllerNetworkInterface installed on this Node (if present)
+	 * The CNI indicates this Node is connected to a GLD House object
+	 */
+	private ControllerNetworkInterface controllerNetworkInterface;
 	
 	/**
 	 * Creates a new, empty Node
@@ -84,6 +90,20 @@ public class Node extends AbstractNs3Object {
 	 */
 	public AbstractProsserObject getGldObject() {
 		return gldObject;
+	}
+
+	/**
+	 * @return the controllerNetworkInterface
+	 */
+	public ControllerNetworkInterface getControllerNetworkInterface() {
+		return controllerNetworkInterface;
+	}
+
+	/**
+	 * @param controllerNetworkInterface the controllerNetworkInterface to set
+	 */
+	public void setControllerNetworkInterface(ControllerNetworkInterface controllerNetworkInterface) {
+		this.controllerNetworkInterface = controllerNetworkInterface;
 	}
 	
 }

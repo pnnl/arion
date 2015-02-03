@@ -6,6 +6,8 @@ package gov.pnnl.prosser.api.ns3.obj;
 import gov.pnnl.prosser.api.AbstractNs3Object;
 import gov.pnnl.prosser.api.AbstractProsserObject;
 import gov.pnnl.prosser.api.ns3.module.Module;
+import gov.pnnl.prosser.api.pwr.obj.ControllerNetworkInterface;
+import gov.pnnl.prosser.api.pwr.obj.MarketNetworkInterface;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,7 +28,7 @@ public class Ns3Network {
 	 *
 	 */
 	public enum NetworkType {
-		CSMA, LTE, P2P, WIFI  //TODO ipv4? IPV4 currently assumed to be used. others?
+		CSMA, LTE, P2P, WIFI
 	}
 	
 	/**
@@ -49,10 +51,18 @@ public class Ns3Network {
 		
 		private String name;
 		
+		/**
+		 * 
+		 * @return the name of this QoS Class Indicator
+		 */
 		public String getName() {
 			return this.name;
 		}
 		
+		/**
+		 * 
+		 * @param name sets the name of this QoS Class Indicator
+		 */
 		public void setName(String name) {
 			this.name = name;
 		}
@@ -65,6 +75,8 @@ public class Ns3Network {
 	private List<Node> nodes;
 	private List<AbstractProsserObject> gldObjects;
 	private double startTime, stopTime;
+	private MarketNetworkInterface marketNI;
+	private List<ControllerNetworkInterface> controllerNIs;
 	
 	/**
 	 * Create a new Ns3Network object, used to set up an ns-3 network for use in Prosser simulation
@@ -185,6 +197,24 @@ public class Ns3Network {
 	public void setStopTime(double time) {
 		this.stopTime = time;
 	}
+	
+	/**
+	 * 
+	 * @param marketNI the MarketNetwrokInterface to use for the 
+	 * market Nodes in this network
+	 */
+	public void setMarketNI(MarketNetworkInterface marketNI) {
+		this.marketNI = marketNI;
+	}
+
+	/**
+	 * 
+	 * @param controllerNIs the ControllerNetworkInterface to use for the 
+	 * GLD House connected Nodes in this network
+	 */
+	public void setControllerNIs(List<ControllerNetworkInterface> controllerNIs) {
+		this.controllerNIs = controllerNIs;
+	}
 
 	/**
 	 * 
@@ -204,6 +234,47 @@ public class Ns3Network {
 		
 		stack.setRoutingHelper(list);
 	}
+	
+	public void setupMarket(InternetStackHelper stack, Ipv4AddressHelper addresses, NetDeviceContainer[] baseDevices) {
+		
+		this.addModule("point-to-point-module"); // To use PointToPoint network type
+		
+		int numMarkets = 1; // TODO get real number of markets
+		int numConts = numNodes/20 + 1; // Number of NodeContainers to create
+		
+		NodeContainer marketCon = new NodeContainer();
+		marketCon.setName("marketCon");
+		marketCon.create(numMarkets);
+		
+		// Install an IP protocol stack on the Nodes in the Market NodeContainer
+		stack.install(marketCon);
+				
+		PointToPointHelper p2pHelper = new PointToPointHelper();
+		p2pHelper.setName("p2pHelper");
+		p2pHelper.setDeviceAttribute("DataRate", "4Mbps");
+		p2pHelper.setChannelAttribute("Delay", "2ms");
+		
+		for (int i = 0; i < numMarkets; i++) {
+			for (int j = 0; j < numConts; j++) {
+				String addr = "11." + j + "." + i + ".0";
+				
+				NetDeviceContainer marketToNetwork = new NetDeviceContainer();
+				marketToNetwork.setName("marketToNetwork_" + j);
+				
+				NodeContainer p2pInstall = new NodeContainer();
+				p2pInstall.setName("p2pInstall_" + j);
+				p2pInstall.addNode(marketCon.getNode(i));
+				p2pInstall.addNode(baseDevices[j].getNode(0));
+				
+				p2pHelper.install(p2pInstall, marketToNetwork);
+				
+				addresses.setBase(addr, "255.255.255.0");
+				addresses.assign(marketToNetwork);
+			}
+		}
+
+		
+	}
 
 	/**
 	 * Creates the nodes and installs devices/applications to create a network of the 
@@ -221,9 +292,9 @@ public class Ns3Network {
 		this.addModule("internet-module");
 		this.addModule("applications-module");
 		
-		// For FNCS
-/*		this.addModule("fncs");
-		this.addModule("fncsapplication-helper");*/
+		// For FNCS; these are the header files that can't be found
+		this.addModule("fncs");
+		this.addModule("fncsapplication-helper");
 		
 		switch (this.type) {
 				
@@ -259,9 +330,7 @@ public class Ns3Network {
 						nodes.add(temp.getNode(j));
 					}
 				}
-				
-				//stack.install(markcon); install IP stack on Market Container
-				
+								
 				//TODO get dataRate and delay from user
 				String dataRate = "10Mbps";
 				String delay = "3ms";
@@ -272,7 +341,7 @@ public class Ns3Network {
 				csmaHelper.setChannelAttribute("Delay", delay);
 				objects.add(csmaHelper);
 				
-				List<NetDeviceContainer> netDeviceConts = new ArrayList<NetDeviceContainer>();
+				NetDeviceContainer[] netDeviceConts = new NetDeviceContainer[numConts];
 				
 				for (int i = 0; i < numConts; i++) {
 					NodeContainer csmaNodes = csmaNodeConts.get(i);
@@ -287,9 +356,12 @@ public class Ns3Network {
 					addresses.setBase(ipBase, "255.255.255.0"); // IPbase, mask
 					addresses.assign(temp);
 					
-					netDeviceConts.add(temp);
+					netDeviceConts[i] = temp;
 					objects.add(temp);
 				}
+				
+				// Create and connect the Market nodes to these backbone Nodes
+				setupMarket(stack, addresses, netDeviceConts);
 				
 				break;
 				
@@ -459,11 +531,25 @@ public class Ns3Network {
 
 		}
 		
+		NodeContainer gldNodes = new NodeContainer();
+		gldNodes.setName("gldNodes");
+		// TODO populate all GLD Nodes (houses & markets)
+		
+		FNCSApplicationHelper fncsHelper = new FNCSApplicationHelper();
+		fncsHelper.setName("fncsHelper");
+		
+		ApplicationContainer fncsAps = new ApplicationContainer();
+		fncsAps.setName("fncsAps");
+		
+		fncsHelper.setApps("names", gldNodes, "marketToControllerMap", fncsAps);
+		fncsAps.start(0.0);
+		fncsAps.stop(259200.0);
+		
 		AbstractNs3Object ns3 = nodes.get(0);
 		
 		ns3.appendPrintObj("\n");
 		// Output simulator stop, run, & destroy
-		ns3.appendPrintObj("Simulator::Stop(Seconds(" + this.stopTime + "));\n");
+		//ns3.appendPrintObj("Simulator::Stop(Seconds(" + this.stopTime + "));\n");
         // This stuff doesn't seem to vary from sim to sim
 		ns3.appendPrintObj("Simulator::Run();\n");
 		ns3.appendPrintObj("Simulator::Destroy();\n");

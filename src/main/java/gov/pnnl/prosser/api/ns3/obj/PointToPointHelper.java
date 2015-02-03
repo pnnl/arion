@@ -33,6 +33,17 @@ public class PointToPointHelper extends AbstractNs3Object {
 		this.nodes = nodes;
 		appendPrintObj(this.getName() + ".Install(" + nodes.getName() + ");\n");
 	}
+	
+	/**
+	 * 
+	 * @param nodes the NodeContainer to install this p2p channel on
+	 * @param destination the NetDeviceContainer to install the p2p nodes on
+	 * Equivalent statement: destination = this.install(nodes);
+	 */
+	public void install(NodeContainer nodes, NetDeviceContainer destination) {
+		this.nodes = nodes;
+		appendPrintObj(destination.getName() + " = " + this.getName() + ".Install(" + nodes.getName() + ");\n");
+	}
 
 	/**
 	 * Set attributes for this point to point channel
@@ -53,5 +64,5 @@ public class PointToPointHelper extends AbstractNs3Object {
 		deviceAttributes.put(attr, value);
 		appendPrintObj(this.getName() + ".SetDeviceAttribute(\"" + attr + "\", StringValue(\"" + value + "\"));\n");
 	}
-	
+
 }
