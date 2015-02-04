@@ -36,7 +36,7 @@ public class TestExperimentNs3Simulator implements Ns3Simulator {
 
         // User inputs basic params (Network type, addr base & mask, # of nodes)
         network = new Ns3Network();
-        network.setType(NetworkType.CSMA); // TODO Set up backbone & subnetwork functionality
+        network.setType(NetworkType.LTE); // TODO Set up backbone & subnetwork functionality
         network.setAddrBase("10.1."); // First 2 values of IPV4 address to use as base in IP addr distribution
         network.setNumNodes(200); // TODO Infer this from gldList or user specification
         // network.setGldObjects(gldList); //TODO

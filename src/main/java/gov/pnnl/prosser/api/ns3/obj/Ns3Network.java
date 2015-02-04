@@ -235,7 +235,7 @@ public class Ns3Network {
 		stack.setRoutingHelper(list);
 	}
 	
-	public void setupMarket(InternetStackHelper stack, Ipv4AddressHelper addresses, NetDeviceContainer[] baseDevices) {
+	public void setupMarket(InternetStackHelper stack, Ipv4AddressHelper addresses, NodeContainer[] baseNodes) {
 		
 		this.addModule("point-to-point-module"); // To use PointToPoint network type
 		
@@ -246,9 +246,10 @@ public class Ns3Network {
 		marketCon.setName("marketCon");
 		marketCon.create(numMarkets);
 		
-		// Install an IP protocol stack on the Nodes in the Market NodeContainer
+		// Installs an IP protocol stack on the Nodes in the Market NodeContainer
 		stack.install(marketCon);
-				
+		
+		// Creates a point to point channel to connect the Market and network nodes
 		PointToPointHelper p2pHelper = new PointToPointHelper();
 		p2pHelper.setName("p2pHelper");
 		p2pHelper.setDeviceAttribute("DataRate", "4Mbps");
@@ -263,8 +264,8 @@ public class Ns3Network {
 				
 				NodeContainer p2pInstall = new NodeContainer();
 				p2pInstall.setName("p2pInstall_" + j);
-				p2pInstall.addNode(marketCon.getNode(i));
-				p2pInstall.addNode(baseDevices[j].getNode(0));
+				p2pInstall.addNode(marketCon, i);
+				p2pInstall.addNode(baseNodes[j], 0);
 				
 				p2pHelper.install(p2pInstall, marketToNetwork);
 				
@@ -293,8 +294,8 @@ public class Ns3Network {
 		this.addModule("applications-module");
 		
 		// For FNCS; these are the header files that can't be found
-		this.addModule("fncs");
-		this.addModule("fncsapplication-helper");
+//		this.addModule("fncs");
+//		this.addModule("fncsapplication-helper");
 		
 		switch (this.type) {
 				
@@ -315,36 +316,27 @@ public class Ns3Network {
 				// max of 20 nodes per NodeContainer to prevent poor performance, according to researchers
 				int numConts = numNodes/20 + 1;
 				
-				List<NodeContainer> csmaNodeConts = new ArrayList<NodeContainer>();
-				
-				for (int i = 0; i < numConts; i++) {
-					NodeContainer temp = new NodeContainer();
-					temp.setName("csmaNodes_" + i);
-					temp.create(20); // Create 20 Nodes in this NodeContainer
-					
-					csmaNodeConts.add(temp);
-					objects.add(temp);
-					
-					// Add each Node from temp NodeContainer to Nodes global list of nodes
-					for (int j = 0; j < 21; j++) {
-						nodes.add(temp.getNode(j));
-					}
-				}
-								
 				//TODO get dataRate and delay from user
 				String dataRate = "10Mbps";
 				String delay = "3ms";
 				
+				// CSMA channel/device setup
 				CsmaHelper csmaHelper = new CsmaHelper();
 				csmaHelper.setName("csmaHelper");
 				csmaHelper.setChannelAttribute("DataRate", dataRate);
 				csmaHelper.setChannelAttribute("Delay", delay);
 				objects.add(csmaHelper);
 				
+				NodeContainer[] csmaNodeConts = new NodeContainer[numConts];
 				NetDeviceContainer[] netDeviceConts = new NetDeviceContainer[numConts];
 				
 				for (int i = 0; i < numConts; i++) {
-					NodeContainer csmaNodes = csmaNodeConts.get(i);
+					NodeContainer csmaNodes = new NodeContainer();
+					csmaNodes.setName("csmaNodes_" + i);
+					csmaNodes.create(20); // Create 20 Nodes in this NodeContainer
+					
+					csmaNodeConts[i] = csmaNodes;
+					objects.add(csmaNodes);
 					
 					String ipBase = this.addrBase + i + ".0"; // Sets IP address base to use for devices in this NetDeviceContainer
 					NetDeviceContainer temp = new NetDeviceContainer();
@@ -358,10 +350,15 @@ public class Ns3Network {
 					
 					netDeviceConts[i] = temp;
 					objects.add(temp);
+					
+					// Adds each CSMA Node to the global list of nodes
+					for (int j = 0; j < 21; j++) {
+						nodes.add(csmaNodes.getNode(j));
+					}
 				}
 				
-				// Create and connect the Market nodes to these backbone Nodes
-				setupMarket(stack, addresses, netDeviceConts);
+				// Creates and connects the Market nodes to these backbone Nodes
+				setupMarket(stack, addresses, csmaNodeConts);
 				
 				break;
 				
@@ -378,6 +375,7 @@ public class Ns3Network {
 
 				
 				this.addModule("lte-module");
+				this.addModule("mobility-module");
 				
 				LteHelper lte = new LteHelper();
 				lte.setName("lte");
@@ -397,6 +395,11 @@ public class Ns3Network {
 				enbDevices.setName("enbDevices");
 				enbNodes.create(numEnbNodes);
 				objects.add(enbDevices);
+				
+				MobilityHelper mobilityHelper = new MobilityHelper();
+				mobilityHelper.setName("mobilityHelper");
+				mobilityHelper.setMobilityModel("ns3::ConstantPositionMobilityModel"); // TODO ConstantPositionMobilityModel sets all nodes at origin (0,0,0)
+				mobilityHelper.install(enbNodes);
 				
 				lte.installEnbDevice(enbNodes, enbDevices); // Install the LTE protocol stack on the eNB nodes
 				
@@ -421,6 +424,9 @@ public class Ns3Network {
 					ueNodes.setName("ueNodes_" + i);
 					ueNodes.create(numUeNodes);
 					objects.add(ueNodes);
+					
+					mobilityHelper.setMobilityModel("ns3::ConstantPositionMobilityModel"); // TODO ConstantPositionMobilityModel sets all nodes at origin (0,0,0)
+					mobilityHelper.install(ueNodes);
 					
 					NetDeviceContainer ueDevices = new NetDeviceContainer();
 					ueDevices.setName("ueDevices_" + i);
@@ -535,15 +541,15 @@ public class Ns3Network {
 		gldNodes.setName("gldNodes");
 		// TODO populate all GLD Nodes (houses & markets)
 		
-		FNCSApplicationHelper fncsHelper = new FNCSApplicationHelper();
-		fncsHelper.setName("fncsHelper");
-		
-		ApplicationContainer fncsAps = new ApplicationContainer();
-		fncsAps.setName("fncsAps");
-		
-		fncsHelper.setApps("names", gldNodes, "marketToControllerMap", fncsAps);
-		fncsAps.start(0.0);
-		fncsAps.stop(259200.0);
+//		FNCSApplicationHelper fncsHelper = new FNCSApplicationHelper();
+//		fncsHelper.setName("fncsHelper");
+//		
+//		ApplicationContainer fncsAps = new ApplicationContainer();
+//		fncsAps.setName("fncsAps");
+//		
+//		fncsHelper.setApps("names", gldNodes, "marketToControllerMap", fncsAps);
+//		fncsAps.start(0.0);
+//		fncsAps.stop(259200.0);
 		
 		AbstractNs3Object ns3 = nodes.get(0);
 		

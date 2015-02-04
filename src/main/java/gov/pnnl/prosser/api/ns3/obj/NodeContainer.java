@@ -38,7 +38,7 @@ public class NodeContainer extends AbstractNs3Object {
 	/**
 	 * Appends a new node to the end of the nodes array
 	 */
-	public void addNode(Node node) {
+	private void addNode(Node node) {
 		this.nodes.add(node);
 	}
 	
@@ -49,7 +49,7 @@ public class NodeContainer extends AbstractNs3Object {
 	 */
 	public void addNode(NodeContainer container, int index) {
 		this.addNode(container.getNode(index));
-		appendPrintObj(this.getName() + " = " + container.getName() + ".Get(0);\n");
+		appendPrintObj(this.getName() + ".Add(" + container.getName() + ".Get(" + index + "));\n");
 	}
 	
 	/**
@@ -60,7 +60,17 @@ public class NodeContainer extends AbstractNs3Object {
 		for (int i = 0; i < sourceNodes.getNumNodes(); i++) {
 			this.nodes.add(sourceNodes.getNode(i));
 		}
-		
+		appendPrintObj(this.getName() + ".Add(" + sourceNodes.getName() + ");\n");
+	}
+	
+	/**
+	 * 
+	 * @param sourceNodes the NodeContainer to append to this NodeContainer
+	 */
+	public void addNodeContainerNoPrint(NodeContainer sourceNodes) {
+		for (int i = 0; i < sourceNodes.getNumNodes(); i++) {
+			this.nodes.add(sourceNodes.getNode(i));
+		}
 	}
 
 	/**

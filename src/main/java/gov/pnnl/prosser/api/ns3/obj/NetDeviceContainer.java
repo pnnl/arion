@@ -22,7 +22,7 @@ public class NetDeviceContainer extends AbstractNs3Object {
 	 * @param sourceNodes the NodeContainer to append to this NodeContainer nodes
 	 */
 	public void addNodes(NodeContainer sourceNodes) {
-		this.nodes.addNodeContainer(sourceNodes);
+		this.nodes.addNodeContainerNoPrint(sourceNodes);
 	}
 
 	/**

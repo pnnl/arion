@@ -3,6 +3,7 @@ import gov.pnnl.prosser.api.pwr.obj.ControllerNetworkInterface;
 import gov.pnnl.prosser.api.pwr.obj.MarketNetworkInterface;
 
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -19,7 +20,10 @@ import java.util.List;
 public class TestExperiment {
 
     public static void main(final String[] args) throws IOException {
-        final Path outPath = Paths.get(args[0]).toRealPath();
+        final Path outPath = Paths.get(args[1]).toRealPath();
+        if (!Files.exists(outPath)) {
+            Files.createDirectories(outPath);
+        }
         final int numNodes = 300;
         final String marketName = "MarkNIF1";
         final String controllerPrefix = "F1_single_ramp_NIF_";
@@ -42,6 +46,8 @@ public class TestExperiment {
         ns3Simulator.setMarketNI(marketNI);
         ns3Simulator.setGldNodePrefix(controllerPrefix);
         Ns3SimulatorWriter.writeNs3Simulator(outPath.resolve("ns3.cc"), ns3Simulator);
+        System.out.println("Written!");
+        
         // TODO FNCS Integration
     }
 
