@@ -16,6 +16,16 @@ public class ModuleBuilder {
         return this;
     }
 
+    public ModuleBuilder addMarket() {
+        this.modules.add(new Market());
+        return this;
+    }
+
+    public ModuleBuilder addComm() {
+        this.modules.add(new Comm());
+        return this;
+    }
+
     public ModuleBuilder.PowerflowModuleBuilder addPowerflow() {
         final ModuleBuilder.PowerflowModuleBuilder builder = new PowerflowModuleBuilder(this);
         return builder;
