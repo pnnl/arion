@@ -10,7 +10,7 @@ package gov.pnnl.prosser.api.pwr.obj;
 public class Meter extends Node {
 
     @Override
-    public String getGLDObjectType() {
+    public String getGldObjectType() {
         return "meter";
     }
 

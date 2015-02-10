@@ -53,12 +53,12 @@ public class TriplexLineConductor extends Conductor {
     }
 
     @Override
-    public String getGLDObjectType() {
+    public String getGldObjectType() {
         return "triplex_line_conductor";
     }
 
     @Override
-    protected void writeGLDProperties(final StringBuilder sb) {
+    protected void writeGldProperties(final StringBuilder sb) {
         GldUtils.writeProperty(sb, "resistance", this.resistance);
         GldUtils.writeProperty(sb, "geometric_mean_radius", this.geometricMeanRadius);
     }

@@ -14,7 +14,7 @@ import gov.pnnl.prosser.api.pwr.lib.OverheadLineConductor;
 public class OverheadLine extends Line<OverheadLineConductor, LineConfiguration<OverheadLineConductor>> {
 
     @Override
-    public String getGLDObjectType() {
+    public String getGldObjectType() {
         return "overhead_line";
     }
 

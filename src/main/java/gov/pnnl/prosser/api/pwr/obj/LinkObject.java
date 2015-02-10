@@ -53,8 +53,8 @@ public abstract class LinkObject extends PowerflowObject {
     }
 
     @Override
-    protected void writeGLDProperties(final StringBuilder sb) {
-        super.writeGLDProperties(sb);
+    protected void writeGldProperties(final StringBuilder sb) {
+        super.writeGldProperties(sb);
         GldUtils.writeProperty(sb, "from", this.from);
         GldUtils.writeProperty(sb, "to", this.to);
     }

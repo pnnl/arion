@@ -78,7 +78,7 @@ public abstract class PowerflowObject extends AbstractProsserObject {
     }
 
     @Override
-    protected void writeGLDProperties(final StringBuilder sb) {
+    protected void writeGldProperties(final StringBuilder sb) {
         final StringBuilder phaseBuilder = new StringBuilder();
         final boolean hasAllOfS;
         if (this.phases.containsAll(PhaseCode.S)) {

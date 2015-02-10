@@ -47,12 +47,12 @@ public class House extends ResidentialEnduse {
     }
 
     @Override
-    public String getGLDObjectType() {
+    public String getGldObjectType() {
         return "house";
     }
 
     @Override
-    protected void writeGLDProperties(final StringBuilder sb) {
+    protected void writeGldProperties(final StringBuilder sb) {
         GldUtils.writeProperty(sb, "parent", this.parent);
         load.writeGldString(sb);
         // Handle special case since we need a semicolon here

@@ -107,12 +107,12 @@ public class Recorder extends AbstractProsserObject {
     }
 
     @Override
-    public String getGLDObjectType() {
+    public String getGldObjectType() {
         return "recorder";
     }
 
     @Override
-    protected void writeGLDProperties(final StringBuilder sb) {
+    protected void writeGldProperties(final StringBuilder sb) {
         GldUtils.writeProperty(sb, "interval", this.interval, "s");
         GldUtils.writeProperty(sb, "file", this.file);
         GldUtils.writeProperty(sb, "property", this.property);

@@ -11,7 +11,7 @@ package gov.pnnl.prosser.api.pwr.obj;
 public class TriplexNode extends Node {
 
     @Override
-    public String getGLDObjectType() {
+    public String getGldObjectType() {
         return "triplex_node";
     }
 

@@ -236,12 +236,12 @@ public class TransformerConfiguration extends PowerflowLibrary {
     }
 
     @Override
-    public String getGLDObjectType() {
+    public String getGldObjectType() {
         return "transformer_configuration";
     }
 
     @Override
-    protected void writeGLDProperties(final StringBuilder sb) {
+    protected void writeGldProperties(final StringBuilder sb) {
         GldUtils.writeProperty(sb, "connect_type", this.connectionType);
         GldUtils.writeProperty(sb, "install_type", this.installationType);
         GldUtils.writeProperty(sb, "power_rating", this.powerRating);

@@ -34,13 +34,13 @@ public class Transformer extends LinkObject {
     }
 
     @Override
-    public String getGLDObjectType() {
+    public String getGldObjectType() {
         return "transformer";
     }
 
     @Override
-    protected void writeGLDProperties(final StringBuilder sb) {
-        super.writeGLDProperties(sb);
+    protected void writeGldProperties(final StringBuilder sb) {
+        super.writeGldProperties(sb);
         GldUtils.writeProperty(sb, "configuration", this.configuration);
     }
 

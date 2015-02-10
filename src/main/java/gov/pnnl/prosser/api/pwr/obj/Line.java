@@ -55,8 +55,8 @@ public abstract class Line<C extends Conductor, Q extends LineConfiguration<C>> 
     }
 
     @Override
-    protected void writeGLDProperties(final StringBuilder sb) {
-        super.writeGLDProperties(sb);
+    protected void writeGldProperties(final StringBuilder sb) {
+        super.writeGldProperties(sb);
         GldUtils.writeProperty(sb, "length", this.length, "ft");
         GldUtils.writeProperty(sb, "configuration", this.configuration);
     }

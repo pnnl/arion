@@ -53,12 +53,12 @@ public class ClimateObject extends AbstractProsserObject {
     }
 
     @Override
-    public String getGLDObjectType() {
+    public String getGldObjectType() {
         return "climate";
     }
 
     @Override
-    protected void writeGLDProperties(final StringBuilder sb) {
+    protected void writeGldProperties(final StringBuilder sb) {
         GldUtils.writeProperty(sb, "tmyfile", this.tmyFile);
     }
 

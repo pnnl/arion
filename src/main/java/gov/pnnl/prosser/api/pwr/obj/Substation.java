@@ -29,13 +29,13 @@ public class Substation extends Node {
     }
 
     @Override
-    protected void writeGLDProperties(final StringBuilder sb) {
-        super.writeGLDProperties(sb);
+    protected void writeGldProperties(final StringBuilder sb) {
+        super.writeGldProperties(sb);
         GldUtils.writeProperty(sb, "reference_phase", "PHASE_" + this.referencePhase.name());
     }
 
     @Override
-    public String getGLDObjectType() {
+    public String getGldObjectType() {
         return "substation";
     }
 

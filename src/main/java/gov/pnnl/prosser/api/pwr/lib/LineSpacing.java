@@ -133,12 +133,12 @@ public class LineSpacing extends PowerflowLibrary {
     }
 
     @Override
-    public String getGLDObjectType() {
+    public String getGldObjectType() {
         return "line_spacing";
     }
 
     @Override
-    protected void writeGLDProperties(final StringBuilder sb) {
+    protected void writeGldProperties(final StringBuilder sb) {
         GldUtils.writeProperty(sb, "distance_AB", this.distanceAToB);
         GldUtils.writeProperty(sb, "distance_BC", this.distanceBToC);
         GldUtils.writeProperty(sb, "distance_AC", this.distanceAToC);

@@ -14,7 +14,7 @@ import gov.pnnl.prosser.api.pwr.lib.TriplexLineConfiguration;
 public class TriplexLine extends Line<TriplexLineConductor, TriplexLineConfiguration> {
 
     @Override
-    public String getGLDObjectType() {
+    public String getGldObjectType() {
         return "triplex_line";
     }
 

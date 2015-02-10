@@ -73,12 +73,12 @@ public class OverheadLineConductor extends Conductor {
     }
 
     @Override
-    public String getGLDObjectType() {
+    public String getGldObjectType() {
         return "overhead_line_conductor";
     }
 
     @Override
-    protected void writeGLDProperties(final StringBuilder sb) {
+    protected void writeGldProperties(final StringBuilder sb) {
         GldUtils.writeProperty(sb, "geometric_mean_radius", this.geometricMeanRadius, "ft");
         GldUtils.writeProperty(sb, "resistance", this.resistance, "Ohm/mile");
         GldUtils.writeProperty(sb, "diameter", this.diameter, "in");

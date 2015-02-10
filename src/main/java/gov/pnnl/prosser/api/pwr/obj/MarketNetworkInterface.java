@@ -12,12 +12,12 @@ import gov.pnnl.prosser.api.AbstractProsserObject;
 public class MarketNetworkInterface extends AbstractProsserObject {
 
     @Override
-    public String getGLDObjectType() {
+    public String getGldObjectType() {
         return "market_network_interface";
     }
 
     @Override
-    protected void writeGLDProperties(final StringBuilder sb) {
+    protected void writeGldProperties(final StringBuilder sb) {
         // TODO Auto-generated method stub
     }
 

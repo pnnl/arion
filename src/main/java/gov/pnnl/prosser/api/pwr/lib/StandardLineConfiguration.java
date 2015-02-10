@@ -98,12 +98,12 @@ public class StandardLineConfiguration<C extends Conductor> extends LineConfigur
     }
 
     @Override
-    public String getGLDObjectType() {
+    public String getGldObjectType() {
         return "line_configuration";
     }
 
     @Override
-    protected void writeGLDProperties(final StringBuilder sb) {
+    protected void writeGldProperties(final StringBuilder sb) {
         GldUtils.writeProperty(sb, "conductor_A", this.phaseAConductor);
         GldUtils.writeProperty(sb, "conductor_B", this.phaseBConductor);
         GldUtils.writeProperty(sb, "conductor_C", this.phaseCConductor);

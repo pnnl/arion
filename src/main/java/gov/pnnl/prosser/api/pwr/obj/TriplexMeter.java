@@ -11,7 +11,7 @@ package gov.pnnl.prosser.api.pwr.obj;
 public class TriplexMeter extends TriplexNode {
 
     @Override
-    public String getGLDObjectType() {
+    public String getGldObjectType() {
         return "triplex_meter";
     }
 

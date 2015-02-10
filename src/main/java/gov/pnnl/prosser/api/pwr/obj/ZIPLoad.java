@@ -166,12 +166,12 @@ public class ZIPLoad extends ResidentialEnduse {
     }
 
     @Override
-    public String getGLDObjectType() {
+    public String getGldObjectType() {
         return "ZIPload";
     }
 
     @Override
-    protected void writeGLDProperties(final StringBuilder sb) {
+    protected void writeGldProperties(final StringBuilder sb) {
         GldUtils.writeProperty(sb, "heat_fraction", this.heatFraction);
         GldUtils.writeProperty(sb, "base_power", this.basePower, "kW");
         GldUtils.writeProperty(sb, "power_pf", this.powerPf);

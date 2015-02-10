@@ -74,17 +74,17 @@ public abstract class AbstractProsserObject implements GldSerializable {
                 && Objects.equals(this.groupId, other.groupId);
     }
 
-    public abstract String getGLDObjectType();
+    public abstract String getGldObjectType();
 
     @Override
     public void writeGldString(final StringBuilder sb) {
-        sb.append("object ").append(getGLDObjectType()).append(" {\n");
+        sb.append("object ").append(getGldObjectType()).append(" {\n");
         GldUtils.writeProperty(sb, "name", this.name);
         GldUtils.writeProperty(sb, "groupId", this.groupId);
-        this.writeGLDProperties(sb);
+        this.writeGldProperties(sb);
         sb.append("}\n");
     }
 
-    protected abstract void writeGLDProperties(final StringBuilder sb);
+    protected abstract void writeGldProperties(final StringBuilder sb);
 
 }

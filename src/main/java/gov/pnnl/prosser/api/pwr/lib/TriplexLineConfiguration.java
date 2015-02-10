@@ -104,12 +104,12 @@ public class TriplexLineConfiguration extends LineConfiguration<TriplexLineCondu
     }
 
     @Override
-    public String getGLDObjectType() {
+    public String getGldObjectType() {
         return "triplex_line_configuration";
     }
 
     @Override
-    protected void writeGLDProperties(final StringBuilder sb) {
+    protected void writeGldProperties(final StringBuilder sb) {
         GldUtils.writeProperty(sb, "conductor_1", this.phase1Conductor);
         GldUtils.writeProperty(sb, "conductor_2", this.phase2Conductor);
         GldUtils.writeProperty(sb, "conductor_N", this.phaseNConductor);

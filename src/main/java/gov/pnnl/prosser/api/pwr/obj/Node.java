@@ -122,13 +122,13 @@ public class Node extends PowerflowObject {
     }
 
     @Override
-    public String getGLDObjectType() {
+    public String getGldObjectType() {
         return "node";
     }
 
     @Override
-    protected void writeGLDProperties(final StringBuilder sb) {
-        super.writeGLDProperties(sb);
+    protected void writeGldProperties(final StringBuilder sb) {
+        super.writeGldProperties(sb);
         GldUtils.writeProperty(sb, "voltage_A", this.voltageA);
         GldUtils.writeProperty(sb, "voltage_B", this.voltageB);
         GldUtils.writeProperty(sb, "voltage_C", this.voltageC);

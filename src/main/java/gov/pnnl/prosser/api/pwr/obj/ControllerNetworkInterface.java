@@ -29,12 +29,12 @@ public class ControllerNetworkInterface extends AbstractProsserObject {
     }
 
     @Override
-    public String getGLDObjectType() {
+    public String getGldObjectType() {
         return "controller_network_interface";
     }
 
     @Override
-    protected void writeGLDProperties(final StringBuilder sb) {
+    protected void writeGldProperties(final StringBuilder sb) {
         // TODO Auto-generated method stub
 
     }
