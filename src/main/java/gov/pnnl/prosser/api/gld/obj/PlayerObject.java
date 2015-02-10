@@ -12,9 +12,26 @@ import gov.pnnl.prosser.api.GldUtils;
  */
 public class PlayerObject extends AbstractProsserObject {
 
+    private String property;
+
     private String file;
 
     private Integer loop;
+
+    /**
+     * @return the property
+     */
+    public String getProperty() {
+        return property;
+    }
+
+    /**
+     * @param property
+     *            the property to set
+     */
+    public void setProperty(final String property) {
+        this.property = property;
+    }
 
     /**
      * @return the file
@@ -53,6 +70,7 @@ public class PlayerObject extends AbstractProsserObject {
 
     @Override
     protected void writeGldProperties(final StringBuilder sb) {
+        GldUtils.writeProperty(sb, "property", property);
         GldUtils.writeProperty(sb, "file", file);
         GldUtils.writeProperty(sb, "loop", loop);
     }

@@ -50,6 +50,10 @@ public abstract class GldUtils {
         writeProperty(sb, propName, propValue, null);
     }
 
+    public static void writeProperty(final StringBuilder sb, final String propName, final Boolean propValue) {
+        writeProperty(sb, propName, propValue, null);
+    }
+
     public static void writeProperty(final StringBuilder sb, final String propName, final Complex propValue) {
         writeProperty(sb, propName, propValue, null);
     }
@@ -102,6 +106,17 @@ public abstract class GldUtils {
     }
 
     public static void writeProperty(final StringBuilder sb, final String propName, final Integer propValue, final String propUnits) {
+        if (propValue == null) {
+            return;
+        }
+        writePropName(sb, propName);
+
+        sb.append(propValue);
+
+        writePropUnitsAndTrailer(sb, propUnits);
+    }
+
+    public static void writeProperty(final StringBuilder sb, final String propName, final Boolean propValue, final String propUnits) {
         if (propValue == null) {
             return;
         }
