@@ -17,6 +17,8 @@ public class ClimateObject extends AbstractProsserObject {
 
     private String tmyFile;
 
+    private CsvReader reader;
+
     /**
      * @return the tmyFile
      */
@@ -30,6 +32,21 @@ public class ClimateObject extends AbstractProsserObject {
      */
     public void setTmyFile(final String tmyFile) {
         this.tmyFile = tmyFile;
+    }
+
+    /**
+     * @return the reader
+     */
+    public CsvReader getReader() {
+        return reader;
+    }
+
+    /**
+     * @param reader
+     *            the reader to set
+     */
+    public void setReader(final CsvReader reader) {
+        this.reader = reader;
     }
 
     @Override
@@ -60,6 +77,7 @@ public class ClimateObject extends AbstractProsserObject {
     @Override
     protected void writeGldProperties(final StringBuilder sb) {
         GldUtils.writeProperty(sb, "tmyfile", this.tmyFile);
+        GldUtils.writeProperty(sb, "reader", reader.getName());
     }
 
 }
