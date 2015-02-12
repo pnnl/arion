@@ -17,7 +17,7 @@ import java.util.*;
  * @author nord229
  *
  */
-public class AdaptedAepFncs2014 implements GldSimulator {
+public class GldBaseFncsTest implements GldSimulator {
 
     private static final Random rng = new Random(11);
 
@@ -216,6 +216,7 @@ public class AdaptedAepFncs2014 implements GldSimulator {
         centerTapTransformerB.setName("F1_center_tap_transformer_B");
         centerTapTransformerB.setPhases(phaseBS);
         centerTapTransformerB.setTo(tripMeterB);
+        centerTapTransformerB.setFrom(rootMeter);
         centerTapTransformerB.setConfiguration(defaultTransformerB);
         objects.add(centerTapTransformerB);
 
@@ -223,6 +224,7 @@ public class AdaptedAepFncs2014 implements GldSimulator {
         centerTapTransformerC.setName("F1_center_tap_transformer_C");
         centerTapTransformerC.setPhases(phaseCS);
         centerTapTransformerC.setTo(tripMeterC);
+        centerTapTransformerC.setFrom(rootMeter);
         centerTapTransformerC.setConfiguration(defaultTransformerC);
         objects.add(centerTapTransformerC);
 
