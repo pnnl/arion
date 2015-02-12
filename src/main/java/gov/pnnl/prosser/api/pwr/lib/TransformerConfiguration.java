@@ -4,6 +4,8 @@
 package gov.pnnl.prosser.api.pwr.lib;
 
 import gov.pnnl.prosser.api.GldUtils;
+import gov.pnnl.prosser.api.pwr.enums.ConnectionType;
+import gov.pnnl.prosser.api.pwr.enums.InstallationType;
 
 import org.apache.commons.math3.complex.Complex;
 
@@ -43,7 +45,7 @@ public class TransformerConfiguration extends PowerflowLibrary {
     /**
      * kVA rating of transformer, phase A
      */
-    private double phaseARating;
+    private Double phaseARating;
 
     /**
      * kVA rating of transformer, phase B
@@ -64,6 +66,24 @@ public class TransformerConfiguration extends PowerflowLibrary {
      * Shunt impedance on primary side, pu
      */
     private Complex shuntImpedance;
+
+    public TransformerConfiguration() {
+    }
+
+    public TransformerConfiguration(final TransformerConfiguration config) {
+        this.setName(config.getName());
+        this.setGroupId(config.getGroupId());
+        this.connectionType = config.connectionType;
+        this.installationType = config.installationType;
+        this.primaryVoltage = config.primaryVoltage;
+        this.secondaryVoltage = config.secondaryVoltage;
+        this.powerRating = config.powerRating;
+        this.phaseARating = config.phaseARating;
+        this.phaseBRating = config.phaseBRating;
+        this.phaseCRating = config.phaseCRating;
+        this.impedance = config.impedance;
+        this.shuntImpedance = config.shuntImpedance;
+    }
 
     /**
      * @return the connectionType
@@ -143,7 +163,7 @@ public class TransformerConfiguration extends PowerflowLibrary {
     /**
      * @return the phaseARating
      */
-    public double getPhaseARating() {
+    public Double getPhaseARating() {
         return phaseARating;
     }
 
@@ -151,7 +171,7 @@ public class TransformerConfiguration extends PowerflowLibrary {
      * @param phaseARating
      *            the phaseARating to set
      */
-    public void setPhaseARating(final double phaseARating) {
+    public void setPhaseARating(final Double phaseARating) {
         this.phaseARating = phaseARating;
     }
 

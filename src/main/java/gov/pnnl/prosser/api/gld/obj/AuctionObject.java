@@ -5,13 +5,13 @@ package gov.pnnl.prosser.api.gld.obj;
 
 import gov.pnnl.prosser.api.AbstractProsserObject;
 import gov.pnnl.prosser.api.GldUtils;
-import gov.pnnl.prosser.api.pwr.obj.MarketNetworkInterface;
+import gov.pnnl.prosser.api.NetworkCapable;
 
 /**
  * @author nord229
  *
  */
-public class AuctionObject extends AbstractProsserObject {
+public class AuctionObject extends AbstractProsserObject implements NetworkCapable {
 
     /**
      * unit of quantity
@@ -34,8 +34,6 @@ public class AuctionObject extends AbstractProsserObject {
 
     private CurveOutput curveLogInfo;
 
-    private MarketNetworkInterface marketNetworkInterface;
-
     private PlayerObject player;
 
     private SpecialMode specialMode;
@@ -49,6 +47,12 @@ public class AuctionObject extends AbstractProsserObject {
     private Boolean useFutureMeanPrice;
 
     private Integer warmup;
+
+    private String networkAveragePriceProperty;
+
+    private String networkStdevPriceProperty;
+
+    private String networkAdjustPriceProperty;
 
     /**
      * @return the unit
@@ -138,21 +142,6 @@ public class AuctionObject extends AbstractProsserObject {
      */
     public void setCurveLogInfo(final CurveOutput curveLogInfo) {
         this.curveLogInfo = curveLogInfo;
-    }
-
-    /**
-     * @return the marketNetworkInterface
-     */
-    public MarketNetworkInterface getMarketNetworkInterface() {
-        return marketNetworkInterface;
-    }
-
-    /**
-     * @param marketNetworkInterface
-     *            the marketNetworkInterface to set
-     */
-    public void setMarketNetworkInterface(final MarketNetworkInterface marketNetworkInterface) {
-        this.marketNetworkInterface = marketNetworkInterface;
     }
 
     /**
@@ -260,6 +249,62 @@ public class AuctionObject extends AbstractProsserObject {
         this.warmup = warmup;
     }
 
+    /**
+     * @return the networkAveragePriceProperty
+     */
+    public String getNetworkAveragePriceProperty() {
+        return networkAveragePriceProperty;
+    }
+
+    /**
+     * @param networkAveragePriceProperty
+     *            the networkAveragePriceProperty to set
+     */
+    public void setNetworkAveragePriceProperty(final String networkAveragePriceProperty) {
+        this.networkAveragePriceProperty = networkAveragePriceProperty;
+    }
+
+    /**
+     * @return the networkStdevPriceProperty
+     */
+    public String getNetworkStdevPriceProperty() {
+        return networkStdevPriceProperty;
+    }
+
+    /**
+     * @param networkStdevPriceProperty
+     *            the networkStdevPriceProperty to set
+     */
+    public void setNetworkStdevPriceProperty(final String networkStdevPriceProperty) {
+        this.networkStdevPriceProperty = networkStdevPriceProperty;
+    }
+
+    /**
+     * @return the networkAdjustPriceProperty
+     */
+    public String getNetworkAdjustPriceProperty() {
+        return networkAdjustPriceProperty;
+    }
+
+    /**
+     * @param networkAdjustPriceProperty
+     *            the networkAdjustPriceProperty to set
+     */
+    public void setNetworkAdjustPriceProperty(final String networkAdjustPriceProperty) {
+        this.networkAdjustPriceProperty = networkAdjustPriceProperty;
+    }
+
+    @Override
+    public String getNetworkInterfaceName() {
+        return this.getName() + "NI";
+    }
+
+    @Override
+    public String getNetwork() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
     @Override
     public String getGldObjectType() {
         return "auction";
@@ -273,7 +318,15 @@ public class AuctionObject extends AbstractProsserObject {
         GldUtils.writeProperty(sb, "transaction_log_file", transactionLogFile);
         GldUtils.writeProperty(sb, "curve_log_file", curveLogFile);
         GldUtils.writeProperty(sb, "curve_log_info", curveLogInfo);
-        // FIXME INSERT MNI
+
+        // Market Network Interface
+        sb.append("    object market_network_interface {\n");
+        GldUtils.writeProperty(sb, "name", getNetworkInterfaceName());
+        GldUtils.writeProperty(sb, "average_price_prop", networkAveragePriceProperty);
+        GldUtils.writeProperty(sb, "stdev_price_prop", networkStdevPriceProperty);
+        GldUtils.writeProperty(sb, "adjust_price_prop", networkAdjustPriceProperty);
+        sb.append("    };\n");
+
         // FIXME INSERT PLAYER
         GldUtils.writeProperty(sb, "special_mode", specialMode);
         // FIXME INSERT RECORDER

@@ -1,7 +1,7 @@
 /**
  *
  */
-package gov.pnnl.prosser.api.pwr.obj;
+package gov.pnnl.prosser.api.pwr.enums;
 
 import java.util.EnumSet;
 

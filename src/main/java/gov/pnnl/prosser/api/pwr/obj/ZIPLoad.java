@@ -24,6 +24,8 @@ public class ZIPLoad extends ResidentialEnduse {
      */
     private double basePower;
 
+    private String basePowerFn;
+
     /**
      * power factor for constant power portion
      */
@@ -73,6 +75,21 @@ public class ZIPLoad extends ResidentialEnduse {
      */
     public void setBasePower(final double basePower) {
         this.basePower = basePower;
+    }
+
+    /**
+     * @return the basePowerFn
+     */
+    public String getBasePowerFn() {
+        return basePowerFn;
+    }
+
+    /**
+     * @param basePowerFn
+     *            the basePowerFn to set
+     */
+    public void setBasePowerFn(final String basePowerFn) {
+        this.basePowerFn = basePowerFn;
     }
 
     /**
@@ -172,8 +189,13 @@ public class ZIPLoad extends ResidentialEnduse {
 
     @Override
     protected void writeGldProperties(final StringBuilder sb) {
+        super.writeGldProperties(sb);
         GldUtils.writeProperty(sb, "heat_fraction", this.heatFraction);
-        GldUtils.writeProperty(sb, "base_power", this.basePower, "kW");
+        if (basePowerFn != null) {
+            GldUtils.writeProperty(sb, "base_power", this.basePowerFn);
+        } else {
+            GldUtils.writeProperty(sb, "base_power", this.basePower, "kW");
+        }
         GldUtils.writeProperty(sb, "power_pf", this.powerPf);
         GldUtils.writeProperty(sb, "power_fraction", this.powerFraction);
         GldUtils.writeProperty(sb, "current_pf", this.currentPf);

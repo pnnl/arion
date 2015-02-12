@@ -1,7 +1,7 @@
 /**
  *
  */
-package gov.pnnl.prosser.api.pwr.lib;
+package gov.pnnl.prosser.api.pwr.enums;
 
 /**
  * Transformer installation type

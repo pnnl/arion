@@ -4,6 +4,7 @@
 package gov.pnnl.prosser.api.pwr.obj;
 
 import gov.pnnl.prosser.api.GldUtils;
+import gov.pnnl.prosser.api.pwr.enums.PhaseCode;
 
 /**
  * @author nord229

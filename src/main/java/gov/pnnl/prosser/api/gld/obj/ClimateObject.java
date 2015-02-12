@@ -77,7 +77,7 @@ public class ClimateObject extends AbstractProsserObject {
     @Override
     protected void writeGldProperties(final StringBuilder sb) {
         GldUtils.writeProperty(sb, "tmyfile", this.tmyFile);
-        GldUtils.writeProperty(sb, "reader", reader.getName());
+        GldUtils.writeProperty(sb, "reader", reader);
     }
 
 }

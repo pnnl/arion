@@ -23,6 +23,8 @@ public class Recorder extends AbstractProsserObject {
 
     private AbstractProsserObject parent;
 
+    private Integer limit;
+
     /**
      * @return the interval
      */
@@ -83,9 +85,24 @@ public class Recorder extends AbstractProsserObject {
         this.parent = parent;
     }
 
+    /**
+     * @return the limit
+     */
+    public Integer getLimit() {
+        return limit;
+    }
+
+    /**
+     * @param limit
+     *            the limit to set
+     */
+    public void setLimit(final Integer limit) {
+        this.limit = limit;
+    }
+
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), this.file, this.interval, this.parent, this.property);
+        return Objects.hash(super.hashCode(), this.file, this.interval, this.parent, this.property, this.limit);
     }
 
     @Override
@@ -103,7 +120,8 @@ public class Recorder extends AbstractProsserObject {
         return Objects.equals(this.file, other.file)
                 && Objects.equals(this.interval, other.interval)
                 && Objects.equals(this.parent, other.parent)
-                && Objects.equals(this.property, other.property);
+                && Objects.equals(this.property, other.property)
+                && Objects.equals(this.limit, other.limit);
     }
 
     @Override
@@ -117,6 +135,7 @@ public class Recorder extends AbstractProsserObject {
         GldUtils.writeProperty(sb, "file", this.file);
         GldUtils.writeProperty(sb, "property", this.property);
         GldUtils.writeProperty(sb, "parent", this.parent);
+        GldUtils.writeProperty(sb, "limit", this.limit);
     }
 
 }

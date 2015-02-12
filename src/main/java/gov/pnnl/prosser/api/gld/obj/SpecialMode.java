@@ -9,8 +9,8 @@ package gov.pnnl.prosser.api.gld.obj;
  */
 public enum SpecialMode {
     NONE,
-    SELLERS,
-    BUYERS,
+    SELLERS_ONLY,
+    BUYERS_ONLY,
     FIXED_BUYER,
     FIXED_SELLER;
 }

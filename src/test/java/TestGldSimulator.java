@@ -6,6 +6,7 @@ import gov.pnnl.prosser.api.*;
 import gov.pnnl.prosser.api.gld.*;
 import gov.pnnl.prosser.api.gld.module.*;
 import gov.pnnl.prosser.api.gld.obj.*;
+import gov.pnnl.prosser.api.pwr.enums.*;
 import gov.pnnl.prosser.api.pwr.lib.*;
 import gov.pnnl.prosser.api.pwr.obj.*;
 
@@ -137,7 +138,7 @@ public class TestGldSimulator implements GldSimulator {
         transformerConfig2.setName("transformer_config2");
         transformerConfig2.setConnectionType(ConnectionType.SINGLE_PHASE_CENTER_TAPPED);
         transformerConfig2.setInstallationType(InstallationType.POLETOP);
-        transformerConfig2.setPhaseARating(100);
+        transformerConfig2.setPhaseARating(100.0);
         transformerConfig2.setPrimaryVoltage(2401.777);
         transformerConfig2.setSecondaryVoltage(120);
         transformerConfig2.setImpedance(0.00033, 0.0022);
@@ -202,7 +203,7 @@ public class TestGldSimulator implements GldSimulator {
         final House house = ExperimentBuilder.house();
         house.setName("house1");
         house.setParent(tripMeter1);
-        house.setLoad(zipLoad);
+        house.addLoad(zipLoad);
         objects.add(house);
 
         final Recorder recorder = ExperimentBuilder.recorder();

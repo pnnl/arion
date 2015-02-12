@@ -5,6 +5,7 @@ package gov.pnnl.prosser.api.pwr.obj;
 
 import gov.pnnl.prosser.api.AbstractProsserObject;
 import gov.pnnl.prosser.api.GldUtils;
+import gov.pnnl.prosser.api.pwr.enums.PhaseCode;
 
 import java.util.EnumSet;
 import java.util.Objects;
