@@ -450,8 +450,9 @@ public class Controller extends AbstractProsserObject implements NetworkCapable 
         GldUtils.writeProperty(sb, "proxy_delay", proxyDelay);
 
         // Controller Network Interface
-        sb.append("    object controller_network_interface {\n");
+        sb.append("    object controller_network_interface {\n    ");
         GldUtils.writeProperty(sb, "name", getNetworkInterfaceName());
+        sb.append("    ");
         GldUtils.writeProperty(sb, "destination", auction.getNetworkInterfaceName());
         sb.append("    };\n");
 

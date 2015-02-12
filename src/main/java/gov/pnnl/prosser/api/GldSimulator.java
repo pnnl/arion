@@ -5,6 +5,7 @@ package gov.pnnl.prosser.api;
 
 import gov.pnnl.prosser.api.gld.GldClock;
 import gov.pnnl.prosser.api.gld.module.Module;
+import gov.pnnl.prosser.api.gld.obj.AbstractGldClass;
 
 import java.util.List;
 import java.util.Map;
@@ -42,4 +43,8 @@ public interface GldSimulator {
      * Get the Settings for this simulation
      */
     public Map<String, String> getSettings();
+
+    public String[] getIncludes();
+
+    public List<AbstractGldClass> getClasses();
 }

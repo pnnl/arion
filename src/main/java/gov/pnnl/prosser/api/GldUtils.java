@@ -31,7 +31,13 @@ public abstract class GldUtils {
         sb.append(key);
         sb.append('=');
         sb.append(value);
-        sb.append('\n');
+        sb.append(";\n");
+    }
+
+    public static void writeInclude(final StringBuilder sb, final String include) {
+        sb.append("#include \"");
+        sb.append(include);
+        sb.append("\";\n");
     }
 
     public static void writeProperty(final StringBuilder sb, final String propName, final String propValue) {

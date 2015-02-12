@@ -195,14 +195,14 @@ public class AdaptedAepFncs2014 implements GldSimulator {
         tripMeterA.setNominalVoltage(124.00);
 
         final TriplexMeter tripMeterB = new TriplexMeter();
-        tripMeterA.setName("F1_triplex_node_B");
-        tripMeterA.setPhases(phaseBS);
-        tripMeterA.setNominalVoltage(124.00);
+        tripMeterB.setName("F1_triplex_node_B");
+        tripMeterB.setPhases(phaseBS);
+        tripMeterB.setNominalVoltage(124.00);
 
         final TriplexMeter tripMeterC = new TriplexMeter();
-        tripMeterA.setName("F1_triplex_node_C");
-        tripMeterA.setPhases(phaseCS);
-        tripMeterA.setNominalVoltage(124.00);
+        tripMeterC.setName("F1_triplex_node_C");
+        tripMeterC.setPhases(phaseCS);
+        tripMeterC.setNominalVoltage(124.00);
 
         final Transformer centerTapTransformerA = new Transformer();
         centerTapTransformerA.setName("F1_center_tap_transformer_A");
@@ -231,6 +231,7 @@ public class AdaptedAepFncs2014 implements GldSimulator {
         objects.add(tripMeterC);
 
         // Base Setup done, houses below
+        objects.addAll(this.generateHouseObjects(1, tripMeterA, tripLineConf, auction));
 
         return objects;
     }
@@ -266,10 +267,12 @@ public class AdaptedAepFncs2014 implements GldSimulator {
         return map;
     }
 
+    @Override
     public String[] getIncludes() {
         return new String[] { "water_and_setpoint_schedule_v3.glm", "appliance_schedules.glm" };
     }
 
+    @Override
     public List<AbstractGldClass> getClasses() {
         final List<AbstractGldClass> classes = new ArrayList<>();
 
@@ -375,6 +378,7 @@ public class AdaptedAepFncs2014 implements GldSimulator {
         house.addLoad(this.generateFreezerLoad(scheduleSkew));
         house.addLoad(this.generateRangeLoad(scheduleSkew));
         house.addLoad(this.generateMicrowaveLoad(scheduleSkew));
+        objects.add(house);
 
         return objects;
     }

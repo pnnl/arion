@@ -320,10 +320,13 @@ public class AuctionObject extends AbstractProsserObject implements NetworkCapab
         GldUtils.writeProperty(sb, "curve_log_info", curveLogInfo);
 
         // Market Network Interface
-        sb.append("    object market_network_interface {\n");
+        sb.append("    object market_network_interface {\n    ");
         GldUtils.writeProperty(sb, "name", getNetworkInterfaceName());
+        sb.append("    ");
         GldUtils.writeProperty(sb, "average_price_prop", networkAveragePriceProperty);
+        sb.append("    ");
         GldUtils.writeProperty(sb, "stdev_price_prop", networkStdevPriceProperty);
+        sb.append("    ");
         GldUtils.writeProperty(sb, "adjust_price_prop", networkAdjustPriceProperty);
         sb.append("    };\n");
 

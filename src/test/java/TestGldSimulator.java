@@ -247,4 +247,14 @@ public class TestGldSimulator implements GldSimulator {
     public String getName() {
         return "test_gld_simulator";
     }
+
+    @Override
+    public String[] getIncludes() {
+        return null;
+    }
+
+    @Override
+    public List<AbstractGldClass> getClasses() {
+        return null;
+    }
 }
