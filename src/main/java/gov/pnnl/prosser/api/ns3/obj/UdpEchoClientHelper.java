@@ -15,8 +15,10 @@ public class UdpEchoClientHelper extends UdpEchoHelper {
 	 * A map of attributes and their values (e.g. "Interval" to 1.0 (seconds))
 	 */
 	private Map<String, Double> attributes;
-	private String address;
 	
+	/**
+	 * Creates a new UdpEchoClientHelper
+	 */
 	public UdpEchoClientHelper() {
 		attributes = new HashMap<String, Double>();
 	}
@@ -41,9 +43,11 @@ public class UdpEchoClientHelper extends UdpEchoHelper {
 		setPrintObj(getPrintObj() + this.getName() + ".SetAttribute(\"" + attr + "\", " + modifier + "(" + this.getPort() + ");\n");
 	}
 
+	/**
+	 * @param address the IP address to be used for this UDP echo client
+	 */
 	public void setAddress(String address) {
-		this.address = address;
-		setPrintObj("UdpEchoClientHelper " + this.getName() + "(" + this.address + "," + this.getPort() + ");\n");
+		setPrintObj("UdpEchoClientHelper " + this.getName() + "(" + address + "," + this.getPort() + ");\n");
 	}	
 
 }

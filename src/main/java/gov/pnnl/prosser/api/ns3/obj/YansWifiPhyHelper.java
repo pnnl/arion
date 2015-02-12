@@ -18,8 +18,21 @@ public class YansWifiPhyHelper extends AbstractNs3Object {
 		appendPrintObj(this.getName() + " = YansWifiPhyHelper::Default();\n");
 	}
 	
+	/**
+	 * 
+	 * @param channel the channel used by this YansWifiChannelHelper
+	 */
 	public void setChannel(YansWifiChannelHelper channel) {
 		appendPrintObj(this.getName() + ".SetChannel(" + channel.getName() + ".Create());\n");
+	}
+
+	/**
+	 * 
+	 * @param dlType the PCAP data link type for this YansWifiPhyHelper
+	 */
+	public void setPcapDataLinkType(String dlType) {
+		appendPrintObj(this.getName() + ".SetPcapDataLinkType(" + dlType + ");\n");
+		
 	}
 	
 }

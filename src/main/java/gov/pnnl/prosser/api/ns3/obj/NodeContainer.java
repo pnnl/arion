@@ -38,7 +38,7 @@ public class NodeContainer extends AbstractNs3Object {
 	/**
 	 * Appends a new node to the end of the nodes array
 	 */
-	private void addNode(Node node) {
+	void addNode(Node node) {
 		this.nodes.add(node);
 	}
 	
@@ -72,6 +72,16 @@ public class NodeContainer extends AbstractNs3Object {
 			this.nodes.add(sourceNodes.getNode(i));
 		}
 	}
+	
+	/**
+	 * 
+	 * @param sourceNodes the NodeContainer to append to this NodeContainer
+	 */
+	public void addNetDeviceContainerNoPrint(NetDeviceContainer sourceDevs) {
+		for (int i = 0; i < sourceDevs.getNumDevices(); i++) {
+			this.nodes.add(sourceDevs.getDevice(i));
+		}
+	}
 
 	/**
 	 * @return the number of Nodes in this NodeContainer
@@ -91,5 +101,5 @@ public class NodeContainer extends AbstractNs3Object {
 		}
 		return nodes.get(index);
 	}
-	
+
 }

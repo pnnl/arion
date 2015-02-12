@@ -18,4 +18,11 @@ public class YansWifiChannelHelper extends AbstractNs3Object {
 		appendPrintObj(this.getName() + " = YansWifiChannelHelper::Default();\n");
 	}
 
+	/**
+	 * Used as parameter in YansWifiPhyHelper method setChannel
+	 */
+	public YansWifiChannelHelper create() {
+		return this;
+	}
+
 }

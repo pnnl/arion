@@ -51,8 +51,14 @@ public class Ns3SimulatorWriter {
         if (modules != null) {
             modules.forEach(m -> m.writeNs3String(sb)); 
         }
+		
+		String includes = "#include <cstdlib>\n" +
+				"#include <vector>\n" +
+				"#include <map>\n" +
+				"#include <iostream>\n" +
+				"#include <stdexcept>\n";
         
-        sb.append("\n");
+        sb.append(includes + "\n");
         
 		if (namespaces != null) {
 			namespaces.forEach(n -> n.writeNamespace(sb));

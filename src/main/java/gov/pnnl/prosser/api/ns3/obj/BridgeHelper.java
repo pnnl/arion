@@ -16,6 +16,10 @@ public class BridgeHelper extends AbstractNs3Object {
 	
 	private Map<String, String> deviceAttributes;
 
+	/**
+	 * Create a new BridgeHelper to create a connection between two communication devices 
+	 * on a single Node
+	 */
 	public BridgeHelper() {
 		this.deviceAttributes = new HashMap<String, String>();
 	}
@@ -26,8 +30,23 @@ public class BridgeHelper extends AbstractNs3Object {
 	 * @param destinationContainer the NetDeviceContainer to add the Nodes from sourceNodes to
 	 */
 	public void install(NodeContainer sourceNodes, NetDeviceContainer destinationContainer) {
-		destinationContainer.addNodes(sourceNodes);
-		appendPrintObj(destinationContainer.getName() + " = " + this.getName() + ".Install(" + sourceNodes.getName() + ");\n");
+		appendPrintObj(destinationContainer.getName() + " = " + this.getName() + 
+						".Install(" + sourceNodes.getName() + ");\n");
+	}
+	
+
+	/**
+	 * 
+	 * @param node the Node on which to install the Bridge net device
+	 * @param sourceDevices the container of net devices to add as Bridge ports
+	 * @param destinationContainer the NetDeviceContainer to hold the Node and
+	 * 			installed Bridge device
+	 */
+	public void install(NodeContainer sourceNodes, int index, 
+						NetDeviceContainer sourceDevices, NetDeviceContainer destinationContainer) {
+		appendPrintObj(destinationContainer.getName() + " = " + this.getName() + 
+						".Install(" + sourceNodes.getName() + ".Get(" + index + "), " + 
+						sourceDevices.getName() +");\n");
 	}
 	
 	/**
@@ -38,5 +57,6 @@ public class BridgeHelper extends AbstractNs3Object {
 	public void setDeviceAttribute(String attr, String value) {
 		this.deviceAttributes.put(attr, value);
 	}
+
 
 }

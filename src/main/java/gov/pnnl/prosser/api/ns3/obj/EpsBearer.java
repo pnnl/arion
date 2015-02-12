@@ -11,8 +11,6 @@ import gov.pnnl.prosser.api.ns3.obj.Ns3Network.Qci;
  *
  */
 public class EpsBearer extends AbstractNs3Object {
-
-	private Qci qci;
 	
 	/**
 	 * Sets the name of this EpsBearer without saving any output
@@ -27,9 +25,8 @@ public class EpsBearer extends AbstractNs3Object {
 	 * @param q the Qci (Quality of service Class Indicator) used by this EpsBearer
 	 */
 	public void setQci(Qci q) {
-		this.qci = q;
 		// Write the Qci constructor string
-		this.appendPrintObj("enum EpsBearer::Qci " + q.getName() + " = EpsBearer::" + q.name() + ";\n");
+		this.appendPrintObj("\n\tenum EpsBearer::Qci " + q.getName() + " = EpsBearer::" + q.name() + ";\n");
 		// Create an EpsBearer with given Qci
 		this.appendPrintObj(this.getClass().getSimpleName() + " " + this.getName() + "(" + q.getName() + ");\n");
 	}

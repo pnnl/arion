@@ -37,6 +37,8 @@ public class ExperimentFncsTest {
         final TestExperimentNs3Simulator ns3Simulator = new TestExperimentNs3Simulator();
         // ns3Simulator.setControllerNIs(controllerNIs);
         // ns3Simulator.setMarketNI(marketNI);
+        ns3Simulator.setAuctions(auctions);
+        ns3Simulator.setControllers(controllers);
         ns3Simulator.setGldNodePrefix(controllerPrefix);
         Ns3SimulatorWriter.writeNs3Simulator(outPath.resolve("ns3.cc"), ns3Simulator);
         // TODO FNCS Integration

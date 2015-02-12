@@ -34,8 +34,7 @@ public class TestNs3Simulator implements Ns3Simulator {
 		network.setNumNodes(200); //TODO Infer this from gldList or user specification?
 		//network.setGldObjects(gldList); //TODO
 		
-		//TODO get start and stop times from user
-		network.setStartTime(0.0);
+		//TODO stop time from user
 		network.setStopTime(10.0);
 	}
 	

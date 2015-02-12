@@ -13,7 +13,6 @@ import gov.pnnl.prosser.api.AbstractNs3Object;
  *
  */
 public class PointToPointHelper extends AbstractNs3Object {
-	private NodeContainer nodes;
 	private Map<String, String> channelAttributes;
 	private Map<String, String> deviceAttributes;
 	
@@ -30,7 +29,6 @@ public class PointToPointHelper extends AbstractNs3Object {
 	 * @param nodes
 	 */
 	public void install(NodeContainer nodes) {
-		this.nodes = nodes;
 		appendPrintObj(this.getName() + ".Install(" + nodes.getName() + ");\n");
 	}
 	
@@ -41,7 +39,6 @@ public class PointToPointHelper extends AbstractNs3Object {
 	 * Equivalent statement: destination = this.install(nodes);
 	 */
 	public void install(NodeContainer nodes, NetDeviceContainer destination) {
-		this.nodes = nodes;
 		appendPrintObj(destination.getName() + " = " + this.getName() + ".Install(" + nodes.getName() + ");\n");
 	}
 

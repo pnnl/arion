@@ -12,6 +12,7 @@ import java.util.Objects;
 public abstract class AbstractNs3Object {
 	
 	private String name;
+	private String nodeNamePrefix;
 	private static String printObj;
 
 	public AbstractNs3Object() {
@@ -46,10 +47,26 @@ public abstract class AbstractNs3Object {
 		this.name = name;
 		this.appendPrintObj("\n\t" + this.getClass().getSimpleName() + " " + this.name + ";\n");
 	}
+
+	/**
+	 * 
+	 * @return the nodeNamePrefix for this Node
+	 */
+	public String getNodeNamePrefix() {
+		return this.nodeNamePrefix;
+	}
+	
+	/**
+	 * 
+	 * @param prefix the nodeNamePrefix to set for this Node
+	 */
+	public void setNodeNamePrefix(String prefix) {
+		this.nodeNamePrefix = prefix;
+	}
 	
 	/**
 	 * Sets this AbstractNs3Object's name string
-	 * Used by EpsBearer and possibly other ns-3 objects that supply parameters to 
+	 * Used by EpsBearer, LteHelper, and other ns-3 objects that supply parameters to 
 	 * their ns-3 constructors
 	 * @param name
 	 */

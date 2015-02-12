@@ -10,11 +10,12 @@ import gov.pnnl.prosser.api.AbstractNs3Object;
  *
  */
 public class InternetStackHelper extends AbstractNs3Object {
-	private NodeContainer nodes;
-	private Ipv4ListRoutingHelper routingHelper;
 
+	/**
+	 * 
+	 * @param nodes the NodeContainer to install the Internet protocol stack on
+	 */
 	public void install(NodeContainer nodes) {
-		this.nodes = nodes;
 		appendPrintObj(this.getName() + ".Install(" + nodes.getName() + ");\n");
 	}
 
@@ -23,7 +24,6 @@ public class InternetStackHelper extends AbstractNs3Object {
 	 * @param list the Ipv4ListRoutingHelper to be this InternetStackHelper's routing helper
 	 */
 	public void setRoutingHelper(Ipv4ListRoutingHelper list) {
-		this.routingHelper = list;
 		appendPrintObj(this.getName() + ".SetRoutingHelper(" + list.getName() + ");\n");
 	}
 	

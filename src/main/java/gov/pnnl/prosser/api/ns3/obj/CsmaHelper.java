@@ -17,6 +17,9 @@ public class CsmaHelper extends AbstractNs3Object {
 	private Map<String, String> channelAttributes;
 	private Map<String, String> deviceAttributes;
 	
+	/**
+	 * Create a new CsmaHelper
+	 */
 	public CsmaHelper() {
 		this.channelAttributes = new HashMap<String, String>();
 		this.deviceAttributes = new HashMap<String, String>();

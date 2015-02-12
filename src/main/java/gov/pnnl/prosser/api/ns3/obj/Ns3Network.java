@@ -5,7 +5,11 @@ package gov.pnnl.prosser.api.ns3.obj;
 
 import gov.pnnl.prosser.api.AbstractNs3Object;
 import gov.pnnl.prosser.api.AbstractProsserObject;
+import gov.pnnl.prosser.api.c.obj.StringMap;
+import gov.pnnl.prosser.api.c.obj.StringVector;
+import gov.pnnl.prosser.api.gld.obj.AuctionObject;
 import gov.pnnl.prosser.api.ns3.module.Module;
+import gov.pnnl.prosser.api.pwr.obj.Controller;
 import gov.pnnl.prosser.api.pwr.obj.ControllerNetworkInterface;
 import gov.pnnl.prosser.api.pwr.obj.MarketNetworkInterface;
 
@@ -71,21 +75,34 @@ public class Ns3Network {
 	private NetworkType type;
 	private String addrBase, addrMask;
 	private int numNodes;
+	private double stopTime;
 	private List<Module> modules; // List of ns-3 Modules used in this network
 	private List<Node> nodes;
 	private List<AbstractProsserObject> gldObjects;
-	private double startTime, stopTime;
-	private MarketNetworkInterface marketNI;
-	private List<ControllerNetworkInterface> controllerNIs;
+	
+//	// TODO need marketNIs & controllerNIs?
+//	private List<MarketNetworkInterface> marketNIs;
+//	private List<ControllerNetworkInterface> controllerNIs;
+	
+	private List<AuctionObject> auctions;
+	private List<Controller> controllers;
 	
 	/**
 	 * Create a new Ns3Network object, used to set up an ns-3 network for use in Prosser simulation
 	 */
 	public Ns3Network() {
 		this.type = null;
+		this.addrBase = "";
+		this.addrMask = "";
+		this.numNodes = 0;
+		this.stopTime = 0.0;
 		this.modules = new ArrayList<Module>();
 		this.nodes = new ArrayList<Node>();
 		this.setGldObjects(new ArrayList<AbstractProsserObject>());
+//		this.marketNIs = new ArrayList<MarketNetworkInterface>();
+//		this.controllerNIs = new ArrayList<ControllerNetworkInterface>();
+		this.auctions = new ArrayList<>();
+		this.controllers = new ArrayList<>();
 	}
 	
 	/**
@@ -183,14 +200,6 @@ public class Ns3Network {
 	}
 	
 	/**
-	 * Sets the ns-3 simulator's time to start running (0.0 is typical)
-	 * @param time in seconds
-	 */
-	public void setStartTime(double time) {
-		this.startTime = time;
-	}
-	
-	/**
 	 * Sets the ns-3 simulator's time to stop running
 	 * @param time in seconds
 	 */
@@ -198,22 +207,50 @@ public class Ns3Network {
 		this.stopTime = time;
 	}
 	
+//	/**
+//	 * 
+//	 * @param marketNI the MarketNetwrokInterface to use for the 
+//	 * 			market Nodes in this network
+//	 */
+//	public void setMarketNIs(List<MarketNetworkInterface> marketNIs) {
+//		this.marketNIs = marketNIs;
+//	}
+//
+//	/**
+//	 * 
+//	 * @param controllerNIs the ControllerNetworkInterface to use for the 
+//	 * 			GLD House connected Nodes in this network
+//	 */
+//	public void setControllerNIs(List<ControllerNetworkInterface> controllerNIs) {
+//		this.controllerNIs = controllerNIs;
+//	}
+
 	/**
-	 * 
-	 * @param marketNI the MarketNetwrokInterface to use for the 
-	 * market Nodes in this network
+	 * @return the auctions
 	 */
-	public void setMarketNI(MarketNetworkInterface marketNI) {
-		this.marketNI = marketNI;
+	public List<AuctionObject> getAuctions() {
+		return auctions;
 	}
 
 	/**
-	 * 
-	 * @param controllerNIs the ControllerNetworkInterface to use for the 
-	 * GLD House connected Nodes in this network
+	 * @param auctions the List of AuctionObjects to set
 	 */
-	public void setControllerNIs(List<ControllerNetworkInterface> controllerNIs) {
-		this.controllerNIs = controllerNIs;
+	public void setAuctions(List<AuctionObject> auctions) {
+		this.auctions = auctions;
+	}
+
+	/**
+	 * @return the controllers
+	 */
+	public List<Controller> getControllers() {
+		return controllers;
+	}
+
+	/**
+	 * @param controllers the List of Controllers to set
+	 */
+	public void setControllers(List<Controller> controllers) {
+		this.controllers = controllers;
 	}
 
 	/**
@@ -235,19 +272,37 @@ public class Ns3Network {
 		stack.setRoutingHelper(list);
 	}
 	
-	public void setupMarket(InternetStackHelper stack, Ipv4AddressHelper addresses, NodeContainer[] baseNodes) {
+	/**
+	 * 
+	 * @param stack
+	 * @param addresses
+	 * @param baseNodes
+	 * @param gldNodes a NodeContainer of GLD market and baseNodes to 
+	 * 			pass to FNCSApplicationHelper.SetApps(...)
+	 * @param names a StringVector<String> of all ControllerNetworkInterface names
+	 * @param marketToControllerMap a StringMap<String, String> from MarketNetworkInterface 
+	 * 			name to NetworkControllerInterface name
+	 */
+	private void setupMarket(InternetStackHelper stack, Ipv4AddressHelper addresses, 
+								NodeContainer[] baseNodes, NodeContainer gldNodes, 
+								StringVector<String> names,
+								StringMap<String, String> marketToControllerMap) {
 		
 		this.addModule("point-to-point-module"); // To use PointToPoint network type
 		
-		int numMarkets = 1; // TODO get real number of markets
-		int numConts = numNodes/20 + 1; // Number of NodeContainers to create
+		int numAuctions = this.getAuctions().size();
+		//int numConts = numNodes/20 + 1; // Number of NodeContainers to create
+		int numConts = baseNodes.length;
 		
-		NodeContainer marketCon = new NodeContainer();
-		marketCon.setName("marketCon");
-		marketCon.create(numMarkets);
+		NodeContainer auctionCon = new NodeContainer();
+		auctionCon.setName("marketCon");
+		auctionCon.create(numAuctions);
 		
 		// Installs an IP protocol stack on the Nodes in the Market NodeContainer
-		stack.install(marketCon);
+		stack.install(auctionCon);
+		
+		// Add GLD market Nodes to container of GLD Nodes
+		gldNodes.addNodeContainer(auctionCon);
 		
 		// Creates a point to point channel to connect the Market and network nodes
 		PointToPointHelper p2pHelper = new PointToPointHelper();
@@ -255,8 +310,17 @@ public class Ns3Network {
 		p2pHelper.setDeviceAttribute("DataRate", "4Mbps");
 		p2pHelper.setChannelAttribute("Delay", "2ms");
 		
-		for (int i = 0; i < numMarkets; i++) {
+		for (int i = 0; i < numAuctions; i++) {
+			
+			// Select ith AuctionObject
+			AuctionObject auction = this.getAuctions().get(i);
+			// Set ith Node's MarketNI equal to mni
+			auctionCon.getNode(i).setAuction(auction);
+			
 			for (int j = 0; j < numConts; j++) {
+				
+				NodeContainer tempCont = baseNodes[j];
+				
 				String addr = "11." + j + "." + i + ".0";
 				
 				NetDeviceContainer marketToNetwork = new NetDeviceContainer();
@@ -264,16 +328,317 @@ public class Ns3Network {
 				
 				NodeContainer p2pInstall = new NodeContainer();
 				p2pInstall.setName("p2pInstall_" + j);
-				p2pInstall.addNode(marketCon, i);
-				p2pInstall.addNode(baseNodes[j], 0);
+				p2pInstall.addNode(auctionCon, i);
+				p2pInstall.addNode(tempCont, 0);
 				
 				p2pHelper.install(p2pInstall, marketToNetwork);
 				
 				addresses.setBase(addr, "255.255.255.0");
 				addresses.assign(marketToNetwork);
+				
+				// Add a ControllerNetworkInterface to each Node in baseNodes[j]
+				for (int k = 0; k < tempCont.getNumNodes(); k++) {
+					Controller controller = this.getControllers().get(k);
+					Node temp = tempCont.getNode(k);
+					temp.setController(controller);
+					// Add baseNodes to container of GLD Nodes
+					gldNodes.addNode(temp);
+					// Add controller prefix name to names vector
+					names.pushBack(controller);
+					marketToControllerMap.put(this.getAuctions().get(i).getName(), controller.getName());
+				}
 			}
 		}
+		
+	}
+	
+	// TODO add param(s) for bridge between AP nodes (boolean flag [needed or can assume always a bridge?], type of bridge)
+	/**
+	 * @param numApNodes equal to number of MarketNetworkInterfaces in the mni List
+	 * @param numStaNodes total number of station nodes to create; 
+	 * 			equal to number of ControllerNetworkInterfaces (GLD houses) in the cni List
+	 * @param ipv4Address
+	 * @param latency
+	 * @return objects a List of all AbstractNs3Objects created for this WiFi network
+	 */
+	public List<AbstractNs3Object> createWifi(int numApNodesTotal, int numStaNodesTotal, String ipv4Address, String latency) {
+		
+		int numAuctions = this.getAuctions().size();
+		// Node #s passed in are total (for whole simulation), so calculate AP Nodes per Market
+		int numApNodesPerAuction = numApNodesTotal / numAuctions;
+		// Then calculate station Nodes per AP Node
+		int numStaNodesPerAuction = numStaNodesTotal / numAuctions;
+		int numStaNodesPerApNode = numStaNodesPerAuction / numApNodesPerAuction;
+		
+		// List of all AbstractNs3Objects
+		List<AbstractNs3Object> objects = new ArrayList<AbstractNs3Object>();
+		
+		// A map<string, string> mapping AuctionObject name to a Controller name
+		StringMap<String, String> marketToControllerMap = new StringMap<String, String>();
+		marketToControllerMap.setName("marketToControllerMap");
+		
+		// Things for FNCSApplicationHelper.SetApps(...) method at end of network setup
+		// A NodeContainer to hold the GLD market and house nodes
+		NodeContainer gldNodes = new NodeContainer();
+		gldNodes.setName("gldNodes");
+		
+		// A vector<string> used to hold the names of GLD market and house nodes
+		StringVector<String> names = new StringVector<String>();
+		names.setName("names");
+		
+		// Array of all WiFi station nodes passed to setupMarket(...) to add GLD markets to the nodes
+		NodeContainer[] staNodeArray = new NodeContainer[numApNodesPerAuction];
+		
+		this.addModule("core-module");
+		this.addModule("mobility-module");
+		this.addModule("applications-module");
+		this.addModule("wifi-module");
+		this.addModule("network-module");
+		this.addModule("csma-module");
+		this.addModule("internet-module");
+		this.addModule("bridge-helper");
+		
+		
+		// Setup the Internet protocols
+		Ipv4InterfaceContainer apInterfaces = new Ipv4InterfaceContainer();
+		apInterfaces.setName("apInterfaces");
+		objects.add(apInterfaces);
+		Ipv4InterfaceContainer staInterfaces = new Ipv4InterfaceContainer();
+		staInterfaces.setName("staInterfaces");
+		objects.add(staInterfaces);
+		InternetStackHelper stack = new InternetStackHelper();
+		stack.setName("stack");
+		objects.add(stack);
+		Ipv4AddressHelper addressHelper = new Ipv4AddressHelper();
+		addressHelper.setName("addressHelper");
+		objects.add(addressHelper);
+		
+		// CSMA helper for CSMA Bridge between AP WiFi nodes
+		CsmaHelper csmaHelper = new CsmaHelper();
+		csmaHelper.setName("csmaHelper");
+		objects.add(csmaHelper);
+		
+		YansWifiPhyHelper wifiPhy = new YansWifiPhyHelper();
+		wifiPhy.setName("wifiPhy");
+		wifiPhy.defaultParams();
+		wifiPhy.setPcapDataLinkType("YansWifiPhyHelper::DLT_IEEE802_11_RADIO");
+		objects.add(wifiPhy);
+		
+		// TODO make these as actual Vector objects if vectors needed for more than testing
+		String vectors = "std::vector<NodeContainer> staNodeVector;\n" +
+						  "std::vector<NetDeviceContainer> staDeviceVector;\n" +
+						  "std::vector<NetDeviceContainer> apDeviceVector;\n" +
+						  "std::vector<Ipv4InterfaceContainer> staInterfaceVector;\n" +
+						  "std::vector<Ipv4InterfaceContainer> apInterfaceVector;\n";
+		
+		stack.appendPrintObj(vectors);
+		
+		// Used by MobilityHelper's positionAllocator and setMobilityModel
+		double wifiX = 0.0;
+		
+		for (int j = 0 ; j < numAuctions; j++) {
+			
+			AuctionObject auction = this.auctions.get(j);
+			
+			NodeContainer backboneNodes = new NodeContainer();
+			backboneNodes.setName("backboneNodes_" + j);
+			backboneNodes.create(numApNodesPerAuction);
+			stack.install(backboneNodes);
+			objects.add(backboneNodes);
+			
+			NetDeviceContainer backboneDevices = new NetDeviceContainer();
+			backboneDevices.setName("backboneDevices");
+			csmaHelper.install(backboneNodes, backboneDevices);
+			
+			
+			for (int i = 0; i < numApNodesPerAuction; i++) {
+				String ssidBase = "wifi_" + auction.getNetworkInterfaceName() + "_" + j + "_" + i;
+				Ssid ssid = new Ssid();
+				ssid.setName("ssid_" + j + "_"  + i);
+				ssid.setSsid(ssidBase);
+				objects.add(ssid);
+				
+				NodeContainer staNodes = new NodeContainer();
+				staNodes.setName("staNodes_" + j + "_"  + i);
+				staNodes.create(numStaNodesPerApNode);
+				objects.add(staNodes);
+				
+				// Add staNodes to NodeContainer[] for market creation
+				//staNodeArray[i] = staNodes;
+				//setupMarket(stack, addressHelper, staNodes);
+				
+				NetDeviceContainer staDevs = new NetDeviceContainer();
+				staDevs.setName("staDev_" + j + "_"  + i);
+				objects.add(staDevs);
+				NetDeviceContainer apDevs = new NetDeviceContainer();
+				apDevs.setName("apDev_" + j + "_"  + i);
+				objects.add(apDevs);
+				
+				Ipv4InterfaceContainer staInterface = new Ipv4InterfaceContainer();
+				staInterface.setName("staInterface_" + j + "_"  + i);
+				objects.add(staInterface);
+				Ipv4InterfaceContainer apInterface = new Ipv4InterfaceContainer();
+				apInterface.setName("apInterface_" + j + "_"  + i);
+				objects.add(apInterface);
+				
+				MobilityHelper mobility = new MobilityHelper();
+				mobility.setName("mobility_" + j + "_"  + i);
+				objects.add(mobility);
+				
+				BridgeHelper bridge = new BridgeHelper();
+				bridge.setName("bridge_" + j + "_"  + i);
+				objects.add(bridge);
+				
+				WifiHelper wifi = new WifiHelper();
+				wifi.setName("wifi_" + j + "_"  + i);
+				wifi.defaultParams();
+				objects.add(wifi);
+				
+				NqosWifiMacHelper wifiMac = new NqosWifiMacHelper();
+				wifiMac.setName("wifiMac_" + j + "_"  + i);
+				wifiMac.defaultParams();
+				objects.add(wifiMac);
+				
+				YansWifiChannelHelper wifiChannel = new YansWifiChannelHelper();
+				wifiChannel.setName("wifiChannel_" + j + "_"  + i);
+				wifiChannel.defaultParams();
+				wifiPhy.setChannel(wifiChannel.create());
+				objects.add(wifiChannel);
+				
+			    mobility.setPositionAllocator("ns3::GridPositionAllocator",
+			    								wifiX, 0.0, 5.0, 5.0, 1,
+			                                    "RowFirst");
+			    // setup the AP
+			    mobility.setMobilityModel("ns3::ConstantPositionMobilityModel");
+			    mobility.install(backboneNodes, i);
+			    wifiMac.setType("ns3::ApWifiMac", ssid);
+			    // Install a WiFi device on the ith backbone Node to make the AP WiFi device
+			    wifi.install(wifiPhy, wifiMac, backboneNodes, i, apDevs);
+			    
+			    // Install a CSMA Bridge on the AP WiFi device
+			    NetDeviceContainer bridgeDevs = new NetDeviceContainer();
+			    bridgeDevs.setName("bridgeDevs_" + j + "_"  + i);
+			    objects.add(bridgeDevs);
+			    
+			    NetDeviceContainer temp = new NetDeviceContainer();
+			    temp.setName("temp_" + j + "_"  + i);
+			    temp.addDevices(apDevs);
+			    temp.addDevice(backboneDevices, i);
+			    objects.add(temp);
+			    
+			    bridge.install(backboneNodes, i, temp, bridgeDevs);
+	
+			    // assign AP IP address to bridge, not wifi
+			    addressHelper.assign(bridgeDevs, apInterface);
+	
+			    // setup the WiFi station nodes
+			    stack.install(staNodes);
+			    mobility.setMobilityModel("ns3::RandomWalk2dMobilityModel",
+			                               "Time", "2s", 
+			                               "ns3::ConstantRandomVariable[Constant=1.0]",
+			                               "RectangleValue(Rectangle(" + 
+			                               wifiX + " , " + wifiX + "+5.0,0.0, (" 
+			                               + numStaNodesPerApNode + "+1)*5.0))");
+			    mobility.install(staNodes);
+			    wifiMac.setType("ns3::StaWifiMac", ssid, false);
+			    wifi.install(wifiPhy, wifiMac, staNodes, staDevs);
+			    addressHelper.assign(staDevs, staInterface);
+			    
+			    // FIXME install market on 1st (0th) node of each staNodes NC
+			    Node firstNode = staNodes.getNode(0);
+			    firstNode.setAuction(auction);
+			    gldNodes.addNodeContainer(staNodes);
+			    
+			    // Install ControllerNetworkInterface on each station Node
+			    for (int k = 0; k < staNodes.getNumNodes(); k++) {
+			    	// Assign the Controller at index k offset by the index of the Market (j) times the # of AP Nodes per Market
+			    	staNodes.getNode(k).setController(this.getControllers().get(j*numApNodesPerAuction + k));
+			    }
+			    
+			    
+			    // save everything in containers.
+	//		    staNodes.push_back(staNodes);
+	//		    apDevices.push_back(apDevs);
+	//		    apInterfaces.push_back(apInterface);
+	//		    staDevices.push_back(staDevs);
+	//		    staInterfaces.push_back(staInterface);
+			    
+			    String stuff = "\n\tstaNodeVector.push_back(staNodes_" + j + "_"  + i + ");\n" +
+					    "\tapDeviceVector.push_back(apDev_" + j + "_"  + i + ");\n" +
+					    "\tapInterfaceVector.push_back(apInterface_" + j + "_" + i +");\n" +
+					    "\tstaDeviceVector.push_back(staDev_" + j + "_"  + i + ");\n" +
+					    "\tstaInterfaceVector.push_back(staInterface_" + j + "_"  + i +");\n";
+			    
+			    addressHelper.appendPrintObj(stuff);
+	
+			    wifiX += 20.0;
+			}
+		}
+		
+		AbstractNs3Object ns3 = objects.get(0);
+		
+		String stuff = "\n   Address dest;\n" +
+		  "   std::string protocol;\n" +
+		 "   if (false)\n" +
+		  "   {\n" +
+		 "   cout << staInterfaceVector.size() << endl;\n" +
+		 "   staInterfaceVector[0].GetAddress(0).Print(cout);\n" + 
+		 "    dest = InetSocketAddress(staInterfaceVector.at(1).GetAddress(1), 1025);\n" +
+		  "    protocol = \"ns3::UdpSocketFactory\";\n" +
+		  "   }\n" +
+		 "   else\n" +
+		  "   {\n" +
+		   "   PacketSocketAddress tmp;\n" +
+		   "   tmp.SetSingleDevice (staDeviceVector[0].Get (0)->GetIfIndex ());\n" +
+		   "   tmp.SetPhysicalAddress (staDeviceVector[1].Get (0)->GetAddress ());\n" +
+		   "   tmp.SetProtocol (0x807);\n" +
+		   "   dest = tmp;\n" +
+		   "   protocol = \"ns3::PacketSocketFactory\";\n" +
+		   "   }\n" + 
 
+		  "   OnOffHelper onoff = OnOffHelper (protocol, dest);\n" +
+		  "   onoff.SetConstantRate (DataRate (\"500kb/s\"));\n" +
+		  "   ApplicationContainer apps = onoff.Install (staNodeVector[0].Get (0));\n" +
+		  "   apps.Start (Seconds (0.5));\n" +
+		  "   apps.Stop (Seconds (3.0));\n" +
+		  "   cout << apDeviceVector[0].Get(0)->GetAddress().GetLength() << endl;\n" + // TODO debugging
+		  "   wifiPhy.EnablePcap (\"wifi-wired-bridging\", apDeviceVector[0]);\n" +
+		  "   wifiPhy.EnablePcap (\"wifi-wired-bridging\", apDeviceVector[1]);\n" +
+
+		  "   if (true)\n" +
+		    "   {\n" +
+		      "   AsciiTraceHelper ascii;\n" +
+		      "   MobilityHelper::EnableAsciiAll (ascii.CreateFileStream (\"wifi-wired-bridging.mob\"));\n" +
+		    "   }\n";
+
+		
+		ns3.appendPrintObj(stuff + "\n");
+		
+		// Add a MarketNetworkInterface to each station Node; populate gldNodes, names, and marketToControllerMap
+		//setupMarket(stack, addressHelper, staNodeArray, gldNodes, names, marketToControllerMap);
+		
+		// For FNCS
+		this.addModule("fncs");
+		this.addModule("fncsapplication-helper");
+		
+		FNCSApplicationHelper fncsHelper = new FNCSApplicationHelper();
+		fncsHelper.setName("fncsHelper");
+		
+		ApplicationContainer fncsAps = new ApplicationContainer();
+		fncsAps.setName("fncsAps");
+		
+		fncsHelper.setApps(names, gldNodes, marketToControllerMap, fncsAps);
+		fncsAps.start(0.0);
+		fncsAps.stop(259200.0);
+		
+		ns3.appendPrintObj("Simulator::Stop(Seconds(" + this.stopTime + "));\n");
+		
+		// This stuff doesn't seem to vary from sim to sim
+		ns3.appendPrintObj("Simulator::Run();\n");
+		ns3.appendPrintObj("Simulator::Destroy();\n");
+		ns3.appendPrintObj("return 0;\n");
+		
+		return objects;
 		
 	}
 
@@ -281,21 +646,16 @@ public class Ns3Network {
 	 * Creates the nodes and installs devices/applications to create a network of the 
 	 * desired type and size to fit the gldObjects
 	 * TODO need to evaluate how to create network with more than 1 type (WiFi <--> CSMA <--> LTE; etc)
-	 * @return 
+	 * @return objects a List of all AbstractNs3Objects created in this network
 	 */
 	public List<AbstractNs3Object> build() {
 		
 		List<AbstractNs3Object> objects = new ArrayList<AbstractNs3Object>();
 		
-		
 		this.addModule("core-module");
 		this.addModule("network-module");
 		this.addModule("internet-module");
 		this.addModule("applications-module");
-		
-		// For FNCS; these are the header files that can't be found
-//		this.addModule("fncs");
-//		this.addModule("fncsapplication-helper");
 		
 		switch (this.type) {
 				
@@ -338,12 +698,15 @@ public class Ns3Network {
 					csmaNodeConts[i] = csmaNodes;
 					objects.add(csmaNodes);
 					
-					String ipBase = this.addrBase + i + ".0"; // Sets IP address base to use for devices in this NetDeviceContainer
+					// Sets IP address base to use for devices in this NetDeviceContainer
+					String ipBase = this.addrBase + i + ".0"; 
 					NetDeviceContainer temp = new NetDeviceContainer();
 					temp.setName("netDevices_" + i);
 					
-					csmaHelper.install(csmaNodes, temp); // Install the CSMA devices & channel onto the temp NodeContainer
-					stack.install(csmaNodes); // Install the IP stack protocols on the CSMA Nodes
+					// Install the CSMA devices & channel onto the temp NodeContainer
+					csmaHelper.install(csmaNodes, temp);
+					// Install the IP stack protocols on the CSMA Nodes
+					stack.install(csmaNodes);
 					
 					addresses.setBase(ipBase, "255.255.255.0"); // IPbase, mask
 					addresses.assign(temp);
@@ -358,21 +721,11 @@ public class Ns3Network {
 				}
 				
 				// Creates and connects the Market nodes to these backbone Nodes
-				setupMarket(stack, addresses, csmaNodeConts);
+				//setupMarket(stack, addresses, csmaNodeConts);
 				
 				break;
 				
 			case LTE:
-				
-				//TODO may need to add Mobility in order to compile under ns-3. See error message below
-/*				[sean@siftworkstation ns-3.21]$ ./waf --run scratch/ns3
-				Waf: Entering directory `/home/sean/workspace/ns-allinone-3.21/ns-3.21/build'
-				Waf: Leaving directory `/home/sean/workspace/ns-allinone-3.21/ns-3.21/build'
-				'build' finished successfully (1.764s)
-				assert failed. cond="uid <= m_information.size () && uid != 0", file=../src/core/model/type-id.cc, line=230
-				terminate called without an active exception
-				Command ['/home/sean/workspace/ns-allinone-3.21/ns-3.21/build/scratch/ns3'] terminated with signal SIGIOT. Run it under a debugger to get more information (./waf --run <program> --command-template="gdb --args %s <args>").*/
-
 				
 				this.addModule("lte-module");
 				this.addModule("mobility-module");
@@ -388,8 +741,8 @@ public class Ns3Network {
 				objects.add(enbNodes);
 
 				
-				int numUeNodes = 200; //TODO get real value of LTE user equipment nodes
-				int numEnbNodes = numUeNodes / 50; //TODO get real value of LTE base (towers) nodes
+				int numUeNodes = 5; //TODO get real value of LTE user equipment nodes
+				int numEnbNodes = 5; //TODO get real value of LTE base (towers) nodes
 				
 				NetDeviceContainer enbDevices = new NetDeviceContainer();
 				enbDevices.setName("enbDevices");
@@ -541,21 +894,28 @@ public class Ns3Network {
 		gldNodes.setName("gldNodes");
 		// TODO populate all GLD Nodes (houses & markets)
 		
-//		FNCSApplicationHelper fncsHelper = new FNCSApplicationHelper();
-//		fncsHelper.setName("fncsHelper");
-//		
-//		ApplicationContainer fncsAps = new ApplicationContainer();
-//		fncsAps.setName("fncsAps");
-//		
-//		fncsHelper.setApps("names", gldNodes, "marketToControllerMap", fncsAps);
-//		fncsAps.start(0.0);
-//		fncsAps.stop(259200.0);
+		StringVector<String> names = new StringVector<String>();
+		names.setName("names");
+		// TODO add all GLD Node names to names vector
+		
+		// For FNCS
+		this.addModule("fncs");
+		this.addModule("fncsapplication-helper");
+		
+		FNCSApplicationHelper fncsHelper = new FNCSApplicationHelper();
+		fncsHelper.setName("fncsHelper");
+		
+		ApplicationContainer fncsAps = new ApplicationContainer();
+		fncsAps.setName("fncsAps");
+		
+		//fncsHelper.setApps("names", gldNodes, "marketToControllerMap", fncsAps);
+		fncsAps.start(0.0);
+		fncsAps.stop(259200.0);
 		
 		AbstractNs3Object ns3 = nodes.get(0);
 		
-		ns3.appendPrintObj("\n");
 		// Output simulator stop, run, & destroy
-		//ns3.appendPrintObj("Simulator::Stop(Seconds(" + this.stopTime + "));\n");
+		ns3.appendPrintObj("\nSimulator::Stop(Seconds(" + this.stopTime + "));\n");
         // This stuff doesn't seem to vary from sim to sim
 		ns3.appendPrintObj("Simulator::Run();\n");
 		ns3.appendPrintObj("Simulator::Destroy();\n");
