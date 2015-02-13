@@ -17,10 +17,17 @@ public class FncsSimulator extends AbstractNs3Object {
 		appendPrintObj(this.getClass().getSimpleName() + " *" + this.getName() + " = new FncsSimulator();\n");
 	}
 	
+	/**
+	 * @param ptr the Pointer to a FncsSimulator
+	 */
 	public void setImplementation(Pointer<FncsSimulator> ptr) {
 		appendPrintObj("Simulator::SetImplementation(" + ptr.getName() + ");\n");
 	}
 	
+	/**
+	 * Used with a Pointer encapsulation of a FncsSimulator
+	 * Decrements the Pointer's internal reference count
+	 */
 	public void unref() {
 		appendPrintObj(this.getName() + "->Unref();\n");
 	}

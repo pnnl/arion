@@ -4,14 +4,13 @@
 package gov.pnnl.prosser.api.ns3.obj;
 
 import gov.pnnl.prosser.api.AbstractNs3Object;
-import gov.pnnl.prosser.api.AbstractProsserObject;
 import gov.pnnl.prosser.api.c.obj.StringMap;
 import gov.pnnl.prosser.api.c.obj.StringVector;
 import gov.pnnl.prosser.api.gld.obj.AuctionObject;
+import gov.pnnl.prosser.api.ns3.enums.NetworkType;
+import gov.pnnl.prosser.api.ns3.enums.Qci;
 import gov.pnnl.prosser.api.ns3.module.Module;
 import gov.pnnl.prosser.api.pwr.obj.Controller;
-import gov.pnnl.prosser.api.pwr.obj.ControllerNetworkInterface;
-import gov.pnnl.prosser.api.pwr.obj.MarketNetworkInterface;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,100 +24,62 @@ import java.util.List;
  */
 public class Ns3Network {
 	
-	/**
-	 * Type of networks available
-	 * 
-	 * @author happ546
-	 *
-	 */
-	public enum NetworkType {
-		CSMA, LTE, P2P, WIFI
-	}
-	
-	/**
-	 * Quality of Service Class Indicator types, used by LTE network EPS Bearers, a 
-	 * radio link between User Equipment (UE) devices and Evolved Node B (eNB) base station devices
-	 * 
-	 * @author happ546
-	 *
-	 */
-	public enum Qci {		
-		GBR_CONV_VOICE,
-		GBR_CONV_VIDEO,
-		GBR_GAMING,
-		GBR_NON_CONV_VIDEO,
-		NGBR_IMS,
-		NGBR_VIDEO_TCP_OPERATOR,
-		NGBR_VOICE_VIDEO_GAMING,
-		NGBR_VIDEO_TCP_PREMIUM,
-		NGBR_VIDEO_TCP_DEFAULT;
-		
-		private String name;
-		
-		/**
-		 * 
-		 * @return the name of this QoS Class Indicator
-		 */
-		public String getName() {
-			return this.name;
-		}
-		
-		/**
-		 * 
-		 * @param name sets the name of this QoS Class Indicator
-		 */
-		public void setName(String name) {
-			this.name = name;
-		}
-	}
-	
-	private NetworkType type;
+	private NetworkType backboneType, auctionType;
 	private String addrBase, addrMask;
-	private int numNodes;
+	private String gldNodePrefix;
 	private double stopTime;
+	private int numNodes;
 	private List<Module> modules; // List of ns-3 Modules used in this network
 	private List<Node> nodes;
-	private List<AbstractProsserObject> gldObjects;
-	
-//	// TODO need marketNIs & controllerNIs?
-//	private List<MarketNetworkInterface> marketNIs;
-//	private List<ControllerNetworkInterface> controllerNIs;
-	
 	private List<AuctionObject> auctions;
 	private List<Controller> controllers;
-	private String gldNodePrefix;
+	private List<AbstractNs3Object> objects;
+
 	
 	/**
 	 * Create a new Ns3Network object, used to set up an ns-3 network for use in Prosser simulation
 	 */
 	public Ns3Network() {
-		this.type = null;
-		this.addrBase = "";
-		this.addrMask = "";
-		this.numNodes = 0;
+		this.backboneType = null;
+		this.addrBase = "10.1.0.0";
+		this.addrMask = "255.255.255.0";
 		this.stopTime = 0.0;
+		this.numNodes = 0;
 		this.modules = new ArrayList<Module>();
 		this.nodes = new ArrayList<Node>();
-		this.setGldObjects(new ArrayList<AbstractProsserObject>());
-//		this.marketNIs = new ArrayList<MarketNetworkInterface>();
-//		this.controllerNIs = new ArrayList<ControllerNetworkInterface>();
 		this.auctions = new ArrayList<>();
 		this.controllers = new ArrayList<>();
+		this.objects = new ArrayList<AbstractNs3Object>();
 	}
 	
 	/**
-	 * @return the type
+	 * @return the NetworkType of the Backbone infrastructure
 	 */
-	public NetworkType getType() {
-		return type;
+	public NetworkType getBackboneType() {
+		return backboneType;
 	}
 	
 	/**
 	 * 
-	 * @param type the NetworkType for this Ns3Network
+	 * @param type the NetworkType to set for the Backbone infrastructure
 	 */
-	public void setType(NetworkType type) {
-		this.type = type;
+	public void setBackboneType(NetworkType backboneType) {
+		this.backboneType = backboneType;
+	}
+	
+	/**
+	 * @return the NetworkType of the Auction market
+	 */
+	public NetworkType getAuctionType() {
+		return auctionType;
+	}
+	
+	/**
+	 * 
+	 * @param type the NetworkType to set for the Auction market
+	 */
+	public void setAuctionType(NetworkType auctionType) {
+		this.auctionType = auctionType;
 	}
 
 	/**
@@ -150,17 +111,17 @@ public class Ns3Network {
 	}
 
 	/**
-	 * @return the numNodes
+	 * @return the gldNodePrefix
 	 */
-	public int getNumNodes() {
-		return numNodes;
+	public String getGldNodePrefix() {
+		return gldNodePrefix;
 	}
 
 	/**
-	 * @param numNodes the numNodes to set
+	 * @param gldNodePrefix the gldNodePrefix to set
 	 */
-	public void setNumNodes(int numNodes) {
-		this.numNodes = numNodes;
+	public void setGldNodePrefix(String gldNodePrefix) {
+		this.gldNodePrefix = gldNodePrefix;
 	}
 
 	/**
@@ -187,44 +148,12 @@ public class Ns3Network {
 	}
 	
 	/**
-	 * @return the list of gldObjects used in this simulator
-	 */
-	public List<AbstractProsserObject> getGldObjects() {
-		return gldObjects;
-	}
-
-	/**
-	 * @param gldObjects the list of GridLab-D objects to set
-	 */
-	public void setGldObjects(List<AbstractProsserObject> gldObjects) {
-		this.gldObjects = gldObjects;
-	}
-	
-	/**
 	 * Sets the ns-3 simulator's time to stop running
 	 * @param time in seconds
 	 */
 	public void setStopTime(double time) {
 		this.stopTime = time;
 	}
-	
-//	/**
-//	 * 
-//	 * @param marketNI the MarketNetwrokInterface to use for the 
-//	 * 			market Nodes in this network
-//	 */
-//	public void setMarketNIs(List<MarketNetworkInterface> marketNIs) {
-//		this.marketNIs = marketNIs;
-//	}
-//
-//	/**
-//	 * 
-//	 * @param controllerNIs the ControllerNetworkInterface to use for the 
-//	 * 			GLD House connected Nodes in this network
-//	 */
-//	public void setControllerNIs(List<ControllerNetworkInterface> controllerNIs) {
-//		this.controllerNIs = controllerNIs;
-//	}
 
 	/**
 	 * @return the auctions
@@ -364,17 +293,11 @@ public class Ns3Network {
 	 */
 	public List<AbstractNs3Object> createWifi(int numApNodesTotal, int numStaNodesTotal, String ipv4Address, String latency) {
 		
-		// TODO create FNCSSimulator object 
-//	    FncsSimulator *hb=new FncsSimulator();
-//    Ptr<FncsSimulator> hb2(hb);
-//    hb->Unref();
-//
-//    Simulator::SetImplementation(hb2);
-		
+		// Setup FNCS simulator
 		FncsSimulator fncsSim = new FncsSimulator();
 		fncsSim.setName("fncsSim");
 		
-		Pointer hb2 = new Pointer();
+		Pointer<FncsSimulator> hb2 = new Pointer<>();
 		hb2.setName("hb2");
 		hb2.encapsulate(fncsSim);
 		
@@ -388,8 +311,7 @@ public class Ns3Network {
 		int numStaNodesPerAuction = numStaNodesTotal / numAuctions;
 		int numStaNodesPerApNode = numStaNodesPerAuction / numApNodesPerAuction;
 		
-		// List of all AbstractNs3Objects
-		List<AbstractNs3Object> objects = new ArrayList<AbstractNs3Object>();
+
 		
 		// A map<string, string> mapping AuctionObject name to a Controller name
 		StringMap<String, String> marketToControllerMap = new StringMap<String, String>();
@@ -403,9 +325,6 @@ public class Ns3Network {
 		// A vector<string> used to hold the names of GLD market and house nodes
 		StringVector<String> names = new StringVector<String>();
 		names.setName("names");
-		
-		// Array of all WiFi station nodes passed to setupMarket(...) to add GLD markets to the nodes
-		NodeContainer[] staNodeArray = new NodeContainer[numApNodesPerAuction];
 		
 		this.addModule("core-module");
 		this.addModule("mobility-module");
@@ -600,7 +519,7 @@ public class Ns3Network {
 			    wifiX += 20.0;
 			}
 			
-			marketToControllerMap.put(this.getAuctions().get(j).getNetworkInterfaceName(), this.gldNodePrefix);
+			marketToControllerMap.put(this.getAuctions().get(j).getNetworkInterfaceName(), this.getGldNodePrefix());
 
 		}
 		
@@ -610,16 +529,14 @@ public class Ns3Network {
 		  "   std::string protocol;\n" +
 		 "   if (false)\n" +
 		  "   {\n" +
-		 "   cout << staInterfaceVector.size() << endl;\n" +
-		 "   staInterfaceVector[0].GetAddress(0).Print(cout);\n" + 
-		 "    dest = InetSocketAddress(staInterfaceVector.at(1).GetAddress(1), 1025);\n" +
+		 "    dest = InetSocketAddress(staInterfaceVector.at(0).GetAddress(1), 1025);\n" +
 		  "    protocol = \"ns3::UdpSocketFactory\";\n" +
 		  "   }\n" +
 		 "   else\n" +
 		  "   {\n" +
 		   "   PacketSocketAddress tmp;\n" +
-		   "   tmp.SetSingleDevice (staDeviceVector[0].Get (0)->GetIfIndex ());\n" +
-		   "   tmp.SetPhysicalAddress (staDeviceVector[0].Get (0)->GetAddress ());\n" +
+		   "   tmp.SetSingleDevice (staDeviceVector[0].Get(0)->GetIfIndex ());\n" +
+		   "   tmp.SetPhysicalAddress (staDeviceVector[0].Get(0)->GetAddress ());\n" +
 		   "   tmp.SetProtocol (0x807);\n" +
 		   "   dest = tmp;\n" +
 		   "   protocol = \"ns3::PacketSocketFactory\";\n" +
@@ -630,7 +547,6 @@ public class Ns3Network {
 		  "   ApplicationContainer apps = onoff.Install (staNodeVector[0].Get (0));\n" +
 		  "   apps.Start (Seconds (0.5));\n" +
 		  "   apps.Stop (Seconds (3.0));\n" +
-		  "   cout << apDeviceVector[0].Get(0)->GetAddress().GetLength() << endl;\n" + // TODO debugging
 		  "   wifiPhy.EnablePcap (\"wifi-wired-bridging\", apDeviceVector[0]);\n" +
 
 		  "   if (true)\n" +
@@ -659,13 +575,146 @@ public class Ns3Network {
 		fncsAps.start(0.0);
 		fncsAps.stop(259200.0);
 				
-		// This stuff doesn't seem to vary from sim to sim
+		// Run Simulator then clean up after it's done (according to FncsAps.stop(...))
 		ns3.appendPrintObj("Simulator::Run();\n");
 		ns3.appendPrintObj("Simulator::Destroy();\n");
 		ns3.appendPrintObj("return 0;\n");
 		
 		return objects;
 		
+	}
+	
+	public void createLte() {
+		
+		this.addModule("lte-module");
+		this.addModule("mobility-module");
+		
+		LteHelper lte = new LteHelper();
+		lte.setName("lte");
+		objects.add(lte);
+		
+		List<NetDeviceContainer> lteDeviceContainers = new ArrayList<NetDeviceContainer>();
+		
+		NodeContainer enbNodes = new NodeContainer();
+		enbNodes.setName("enbNodes");
+		objects.add(enbNodes);
+
+		
+		int numUeNodes = 5; //TODO get real value of LTE user equipment nodes
+		int numEnbNodes = 5; //TODO get real value of LTE base (towers) nodes
+		
+		NetDeviceContainer enbDevices = new NetDeviceContainer();
+		enbDevices.setName("enbDevices");
+		enbNodes.create(numEnbNodes);
+		objects.add(enbDevices);
+		
+		MobilityHelper mobilityHelper = new MobilityHelper();
+		mobilityHelper.setName("mobilityHelper");
+		mobilityHelper.setMobilityModel("ns3::ConstantPositionMobilityModel"); // TODO ConstantPositionMobilityModel sets all nodes at origin (0,0,0)
+		mobilityHelper.install(enbNodes);
+		
+		lte.installEnbDevice(enbNodes, enbDevices); // Install the LTE protocol stack on the eNB nodes
+		
+		lteDeviceContainers.add(enbDevices);
+		
+		// Add all Nodes from this NodeContainer to Nodes global list of nodes
+		for (int i = 0; i < numUeNodes; i++) {
+			nodes.add(enbNodes.getNode(i));
+		}
+		
+		// Setup QoS Class Indicator 
+		Qci q = Qci.GBR_CONV_VOICE;
+		q.setName("q");
+		
+		EpsBearer bearer = new EpsBearer();
+		bearer.setName("bearer");
+		bearer.setQci(q);
+		objects.add(bearer);
+		
+		for (int i = 0; i < numEnbNodes; i++) {
+			NodeContainer ueNodes = new NodeContainer();
+			ueNodes.setName("ueNodes_" + i);
+			ueNodes.create(numUeNodes);
+			objects.add(ueNodes);
+			
+			mobilityHelper.setMobilityModel("ns3::ConstantPositionMobilityModel"); // TODO ConstantPositionMobilityModel sets all nodes at origin (0,0,0)
+			mobilityHelper.install(ueNodes);
+			
+			NetDeviceContainer ueDevices = new NetDeviceContainer();
+			ueDevices.setName("ueDevices_" + i);
+			lte.installUeDevice(ueNodes, ueDevices); // Install the LTE protocol stack on the UE nodes
+			lte.attach(ueDevices, enbDevices, i); // Attach the newly created UE devices to an eNB device
+			lte.activateDataRadioBearer(ueDevices, bearer);
+			objects.add(ueDevices);
+			
+			lteDeviceContainers.add(ueDevices);
+			
+			// Add all Nodes from this NodeContainer to Nodes global list of nodes
+			for (int j = 0; j < numUeNodes; j++) {
+				nodes.add(ueNodes.getNode(j));
+			}
+		}
+	}
+	
+	public void createCsma() {
+		this.addModule("csma-module");
+		this.addModule("nix-vector-routing-module");
+		
+		// IP setup
+		Ipv4AddressHelper addresses = new Ipv4AddressHelper();
+		addresses.setName("addresses");
+		objects.add(addresses);
+		InternetStackHelper stack = new InternetStackHelper();
+		stack.setName("stack");
+		setupIp(stack);
+		objects.add(stack);
+		
+		// max of 20 nodes per NodeContainer to prevent poor performance, according to researchers
+		int numConts = numNodes/20 + 1;
+		
+		//TODO get dataRate and delay from user
+		String dataRate = "10Mbps";
+		String delay = "3ms";
+		
+		// CSMA channel/device setup
+		CsmaHelper csmaHelper = new CsmaHelper();
+		csmaHelper.setName("csmaHelper");
+		csmaHelper.setChannelAttribute("DataRate", dataRate);
+		csmaHelper.setChannelAttribute("Delay", delay);
+		objects.add(csmaHelper);
+		
+		NodeContainer[] csmaNodeConts = new NodeContainer[numConts];
+		NetDeviceContainer[] netDeviceConts = new NetDeviceContainer[numConts];
+		
+		for (int i = 0; i < numConts; i++) {
+			NodeContainer csmaNodes = new NodeContainer();
+			csmaNodes.setName("csmaNodes_" + i);
+			csmaNodes.create(20); // Create 20 Nodes in this NodeContainer
+			
+			csmaNodeConts[i] = csmaNodes;
+			objects.add(csmaNodes);
+			
+			// Sets IP address base to use for devices in this NetDeviceContainer
+			String ipBase = this.addrBase + i + ".0"; 
+			NetDeviceContainer temp = new NetDeviceContainer();
+			temp.setName("netDevices_" + i);
+			
+			// Install the CSMA devices & channel onto the temp NodeContainer
+			csmaHelper.install(csmaNodes, temp);
+			// Install the IP stack protocols on the CSMA Nodes
+			stack.install(csmaNodes);
+			
+			addresses.setBase(ipBase, "255.255.255.0"); // IPbase, mask
+			addresses.assign(temp);
+			
+			netDeviceConts[i] = temp;
+			objects.add(temp);
+			
+			// Adds each CSMA Node to the global list of nodes
+			for (int j = 0; j < 21; j++) {
+				nodes.add(csmaNodes.getNode(j));
+			}
+		}
 	}
 
 	/**
@@ -683,238 +732,6 @@ public class Ns3Network {
 		this.addModule("internet-module");
 		this.addModule("applications-module");
 		
-		switch (this.type) {
-				
-			case CSMA:
-				
-				this.addModule("csma-module");
-				this.addModule("nix-vector-routing-module");
-				
-				// IP setup
-				Ipv4AddressHelper addresses = new Ipv4AddressHelper();
-				addresses.setName("addresses");
-				objects.add(addresses);
-				InternetStackHelper stack = new InternetStackHelper();
-				stack.setName("stack");
-				setupIp(stack);
-				objects.add(stack);
-				
-				// max of 20 nodes per NodeContainer to prevent poor performance, according to researchers
-				int numConts = numNodes/20 + 1;
-				
-				//TODO get dataRate and delay from user
-				String dataRate = "10Mbps";
-				String delay = "3ms";
-				
-				// CSMA channel/device setup
-				CsmaHelper csmaHelper = new CsmaHelper();
-				csmaHelper.setName("csmaHelper");
-				csmaHelper.setChannelAttribute("DataRate", dataRate);
-				csmaHelper.setChannelAttribute("Delay", delay);
-				objects.add(csmaHelper);
-				
-				NodeContainer[] csmaNodeConts = new NodeContainer[numConts];
-				NetDeviceContainer[] netDeviceConts = new NetDeviceContainer[numConts];
-				
-				for (int i = 0; i < numConts; i++) {
-					NodeContainer csmaNodes = new NodeContainer();
-					csmaNodes.setName("csmaNodes_" + i);
-					csmaNodes.create(20); // Create 20 Nodes in this NodeContainer
-					
-					csmaNodeConts[i] = csmaNodes;
-					objects.add(csmaNodes);
-					
-					// Sets IP address base to use for devices in this NetDeviceContainer
-					String ipBase = this.addrBase + i + ".0"; 
-					NetDeviceContainer temp = new NetDeviceContainer();
-					temp.setName("netDevices_" + i);
-					
-					// Install the CSMA devices & channel onto the temp NodeContainer
-					csmaHelper.install(csmaNodes, temp);
-					// Install the IP stack protocols on the CSMA Nodes
-					stack.install(csmaNodes);
-					
-					addresses.setBase(ipBase, "255.255.255.0"); // IPbase, mask
-					addresses.assign(temp);
-					
-					netDeviceConts[i] = temp;
-					objects.add(temp);
-					
-					// Adds each CSMA Node to the global list of nodes
-					for (int j = 0; j < 21; j++) {
-						nodes.add(csmaNodes.getNode(j));
-					}
-				}
-				
-				// Creates and connects the Market nodes to these backbone Nodes
-				//setupMarket(stack, addresses, csmaNodeConts);
-				
-				break;
-				
-			case LTE:
-				
-				this.addModule("lte-module");
-				this.addModule("mobility-module");
-				
-				LteHelper lte = new LteHelper();
-				lte.setName("lte");
-				objects.add(lte);
-				
-				List<NetDeviceContainer> lteDeviceContainers = new ArrayList<NetDeviceContainer>();
-				
-				NodeContainer enbNodes = new NodeContainer();
-				enbNodes.setName("enbNodes");
-				objects.add(enbNodes);
-
-				
-				int numUeNodes = 5; //TODO get real value of LTE user equipment nodes
-				int numEnbNodes = 5; //TODO get real value of LTE base (towers) nodes
-				
-				NetDeviceContainer enbDevices = new NetDeviceContainer();
-				enbDevices.setName("enbDevices");
-				enbNodes.create(numEnbNodes);
-				objects.add(enbDevices);
-				
-				MobilityHelper mobilityHelper = new MobilityHelper();
-				mobilityHelper.setName("mobilityHelper");
-				mobilityHelper.setMobilityModel("ns3::ConstantPositionMobilityModel"); // TODO ConstantPositionMobilityModel sets all nodes at origin (0,0,0)
-				mobilityHelper.install(enbNodes);
-				
-				lte.installEnbDevice(enbNodes, enbDevices); // Install the LTE protocol stack on the eNB nodes
-				
-				lteDeviceContainers.add(enbDevices);
-				
-				// Add all Nodes from this NodeContainer to Nodes global list of nodes
-				for (int i = 0; i < numUeNodes; i++) {
-					nodes.add(enbNodes.getNode(i));
-				}
-				
-				// Setup QoS Class Indicator 
-				Qci q = Qci.GBR_CONV_VOICE;
-				q.setName("q");
-				
-				EpsBearer bearer = new EpsBearer();
-				bearer.setName("bearer");
-				bearer.setQci(q);
-				objects.add(bearer);
-				
-				for (int i = 0; i < numEnbNodes; i++) {
-					NodeContainer ueNodes = new NodeContainer();
-					ueNodes.setName("ueNodes_" + i);
-					ueNodes.create(numUeNodes);
-					objects.add(ueNodes);
-					
-					mobilityHelper.setMobilityModel("ns3::ConstantPositionMobilityModel"); // TODO ConstantPositionMobilityModel sets all nodes at origin (0,0,0)
-					mobilityHelper.install(ueNodes);
-					
-					NetDeviceContainer ueDevices = new NetDeviceContainer();
-					ueDevices.setName("ueDevices_" + i);
-					lte.installUeDevice(ueNodes, ueDevices); // Install the LTE protocol stack on the UE nodes
-					lte.attach(ueDevices, enbDevices, i); // Attach the newly created UE devices to an eNB device
-					lte.activateDataRadioBearer(ueDevices, bearer);
-					objects.add(ueDevices);
-					
-					lteDeviceContainers.add(ueDevices);
-					
-					// Add all Nodes from this NodeContainer to Nodes global list of nodes
-					for (int j = 0; j < numUeNodes; j++) {
-						nodes.add(ueNodes.getNode(j));
-					}
-				}
-				
-				break;
-				
-			case P2P:
-				
-				this.addModule("point-to-point-module");
-				
-				NodeContainer p2pNodes = new NodeContainer();
-				//TODO finish this
-				
-				// Add all Nodes from this NodeContainer to Nodes global list of nodes
-				for (int i = 0; i < p2pNodes.getNumNodes(); i++) {
-					nodes.add(p2pNodes.getNode(i));
-				}
-				
-				break;
-				
-			case WIFI:
-				
-				this.addModule("wifi-module");
-				
-				NodeContainer wifiStaNodes = new NodeContainer();
-				wifiStaNodes.setName("wifiStaNodes");
-				wifiStaNodes.create(this.numNodes); //TODO get appropriate number of nodes for WiFi devices
-				objects.add(wifiStaNodes);
-				
-				NodeContainer wifiApNodes = new NodeContainer();
-				wifiApNodes.setName("wifiApNodes");
-				wifiApNodes.create(this.numNodes/20 + 1); //TODO get appropriate # of AP nodes
-/*				if (p2pNodes != null) {
-					wifiApNodes.addNode(p2pNodes, 0); //TODO get node from non-WiFi network to connect AP to
-				}*/
-				objects.add(wifiApNodes);
-				
-				YansWifiChannelHelper channel = new YansWifiChannelHelper();
-				channel.setName("channel");
-				objects.add(channel);
-				
-				YansWifiPhyHelper phy = new YansWifiPhyHelper();
-				phy.setName("phy");
-				phy.defaultParams();
-				phy.setChannel(channel);
-				objects.add(phy);
-				
-				WifiHelper wifi = new WifiHelper();
-				wifi.setName("wifi");
-				wifi.defaultParams();
-				wifi.setRemoteStationManager("ns3::AarfWifiManager");
-				objects.add(wifi);
-				
-				NqosWifiMacHelper mac = new NqosWifiMacHelper();
-				mac.setName("mac");
-				mac.defaultParams();
-				objects.add(mac);
-				
-				Ssid ssid = new Ssid();
-				ssid.setSsid("wifi1"); //TODO have user-entered param for this or auto generate?
-				objects.add(ssid);
-				
-				// MAC helper for station nodes
-				mac.setType("ns3::StaWifiMac", ssid, false); //Type, ssid, active probing
-				
-				NetDeviceContainer staDevices = new NetDeviceContainer();
-				staDevices.setName("staDevices");
-				objects.add(staDevices);
-				
-				wifi.install(phy, mac, wifiStaNodes, staDevices);
-				
-				// MAC helper for access-point node
-				mac.setType("ns3::ApWifiMac", ssid);
-				
-				NetDeviceContainer apDevices = new NetDeviceContainer();
-				apDevices.setName("apDevices");
-				objects.add(apDevices);
-				
-				wifi.install(phy, mac, wifiApNodes, apDevices);
-				
-				// End of WiFi setup unless simulated Mobility (random movement of staNodes) is required (likely not for most GLD objects)
-				
-				// Add all Nodes from each NodeContainer to Nodes global list of nodes
-				for (int i = 0; i < wifiStaNodes.getNumNodes(); i++) {
-					nodes.add(wifiStaNodes.getNode(i));
-				}
-				for (int i = 0; i < wifiApNodes.getNumNodes(); i++) {
-					nodes.add(wifiApNodes.getNode(i));
-				}				
-				
-				break;
-				
-			default:
-				
-				break;
-
-		}
 		
 		NodeContainer gldNodes = new NodeContainer();
 		gldNodes.setName("gldNodes");
@@ -948,10 +765,6 @@ public class Ns3Network {
 		ns3.appendPrintObj("return 0;\n");
 		
 		return objects;
-	}
-
-	public void setGldNodePrefix(String gldNodePrefix) {
-		this.gldNodePrefix = gldNodePrefix;
 	}
 	
 }

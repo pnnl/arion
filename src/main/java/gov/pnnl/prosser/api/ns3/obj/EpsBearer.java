@@ -4,7 +4,7 @@
 package gov.pnnl.prosser.api.ns3.obj;
 
 import gov.pnnl.prosser.api.AbstractNs3Object;
-import gov.pnnl.prosser.api.ns3.obj.Ns3Network.Qci;
+import gov.pnnl.prosser.api.ns3.enums.Qci;
 
 /**
  * @author happ546

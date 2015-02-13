@@ -35,20 +35,13 @@ public class TestExperimentNs3Simulator implements Ns3Simulator {
 
     @Override
     public void setup() {
-        // Get list of end devices from Peter
-        // List<..AbstractProsserObject?..> gldList = peter'sList;
 
-        // User inputs basic params (Network type, addr base & mask, # of nodes)
+        // User inputs basic parameters
         network = new Ns3Network();
-        network.setNumNodes(200); // TODO Infer this from gldList or user specification
-        // network.setMarketNIs(this.marketNIs);
-        // network.setControllerNIs(this.controllerNIs);
         network.setAuctions(auctions);
         network.setControllers(controllers);
         network.setGldNodePrefix(this.getGldNodePrefix());
-
-        // TODO get stop time from user
-        network.setStopTime(10000);
+        
     }
 
     @Override

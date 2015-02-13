@@ -8,8 +8,6 @@ import gov.pnnl.prosser.api.ns3.module.Module;
 import gov.pnnl.prosser.api.ns3.module.Namespace;
 import gov.pnnl.prosser.api.ns3.obj.Node;
 import gov.pnnl.prosser.api.ns3.obj.Ns3Network;
-import gov.pnnl.prosser.api.ns3.obj.Ns3Network.NetworkType;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,10 +26,8 @@ public class TestNs3Simulator implements Ns3Simulator {
 		
 		// User inputs basic params (Network type, addr base & mask, # of nodes [or infer from gldList?])
 		network = new Ns3Network();
-		network.setType(NetworkType.CSMA); //TODO Set up backbone & subnetwork functionality
 		network.setAddrBase("10.1."); // First 2 values of IPV4 address to use as base in IP addr distribution
 		network.setAddrMask("255.255.255.0");
-		network.setNumNodes(200); //TODO Infer this from gldList or user specification?
 		//network.setGldObjects(gldList); //TODO
 		
 		//TODO stop time from user
