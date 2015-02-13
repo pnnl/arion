@@ -45,9 +45,10 @@ public class TestExperimentNs3Simulator implements Ns3Simulator {
         // network.setControllerNIs(this.controllerNIs);
         network.setAuctions(auctions);
         network.setControllers(controllers);
+        network.setGldNodePrefix(this.getGldNodePrefix());
 
         // TODO get stop time from user
-        network.setStopTime(0.5);
+        network.setStopTime(10000);
     }
 
     @Override

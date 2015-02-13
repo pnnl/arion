@@ -86,6 +86,7 @@ public class Ns3Network {
 	
 	private List<AuctionObject> auctions;
 	private List<Controller> controllers;
+	private String gldNodePrefix;
 	
 	/**
 	 * Create a new Ns3Network object, used to set up an ns-3 network for use in Prosser simulation
@@ -345,7 +346,7 @@ public class Ns3Network {
 					gldNodes.addNode(temp);
 					// Add controller prefix name to names vector
 					names.pushBack(controller);
-					marketToControllerMap.put(this.getAuctions().get(i).getName(), controller.getName());
+					marketToControllerMap.put(this.getAuctions().get(i).getNetworkInterfaceName(), controller.getNetworkInterfaceName());
 				}
 			}
 		}
@@ -362,6 +363,23 @@ public class Ns3Network {
 	 * @return objects a List of all AbstractNs3Objects created for this WiFi network
 	 */
 	public List<AbstractNs3Object> createWifi(int numApNodesTotal, int numStaNodesTotal, String ipv4Address, String latency) {
+		
+		// TODO create FNCSSimulator object 
+//	    FncsSimulator *hb=new FncsSimulator();
+//    Ptr<FncsSimulator> hb2(hb);
+//    hb->Unref();
+//
+//    Simulator::SetImplementation(hb2);
+		
+		FncsSimulator fncsSim = new FncsSimulator();
+		fncsSim.setName("fncsSim");
+		
+		Pointer hb2 = new Pointer();
+		hb2.setName("hb2");
+		hb2.encapsulate(fncsSim);
+		
+		fncsSim.unref();
+		fncsSim.setImplementation(hb2);
 		
 		int numAuctions = this.getAuctions().size();
 		// Node #s passed in are total (for whole simulation), so calculate AP Nodes per Market
@@ -548,12 +566,20 @@ public class Ns3Network {
 			    Node firstNode = staNodes.getNode(0);
 			    firstNode.setAuction(auction);
 			    gldNodes.addNodeContainer(staNodes);
+			    names.pushBack(auction);
 			    
 			    // Install ControllerNetworkInterface on each station Node
 			    for (int k = 0; k < staNodes.getNumNodes(); k++) {
+			    	Controller tempCont = this.getControllers().get(j*numApNodesPerAuction + k);
 			    	// Assign the Controller at index k offset by the index of the Market (j) times the # of AP Nodes per Market
-			    	staNodes.getNode(k).setController(this.getControllers().get(j*numApNodesPerAuction + k));
+			    	staNodes.getNode(k).setController(tempCont);
+			    	
+			    	names.pushBack(tempCont);
+			    	
+			    	gldNodes.addNode(staNodes, k);
+
 			    }
+
 			    
 			    
 			    // save everything in containers.
@@ -573,6 +599,9 @@ public class Ns3Network {
 	
 			    wifiX += 20.0;
 			}
+			
+			marketToControllerMap.put(this.getAuctions().get(j).getNetworkInterfaceName(), this.gldNodePrefix);
+
 		}
 		
 		AbstractNs3Object ns3 = objects.get(0);
@@ -603,7 +632,6 @@ public class Ns3Network {
 		  "   apps.Stop (Seconds (3.0));\n" +
 		  "   cout << apDeviceVector[0].Get(0)->GetAddress().GetLength() << endl;\n" + // TODO debugging
 		  "   wifiPhy.EnablePcap (\"wifi-wired-bridging\", apDeviceVector[0]);\n" +
-		  "   wifiPhy.EnablePcap (\"wifi-wired-bridging\", apDeviceVector[1]);\n" +
 
 		  "   if (true)\n" +
 		    "   {\n" +
@@ -630,9 +658,7 @@ public class Ns3Network {
 		fncsHelper.setApps(names, gldNodes, marketToControllerMap, fncsAps);
 		fncsAps.start(0.0);
 		fncsAps.stop(259200.0);
-		
-		ns3.appendPrintObj("Simulator::Stop(Seconds(" + this.stopTime + "));\n");
-		
+				
 		// This stuff doesn't seem to vary from sim to sim
 		ns3.appendPrintObj("Simulator::Run();\n");
 		ns3.appendPrintObj("Simulator::Destroy();\n");
@@ -922,6 +948,10 @@ public class Ns3Network {
 		ns3.appendPrintObj("return 0;\n");
 		
 		return objects;
+	}
+
+	public void setGldNodePrefix(String gldNodePrefix) {
+		this.gldNodePrefix = gldNodePrefix;
 	}
 	
 }

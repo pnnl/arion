@@ -4,8 +4,7 @@
 package gov.pnnl.prosser.api.c.obj;
 
 import gov.pnnl.prosser.api.AbstractNs3Object;
-import gov.pnnl.prosser.api.pwr.obj.Controller;
-import gov.pnnl.prosser.api.pwr.obj.ControllerNetworkInterface;
+import gov.pnnl.prosser.api.NetworkCapable;
 
 /**
  * A class for enabling the easy use of the std::vector in the c++ library.
@@ -28,8 +27,8 @@ public class StringVector<T1> extends AbstractNs3Object {
 	 * 
 	 * @param controller the Controller with the name to add to this StringVector
 	 */
-	public void pushBack(Controller controller) {
-		appendPrintObj(this.getName() + ".push_back(\"" + controller.getName() + "\");\n"); // TODO confirm controller.getName gets CNI prefix needed for FNCSAppsHelper
+	public void pushBack(NetworkCapable obj) {
+		appendPrintObj(this.getName() + ".push_back(\"" + obj.getNetworkInterfaceName() + "\");\n"); // TODO confirm controller.getName gets CNI prefix needed for FNCSAppsHelper
 	}
 	
 }
