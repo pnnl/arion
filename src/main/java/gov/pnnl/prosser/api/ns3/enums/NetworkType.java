@@ -10,5 +10,25 @@ package gov.pnnl.prosser.api.ns3.enums;
  *
  */
 public enum NetworkType {
-	CSMA, LTE, P2P, WIFI;
+	
+	/**
+	 * Carrier Sense Multiple Access
+	 * Use this to emulate Ethernet
+	 */
+	CSMA, 
+	
+	/**
+	 * Long-Term Evolution
+	 */
+	LTE, 
+	
+	/**
+	 * Point-to-Point
+	 */
+	P2P, 
+	
+	/**
+	 * WiFi
+	 */
+	WIFI;
 }
