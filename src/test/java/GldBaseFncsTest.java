@@ -371,6 +371,8 @@ public class GldBaseFncsTest implements GldSimulator {
         controller.setTotal("total_load");
         controller.setLoad("hvac_load");
         controller.setState("power_state");
+        controller.setNamePrefix("F1_C_");
+        controller.setId(id);
         house.setController(controller);
 
         house.addLoad(this.generateLightsLoad(scheduleSkew));

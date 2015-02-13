@@ -37,7 +37,7 @@ public class ExperimentFncsTest {
         });
 
         // TODO Do we still need this prefix?
-        final String controllerPrefix = "F1_single_ramp_NIF_";
+        final String controllerPrefix = "F1_C_NI";
         final TestExperimentNs3Simulator ns3Simulator = new TestExperimentNs3Simulator();
         // ns3Simulator.setControllerNIs(controllerNIs);
         // ns3Simulator.setMarketNI(marketNI);
