@@ -1,6 +1,8 @@
 import gov.pnnl.prosser.api.Ns3SimulatorWriter;
 import gov.pnnl.prosser.api.gld.obj.AuctionObject;
 import gov.pnnl.prosser.api.pwr.obj.Controller;
+import gov.pnnl.prosser.api.pwr.obj.House;
+
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -27,8 +29,8 @@ public class ExperimentFncsTest {
         gldSim.getObjects().forEach((o) -> {
             if (o instanceof AuctionObject) {
                 auctions.add((AuctionObject) o);
-            } else if (o instanceof Controller) {
-                controllers.add((Controller) o);
+            } else if (o instanceof House) {
+                controllers.add(((House) o).getController());
             }
         });
 

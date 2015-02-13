@@ -29,9 +29,9 @@ public class TestExperimentNs3Simulator implements Ns3Simulator {
 
     private String gldNodePrefix;
 
-	private List<AuctionObject> auctions;
+    private List<AuctionObject> auctions;
 
-	private List<Controller> controllers;
+    private List<Controller> controllers;
 
     @Override
     public void setup() {
@@ -41,12 +41,10 @@ public class TestExperimentNs3Simulator implements Ns3Simulator {
         // User inputs basic params (Network type, addr base & mask, # of nodes)
         network = new Ns3Network();
         network.setNumNodes(200); // TODO Infer this from gldList or user specification
-//        network.setMarketNIs(this.marketNIs);
-//        network.setControllerNIs(this.controllerNIs);
-		network.setAuctions(auctions);
-		network.setControllers(controllers);
-        
-        
+        // network.setMarketNIs(this.marketNIs);
+        // network.setControllerNIs(this.controllerNIs);
+        network.setAuctions(auctions);
+        network.setControllers(controllers);
 
         // TODO get stop time from user
         network.setStopTime(0.5);
@@ -69,17 +67,20 @@ public class TestExperimentNs3Simulator implements Ns3Simulator {
     @Override
     public List<AbstractNs3Object> getObjects() {
 
-    	// Number of Nodes representing GLD Houses (each with attached ControllerNetworkInterfaces)
-    	int numEndpointNodes = this.getControllers().size();
-    	// Number of Nodes for network backbone (WiFi APs, CSMA/Ethernet "routers", LTE towers)
-    	int numBackboneNodes = numEndpointNodes / 20;
-    	
-    	// Not a real builder pattern; after necessary params, use network type for type-specific method to construct nodes, install devices/applications, etc.
+        // Number of Nodes representing GLD Houses (each with attached ControllerNetworkInterfaces)
+        final int numEndpointNodes = this.getControllers().size();
+        // Number of Nodes for network backbone (WiFi APs, CSMA/Ethernet "routers", LTE towers)
+        int numBackboneNodes = numEndpointNodes / 20;
+        if (numEndpointNodes % 20 > 0) {
+            numBackboneNodes++;
+        }
+
+        // Not a real builder pattern; after necessary params, use network type for type-specific method to construct nodes, install devices/applications, etc.
         final List<AbstractNs3Object> objects = network.createWifi(numBackboneNodes, numEndpointNodes, "10.0.0.0", "4ms");
 
         // List of ns-3 Nodes to keep track of specific Nodes
-        //final List<Node> nodes = network.getNodes();
-        
+        // final List<Node> nodes = network.getNodes();
+
         return objects;
     }
 
@@ -91,35 +92,36 @@ public class TestExperimentNs3Simulator implements Ns3Simulator {
     }
 
     /**
-	 * @return the auctions
-	 */
-	public List<AuctionObject> getAuctions() {
-		return auctions;
-	}
-	
+     * @return the auctions
+     */
+    public List<AuctionObject> getAuctions() {
+        return auctions;
+    }
 
-	/**
-	 * @param auctions the Auctions to set
-	 */
-	public void setAuctions(List<AuctionObject> auctions) {
-		this.auctions = auctions;
-	}
+    /**
+     * @param auctions
+     *            the Auctions to set
+     */
+    public void setAuctions(final List<AuctionObject> auctions) {
+        this.auctions = auctions;
+    }
 
-	/**
-	 * @return the controllers
-	 */
-	public List<Controller> getControllers() {
-		return controllers;
-	}
+    /**
+     * @return the controllers
+     */
+    public List<Controller> getControllers() {
+        return controllers;
+    }
 
-	/**
-	 * @param controllers the Controllers to set
-	 */
-	public void setControllers(List<Controller> controllers) {
-		this.controllers = controllers;
-	}
+    /**
+     * @param controllers
+     *            the Controllers to set
+     */
+    public void setControllers(final List<Controller> controllers) {
+        this.controllers = controllers;
+    }
 
-	/**
+    /**
      * @param marketNI
      *            the marketNI to set
      */
