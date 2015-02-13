@@ -80,7 +80,7 @@ public abstract class AbstractProsserObject implements GldSerializable {
     public void writeGldString(final StringBuilder sb) {
         sb.append("object ").append(getGldObjectType()).append(" {\n");
         GldUtils.writeProperty(sb, "name", this.name);
-        GldUtils.writeProperty(sb, "groupId", this.groupId);
+        GldUtils.writeProperty(sb, "groupid", this.groupId);
         this.writeGldProperties(sb);
         sb.append("}\n");
     }
