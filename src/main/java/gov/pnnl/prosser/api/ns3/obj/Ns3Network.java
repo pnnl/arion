@@ -590,7 +590,7 @@ public class Ns3Network {
 		  "   {\n" +
 		   "   PacketSocketAddress tmp;\n" +
 		   "   tmp.SetSingleDevice (staDeviceVector[0].Get (0)->GetIfIndex ());\n" +
-		   "   tmp.SetPhysicalAddress (staDeviceVector[1].Get (0)->GetAddress ());\n" +
+		   "   tmp.SetPhysicalAddress (staDeviceVector[0].Get (0)->GetAddress ());\n" +
 		   "   tmp.SetProtocol (0x807);\n" +
 		   "   dest = tmp;\n" +
 		   "   protocol = \"ns3::PacketSocketFactory\";\n" +
