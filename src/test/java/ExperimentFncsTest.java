@@ -24,7 +24,7 @@ public class ExperimentFncsTest {
         final Path outPath = Paths.get(args[0]).toRealPath();
         final GldBaseFncsTest gldSim = new GldBaseFncsTest();
         GldSimulatorWriter.writeGldSimulator(outPath.resolve("prosser.glm"), gldSim);
-
+//TODO: No passing of information between simulators here; not maintainable approach; force objects to create simulator relationships
         // For this test there will be one object in each list but in general there could be multiple
         final List<AuctionObject> auctions = new ArrayList<>();
         final List<Controller> controllers = new ArrayList<>();

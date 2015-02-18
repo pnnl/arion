@@ -78,6 +78,7 @@ public class Ns3Network {
 	 * 
 	 * @param type the NetworkType to set for the Auction market
 	 */
+	//TODO: Not sure this type of information should be stored here; Need convincing to allow simulator specific variables in NS3 objects
 	public void setAuctionType(NetworkType auctionType) {
 		this.auctionType = auctionType;
 	}

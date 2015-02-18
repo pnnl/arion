@@ -17,6 +17,12 @@ import java.util.*;
  * @author nord229
  *
  */
+
+//TODO: More documentation please; hard to parse without; at minimum at top of each class and any methods with more than 25 lines
+
+//TODO: Three important things Sean's Fancy List, SQL stuff, object simulator intersection, extending instead of implementing experiment
+
+//TODO: This should extend Experiment not implement simulators
 public class GldBaseFncsTest implements GldSimulator {
 
     private static final Random rng = new Random(11);
@@ -30,6 +36,7 @@ public class GldBaseFncsTest implements GldSimulator {
 
     @Override
     public List<AbstractProsserObject> getObjects() {
+    	//TODO: Why is this necessary? Please explain.
         final EnumSet<PhaseCode> phaseAS = EnumSet.copyOf(PhaseCode.S);
         phaseAS.add(PhaseCode.A);
         final EnumSet<PhaseCode> phaseBS = EnumSet.copyOf(PhaseCode.S);
@@ -37,9 +44,10 @@ public class GldBaseFncsTest implements GldSimulator {
         final EnumSet<PhaseCode> phaseCS = EnumSet.copyOf(PhaseCode.S);
         phaseCS.add(PhaseCode.C);
         final List<AbstractProsserObject> objects = new ArrayList<>();
-
+//TODO: Add constructor with SetName parameter
         final PlayerObject phaseALoad = new PlayerObject();
         phaseALoad.setName("phase_A_load");
+        //TODO: This should be a path. We may need to create a copy of this file and package as they will not be running on the compiler box
         phaseALoad.setFile("phase_A.player");
         phaseALoad.setLoop(1);
         objects.add(phaseALoad);
@@ -55,12 +63,12 @@ public class GldBaseFncsTest implements GldSimulator {
         phaseCLoad.setFile("phase_C.player");
         phaseCLoad.setLoop(1);
         objects.add(phaseCLoad);
-
+//TODO: Is it possible to overload one reader and it decide which to used based on file type?
         final CsvReader reader = new CsvReader();
         reader.setName("CSVREADER");
         reader.setFilename("ColumbusWeather2009_2a.csv");
         objects.add(reader);
-
+//TODO: Why two references to this file? Is this correct? Seems redundant
         final ClimateObject climate = new ClimateObject();
         climate.setName("Columbus OH");
         climate.setTmyFile("ColumbusWeather2009_2a.csv");
@@ -87,6 +95,8 @@ public class GldBaseFncsTest implements GldSimulator {
 
         auction.setSpecialMode(SpecialMode.BUYERS_ONLY);
 
+        //TODO: Need to add code for writing SQL commands for generating tables to collect data from all simulator data generating objects
+        //TODO: For instance GridLAB-D has an odbc recorder, processor needs to write the appropirate connection info in the glm and the sql to create a table in the database to accept the comunication from gld.
         final Recorder recorder = new Recorder();
         recorder.setProperty("capacity_reference_bid_price, current_market.clearing_price, current_market.clearing_quantity");
         recorder.setLimit(100000000);
@@ -98,6 +108,7 @@ public class GldBaseFncsTest implements GldSimulator {
         auction.setInitStdev(0.02);
         auction.setUseFutureMeanPrice(false);
         auction.setWarmup(0);
+        //TODO: Create Sean's Fancy List to add this to list at construction time (cross between factory and list)
         objects.add(auction);
 
         final TransformerConfiguration substationConfig = new TransformerConfiguration();
@@ -114,6 +125,7 @@ public class GldBaseFncsTest implements GldSimulator {
         objects.add(substationConfig);
 
         final TransformerConfiguration defaultTransformerBase = new TransformerConfiguration();
+        //TODO: whe pwr namespace for enums? shouldn't this just be under GLD? What if eneryg+ has a similar enum?
         defaultTransformerBase.setConnectionType(ConnectionType.SINGLE_PHASE_CENTER_TAPPED);
         defaultTransformerBase.setInstallationType(InstallationType.PADMOUNT);
         defaultTransformerBase.setPrimaryVoltage(7200);
@@ -233,11 +245,13 @@ public class GldBaseFncsTest implements GldSimulator {
         objects.add(tripMeterC);
 
         // Base Setup done, houses below
+        //TODO: Move generate house and other convienence methods to a library
         objects.addAll(this.generateHouseObjects(1, tripMeterA, tripLineConf, auction));
 
         return objects;
     }
 
+    //TODO: Never force overrides in the users experiment 
     @Override
     public GldClock getClock() {
         final GldClock clock = new GldClock();
@@ -248,6 +262,7 @@ public class GldBaseFncsTest implements GldSimulator {
     }
 
     @Override
+    //TODO: This should probably just be a list in Experiment
     public List<Module> getModules() {
         return ExperimentBuilder.module()
                 .addMarket()
