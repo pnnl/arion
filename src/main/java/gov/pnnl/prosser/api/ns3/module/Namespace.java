@@ -13,6 +13,9 @@ package gov.pnnl.prosser.api.ns3.module;
 public class Namespace {
 	private String name;
 	
+	/**
+	 * @param name the name for this namespace
+	 */
 	public Namespace(String name) {
 		this.name = name;
 	}

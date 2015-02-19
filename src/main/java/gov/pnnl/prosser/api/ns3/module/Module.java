@@ -11,6 +11,9 @@ public class Module {
 	
 	private String name;
 	
+	/**
+	 * @param name the name for this Module
+	 */
 	public Module (String name) {
 		this.name = name;
 	}

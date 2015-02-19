@@ -28,7 +28,7 @@ public class StringVector<T1> extends AbstractNs3Object {
 	 * @param controller the Controller with the name to add to this StringVector
 	 */
 	public void pushBack(NetworkCapable obj) {
-		appendPrintObj(this.getName() + ".push_back(\"" + obj.getNetworkInterfaceName() + "\");\n"); // TODO confirm controller.getName gets CNI prefix needed for FNCSAppsHelper
+		appendPrintObj(this.getName() + ".push_back(\"" + obj.getNetworkInterfaceName() + "\");\n");
 	}
 	
 }

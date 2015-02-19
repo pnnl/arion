@@ -42,6 +42,7 @@ public class ExperimentFncsTest {
         ns3Simulator.setControllers(controllers);
         ns3Simulator.setGldNodePrefix(controllerPrefix);
         Ns3SimulatorWriter.writeNs3Simulator(outPath.resolve("ns3.cc"), ns3Simulator);
+        System.out.println("Written!");
         // TODO FNCS Integration
     }
 

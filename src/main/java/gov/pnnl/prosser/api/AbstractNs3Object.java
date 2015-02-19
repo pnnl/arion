@@ -13,6 +13,7 @@ public abstract class AbstractNs3Object {
 	
 	private String name;
 	private String nodeNamePrefix;
+	private boolean pointer;
 	private static String printObj;
 
 	public AbstractNs3Object() {
@@ -117,5 +118,22 @@ public abstract class AbstractNs3Object {
         return Objects.equals(this.name, other.name) 
         		&& Objects.equals(AbstractNs3Object.printObj, AbstractNs3Object.printObj);
     }
+    
+    /**
+     * @return 
+     * 		true if this object is encapsulated in a pointer
+     * 		false otherwise
+     */
+    public boolean getPointer() {
+    	return this.pointer;
+    }
+
+	/**
+	 * @param b true if this object is encapsulated in a pointer
+	 * 			false otherwise
+	 */
+	public void setPointer(boolean b) {
+		this.pointer = b;
+	}
 	
 }

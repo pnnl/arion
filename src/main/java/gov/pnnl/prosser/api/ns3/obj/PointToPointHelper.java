@@ -6,13 +6,11 @@ package gov.pnnl.prosser.api.ns3.obj;
 import java.util.HashMap;
 import java.util.Map;
 
-import gov.pnnl.prosser.api.AbstractNs3Object;
-
 /**
  * @author happ546
  *
  */
-public class PointToPointHelper extends AbstractNs3Object {
+public class PointToPointHelper extends NetworkHelper {
 	private Map<String, String> channelAttributes;
 	private Map<String, String> deviceAttributes;
 	
@@ -55,11 +53,26 @@ public class PointToPointHelper extends AbstractNs3Object {
 	/**
 	 * Set attributes for this point to point device
 	 * @param attr the attribute to set the value to
-	 * @param value
+	 * @param value the string value (e.g. DataRate)
 	 */
 	public void setDeviceAttribute(String attr, String value) {
 		deviceAttributes.put(attr, value);
-		appendPrintObj(this.getName() + ".SetDeviceAttribute(\"" + attr + "\", StringValue(\"" + value + "\"));\n");
+		String valueWrapperPrefix = "StringValue(\"";
+		String valueWrapperSuffix = "\")";
+		if (attr.equals("DataRate")) {
+			valueWrapperPrefix = "DataRateValue(DataRate(\"";
+			valueWrapperSuffix = "\"))";
+		}
+		appendPrintObj(this.getName() + ".SetDeviceAttribute(\"" + attr + "\", " + valueWrapperPrefix + value + valueWrapperSuffix + ");\n");
+	}
+
+	/**
+	 * @param attr the attribute to set the value to
+	 * @param value the integer value (e.g. MTU value)
+	 */
+	public void setDeviceAttribute(String attr, int value) {
+		deviceAttributes.put(attr, "" + value);
+		appendPrintObj(this.getName() + ".SetDeviceAttribute(\"" + attr + "\", UintegerValue(" + value + "));\n");		
 	}
 
 }

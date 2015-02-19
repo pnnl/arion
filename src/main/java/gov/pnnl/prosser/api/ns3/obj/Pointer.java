@@ -10,6 +10,8 @@ import gov.pnnl.prosser.api.AbstractNs3Object;
  *
  */
 public class Pointer<T> extends AbstractNs3Object {
+	
+	private AbstractNs3Object object;
 
 	@Override
 	public void setName(String name) {
@@ -23,7 +25,30 @@ public class Pointer<T> extends AbstractNs3Object {
 	 */
 	public void encapsulate(AbstractNs3Object obj) {
 		appendPrintObj("Ptr<" + obj.getClass().getSimpleName() + "> " + this.getName() + "(" + obj.getName() + ");\n");
-
+	}
+	
+	/**
+	 * @param obj the AbstractNs3Object to set this Pointer type to
+	 */
+	public void setType(AbstractNs3Object obj) {
+		appendPrintObj("Ptr<" + obj.getClass().getSimpleName() + "> " + this.getName() + ";\n");
+	}
+	
+	/**
+	 * @param obj
+	 */
+	public void construct(AbstractNs3Object obj) {
+		this.object = obj;
+		this.object.setNameString(this.getName());
+		this.object.setPointer(true);
+		appendPrintObj("Ptr<" + obj.getClass().getSimpleName() + "> " + this.getName() + " = CreateObject<" + obj.getClass().getSimpleName() + ">();\n");
+	}
+	
+	/**
+	 * @return the AbstractNs3Object this Pointer points to
+	 */
+	public AbstractNs3Object getObject() {
+		return this.object;
 	}
 	
 }

@@ -3,8 +3,6 @@
  */
 package gov.pnnl.prosser.api.ns3.obj;
 
-import gov.pnnl.prosser.api.AbstractNs3Object;
-
 import java.util.HashMap;
 import java.util.Map;
 
@@ -12,7 +10,7 @@ import java.util.Map;
  * @author happ546
  *
  */
-public class CsmaHelper extends AbstractNs3Object {
+public class CsmaHelper extends NetworkHelper {
 	
 	private Map<String, String> channelAttributes;
 	private Map<String, String> deviceAttributes;

@@ -5,6 +5,7 @@
 import gov.pnnl.prosser.api.AbstractNs3Object;
 import gov.pnnl.prosser.api.Ns3Simulator;
 import gov.pnnl.prosser.api.gld.obj.AuctionObject;
+import gov.pnnl.prosser.api.ns3.enums.NetworkType;
 import gov.pnnl.prosser.api.ns3.module.Module;
 import gov.pnnl.prosser.api.ns3.module.Namespace;
 import gov.pnnl.prosser.api.ns3.obj.Ns3Network;
@@ -42,6 +43,28 @@ public class TestExperimentNs3Simulator implements Ns3Simulator {
         network.setControllers(controllers);
         network.setGldNodePrefix(this.getGldNodePrefix());
         
+        // TODO might be better to abstract these into Ns3Network class
+        // Number of Nodes representing GLD Houses (each with attached ControllerNetworkInterfaces)
+        final int numAuctionNodes = this.getControllers().size();
+        // Number of Nodes for network backbone (WiFi APs, CSMA/Ethernet "routers", LTE towers)
+        int numBackboneNodes = numAuctionNodes / 20;
+        if (numAuctionNodes % 20 > 0) {
+            numBackboneNodes++;
+        }        
+        network.setNumAuctionNodes(numAuctionNodes);
+        network.setNumBackboneNodes(numBackboneNodes);
+        
+        // WiFi and CSMA work; also need to change network.create...() in getObjects()
+        network.setAuctionType(NetworkType.WIFI);
+        network.setBackboneType(NetworkType.CSMA);
+        
+        // TODO LTE doesn't work yet
+//        network.setAuctionType(NetworkType.LTE);
+//        network.setBackboneType(NetworkType.P2P);
+        
+        network.setAddrBase("10.0.");
+        network.setAddrMask("255.255.255.0");
+        
     }
 
     @Override
@@ -61,16 +84,7 @@ public class TestExperimentNs3Simulator implements Ns3Simulator {
     @Override
     public List<AbstractNs3Object> getObjects() {
 
-        // Number of Nodes representing GLD Houses (each with attached ControllerNetworkInterfaces)
-        final int numEndpointNodes = this.getControllers().size();
-        // Number of Nodes for network backbone (WiFi APs, CSMA/Ethernet "routers", LTE towers)
-        int numBackboneNodes = numEndpointNodes / 20;
-        if (numEndpointNodes % 20 > 0) {
-            numBackboneNodes++;
-        }
-
-        // Not a real builder pattern; after necessary params, use network type for type-specific method to construct nodes, install devices/applications, etc.
-        final List<AbstractNs3Object> objects = network.createWifi(numBackboneNodes, numEndpointNodes, "10.0.0.0", "4ms");
+        final List<AbstractNs3Object> objects = /*network.createLte();/**//*network.createCsma("10Mbps", "20ms");/**/network.createWifi("10.0.0.0", "4ms");/**/
 
         // List of ns-3 Nodes to keep track of specific Nodes
         // final List<Node> nodes = network.getNodes();
