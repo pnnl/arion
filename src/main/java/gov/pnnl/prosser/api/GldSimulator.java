@@ -5,6 +5,9 @@ package gov.pnnl.prosser.api;
 
 import gov.pnnl.prosser.api.gld.enums.SolverMethod;
 import gov.pnnl.prosser.api.gld.lib.GldClock;
+import gov.pnnl.prosser.api.gld.lib.LineSpacing;
+import gov.pnnl.prosser.api.gld.lib.OverheadLineConductor;
+import gov.pnnl.prosser.api.gld.lib.StandardLineConfiguration;
 import gov.pnnl.prosser.api.gld.lib.TransformerConfiguration;
 import gov.pnnl.prosser.api.gld.lib.TriplexLineConductor;
 import gov.pnnl.prosser.api.gld.lib.TriplexLineConfiguration;
@@ -23,12 +26,16 @@ import gov.pnnl.prosser.api.gld.obj.CsvReader;
 import gov.pnnl.prosser.api.gld.obj.House;
 import gov.pnnl.prosser.api.gld.obj.Load;
 import gov.pnnl.prosser.api.gld.obj.Meter;
+import gov.pnnl.prosser.api.gld.obj.Node;
+import gov.pnnl.prosser.api.gld.obj.OverheadLine;
 import gov.pnnl.prosser.api.gld.obj.PlayerClass;
 import gov.pnnl.prosser.api.gld.obj.PlayerObject;
+import gov.pnnl.prosser.api.gld.obj.Recorder;
 import gov.pnnl.prosser.api.gld.obj.Substation;
 import gov.pnnl.prosser.api.gld.obj.Transformer;
 import gov.pnnl.prosser.api.gld.obj.TriplexLine;
 import gov.pnnl.prosser.api.gld.obj.TriplexMeter;
+import gov.pnnl.prosser.api.gld.obj.TriplexNode;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -239,6 +246,18 @@ public class GldSimulator {
     }
 
     /**
+     * Create a Recorder
+     * This will also add it to the internal classes list
+     * 
+     * @return the created object
+     */
+    public Recorder recorder() {
+        final Recorder recorder = new Recorder();
+        this.objects.add(recorder);
+        return recorder;
+    }
+
+    /**
      * Private method to encapsulate common constructor functionality
      *
      * @param object
@@ -258,7 +277,7 @@ public class GldSimulator {
      * Create a Player Object
      * This will add it to the internal objects list, set the name
      * and set the simulator reference to this simulator
-     * 
+     *
      * @param name
      *            the name to set
      * @return the created object
@@ -271,7 +290,7 @@ public class GldSimulator {
      * Create a Climate Object
      * This will add it to the internal objects list, set the name
      * and set the simulator reference to this simulator
-     * 
+     *
      * @param name
      *            the name to set
      * @return the created object
@@ -284,7 +303,7 @@ public class GldSimulator {
      * Create a Auction Object
      * This will add it to the internal objects list, set the name
      * and set the simulator reference to this simulator
-     * 
+     *
      * @param name
      *            the name to set
      * @return the created object
@@ -297,7 +316,7 @@ public class GldSimulator {
      * Create a Transformer Configuration
      * This will add it to the internal objects list, set the name
      * and set the simulator reference to this simulator
-     * 
+     *
      * @param name
      *            the name to set
      * @return the created object
@@ -310,7 +329,7 @@ public class GldSimulator {
      * Create a Triplex Line Conductor
      * This will add it to the internal objects list, set the name
      * and set the simulator reference to this simulator
-     * 
+     *
      * @param name
      *            the name to set
      * @return the created object
@@ -323,7 +342,7 @@ public class GldSimulator {
      * Create a Triple Line Configuration
      * This will add it to the internal objects list, set the name
      * and set the simulator reference to this simulator
-     * 
+     *
      * @param name
      *            the name to set
      * @return the created object
@@ -336,7 +355,7 @@ public class GldSimulator {
      * Create a Substation
      * This will add it to the internal objects list, set the name
      * and set the simulator reference to this simulator
-     * 
+     *
      * @param name
      *            the name to set
      * @return the created object
@@ -349,7 +368,7 @@ public class GldSimulator {
      * Create a Meter
      * This will add it to the internal objects list, set the name
      * and set the simulator reference to this simulator
-     * 
+     *
      * @param name
      *            the name to set
      * @return the created object
@@ -362,7 +381,7 @@ public class GldSimulator {
      * Create a Transformer
      * This will add it to the internal objects list, set the name
      * and set the simulator reference to this simulator
-     * 
+     *
      * @param name
      *            the name to set
      * @return the created object
@@ -375,7 +394,7 @@ public class GldSimulator {
      * Create a Load
      * This will add it to the internal objects list, set the name
      * and set the simulator reference to this simulator
-     * 
+     *
      * @param name
      *            the name to set
      * @return the created object
@@ -388,7 +407,7 @@ public class GldSimulator {
      * Create a Triple Meter
      * This will add it to the internal objects list, set the name
      * and set the simulator reference to this simulator
-     * 
+     *
      * @param name
      *            the name to set
      * @return the created object
@@ -401,7 +420,7 @@ public class GldSimulator {
      * Create a Triple Line
      * This will add it to the internal objects list, set the name
      * and set the simulator reference to this simulator
-     * 
+     *
      * @param name
      *            the name to set
      * @return the created object
@@ -414,7 +433,7 @@ public class GldSimulator {
      * Create a House
      * This will add it to the internal objects list, set the name
      * and set the simulator reference to this simulator
-     * 
+     *
      * @param name
      *            the name to set
      * @return the created object
@@ -427,7 +446,7 @@ public class GldSimulator {
      * Create a CSV Reader
      * This will add it to the internal objects list, set the name
      * and set the simulator reference to this simulator
-     * 
+     *
      * @param name
      *            the name to set
      * @return the created object
@@ -435,4 +454,83 @@ public class GldSimulator {
     public CsvReader csvReader(final String name) {
         return setupObject(new CsvReader(), name);
     }
+
+    /**
+     * Create a Overhead Line Conductor
+     * This will add it to the internal objects list, set the name
+     * and set the simulator reference to this simulator
+     *
+     * @param name
+     *            the name to set
+     * @return the created object
+     */
+    public OverheadLineConductor overheadLineConductor(final String name) {
+        return setupObject(new OverheadLineConductor(), name);
+    }
+
+    /**
+     * Create a Line Spacing
+     * This will add it to the internal objects list, set the name
+     * and set the simulator reference to this simulator
+     *
+     * @param name
+     *            the name to set
+     * @return the created object
+     */
+    public LineSpacing lineSpacing(final String name) {
+        return setupObject(new LineSpacing(), name);
+    }
+
+    /**
+     * Create a Overhead Line Configuration
+     * This will add it to the internal objects list, set the name
+     * and set the simulator reference to this simulator
+     *
+     * @param name
+     *            the name to set
+     * @return the created object
+     */
+    public StandardLineConfiguration<OverheadLineConductor> overheadLineConfiguration(final String name) {
+        return setupObject(new StandardLineConfiguration<OverheadLineConductor>(), name);
+    }
+
+    /**
+     * Create a Node
+     * This will add it to the internal objects list, set the name
+     * and set the simulator reference to this simulator
+     *
+     * @param name
+     *            the name to set
+     * @return the created object
+     */
+    public Node node(final String name) {
+        return setupObject(new Node(), name);
+    }
+
+    /**
+     * Create a Overhead Line
+     * This will add it to the internal objects list, set the name
+     * and set the simulator reference to this simulator
+     *
+     * @param name
+     *            the name to set
+     * @return the created object
+     */
+    public OverheadLine overheadLine(final String name) {
+        return setupObject(new OverheadLine(), name);
+    }
+
+    /**
+     * Create a Triplex Node
+     * This will add it to the internal objects list, set the name
+     * and set the simulator reference to this simulator
+     *
+     * @param name
+     *            the name to set
+     * @return the created object
+     */
+    public TriplexNode triplexNode(final String name) {
+        return setupObject(new TriplexNode(), name);
+    }
+
 }

@@ -1,40 +1,11 @@
-import gov.pnnl.prosser.api.GldSimulator;
-import gov.pnnl.prosser.api.GldSimulatorWriter;
-import gov.pnnl.prosser.api.Ns3SimulatorWriter;
-import gov.pnnl.prosser.api.gld.enums.BidMode;
-import gov.pnnl.prosser.api.gld.enums.BusType;
-import gov.pnnl.prosser.api.gld.enums.ConnectionType;
-import gov.pnnl.prosser.api.gld.enums.ControlMode;
-import gov.pnnl.prosser.api.gld.enums.CoolingSystemType;
-import gov.pnnl.prosser.api.gld.enums.CurveOutput;
-import gov.pnnl.prosser.api.gld.enums.FanType;
-import gov.pnnl.prosser.api.gld.enums.HeatingSystemType;
-import gov.pnnl.prosser.api.gld.enums.InstallationType;
-import gov.pnnl.prosser.api.gld.enums.MotorEfficiency;
-import gov.pnnl.prosser.api.gld.enums.MotorModel;
-import gov.pnnl.prosser.api.gld.enums.PhaseCode;
-import gov.pnnl.prosser.api.gld.enums.SolverMethod;
-import gov.pnnl.prosser.api.gld.enums.SpecialMode;
-import gov.pnnl.prosser.api.gld.enums.UseOverride;
-import gov.pnnl.prosser.api.gld.lib.GldClock;
-import gov.pnnl.prosser.api.gld.lib.TransformerConfiguration;
-import gov.pnnl.prosser.api.gld.lib.TriplexLineConductor;
-import gov.pnnl.prosser.api.gld.lib.TriplexLineConfiguration;
-import gov.pnnl.prosser.api.gld.obj.AuctionClass;
-import gov.pnnl.prosser.api.gld.obj.AuctionObject;
-import gov.pnnl.prosser.api.gld.obj.ClimateObject;
-import gov.pnnl.prosser.api.gld.obj.Controller;
-import gov.pnnl.prosser.api.gld.obj.House;
-import gov.pnnl.prosser.api.gld.obj.Load;
-import gov.pnnl.prosser.api.gld.obj.Meter;
-import gov.pnnl.prosser.api.gld.obj.PlayerClass;
-import gov.pnnl.prosser.api.gld.obj.PlayerObject;
-import gov.pnnl.prosser.api.gld.obj.Recorder;
-import gov.pnnl.prosser.api.gld.obj.Substation;
-import gov.pnnl.prosser.api.gld.obj.Transformer;
-import gov.pnnl.prosser.api.gld.obj.TriplexLine;
-import gov.pnnl.prosser.api.gld.obj.TriplexMeter;
-import gov.pnnl.prosser.api.gld.obj.ZIPLoad;
+/**
+ *
+ */
+
+import gov.pnnl.prosser.api.*;
+import gov.pnnl.prosser.api.gld.enums.*;
+import gov.pnnl.prosser.api.gld.lib.*;
+import gov.pnnl.prosser.api.gld.obj.*;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -42,10 +13,6 @@ import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-
-/**
- *
- */
 
 /**
  * First FNCS experiment
