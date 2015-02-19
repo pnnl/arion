@@ -4,6 +4,8 @@
 package gov.pnnl.prosser.api.gld.enums;
 
 /**
+ * Control Mode for Controllers
+ * 
  * @author nord229
  *
  */

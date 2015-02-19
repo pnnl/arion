@@ -4,6 +4,8 @@
 package gov.pnnl.prosser.api.gld.enums;
 
 /**
+ * Motor Efficiency for Houses
+ * 
  * @author nord229
  *
  */

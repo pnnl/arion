@@ -15,11 +15,22 @@ import javax.tools.ToolProvider;
 import org.apache.commons.io.FilenameUtils;
 
 /**
+ * Main class referenced by the manifest for this Package
+ * This class will take a java file and an output directory and compile the java file to the output directory
+ * It will then reference that compiled file and output the simulator files to the output directory
+ * 
  * @author nord229
- *
  */
 public class ExperimentMain {
 
+    /**
+     * Main method, takes two args, a java file and a output directory
+     * This compiles the java file and then references it to write the experiment to the output directory
+     * 
+     * @param args
+     *            args[0] is the input java file and args[1] is the output directory
+     * @throws Exception
+     */
     public static void main(final String... args) throws Exception {
         if (args.length != 2) {
             throw new Exception("Requires two arguments");

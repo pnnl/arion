@@ -4,6 +4,8 @@
 package gov.pnnl.prosser.api.gld.enums;
 
 /**
+ * Bus Type for Nodes
+ * 
  * @author nord229
  *
  */

@@ -12,7 +12,6 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -26,9 +25,18 @@ import java.util.Set;
  */
 public class GldSimulatorWriter {
 
+    /**
+     * Write a GLD Simulator to a file
+     * 
+     * @param path
+     *            the file to write the simulator
+     * @param gldSimulator
+     *            the simulator to write
+     * @throws IOException
+     */
     public static void writeGldSimulator(final Path path, final GldSimulator gldSimulator) throws IOException {
         final Map<String, String> properties = gldSimulator.getSettings();
-        final Set<String> includes = new HashSet<>(Arrays.asList(gldSimulator.getIncludes()));
+        final Set<String> includes = new HashSet<>(gldSimulator.getIncludes());
         final GldClock clock = Objects.requireNonNull(gldSimulator.getClock(), "GLD clock must be non null");
         final List<Module> modules = gldSimulator.getModules();
         final List<AbstractGldClass> classes = gldSimulator.getClasses();

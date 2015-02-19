@@ -24,6 +24,13 @@ public abstract class AbstractProsserObject implements GldSerializable {
     private String groupId;
 
     /**
+     * Simulator reference
+     */
+    private GldSimulator simulator;
+
+    /**
+     * Get the object name for referencing in files
+     * 
      * @return the name
      */
     public String getName() {
@@ -31,6 +38,8 @@ public abstract class AbstractProsserObject implements GldSerializable {
     }
 
     /**
+     * Set the object name for referencing in files
+     * 
      * @param name
      *            the name to set
      */
@@ -39,6 +48,8 @@ public abstract class AbstractProsserObject implements GldSerializable {
     }
 
     /**
+     * Get the object groupid referenced in files
+     * 
      * @return the groupId
      */
     public String getGroupId() {
@@ -46,11 +57,32 @@ public abstract class AbstractProsserObject implements GldSerializable {
     }
 
     /**
+     * Set the object groupid referenced in files
+     * 
      * @param groupId
      *            the groupId to set
      */
     public void setGroupId(final String groupId) {
         this.groupId = groupId;
+    }
+
+    /**
+     * Get the Simulator reference
+     * 
+     * @return the simulator
+     */
+    public GldSimulator getSimulator() {
+        return simulator;
+    }
+
+    /**
+     * Set the Simulator reference
+     * 
+     * @param simulator
+     *            the simulator to set
+     */
+    public void setSimulator(final GldSimulator simulator) {
+        this.simulator = simulator;
     }
 
     @Override
@@ -74,6 +106,11 @@ public abstract class AbstractProsserObject implements GldSerializable {
                 && Objects.equals(this.groupId, other.groupId);
     }
 
+    /**
+     * The Object type to use when referencing in GLM files
+     * 
+     * @return the object type string
+     */
     public abstract String getGldObjectType();
 
     @Override
@@ -85,6 +122,12 @@ public abstract class AbstractProsserObject implements GldSerializable {
         sb.append("}\n");
     }
 
+    /**
+     * Should write the properties of this object to the StringBuilder
+     * 
+     * @param sb
+     *            the string builder to use
+     */
     protected abstract void writeGldProperties(final StringBuilder sb);
 
 }

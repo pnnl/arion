@@ -49,6 +49,19 @@ public class ClimateObject extends AbstractProsserObject {
         this.reader = reader;
     }
 
+    /**
+     * Sets up a CSV reader for this object, will take the current tmy file for the file in the reader
+     *
+     * @param name
+     *            the CSV reader name
+     * @return the csv reader
+     */
+    public CsvReader addCsvReader(final String name) {
+        this.reader = this.getSimulator().csvReader(name);
+        this.reader.setFilename(this.tmyFile);
+        return this.reader;
+    }
+
     @Override
     public int hashCode() {
         return Objects.hash(super.hashCode(), this.tmyFile);

@@ -4,7 +4,8 @@
 package gov.pnnl.prosser.api.gld.enums;
 
 /**
- *
+ * Solver Method for the Powerflow module
+ * 
  * @author nord229
  *
  */

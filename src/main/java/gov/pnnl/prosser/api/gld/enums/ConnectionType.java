@@ -4,7 +4,8 @@
 package gov.pnnl.prosser.api.gld.enums;
 
 /**
- *
+ * Connection type for Transformers
+ * 
  * @author nord229
  *
  */

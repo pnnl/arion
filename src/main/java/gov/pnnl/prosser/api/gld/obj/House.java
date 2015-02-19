@@ -379,8 +379,38 @@ public class House extends ResidentialEnduse {
         this.controller = controller;
     }
 
+    /**
+     * Add a ZIPLoad to this House
+     * 
+     * @param load
+     *            the load to add
+     */
     public void addLoad(final ZIPLoad load) {
         this.loads.add(load);
+    }
+
+    /**
+     * Create and Add a Zip load to this house
+     * 
+     * @return the Zip load
+     */
+    public ZIPLoad addLoad() {
+        final ZIPLoad load = new ZIPLoad();
+        this.loads.add(load);
+        return load;
+    }
+
+    /**
+     * Create and set the controller on this house
+     * 
+     * @param name
+     *            the controller name
+     * @return the controller
+     */
+    public Controller controller(final String name) {
+        this.controller = new Controller();
+        controller.setName(name);
+        return controller;
     }
 
     @Override

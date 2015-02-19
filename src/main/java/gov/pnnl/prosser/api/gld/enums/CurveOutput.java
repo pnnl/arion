@@ -4,6 +4,8 @@
 package gov.pnnl.prosser.api.gld.enums;
 
 /**
+ * Curve Output level for Auctions
+ * 
  * @author nord229
  *
  */

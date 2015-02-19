@@ -341,4 +341,24 @@ public class AuctionObject extends AbstractProsserObject implements NetworkCapab
         GldUtils.writeProperty(sb, "warmup", warmup);
     }
 
+    /**
+     * Create, set and return a player object
+     * 
+     * @return the player object
+     */
+    public PlayerObject player() {
+        this.player = new PlayerObject();
+        return player;
+    }
+
+    /**
+     * Create, set and return a recorder object
+     * 
+     * @return the recorder
+     */
+    public Recorder recorder() {
+        this.recorder = new Recorder();
+        return recorder;
+    }
+
 }
