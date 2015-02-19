@@ -5,9 +5,9 @@ package gov.pnnl.prosser.api.ns3.obj;
 
 import gov.pnnl.prosser.api.AbstractNs3Object;
 import gov.pnnl.prosser.api.gld.obj.AuctionObject;
-import gov.pnnl.prosser.api.pwr.obj.Controller;
-import gov.pnnl.prosser.api.pwr.obj.ControllerNetworkInterface;
-import gov.pnnl.prosser.api.pwr.obj.MarketNetworkInterface;
+import gov.pnnl.prosser.api.gld.obj.Controller;
+import gov.pnnl.prosser.api.gld.obj.ControllerNetworkInterface;
+import gov.pnnl.prosser.api.gld.obj.MarketNetworkInterface;
 
 import java.util.ArrayList;
 import java.util.List;

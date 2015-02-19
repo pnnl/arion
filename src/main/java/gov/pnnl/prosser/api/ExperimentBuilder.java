@@ -3,24 +3,24 @@
  */
 package gov.pnnl.prosser.api;
 
-import gov.pnnl.prosser.api.gld.GldClock;
+import gov.pnnl.prosser.api.gld.lib.GldClock;
+import gov.pnnl.prosser.api.gld.lib.LineSpacing;
+import gov.pnnl.prosser.api.gld.lib.OverheadLineConductor;
+import gov.pnnl.prosser.api.gld.lib.StandardLineConfiguration;
+import gov.pnnl.prosser.api.gld.lib.TransformerConfiguration;
+import gov.pnnl.prosser.api.gld.lib.TriplexLineConductor;
+import gov.pnnl.prosser.api.gld.lib.TriplexLineConfiguration;
 import gov.pnnl.prosser.api.gld.module.ModuleBuilder;
 import gov.pnnl.prosser.api.gld.obj.ClimateObject;
+import gov.pnnl.prosser.api.gld.obj.House;
+import gov.pnnl.prosser.api.gld.obj.Node;
+import gov.pnnl.prosser.api.gld.obj.OverheadLine;
 import gov.pnnl.prosser.api.gld.obj.Recorder;
-import gov.pnnl.prosser.api.pwr.lib.LineSpacing;
-import gov.pnnl.prosser.api.pwr.lib.OverheadLineConductor;
-import gov.pnnl.prosser.api.pwr.lib.StandardLineConfiguration;
-import gov.pnnl.prosser.api.pwr.lib.TransformerConfiguration;
-import gov.pnnl.prosser.api.pwr.lib.TriplexLineConductor;
-import gov.pnnl.prosser.api.pwr.lib.TriplexLineConfiguration;
-import gov.pnnl.prosser.api.pwr.obj.House;
-import gov.pnnl.prosser.api.pwr.obj.Node;
-import gov.pnnl.prosser.api.pwr.obj.OverheadLine;
-import gov.pnnl.prosser.api.pwr.obj.Transformer;
-import gov.pnnl.prosser.api.pwr.obj.TriplexLine;
-import gov.pnnl.prosser.api.pwr.obj.TriplexMeter;
-import gov.pnnl.prosser.api.pwr.obj.TriplexNode;
-import gov.pnnl.prosser.api.pwr.obj.ZIPLoad;
+import gov.pnnl.prosser.api.gld.obj.Transformer;
+import gov.pnnl.prosser.api.gld.obj.TriplexLine;
+import gov.pnnl.prosser.api.gld.obj.TriplexMeter;
+import gov.pnnl.prosser.api.gld.obj.TriplexNode;
+import gov.pnnl.prosser.api.gld.obj.ZIPLoad;
 
 import java.util.HashMap;
 import java.util.Map;

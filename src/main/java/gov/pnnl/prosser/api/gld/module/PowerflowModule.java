@@ -4,6 +4,7 @@
 package gov.pnnl.prosser.api.gld.module;
 
 import gov.pnnl.prosser.api.GldUtils;
+import gov.pnnl.prosser.api.gld.enums.SolverMethod;
 
 import java.util.Objects;
 

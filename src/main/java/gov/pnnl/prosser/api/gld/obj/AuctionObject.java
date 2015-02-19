@@ -6,6 +6,8 @@ package gov.pnnl.prosser.api.gld.obj;
 import gov.pnnl.prosser.api.AbstractProsserObject;
 import gov.pnnl.prosser.api.GldUtils;
 import gov.pnnl.prosser.api.NetworkCapable;
+import gov.pnnl.prosser.api.gld.enums.CurveOutput;
+import gov.pnnl.prosser.api.gld.enums.SpecialMode;
 
 /**
  * @author nord229

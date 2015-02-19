@@ -7,10 +7,10 @@ import gov.pnnl.prosser.api.AbstractNs3Object;
 import gov.pnnl.prosser.api.c.obj.StringMap;
 import gov.pnnl.prosser.api.c.obj.StringVector;
 import gov.pnnl.prosser.api.gld.obj.AuctionObject;
+import gov.pnnl.prosser.api.gld.obj.Controller;
 import gov.pnnl.prosser.api.ns3.enums.NetworkType;
 import gov.pnnl.prosser.api.ns3.enums.Qci;
 import gov.pnnl.prosser.api.ns3.module.Module;
-import gov.pnnl.prosser.api.pwr.obj.Controller;
 
 import java.util.ArrayList;
 import java.util.List;

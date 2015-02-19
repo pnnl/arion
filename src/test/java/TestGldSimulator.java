@@ -4,11 +4,10 @@
 
 import gov.pnnl.prosser.api.*;
 import gov.pnnl.prosser.api.gld.*;
+import gov.pnnl.prosser.api.gld.enums.*;
+import gov.pnnl.prosser.api.gld.lib.*;
 import gov.pnnl.prosser.api.gld.module.*;
 import gov.pnnl.prosser.api.gld.obj.*;
-import gov.pnnl.prosser.api.pwr.enums.*;
-import gov.pnnl.prosser.api.pwr.lib.*;
-import gov.pnnl.prosser.api.pwr.obj.*;
 
 import java.time.*;
 import java.util.*;

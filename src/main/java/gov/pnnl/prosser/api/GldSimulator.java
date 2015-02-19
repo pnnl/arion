@@ -3,7 +3,7 @@
  */
 package gov.pnnl.prosser.api;
 
-import gov.pnnl.prosser.api.gld.GldClock;
+import gov.pnnl.prosser.api.gld.lib.GldClock;
 import gov.pnnl.prosser.api.gld.module.Module;
 import gov.pnnl.prosser.api.gld.obj.AbstractGldClass;
 

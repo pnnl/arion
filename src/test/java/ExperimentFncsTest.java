@@ -1,8 +1,8 @@
 import gov.pnnl.prosser.api.GldSimulatorWriter;
 import gov.pnnl.prosser.api.Ns3SimulatorWriter;
 import gov.pnnl.prosser.api.gld.obj.AuctionObject;
-import gov.pnnl.prosser.api.pwr.obj.Controller;
-import gov.pnnl.prosser.api.pwr.obj.House;
+import gov.pnnl.prosser.api.gld.obj.Controller;
+import gov.pnnl.prosser.api.gld.obj.House;
 
 import java.io.IOException;
 import java.nio.file.Path;

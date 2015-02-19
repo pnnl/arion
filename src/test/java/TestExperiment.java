@@ -1,6 +1,6 @@
 import gov.pnnl.prosser.api.Ns3SimulatorWriter;
-import gov.pnnl.prosser.api.pwr.obj.ControllerNetworkInterface;
-import gov.pnnl.prosser.api.pwr.obj.MarketNetworkInterface;
+import gov.pnnl.prosser.api.gld.obj.ControllerNetworkInterface;
+import gov.pnnl.prosser.api.gld.obj.MarketNetworkInterface;
 
 import java.io.IOException;
 import java.nio.file.Files;
