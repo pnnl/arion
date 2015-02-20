@@ -1,7 +1,7 @@
 /**
  * 
  */
-package gov.pnnl.prosser.api.ns3.obj;
+package gov.pnnl.prosser.api.c.obj;
 
 import gov.pnnl.prosser.api.AbstractNs3Object;
 
