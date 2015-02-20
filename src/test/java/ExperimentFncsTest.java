@@ -364,7 +364,7 @@ public class ExperimentFncsTest {
         controller.setNamePrefix("F1_C_");
         controller.setId(id);
 
-        // Generate load on houses
+        // Generate the loads on the house
         generateLightsLoad(house, scheduleSkew);
         generateClothesWasherLoad(house, scheduleSkew);
         generateRefrigeratorLoad(house, scheduleSkew);
