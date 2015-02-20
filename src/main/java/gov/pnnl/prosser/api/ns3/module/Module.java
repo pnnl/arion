@@ -7,24 +7,28 @@ package gov.pnnl.prosser.api.ns3.module;
  * @author happ546
  *
  */
-public class Module {
+public abstract class Module {
 	
-	private String name;
-	
+	protected String name;
 	/**
-	 * @param name the name for this Module
+	 * Set to true if this module is in the ns-3 API, 
+	 * false if part of c libraries.
+	 * Used by writeNs3String
 	 */
-	public Module (String name) {
-		this.name = name;
-	}
+	protected boolean ns3;
 
 	/**
 	 * Write the #include line for this module's header file
 	 * TODO Add support for non-ns3 includes (C++ library stuff)
-	 * @param sb
+	 * @param sb the StringBuilder to write to
 	 */
 	public void writeNs3String(final StringBuilder sb) {
-		sb.append("#include \"ns3/" + this.name + ".h\"\n");
+		sb.append("#include ");
+		if (ns3) {
+			sb.append("\"ns3/" + this.name + ".h\"\n");
+		} else {
+			sb.append("<" + this.name + ">\n");
+		}
 	}
 
 }
