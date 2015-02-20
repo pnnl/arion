@@ -15,11 +15,10 @@ import java.util.List;
  * @author happ546
  *
  */
-public class TestNs3Simulator implements Ns3Simulator {
+public class TestNs3Simulator {
 	
 	private Ns3Network network;
 	
-	@Override
 	public void setup() {
 		// Get list of end devices from Peter
 		// List<..AbstractProsserObject?..> gldList = peter'sList;
@@ -34,13 +33,11 @@ public class TestNs3Simulator implements Ns3Simulator {
 		network.setStopTime(10.0);
 	}
 	
-	@Override
 	public List<Module> getModules() {
 		// enum? of all commonly used modules that network can select from based on params
 		return network.getModules();
 	}
 
-	@Override
 	public List<Namespace> getNamespaces() {
 		List<Namespace> namespaces = new ArrayList<Namespace>();
 		namespaces.add(new Namespace("ns3"));
@@ -49,7 +46,6 @@ public class TestNs3Simulator implements Ns3Simulator {
 		return namespaces;
 	}
 
-	@Override
 	public List<AbstractNs3Object> getObjects() {
 		
 		final List<AbstractNs3Object> objects = network.build(); // Not a real builder pattern; after necessary params, use network type for type-specific method to construct nodes, install devices/applications, etc.

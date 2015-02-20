@@ -16,8 +16,13 @@ public abstract class AbstractNs3Object {
 	private boolean pointer;
 	private static String printObj;
 
+	/**
+	 * Initializes pointer flag to false
+	 * Checks if printObj already contains text from other ns-3 objects
+	 */
 	public AbstractNs3Object() {
 		this.name = null;
+		this.pointer = false;
 		if (AbstractNs3Object.printObj == null) {
 			AbstractNs3Object.printObj = "";
 		}

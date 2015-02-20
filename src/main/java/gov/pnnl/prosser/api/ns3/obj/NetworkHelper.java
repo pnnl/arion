@@ -12,6 +12,10 @@ import gov.pnnl.prosser.api.ns3.enums.NetworkType;
  */
 public class NetworkHelper extends AbstractNs3Object {
 	
+	/**
+	 * @param type
+	 * @return the NetworkHelper of the given NetworkType
+	 */
 	public NetworkHelper getHelper(NetworkType type) {
 		
 		if (type.name().equalsIgnoreCase("csma")) {

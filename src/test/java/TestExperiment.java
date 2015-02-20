@@ -1,3 +1,4 @@
+import gov.pnnl.prosser.api.Ns3Simulator;
 import gov.pnnl.prosser.api.Ns3SimulatorWriter;
 import gov.pnnl.prosser.api.gld.obj.ControllerNetworkInterface;
 import gov.pnnl.prosser.api.gld.obj.MarketNetworkInterface;
@@ -43,10 +44,10 @@ public class TestExperiment {
             controllerNI.setMarketNI(marketNI);
             controllerNIs.add(controllerNI);
         }
-        final TestExperimentNs3Simulator ns3Simulator = new TestExperimentNs3Simulator();
-        ns3Simulator.setControllerNIs(controllerNIs);
-        ns3Simulator.setMarketNIs(marketNIs);
-        ns3Simulator.setGldNodePrefix(controllerPrefix);
+        final Ns3Simulator ns3Simulator = new Ns3Simulator();
+//        ns3Simulator.setControllerNIs(controllerNIs);
+//        ns3Simulator.setMarketNIs(marketNIs);
+//        ns3Simulator.setGldNodePrefix(controllerPrefix);
         Ns3SimulatorWriter.writeNs3Simulator(outPath.resolve("ns3.cc"), ns3Simulator);
         System.out.println("Written!");
         

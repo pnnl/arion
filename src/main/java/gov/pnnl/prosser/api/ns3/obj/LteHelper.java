@@ -3,6 +3,8 @@
  */
 package gov.pnnl.prosser.api.ns3.obj;
 
+import gov.pnnl.prosser.api.c.obj.Pointer;
+
 /**
  * The LteHelper class simplifies setting up an LTE network, handling 
  * the creation and attribute-setting of the wireless channel and connecting 

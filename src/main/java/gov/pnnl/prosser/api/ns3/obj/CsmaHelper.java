@@ -3,6 +3,8 @@
  */
 package gov.pnnl.prosser.api.ns3.obj;
 
+import gov.pnnl.prosser.api.c.obj.Pointer;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -30,7 +32,19 @@ public class CsmaHelper extends NetworkHelper {
 	 */
 	public void install(NodeContainer sourceNodes, NetDeviceContainer destinationContainer) {
 		destinationContainer.addNodes(sourceNodes);
-		appendPrintObj(destinationContainer.getName() + " = " + this.getName() + ".Install(" + sourceNodes.getName() + ");\n");
+		appendPrintObj(destinationContainer.getName() + " = " + this.getName() + 
+				".Install(" + sourceNodes.getName() + ");\n");
+	}
+	
+	/**
+	 * @param nodePtr
+	 * @param csmaChannelPtr
+	 * @param destinationContainer
+	 */
+	public void install(Pointer<Node> nodePtr, Pointer<CsmaChannel> csmaChannelPtr, 
+						NetDeviceContainer destinationContainer) {
+		appendPrintObj(destinationContainer.getName() + " = " + this.getName() + 
+				".Install(" + nodePtr.getName() + ", " + csmaChannelPtr.getName() + ");\n");
 	}
 	
 	/**
@@ -40,7 +54,8 @@ public class CsmaHelper extends NetworkHelper {
 	 */
 	public void setChannelAttribute(String attr, String value) {
 		channelAttributes.put(attr, value);
-		appendPrintObj(this.getName() + ".SetChannelAttribute(\"" + attr + "\", StringValue(\"" + value + "\"));\n");
+		appendPrintObj(this.getName() + ".SetChannelAttribute(\"" + attr + 
+				"\", StringValue(\"" + value + "\"));\n");
 	}
 	
 	/**
@@ -50,7 +65,8 @@ public class CsmaHelper extends NetworkHelper {
 	 */
 	public void setDeviceAttribute(String attr, String value) {
 		deviceAttributes.put(attr, value);
-		appendPrintObj(this.getName() + ".SetDeviceAttribute(\"" + attr + "\", StringValue(\"" + value + "\"));\n");
+		appendPrintObj(this.getName() + ".SetDeviceAttribute(\"" + attr + 
+				"\", StringValue(\"" + value + "\"));\n");
 	}
 	
 }

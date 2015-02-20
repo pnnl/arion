@@ -4,13 +4,14 @@
 package gov.pnnl.prosser.api.ns3.obj;
 
 import gov.pnnl.prosser.api.AbstractNs3Object;
+import gov.pnnl.prosser.api.c.obj.Pointer;
 import gov.pnnl.prosser.api.c.obj.StringMap;
 import gov.pnnl.prosser.api.c.obj.StringVector;
 import gov.pnnl.prosser.api.gld.obj.AuctionObject;
 import gov.pnnl.prosser.api.gld.obj.Controller;
 import gov.pnnl.prosser.api.ns3.enums.NetworkType;
 import gov.pnnl.prosser.api.ns3.enums.Qci;
-import gov.pnnl.prosser.api.ns3.module.Module;
+import gov.pnnl.prosser.api.ns3.module.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -136,8 +137,8 @@ public class Ns3Network {
 	 * 
 	 * @param name of the Module to add to the Modules list
 	 */
-	private void addModule(String name) {
-		modules.add(new Module(name));
+	private void addModule(Module mod) {
+		modules.add(mod);
 	}	
 
 	/**
@@ -247,7 +248,7 @@ public class Ns3Network {
 								StringVector<String> names,
 								StringMap<String, String> marketToControllerMap) {
 		
-		this.addModule("point-to-point-module"); // To use PointToPoint network type
+		this.addModule(new PointToPoint()); // To use PointToPoint network type
 		
 		int numAuctions = this.getAuctions().size();
 		//int numConts = numNodes/20 + 1; // Number of NodeContainers to create
@@ -345,14 +346,14 @@ public class Ns3Network {
 		names.setName("names");
 		
 		// Add the necessary modules for WiFi
-		this.addModule("core-module");
-		this.addModule("mobility-module");
-		this.addModule("applications-module");
-		this.addModule("wifi-module");
-		this.addModule("network-module");
-		this.addModule("csma-module");
-		this.addModule("internet-module");
-		this.addModule("bridge-helper");
+		this.addModule(new Core());
+		this.addModule(new Mobility());
+		this.addModule(new Applications());
+		this.addModule(new Wifi());
+		this.addModule(new Network());
+		this.addModule(new Csma());
+		this.addModule(new Internet());
+		this.addModule(new Bridge());
 		
 		
 		// Setup the Internet protocols
@@ -617,8 +618,8 @@ public class Ns3Network {
 	 * starts the ns-3 simulator
 	 */
 	private void setupFncsApplicationHelperAndSimulator(StringVector<String> names, NodeContainer gldNodes, StringMap<String, String> marketToControllerMap) {
-		this.addModule("fncs");
-		this.addModule("fncsapplication-helper");
+		this.addModule(new Fncs());
+		this.addModule(new FncsApplication());
 		
 		FNCSApplicationHelper fncsHelper = new FNCSApplicationHelper();
 		fncsHelper.setName("fncsHelper");
@@ -680,14 +681,19 @@ public class Ns3Network {
 	 */
 	public List<AbstractNs3Object> createLte() {
 		
-		this.addModule("core-module");
-		this.addModule("network-module");
-		this.addModule("internet-module");
-		this.addModule("applications-module");
-		this.addModule("point-to-point-module");
 		
-		this.addModule("lte-module");
-		this.addModule("mobility-module");
+		this.addModule(new Core());
+		this.addModule(new Mobility());
+		this.addModule(new Applications());
+		this.addModule(new Wifi());
+		this.addModule(new Network());
+		this.addModule(new Csma());
+		this.addModule(new Internet());
+		this.addModule(new Bridge());
+		this.addModule(new PointToPoint());
+		// LTE specific
+		this.addModule(new Lte());
+		this.addModule(new Mobility());
 		
 		// Creates the FNCS simulator
 		setupFncsSimulator();
@@ -781,37 +787,8 @@ public class Ns3Network {
 			mobilityHelper.setMobilityModel("ns3::ConstantPositionMobilityModel"); 
 			mobilityHelper.install(enbNodes);
 			
-			// Install the LTE protocol stack on the eNB nodes
-			lteHelper.installEnbDevice(enbNodes, enbDevices); 
-			/* FIXME assert failed. cond="uid <= m_information.size () && uid != 0", file=../src/core/model/type-id.cc, line=231
-				terminate called without an active exception
-				Aborted (core dumped)
-				
-				#0  0x00007ffff3f3c8c7 in raise () from /lib64/libc.so.6
-				#1  0x00007ffff3f3e52a in abort () from /lib64/libc.so.6
-				#2  0x00007ffff4844fdd in __gnu_cxx::__verbose_terminate_handler() ()
-				   from /lib64/libstdc++.so.6
-				#3  0x00007ffff4842e56 in ?? () from /lib64/libstdc++.so.6
-				#4  0x00007ffff4842ea1 in std::terminate() () from /lib64/libstdc++.so.6
-				#5  0x00007ffff5ea9150 in ns3::IidManager::LookupInformation (
-				    this=this@entry=0x7ffff61ae3c0 <ns3::Singleton<ns3::IidManager>::Get()::object>, uid=uid@entry=0) at ../src/core/model/type-id.cc:231
-				#6  0x00007ffff5eaa6b2 in ns3::IidManager::GetConstructor (
-				    this=0x7ffff61ae3c0 <ns3::Singleton<ns3::IidManager>::Get()::object>, 
-				    uid=uid@entry=0) at ../src/core/model/type-id.cc:331
-				#7  0x00007ffff5eaf457 in ns3::TypeId::GetConstructor (
-				    this=this@entry=0x7fffffffd638) at ../src/core/model/type-id.cc:726
-				#8  0x00007ffff5f272e8 in ns3::ObjectFactory::Create (
-				    this=this@entry=0x7fffffffd638) at ../src/core/model/object-factory.cc:93
-				#9  0x00007ffff523df34 in ns3::LteHelper::DoInitialize (this=0x7fffffffd550)
-				    at ../src/lte/helper/lte-helper.cc:91
-				#10 0x00007ffff5ec1f99 in ns3::Object::Initialize (
-				    this=this@entry=0x7fffffffd550) at ../src/core/model/object.cc:198
-				#11 0x00007ffff523b0a6 in ns3::LteHelper::InstallEnbDevice (
-				    this=0x7fffffffd550, c=...) at ../src/lte/helper/lte-helper.cc:350
-				#12 0x0000000000404ac0 in main (argc=1, argv=0x7fffffffdf58) at ns3.cc:72
-
-			*/
-
+			// Install the LTE protocol stack on the eNB nodes; not for EPC
+			//lteHelper.installEnbDevice(enbNodes, enbDevices); 
 			
 			lteDeviceContainers.add(enbDevices);
 			
@@ -836,13 +813,14 @@ public class Ns3Network {
 				mobilityHelper.setMobilityModel("ns3::ConstantPositionMobilityModel"); 
 				mobilityHelper.install(ueNodes);
 				
+				// Install IP stack on UEs
 				iStackHelper.install(ueNodes);
 				
 				NetDeviceContainer ueDevices = new NetDeviceContainer();
 				ueDevices.setName("ueDevices_" + j);
 				lteHelper.installUeDevice(ueNodes, ueDevices); // Install the LTE protocol stack on the UE nodes
 				lteHelper.attach(ueDevices, enbDevices, j); // Attach the newly created UE devices to an eNB device
-				lteHelper.activateDataRadioBearer(ueDevices, bearer);
+				//lteHelper.activateDataRadioBearer(ueDevices, bearer); // not used for EPC
 				objects.add(ueDevices);
 				
 				lteDeviceContainers.add(ueDevices);
@@ -879,13 +857,12 @@ public class Ns3Network {
 	 */
 	public List<AbstractNs3Object> createCsma(String dataRate, String delay) {
 		
-		this.addModule("core-module");
-		this.addModule("network-module");
-		this.addModule("internet-module");
-		this.addModule("applications-module");
-		
-		this.addModule("csma-module");
-		this.addModule("nix-vector-routing-module");
+		this.addModule(new Core());
+		this.addModule(new Applications());
+		this.addModule(new Network());
+		this.addModule(new Csma());
+		this.addModule(new Internet());
+		//this.addModule("nix-vector-routing-module");
 		
 		// Creates the FNCS simulator
 		setupFncsSimulator();
@@ -972,10 +949,12 @@ public class Ns3Network {
 		
 		List<AbstractNs3Object> objects = new ArrayList<AbstractNs3Object>();
 		
-		this.addModule("core-module");
-		this.addModule("network-module");
-		this.addModule("internet-module");
-		this.addModule("applications-module");
+		this.addModule(new Core());
+		this.addModule(new Applications());
+
+		// For FNCS
+		this.addModule(new Fncs());
+		this.addModule(new FncsApplication());
 		
 		
 		NodeContainer gldNodes = new NodeContainer();
@@ -983,10 +962,6 @@ public class Ns3Network {
 		
 		StringVector<String> names = new StringVector<String>();
 		names.setName("names");
-		
-		// For FNCS
-		this.addModule("fncs");
-		this.addModule("fncsapplication-helper");
 		
 		FNCSApplicationHelper fncsHelper = new FNCSApplicationHelper();
 		fncsHelper.setName("fncsHelper");

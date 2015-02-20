@@ -3,7 +3,6 @@
  */
 
 import gov.pnnl.prosser.api.AbstractNs3Object;
-import gov.pnnl.prosser.api.Ns3Simulator;
 import gov.pnnl.prosser.api.gld.obj.AuctionObject;
 import gov.pnnl.prosser.api.gld.obj.Controller;
 import gov.pnnl.prosser.api.gld.obj.ControllerNetworkInterface;
@@ -20,7 +19,7 @@ import java.util.List;
  * @author happ546
  *
  */
-public class TestExperimentNs3Simulator implements Ns3Simulator {
+public class TestExperimentNs3Simulator {
 
     private Ns3Network network;
 
@@ -34,7 +33,6 @@ public class TestExperimentNs3Simulator implements Ns3Simulator {
 
     private List<Controller> controllers;
 
-    @Override
     public void setup() {
 
         // User inputs basic parameters
@@ -55,24 +53,22 @@ public class TestExperimentNs3Simulator implements Ns3Simulator {
         network.setNumBackboneNodes(numBackboneNodes);
         
         // WiFi and CSMA work; also need to change network.create...() in getObjects()
-        network.setAuctionType(NetworkType.WIFI);
-        network.setBackboneType(NetworkType.CSMA);
+//        network.setAuctionType(NetworkType.WIFI);
+//        network.setBackboneType(NetworkType.CSMA);
         
         // TODO LTE doesn't work yet
-//        network.setAuctionType(NetworkType.LTE);
-//        network.setBackboneType(NetworkType.P2P);
+        network.setAuctionType(NetworkType.LTE);
+        network.setBackboneType(NetworkType.P2P);
         
         network.setAddrBase("10.0.");
         network.setAddrMask("255.255.255.0");
         
     }
 
-    @Override
     public List<Module> getModules() {
         return network.getModules();
     }
 
-    @Override
     public List<Namespace> getNamespaces() {
         final List<Namespace> namespaces = new ArrayList<Namespace>();
         namespaces.add(new Namespace("ns3"));
@@ -81,10 +77,9 @@ public class TestExperimentNs3Simulator implements Ns3Simulator {
         return namespaces;
     }
 
-    @Override
     public List<AbstractNs3Object> getObjects() {
 
-        final List<AbstractNs3Object> objects = /*network.createLte();/**//*network.createCsma("10Mbps", "20ms");/**/network.createWifi("10.0.0.0", "4ms");/**/
+        final List<AbstractNs3Object> objects = /**/network.createLte();/**//*network.createCsma("10Mbps", "20ms");/**//*network.createWifi("10.0.0.0", "4ms");/**/
 
         // List of ns-3 Nodes to keep track of specific Nodes
         // final List<Node> nodes = network.getNodes();
