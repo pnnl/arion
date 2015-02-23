@@ -8,9 +8,12 @@ package gov.pnnl.prosser.api.ns3.obj;
  *
  */
 public class CsmaNetDevice extends NetDevice {
-	
-	public void setName(String name) {
-		
+
+	/**
+	 * @param name
+	 */
+	public CsmaNetDevice(String name) {
+		this.setName(name);
 	}
 
 }

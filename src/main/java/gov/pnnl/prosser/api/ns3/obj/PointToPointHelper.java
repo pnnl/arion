@@ -16,8 +16,10 @@ public class PointToPointHelper extends NetworkHelper {
 	
 	/**
 	 * Construct a new point to point helper to handle creation of a p2p node/channel
+	 * @param name
 	 */
-	public PointToPointHelper() {
+	public PointToPointHelper(String name) {
+		this.setName(name);
 		this.channelAttributes = new HashMap<String, String>();
 		this.deviceAttributes = new HashMap<String, String>();
 	}

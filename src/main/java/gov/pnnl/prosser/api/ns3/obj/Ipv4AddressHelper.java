@@ -12,6 +12,13 @@ import gov.pnnl.prosser.api.AbstractNs3Object;
 public class Ipv4AddressHelper extends AbstractNs3Object {
 	
 	/**
+	 * @param name
+	 */
+	public Ipv4AddressHelper(String name) {
+		this.setName(name);
+	}
+
+	/**
 	 * 
 	 * @param ipBase the IPv4 address base for DHCP address assignment to begin at
 	 * @param mask the subnet mask used for the IP addresses set by this Ipv4AddressHelper

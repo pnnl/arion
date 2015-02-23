@@ -40,7 +40,7 @@ public class PointToPointEpcHelper extends NetworkHelper {
 		// Set the dereferencer operator appropriately for pointer encapsulation or not
 		String deref = this.getPointer() ? "->" : ".";
 		appendPrintObj(this.getName() + deref + "GetUeDefaultGatewayAddress();\n");
-		return new Ipv4Address();
+		return new Ipv4Address(null);
 	}
 	
 }

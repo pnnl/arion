@@ -13,6 +13,13 @@ import gov.pnnl.prosser.api.c.obj.Pointer;
 public class PointToPointChannel extends AbstractNs3Object {
 	
 	/**
+	 * @param name
+	 */
+	public PointToPointChannel(String name) {
+		this.setName(name);
+	}
+
+	/**
 	 * @param device the PointToPointNetDevice to connect to this PointToPointChannel
 	 */
 	public void attach(Pointer<PointToPointNetDevice> device) {

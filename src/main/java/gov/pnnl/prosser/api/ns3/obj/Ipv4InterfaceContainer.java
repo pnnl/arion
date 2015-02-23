@@ -11,4 +11,11 @@ import gov.pnnl.prosser.api.AbstractNs3Object;
  */
 public class Ipv4InterfaceContainer extends AbstractNs3Object {
 
+	/**
+	 * @param name
+	 */
+	public Ipv4InterfaceContainer(String name) {
+		this.setName(name);
+	}
+
 }

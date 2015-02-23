@@ -11,8 +11,10 @@ public class UdpEchoServerHelper extends UdpEchoHelper {
 	
 	/**
 	 * Constructs new UdpEchoServerHelper & sets printObj to c++ appropriate constructor
+	 * @param name
 	 */
-	public UdpEchoServerHelper() {
+	public UdpEchoServerHelper(String name) {
+		this.setName(name);
 		setPrintObj("UdpEchoServerHelper " + this.getName());
 	}
 

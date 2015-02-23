@@ -19,13 +19,13 @@ public class NetworkHelper extends AbstractNs3Object {
 	public NetworkHelper getHelper(NetworkType type) {
 		
 		if (type.name().equalsIgnoreCase("csma")) {
-			return new CsmaHelper();
+			return new CsmaHelper(this.getName());
 		} else if (type.name().equalsIgnoreCase("lte")) {
-			return new LteHelper();
+			return new LteHelper(this.getName());
 		} else if (type.name().equalsIgnoreCase("p2p")) {
-			return new PointToPointHelper();
+			return new PointToPointHelper(this.getName());
 		} else {
-			return new WifiHelper();
+			return new WifiHelper(this.getName());
 		}
 
 	}

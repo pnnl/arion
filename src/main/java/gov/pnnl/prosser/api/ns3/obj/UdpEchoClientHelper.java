@@ -18,8 +18,10 @@ public class UdpEchoClientHelper extends UdpEchoHelper {
 	
 	/**
 	 * Creates a new UdpEchoClientHelper
+	 * @param name
 	 */
-	public UdpEchoClientHelper() {
+	public UdpEchoClientHelper(String name) {
+		this.setName(name);
 		attributes = new HashMap<String, Double>();
 	}
 

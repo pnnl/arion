@@ -183,13 +183,18 @@ public class Ns3Network {
 	 */
 	public void setControllers(List<Controller> controllers) {
 		this.controllers = controllers;
+		int numBackboneNodes = this.controllers.size() / 20;
+		if (this.controllers.size() % 20 != 0) {
+			numBackboneNodes++;
+		}
+		this.setNumBackboneNodes(numBackboneNodes);
 	}
 	
 	/**
 	 * @return the number of Auction Nodes
 	 */
 	public int getNumAuctionNodes() {
-		return this.numAuctionNodes;
+		return this.auctions.size();
 	}
 
 	/**
@@ -218,14 +223,11 @@ public class Ns3Network {
 	 * @param stack the InternetStackHelper used to set up the IP routing tables
 	 */
 	private void setupIp(InternetStackHelper stack) {
-		Ipv4NixVectorHelper nixRouting = new Ipv4NixVectorHelper();
-		nixRouting.setName("nixRouting");
+		Ipv4NixVectorHelper nixRouting = new Ipv4NixVectorHelper("nixRouting");
 		
-		Ipv4StaticRoutingHelper staticRouting = new Ipv4StaticRoutingHelper();
-		staticRouting.setName("staticRouting");
+		Ipv4StaticRoutingHelper staticRouting = new Ipv4StaticRoutingHelper("staticRouting");
 		
-		Ipv4ListRoutingHelper list = new Ipv4ListRoutingHelper();
-		list.setName("list");
+		Ipv4ListRoutingHelper list = new Ipv4ListRoutingHelper("list");
 		list.add(staticRouting, 0);
 		list.add(nixRouting, 10);
 		
@@ -254,8 +256,7 @@ public class Ns3Network {
 		//int numConts = numNodes/20 + 1; // Number of NodeContainers to create
 		int numConts = baseNodes.length;
 		
-		NodeContainer auctionCon = new NodeContainer();
-		auctionCon.setName("marketCon");
+		NodeContainer auctionCon = new NodeContainer("marketCon");
 		auctionCon.create(numAuctions);
 		
 		// Installs an IP protocol stack on the Nodes in the Market NodeContainer
@@ -265,8 +266,7 @@ public class Ns3Network {
 		gldNodes.addNodeContainer(auctionCon);
 		
 		// Creates a point to point channel to connect the Market and network nodes
-		PointToPointHelper p2pHelper = new PointToPointHelper();
-		p2pHelper.setName("p2pHelper");
+		PointToPointHelper p2pHelper = new PointToPointHelper("p2pHelper");
 		p2pHelper.setDeviceAttribute("DataRate", "4Mbps");
 		p2pHelper.setChannelAttribute("Delay", "2ms");
 		
@@ -283,11 +283,9 @@ public class Ns3Network {
 				
 				String addr = "11." + j + "." + i + ".0";
 				
-				NetDeviceContainer marketToNetwork = new NetDeviceContainer();
-				marketToNetwork.setName("marketToNetwork_" + j);
+				NetDeviceContainer marketToNetwork = new NetDeviceContainer("marketToNetwork_" + j);
 				
-				NodeContainer p2pInstall = new NodeContainer();
-				p2pInstall.setName("p2pInstall_" + j);
+				NodeContainer p2pInstall = new NodeContainer("p2pInstall_" + j);
 				p2pInstall.addNode(auctionCon, i);
 				p2pInstall.addNode(tempCont, 0);
 				
@@ -333,17 +331,14 @@ public class Ns3Network {
 		int numStaNodesPerApNode = numStaNodesPerAuction / numApNodesPerAuction;
 		
 		// A map<string, string> mapping AuctionObject name to a Controller name
-		StringMap<String, String> marketToControllerMap = new StringMap<String, String>();
-		marketToControllerMap.setName("marketToControllerMap");
+		StringMap<String, String> marketToControllerMap = new StringMap<String, String>("marketToControllerMap");
 		
 		// Things for FNCSApplicationHelper.SetApps(...) method at end of network setup
 		// A NodeContainer to hold the GLD market and house nodes
-		NodeContainer gldNodes = new NodeContainer();
-		gldNodes.setName("gldNodes");
+		NodeContainer gldNodes = new NodeContainer("gldNodes");
 		
 		// A vector<string> used to hold the names of GLD market and house nodes
-		StringVector<String> names = new StringVector<String>();
-		names.setName("names");
+		StringVector<String> names = new StringVector<String>("names");
 		
 		// Add the necessary modules for WiFi
 		this.addModule(new Core());
@@ -357,24 +352,19 @@ public class Ns3Network {
 		
 		
 		// Setup the Internet protocols
-		Ipv4InterfaceContainer apInterfaces = new Ipv4InterfaceContainer();
-		apInterfaces.setName("apInterfaces");
+		Ipv4InterfaceContainer apInterfaces = new Ipv4InterfaceContainer("apInterfaces");
 		objects.add(apInterfaces);
-		Ipv4InterfaceContainer staInterfaces = new Ipv4InterfaceContainer();
-		staInterfaces.setName("staInterfaces");
+		Ipv4InterfaceContainer staInterfaces = new Ipv4InterfaceContainer("staInterfaces");
 		objects.add(staInterfaces);
-		InternetStackHelper stack = new InternetStackHelper();
-		stack.setName("stack");
+		InternetStackHelper stack = new InternetStackHelper("stack");
 		objects.add(stack);
-		Ipv4AddressHelper addressHelper = new Ipv4AddressHelper();
-		addressHelper.setName("addressHelper");
+		Ipv4AddressHelper addressHelper = new Ipv4AddressHelper("addressHelper");
 		objects.add(addressHelper);
 		
 		// Generic helper for installing the selected network protocol on the backbone Nodes
 		NetworkHelper backboneHelper = new NetworkHelper();		
 		
-		YansWifiPhyHelper wifiPhy = new YansWifiPhyHelper();
-		wifiPhy.setName("wifiPhy");
+		YansWifiPhyHelper wifiPhy = new YansWifiPhyHelper("wifiPhy");
 		wifiPhy.defaultParams();
 		wifiPhy.setPcapDataLinkType("YansWifiPhyHelper::DLT_IEEE802_11_RADIO");
 		objects.add(wifiPhy);
@@ -395,63 +385,50 @@ public class Ns3Network {
 			
 			AuctionObject auction = this.auctions.get(i);
 			
-			NodeContainer backboneNodes = new NodeContainer();
-			backboneNodes.setName("backboneNodes_" + i);
+			NodeContainer backboneNodes = new NodeContainer("backboneNodes_" + i);
 			backboneNodes.create(numApNodesPerAuction);
 			stack.install(backboneNodes);
 			objects.add(backboneNodes);
 			
-			NetDeviceContainer backboneDevices = new NetDeviceContainer();
-			backboneDevices.setName("backboneDevices");
+			NetDeviceContainer backboneDevices = new NetDeviceContainer("backboneDevices");
 			createBackbone(backboneHelper, backboneNodes, backboneDevices, i);
 			
 			
 			for (int j = 0; j < numApNodesPerAuction; j++) {
 				String ssidBase = "wifi_" + auction.getNetworkInterfaceName() + "_" + i + "_" + j;
-				Ssid ssid = new Ssid();
-				ssid.setName("ssid_" + i + "_"  + j);
+				Ssid ssid = new Ssid("ssid_" + i + "_"  + j);
 				ssid.setSsid(ssidBase);
 				objects.add(ssid);
 				
-				NodeContainer staNodes = new NodeContainer();
-				staNodes.setName("staNodes_" + i + "_"  + j);
+				NodeContainer staNodes = new NodeContainer("staNodes_" + i + "_"  + j);
 				staNodes.create(numStaNodesPerApNode);
 				objects.add(staNodes);
 				
-				NetDeviceContainer staDevs = new NetDeviceContainer();
-				staDevs.setName("staDev_" + i + "_"  + j);
+				NetDeviceContainer staDevs = new NetDeviceContainer("staDev_" + i + "_"  + j);
 				objects.add(staDevs);
-				NetDeviceContainer apDevs = new NetDeviceContainer();
-				apDevs.setName("apDev_" + i + "_"  + j);
+				NetDeviceContainer apDevs = new NetDeviceContainer("apDev_" + i + "_"  + j);
 				objects.add(apDevs);
 				
-				Ipv4InterfaceContainer staInterface = new Ipv4InterfaceContainer();
-				staInterface.setName("staInterface_" + i + "_"  + j);
+				Ipv4InterfaceContainer staInterface = new Ipv4InterfaceContainer("staInterface_" + i + "_"  + j);
 				objects.add(staInterface);
-				Ipv4InterfaceContainer apInterface = new Ipv4InterfaceContainer();
-				apInterface.setName("apInterface_" + i + "_"  + j);
+				Ipv4InterfaceContainer apInterface = new Ipv4InterfaceContainer("apInterface_" + i + "_"  + j);
 				objects.add(apInterface);
 				
-				MobilityHelper mobility = new MobilityHelper();
-				mobility.setName("mobility_" + i + "_"  + j);
+				MobilityHelper mobility = new MobilityHelper("mobility_" + i + "_"  + j);
 				objects.add(mobility);
 				
-				BridgeHelper bridge = new BridgeHelper();
-				bridge.setName("bridge_" + i + "_"  + j);
+				BridgeHelper bridge = new BridgeHelper("bridge_" + i + "_"  + j);
 				objects.add(bridge);
 				
-				WifiHelper wifi = new WifiHelper();
-				wifi.setName("wifi_" + i + "_"  + j);
+				WifiHelper wifi = new WifiHelper("wifi_" + i + "_"  + j);
 				wifi.defaultParams();
 				objects.add(wifi);
 				
-				NqosWifiMacHelper wifiMac = new NqosWifiMacHelper();
-				wifiMac.setName("wifiMac_" + i + "_"  + j);
+				NqosWifiMacHelper wifiMac = new NqosWifiMacHelper("wifiMac_" + i + "_"  + j);
 				wifiMac.defaultParams();
 				objects.add(wifiMac);
 				
-				YansWifiChannelHelper wifiChannel = new YansWifiChannelHelper();
-				wifiChannel.setName("wifiChannel_" + i + "_"  + j);
+				YansWifiChannelHelper wifiChannel = new YansWifiChannelHelper("wifiChannel_" + i + "_"  + j);
 				wifiChannel.defaultParams();
 				wifiPhy.setChannel(wifiChannel.create());
 				objects.add(wifiChannel);
@@ -467,15 +444,13 @@ public class Ns3Network {
 			    // Installs a WiFi device on the ith backbone Node to make the AP WiFi device
 			    wifi.install(wifiPhy, wifiMac, backboneNodes, j, apDevs);
 			   
-			    NetDeviceContainer temp = new NetDeviceContainer();
-			    temp.setName("temp_" + i + "_"  + j);
+			    NetDeviceContainer temp = new NetDeviceContainer("temp_" + i + "_"  + j);
 			    temp.addDevices(apDevs);
 			    temp.addDevice(backboneDevices, j);
 			    objects.add(temp);
 			    
 			    // Creates a Bridge to install on the AP WiFi device
-			    NetDeviceContainer bridgeDevs = new NetDeviceContainer();
-			    bridgeDevs.setName("bridgeDevs_" + i + "_"  + j);
+			    NetDeviceContainer bridgeDevs = new NetDeviceContainer("bridgeDevs_" + i + "_"  + j);
 			    objects.add(bridgeDevs);
 			    // Installs a Bridge device onto the jth Node of backboneNodes and
 			    //	attaches the bridgeDevs NetDevices as ports of the Bridge
@@ -565,11 +540,9 @@ public class Ns3Network {
 	
 	private void setupFncsSimulator() {
 		// Setup FNCS simulator
-		FncsSimulator fncsSim = new FncsSimulator();
-		fncsSim.setName("fncsSim");
+		FncsSimulator fncsSim = new FncsSimulator("fncsSim");
 		
-		Pointer<FncsSimulator> hb2 = new Pointer<>();
-		hb2.setName("hb2");
+		Pointer<FncsSimulator> hb2 = new Pointer<>("hb2");
 		hb2.encapsulate(fncsSim);
 		
 		fncsSim.unref();
@@ -621,11 +594,9 @@ public class Ns3Network {
 		this.addModule(new Fncs());
 		this.addModule(new FncsApplication());
 		
-		FNCSApplicationHelper fncsHelper = new FNCSApplicationHelper();
-		fncsHelper.setName("fncsHelper");
+		FNCSApplicationHelper fncsHelper = new FNCSApplicationHelper("fncsHelper");
 		
-		ApplicationContainer fncsAps = new ApplicationContainer();
-		fncsAps.setName("fncsAps");
+		ApplicationContainer fncsAps = new ApplicationContainer("fncsAps");
 		
 		fncsHelper.setApps(names, gldNodes, marketToControllerMap, fncsAps);
 		fncsAps.start(0.0);
@@ -648,27 +619,22 @@ public class Ns3Network {
 			NetDeviceContainer backboneDevices, int index) {
 		
 		if (this.backboneType.name().equalsIgnoreCase("csma")) {
-			backboneHelper = new CsmaHelper();
-			backboneHelper.setName("csmaHelper_" + index);
+			backboneHelper = new CsmaHelper("csmaHelper_" + index);
 			((CsmaHelper) backboneHelper).install(backboneNodes, backboneDevices);
 			
 		} else if (this.backboneType.name().equalsIgnoreCase("lte")) {
-			backboneHelper = new LteHelper();
-			backboneHelper.setName("lteHelper_" + index);
+			backboneHelper = new LteHelper("lteHelper_" + index);
 			((LteHelper) backboneHelper).installUeDevice(backboneNodes, backboneDevices);
-			NodeContainer enbNodes = new NodeContainer();
-			enbNodes.setName("enbNodes_" + index);
+			NodeContainer enbNodes = new NodeContainer("enbNodes_" + index);
 			
 			// TODO finish LTE backbone; ask if we need this (LTE backbone?)
 			
 		} else if (this.backboneType.name().equalsIgnoreCase("p2p")) {
-			backboneHelper = new PointToPointHelper();
-			backboneHelper.setName("pointopointHelper_" + index);
+			backboneHelper = new PointToPointHelper("pointopointHelper_" + index);
 			((PointToPointHelper) backboneHelper).install(backboneNodes, backboneDevices);
 
 		} else {
-			backboneHelper = new WifiHelper();
-			backboneHelper.setName("wifiHelper_" + index);
+			backboneHelper = new WifiHelper("wifiHelper_" + index);
 			
 			// TODO finish WiFi backbone; ask if we need this (WiFi backbone?)
 			// If so, need to pass WifiPhyHelper
@@ -699,49 +665,40 @@ public class Ns3Network {
 		setupFncsSimulator();
 		
 		// A map<string, string> mapping AuctionObject name to a Controller name
-		StringMap<String, String> marketToControllerMap = new StringMap<String, String>();
-		marketToControllerMap.setName("marketToControllerMap");
+		StringMap<String, String> marketToControllerMap = new StringMap<String, String>("marketToControllerMap");
 		
 		// Things for FNCSApplicationHelper.SetApps(...) method at end of network setup
 		// A NodeContainer to hold the GLD market and house nodes
-		NodeContainer gldNodes = new NodeContainer();
-		gldNodes.setName("gldNodes");
+		NodeContainer gldNodes = new NodeContainer("gldNodes");
 		
 		// A vector<string> used to hold the names of GLD market and house nodes
-		StringVector<String> names = new StringVector<String>();
-		names.setName("names");
+		StringVector<String> names = new StringVector<String>("names");
 		
-		LteHelper lteHelper = new LteHelper();
-		lteHelper.setName("lteHelper");
+		LteHelper lteHelper = new LteHelper("lteHelper");
 		objects.add(lteHelper);
 		
 		PointToPointEpcHelper epcHelper = new PointToPointEpcHelper();
 		epcHelper.setNameString("epcHelper");
 		objects.add(epcHelper);
 		
-		Pointer<PointToPointEpcHelper> epcHelperPointer = new Pointer<>();
-		epcHelperPointer.setName("epcHelperPointer");
+		Pointer<PointToPointEpcHelper> epcHelperPointer = new Pointer<>("epcHelperPointer");
 		epcHelperPointer.construct(epcHelper);
 		
 		lteHelper.setEpcHelper(epcHelperPointer);
 		
 		// Internet helpers for IP setup
-		InternetStackHelper iStackHelper = new InternetStackHelper();
-		iStackHelper.setName("iStackHelper");
+		InternetStackHelper iStackHelper = new InternetStackHelper("iStackHelper");
 		objects.add(iStackHelper);
 		
-		Ipv4AddressHelper ipv4AddrHelper = new Ipv4AddressHelper();
-		ipv4AddrHelper.setName("ipv4AddrHelper");
+		Ipv4AddressHelper ipv4AddrHelper = new Ipv4AddressHelper("ipv4AddrHelper");
 		objects.add(ipv4AddrHelper);
 		
-		Ipv4InterfaceContainer ipv4Interfaces = new Ipv4InterfaceContainer();
-		ipv4Interfaces.setName("ipv4Interfaces");
+		Ipv4InterfaceContainer ipv4Interfaces = new Ipv4InterfaceContainer("ipv4Interfaces");
 		objects.add(ipv4Interfaces);
 		
 		//TODO fix backbonetype so don't have to do this
 		this.setBackboneType(NetworkType.P2P);
-		PointToPointHelper p2pHelper = new PointToPointHelper();
-		p2pHelper.setName("p2pHelper");
+		PointToPointHelper p2pHelper = new PointToPointHelper("p2pHelper");
 		p2pHelper.setDeviceAttribute("DataRate", "100Gb/s");
 		p2pHelper.setDeviceAttribute("Mtu", 1500); // TODO may be able to use string for this as well
 		p2pHelper.setChannelAttribute("Delay", "10ms");
@@ -756,8 +713,7 @@ public class Ns3Network {
 		int numUeNodesPerAuction = this.getNumAuctionNodes() / numAuctions;
 		int numUeNodesPerEnbNode = numUeNodesPerAuction / numEnbNodesPerAuction;
 		
-		MobilityHelper mobilityHelper = new MobilityHelper();
-		mobilityHelper.setName("mobilityHelper");
+		MobilityHelper mobilityHelper = new MobilityHelper("mobilityHelper");
 		// TODO ConstantPositionMobilityModel sets all nodes at origin (0,0,0)
 		mobilityHelper.setMobilityModel("ns3::ConstantPositionMobilityModel"); 
 		
@@ -765,8 +721,7 @@ public class Ns3Network {
 		Qci q = Qci.GBR_CONV_VOICE;
 		q.setName("q");
 		
-		EpsBearer bearer = new EpsBearer();
-		bearer.setName("bearer");
+		EpsBearer bearer = new EpsBearer("bearer");
 		bearer.setQci(q);
 		objects.add(bearer);
 		
@@ -774,13 +729,11 @@ public class Ns3Network {
 			
 			AuctionObject auction = this.getAuctions().get(i);
 			
-			NodeContainer enbNodes = new NodeContainer();
-			enbNodes.setName("enbNodes_" + i);
+			NodeContainer enbNodes = new NodeContainer("enbNodes_" + i);
 			enbNodes.create(numEnbNodesPerAuction);
 			objects.add(enbNodes);
 			
-			NetDeviceContainer enbDevices = new NetDeviceContainer();
-			enbDevices.setName("enbDevices_" + i);
+			NetDeviceContainer enbDevices = new NetDeviceContainer("enbDevices_" + i);
 			objects.add(enbDevices);
 			
 			// TODO ConstantPositionMobilityModel sets all nodes at origin (0,0,0)
@@ -804,8 +757,7 @@ public class Ns3Network {
 				// Add all Nodes from this NodeContainer to Nodes global list of nodes
 				nodes.add(enbNodes.getNode(j));
 				
-				NodeContainer ueNodes = new NodeContainer();
-				ueNodes.setName("ueNodes_" + j);
+				NodeContainer ueNodes = new NodeContainer("ueNodes_" + j);
 				ueNodes.create(numUeNodesPerEnbNode);
 				objects.add(ueNodes);
 				
@@ -816,8 +768,7 @@ public class Ns3Network {
 				// Install IP stack on UEs
 				iStackHelper.install(ueNodes);
 				
-				NetDeviceContainer ueDevices = new NetDeviceContainer();
-				ueDevices.setName("ueDevices_" + j);
+				NetDeviceContainer ueDevices = new NetDeviceContainer("ueDevices_" + j);
 				lteHelper.installUeDevice(ueNodes, ueDevices); // Install the LTE protocol stack on the UE nodes
 				lteHelper.attach(ueDevices, enbDevices, j); // Attach the newly created UE devices to an eNB device
 				//lteHelper.activateDataRadioBearer(ueDevices, bearer); // not used for EPC
@@ -825,8 +776,7 @@ public class Ns3Network {
 				
 				lteDeviceContainers.add(ueDevices);
 				
-				Ipv4InterfaceContainer ueIpInterface = new Ipv4InterfaceContainer();
-				ueIpInterface.setName("ueIpInterface");
+				Ipv4InterfaceContainer ueIpInterface = new Ipv4InterfaceContainer("ueIpInterface");
 				objects.add(ueIpInterface);
 				
 				for (int k = 0; k < numUeNodesPerEnbNode; k++) {
@@ -868,24 +818,19 @@ public class Ns3Network {
 		setupFncsSimulator();
 		
 		// A map<string, string> mapping AuctionObject name to a Controller name
-		StringMap<String, String> marketToControllerMap = new StringMap<String, String>();
-		marketToControllerMap.setName("marketToControllerMap");
+		StringMap<String, String> marketToControllerMap = new StringMap<String, String>("marketToControllerMap");
 		
 		// Things for FNCSApplicationHelper.SetApps(...) method at end of network setup
 		// A NodeContainer to hold the GLD market and house nodes
-		NodeContainer gldNodes = new NodeContainer();
-		gldNodes.setName("gldNodes");
+		NodeContainer gldNodes = new NodeContainer("gldNodes");
 		
 		// A vector<string> used to hold the names of GLD market and house nodes
-		StringVector<String> names = new StringVector<String>();
-		names.setName("names");
+		StringVector<String> names = new StringVector<String>("names");
 		
 		// IP setup
-		Ipv4AddressHelper addresses = new Ipv4AddressHelper();
-		addresses.setName("addresses");
+		Ipv4AddressHelper addresses = new Ipv4AddressHelper("addresses");
 		objects.add(addresses);
-		InternetStackHelper stack = new InternetStackHelper();
-		stack.setName("stack");
+		InternetStackHelper stack = new InternetStackHelper("stack");
 		setupIp(stack);
 		objects.add(stack);
 		
@@ -897,8 +842,7 @@ public class Ns3Network {
 		int numCsmaNodesPerContainer = numCsmaNodesPerAuction / numNodeContainersPerAuction;
 		
 		// CSMA channel/device setup
-		CsmaHelper csmaHelper = new CsmaHelper();
-		csmaHelper.setName("csmaHelper");
+		CsmaHelper csmaHelper = new CsmaHelper("csmaHelper");
 		csmaHelper.setChannelAttribute("DataRate", dataRate);
 		csmaHelper.setChannelAttribute("Delay", delay);
 		objects.add(csmaHelper);
@@ -908,15 +852,13 @@ public class Ns3Network {
 			
 			for (int j = 0; j < numNodeContainersPerAuction; j++) {
 				
-				NodeContainer csmaNodes = new NodeContainer();
-				csmaNodes.setName("csmaNodes_" + i + "_" + j);
+				NodeContainer csmaNodes = new NodeContainer("csmaNodes_" + i + "_" + j);
 				csmaNodes.create(numCsmaNodesPerContainer); // Create 20 Nodes in this NodeContainer
 				objects.add(csmaNodes);
 				
 				// Sets IP address base to use for devices in this NetDeviceContainer
 				String ipBase = this.addrBase + i + ".0"; 
-				NetDeviceContainer temp = new NetDeviceContainer();
-				temp.setName("netDevices_" + i);
+				NetDeviceContainer temp = new NetDeviceContainer("netDevices_" + i);
 				
 				// Install the CSMA devices & channel onto the temp NodeContainer
 				csmaHelper.install(csmaNodes, temp);
@@ -957,17 +899,13 @@ public class Ns3Network {
 		this.addModule(new FncsApplication());
 		
 		
-		NodeContainer gldNodes = new NodeContainer();
-		gldNodes.setName("gldNodes");
+		NodeContainer gldNodes = new NodeContainer("gldNodes");
 		
-		StringVector<String> names = new StringVector<String>();
-		names.setName("names");
+		StringVector<String> names = new StringVector<String>("names");
 		
-		FNCSApplicationHelper fncsHelper = new FNCSApplicationHelper();
-		fncsHelper.setName("fncsHelper");
+		FNCSApplicationHelper fncsHelper = new FNCSApplicationHelper("fncsHelper");
 		
-		ApplicationContainer fncsAps = new ApplicationContainer();
-		fncsAps.setName("fncsAps");
+		ApplicationContainer fncsAps = new ApplicationContainer("fncsAps");
 		
 		//fncsHelper.setApps("names", gldNodes, "marketToControllerMap", fncsAps);
 		fncsAps.start(0.0);

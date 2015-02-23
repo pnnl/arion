@@ -4,6 +4,8 @@
 package gov.pnnl.prosser.api.ns3.module;
 
 /**
+ * Needed for any simulations using IP communication protocols
+ * 
  * @author happ546
  *
  */

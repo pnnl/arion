@@ -12,6 +12,13 @@ import gov.pnnl.prosser.api.AbstractNs3Object;
 public class InternetStackHelper extends AbstractNs3Object {
 
 	/**
+	 * @param name
+	 */
+	public InternetStackHelper(String name) {
+		this.setName(name);
+	}
+
+	/**
 	 * 
 	 * @param nodes the NodeContainer to install the Internet protocol stack on
 	 */

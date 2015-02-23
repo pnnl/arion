@@ -15,6 +15,13 @@ import gov.pnnl.prosser.api.c.obj.Pointer;
 public class LteHelper extends NetworkHelper {
 
 	/**
+	 * @param name
+	 */
+	public LteHelper(String name) {
+		this.setName(name);
+	}
+
+	/**
 	 * Installs an LTE protocol stack on the Nodes in sourceNodes 
 	 * @param sourceNodes the NodeContainer holding the UE or ENB nodes to 
 	 * 				install the LTE stack on

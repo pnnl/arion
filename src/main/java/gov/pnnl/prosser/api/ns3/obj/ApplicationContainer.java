@@ -12,6 +12,14 @@ import gov.pnnl.prosser.api.AbstractNs3Object;
  *
  */
 public class ApplicationContainer extends AbstractNs3Object {
+	
+	/**
+	 * @param name
+	 */
+	public ApplicationContainer(String name) {
+		this.setName(name);
+	}
+
 	private double start, stop;
 
 	/**

@@ -18,10 +18,19 @@ public class NodeContainer extends AbstractNs3Object {
 	private ArrayList<Node> nodes;
 	
 	/**
-	 * Initializes an empty NodeContainer
+	 * Creates nameless NodeContainer; used in NetDeviceContainer
 	 */
 	public NodeContainer() {
 		this.nodes = new ArrayList<Node>();
+	}
+	
+	/**
+	 * Initializes an empty NodeContainer
+	 * @param name
+	 */
+	public NodeContainer(String name) {
+		this.nodes = new ArrayList<Node>();
+		this.setName(name);
 	}
 
 	/**

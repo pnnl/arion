@@ -15,9 +15,11 @@ public class NetDeviceContainer extends AbstractNs3Object {
 	
 	/**
 	 * Create an empty NetDeviceContainer
+	 * @param name
 	 */
-	public NetDeviceContainer() {
+	public NetDeviceContainer(String name) {
 		this.nodes = new NodeContainer();
+		this.setName(name);
 	}
 	
 	/**

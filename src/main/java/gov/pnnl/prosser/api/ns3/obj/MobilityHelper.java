@@ -12,6 +12,13 @@ import gov.pnnl.prosser.api.AbstractNs3Object;
 public class MobilityHelper extends AbstractNs3Object {
 
 	/**
+	 * @param name
+	 */
+	public MobilityHelper(String name) {
+		this.setName(name);
+	}
+
+	/**
 	 * 
 	 * @param model the mobility model type used by this MobilityHelper
 	 * @param mode the mode for the mobility model

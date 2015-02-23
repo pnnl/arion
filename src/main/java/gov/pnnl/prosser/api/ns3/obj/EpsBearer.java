@@ -13,6 +13,13 @@ import gov.pnnl.prosser.api.ns3.enums.Qci;
 public class EpsBearer extends AbstractNs3Object {
 	
 	/**
+	 * @param name
+	 */
+	public EpsBearer(String name) {
+		this.setName(name);
+	}
+
+	/**
 	 * Sets the name of this EpsBearer without saving any output
 	 */
 	@Override

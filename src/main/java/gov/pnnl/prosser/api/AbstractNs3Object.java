@@ -17,19 +17,20 @@ public abstract class AbstractNs3Object {
 	private static String printObj;
 
 	/**
+	 * If printObj doesn't already contains text from other ns-3 objects,
+	 * initialize it.
 	 * Initializes pointer flag to false
-	 * Checks if printObj already contains text from other ns-3 objects
 	 */
 	public AbstractNs3Object() {
-		this.name = null;
-		this.pointer = false;
 		if (AbstractNs3Object.printObj == null) {
 			AbstractNs3Object.printObj = "";
 		}
+		this.name = null;
+		this.pointer = false;
 	}
 
 	/** 
-	 * Append characteristics of this object to given stringbuilder
+	 * Append characteristics of this object to given Stringbuilder
 	 * @param StringBuilder
 	 */
 	public void writeNs3Properties(StringBuilder sb) {

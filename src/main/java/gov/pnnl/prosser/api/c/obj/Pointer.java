@@ -11,6 +11,13 @@ import gov.pnnl.prosser.api.AbstractNs3Object;
  */
 public class Pointer<T> extends AbstractNs3Object {
 	
+	/**
+	 * @param name
+	 */
+	public Pointer(String name) {
+		this.setName(name);
+	}
+
 	private AbstractNs3Object object;
 
 	@Override

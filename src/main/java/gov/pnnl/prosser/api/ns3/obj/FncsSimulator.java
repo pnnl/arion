@@ -12,6 +12,13 @@ import gov.pnnl.prosser.api.c.obj.Pointer;
  */
 public class FncsSimulator extends AbstractNs3Object {
 	
+	/**
+	 * @param name
+	 */
+	public FncsSimulator(String name) {
+		this.setName(name);
+	}
+
 	@Override
 	public void setName(String name) {
 		super.setNameString(name);

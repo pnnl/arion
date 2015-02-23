@@ -11,4 +11,11 @@ import gov.pnnl.prosser.api.AbstractNs3Object;
  */
 public class Ipv4NixVectorHelper extends AbstractNs3Object {
 
+	/**
+	 * @param name
+	 */
+	public Ipv4NixVectorHelper(String name) {
+		this.setName(name);
+	}
+
 }

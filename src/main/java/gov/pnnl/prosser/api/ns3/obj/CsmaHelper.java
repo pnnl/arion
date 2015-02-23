@@ -19,8 +19,10 @@ public class CsmaHelper extends NetworkHelper {
 	
 	/**
 	 * Create a new CsmaHelper
+	 * @param name
 	 */
-	public CsmaHelper() {
+	public CsmaHelper(String name) {
+		this.setName(name);
 		this.channelAttributes = new HashMap<String, String>();
 		this.deviceAttributes = new HashMap<String, String>();
 	}

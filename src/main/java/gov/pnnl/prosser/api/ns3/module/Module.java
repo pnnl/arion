@@ -19,7 +19,6 @@ public abstract class Module {
 
 	/**
 	 * Write the #include line for this module's header file
-	 * TODO Add support for non-ns3 includes (C++ library stuff)
 	 * @param sb the StringBuilder to write to
 	 */
 	public void writeNs3String(final StringBuilder sb) {

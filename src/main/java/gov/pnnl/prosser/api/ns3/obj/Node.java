@@ -46,7 +46,7 @@ public class Node extends AbstractNs3Object {
 	private AuctionObject auction;
 	
 	/**
-	 * Creates a new, empty Node
+	 * Creates nameless Node; used in NodeContainer
 	 */
 	public Node() {
 		this.applications = new ArrayList<Application>();
@@ -55,6 +55,18 @@ public class Node extends AbstractNs3Object {
 		this.marketNetworkInterface = null;
 	}
 	
+	/**
+	 * Creates a new, empty Node
+	 * @param name
+	 */
+	public Node(String name) {
+		this.setName(name);
+		this.applications = new ArrayList<Application>();
+		this.devices = new ArrayList<NetDevice>();
+		this.controllerNetworkInterface = null;
+		this.marketNetworkInterface = null;
+	}
+
 	/**
 	 * 
 	 * @param app the Application to install on this Node

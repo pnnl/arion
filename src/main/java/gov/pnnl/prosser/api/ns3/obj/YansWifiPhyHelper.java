@@ -10,6 +10,13 @@ import gov.pnnl.prosser.api.AbstractNs3Object;
  *
  */
 public class YansWifiPhyHelper extends AbstractNs3Object {
+	
+	/**
+	 * @param name
+	 */
+	public YansWifiPhyHelper(String name) {
+		this.setName(name);
+	}
 
 	/**
 	 * Sets the default parameters for this YansWifiPhyHelper (see ns-3 documentation for information) 

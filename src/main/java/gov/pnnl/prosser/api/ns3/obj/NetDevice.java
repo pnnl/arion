@@ -10,5 +10,5 @@ import gov.pnnl.prosser.api.AbstractNs3Object;
  *
  */
 public class NetDevice extends AbstractNs3Object {
-
+	
 }

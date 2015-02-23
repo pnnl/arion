@@ -15,6 +15,13 @@ import gov.pnnl.prosser.api.NetworkCapable;
 public class StringVector<T1> extends AbstractNs3Object {
 
 	/**
+	 * @param name
+	 */
+	public StringVector(String name) {
+		this.setName(name);
+	}
+
+	/**
 	 * @param name the name of this Vector
 	 */
 	@Override

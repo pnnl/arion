@@ -12,6 +12,13 @@ import gov.pnnl.prosser.api.AbstractNs3Object;
 public class NqosWifiMacHelper extends AbstractNs3Object {
 
 	/**
+	 * @param name
+	 */
+	public NqosWifiMacHelper(String name) {
+		this.setName(name);
+	}
+
+	/**
 	 * Sets the default parameters for this NqosWifiMacHelper (see ns-3 documentation for information)
 	 */
 	public void defaultParams() {

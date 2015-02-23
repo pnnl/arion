@@ -12,6 +12,13 @@ import gov.pnnl.prosser.api.AbstractNs3Object;
 public class Ipv4StaticRoutingHelper extends AbstractNs3Object {
 
 	/**
+	 * @param name
+	 */
+	public Ipv4StaticRoutingHelper(String name) {
+		this.setName(name);
+	}
+
+	/**
 	 * Add a default route to the static routing table.
 	 * This method tells the routing system what to do in the case 
 	 * where a specific route to a destination is not found. 

@@ -11,6 +11,13 @@ import gov.pnnl.prosser.api.c.obj.Pointer;
  *
  */
 public class YansWifiChannel extends AbstractNs3Object {
+	
+	/**
+	 * @param name
+	 */
+	public YansWifiChannel(String name) {
+		this.setName(name);
+	}
 
 	/**
 	 * @param phy the YansWifiPhy object to add to this YansWifiChannel list of physical devices

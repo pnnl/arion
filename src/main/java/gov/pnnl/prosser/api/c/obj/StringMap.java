@@ -12,6 +12,13 @@ import gov.pnnl.prosser.api.AbstractNs3Object;
 public class StringMap<T1, T2> extends AbstractNs3Object {
 
 	/**
+	 * @param name
+	 */
+	public StringMap(String name) {
+		this.setName(name);
+	}
+
+	/**
 	 * @param name the String name of this Map
 	 */
 	@Override

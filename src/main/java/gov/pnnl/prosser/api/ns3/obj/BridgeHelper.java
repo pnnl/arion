@@ -19,9 +19,11 @@ public class BridgeHelper extends AbstractNs3Object {
 	/**
 	 * Create a new BridgeHelper to create a connection between two communication devices 
 	 * on a single Node
+	 * @param name
 	 */
-	public BridgeHelper() {
+	public BridgeHelper(String name) {
 		this.deviceAttributes = new HashMap<String, String>();
+		this.setName(name);
 	}
 	
 	/**

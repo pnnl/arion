@@ -21,6 +21,13 @@ import gov.pnnl.prosser.api.c.obj.Pointer;
 public class CsmaChannel extends AbstractNs3Object {
 
 	/**
+	 * @param name
+	 */
+	public CsmaChannel(String name) {
+		this.setName(name);
+	}
+
+	/**
 	 * @param device the CsmaNetDevice to connect to this CsmaChannel
 	 */
 	public void attach(Pointer<CsmaNetDevice> device) {

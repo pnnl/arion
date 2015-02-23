@@ -10,6 +10,13 @@ package gov.pnnl.prosser.api.ns3.obj;
 public class WifiHelper extends NetworkHelper {
 	
 	private String remoteStationManager;
+	
+	/**
+	 * @param name
+	 */
+	public WifiHelper(String name) {
+		this.setName(name);
+	}
 
 	/**
 	 * Sets the default parameters for this WifiHelper (see ns-3 documentation for information)

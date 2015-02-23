@@ -5,8 +5,7 @@ package gov.pnnl.prosser.api.ns3.module;
 
 /**
  * Class for c++ namespaces
- * Should probably go elsewhere (not module package)
- * Should have separate class for each Namespace? (probably only ns3 & std)
+ *
  * @author happ546
  *
  */

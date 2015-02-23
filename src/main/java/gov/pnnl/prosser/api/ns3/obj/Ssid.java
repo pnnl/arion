@@ -10,6 +10,13 @@ import gov.pnnl.prosser.api.AbstractNs3Object;
  *
  */
 public class Ssid extends AbstractNs3Object {
+	
+	/**
+	 * @param name
+	 */
+	public Ssid(String name) {
+		this.setName(name);
+	}
 
 	/**
 	 * 

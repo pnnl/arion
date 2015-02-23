@@ -4,7 +4,7 @@
 package gov.pnnl.prosser.api.ns3.module;
 
 /**
- * Needed for bridging any connection.
+ * Needed for bridging any connection (e.g. WiFi Auction network to CSMA backend)
  * 
  * @author happ546
  *

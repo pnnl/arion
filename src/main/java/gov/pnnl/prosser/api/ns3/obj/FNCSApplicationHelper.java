@@ -14,6 +14,13 @@ import gov.pnnl.prosser.api.c.obj.StringVector;
 public class FNCSApplicationHelper extends AbstractNs3Object {
 
 	/**
+	 * @param name
+	 */
+	public FNCSApplicationHelper(String name) {
+		this.setName(name);
+	}
+
+	/**
 	 * @param namesListName a list 
 	 * @param gldNodes
 	 * @param marketToControllerMapName a Map from the MarketNetworkInterface name String 
