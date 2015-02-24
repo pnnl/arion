@@ -3,10 +3,17 @@
  */
 package gov.pnnl.prosser.api;
 
+import gov.pnnl.prosser.api.gld.obj.AuctionObject;
+import gov.pnnl.prosser.api.gld.obj.Controller;
+import gov.pnnl.prosser.api.ns3.enums.NetworkType;
 import gov.pnnl.prosser.api.ns3.module.Module;
 import gov.pnnl.prosser.api.ns3.module.Namespace;
+import gov.pnnl.prosser.api.ns3.obj.Channel;
+import gov.pnnl.prosser.api.ns3.obj.CsmaChannel;
 import gov.pnnl.prosser.api.ns3.obj.Node;
 import gov.pnnl.prosser.api.ns3.obj.Ns3Network;
+import gov.pnnl.prosser.api.ns3.obj.PointToPointChannel;
+import gov.pnnl.prosser.api.ns3.obj.YansWifiChannel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,6 +42,12 @@ public class Ns3Simulator {
 		network.setAddrBase("10.1."); // First 2 values of IPV4 address to use as base in IP addr distribution
 		network.setAddrMask("255.255.255.0");
 		
+//		network.setBackboneType(NetworkType.CSMA);
+//		network.setAuctionType(NetworkType.WIFI);
+		network.setBackboneType(NetworkType.CSMA);
+		network.setAuctionType(NetworkType.LTE);
+		
+		
 		//TODO stop time from user
 		network.setStopTime(10.0);
 	}
@@ -43,7 +56,6 @@ public class Ns3Simulator {
      * Gets the Modules used in this simulation
      */
 	public List<Module> getModules() {
-		// enum? of all commonly used modules that network can select from based on params
 		return network.getModules();
 	}
 	
@@ -53,7 +65,6 @@ public class Ns3Simulator {
 	public List<Namespace> getNamespaces() {
 		List<Namespace> namespaces = new ArrayList<Namespace>();
 		namespaces.add(new Namespace("ns3"));
-		//namespaces.add(new Namespace("std")); //TODO need std?
 		
 		return namespaces;
 	}
@@ -63,12 +74,51 @@ public class Ns3Simulator {
      */
 	public List<AbstractNs3Object> getObjects() {
 		
-		final List<AbstractNs3Object> objects = network.build(); // Not a real builder pattern; after necessary params, use network type for type-specific method to construct nodes, install devices/applications, etc.
+		final List<AbstractNs3Object> objects = network.createLte();//network.createWifi("10.0.0.0", "4ms");
 		
 		// List of ns-3 Nodes to keep track of specific Nodes
 		List<Node> nodes = network.getNodes();
 		
 		return objects;
+	}
+
+	/**
+	 * @param auctions
+	 */
+	public void setAuctions(List<AuctionObject> auctions) {
+		network.setAuctions(auctions);
+	}
+
+	/**
+	 * @param controllers
+	 */
+	public void setControllers(List<Controller> controllers) {
+		network.setControllers(controllers);
+	}
+
+	/**
+	 * @param controllerPrefix
+	 */
+	public void setGldNodePrefix(String controllerPrefix) {
+		network.setGldNodePrefix(controllerPrefix);
+	}
+	
+	/**
+	 * @param type
+	 * @return an instance of the specified subclass of Channel
+	 */
+	public Channel channel(NetworkType type) {
+		if (type.name().equalsIgnoreCase("csma")) {
+			return new CsmaChannel();
+		} else if (type.name().equalsIgnoreCase("p2p")) {
+			return new PointToPointChannel();
+		} else {
+			return new YansWifiChannel();
+		}
+	}
+	
+	public void add(AbstractProsserObject obj) {
+		
 	}
 
 }

@@ -169,6 +169,7 @@ public class Ns3Network {
 	 */
 	public void setAuctions(List<AuctionObject> auctions) {
 		this.auctions = auctions;
+		this.setNumAuctionNodes(this.auctions.size());
 	}
 
 	/**
@@ -647,7 +648,6 @@ public class Ns3Network {
 	 */
 	public List<AbstractNs3Object> createLte() {
 		
-		
 		this.addModule(new Core());
 		this.addModule(new Mobility());
 		this.addModule(new Applications());
@@ -735,6 +735,8 @@ public class Ns3Network {
 			
 			NetDeviceContainer enbDevices = new NetDeviceContainer("enbDevices_" + i);
 			objects.add(enbDevices);
+			
+			lteHelper.installEnbDevice(enbNodes, enbDevices);
 			
 			// TODO ConstantPositionMobilityModel sets all nodes at origin (0,0,0)
 			mobilityHelper.setMobilityModel("ns3::ConstantPositionMobilityModel"); 

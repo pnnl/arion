@@ -3,14 +3,19 @@
  */
 package gov.pnnl.prosser.api.ns3.obj;
 
-import gov.pnnl.prosser.api.AbstractNs3Object;
 import gov.pnnl.prosser.api.c.obj.Pointer;
 
 /**
  * @author happ546
  *
  */
-public class YansWifiChannel extends AbstractNs3Object {
+public class YansWifiChannel extends Channel {
+
+	/**
+	 * Creates a nameless YansWifiChannel
+	 */
+	public YansWifiChannel() {
+	}
 	
 	/**
 	 * @param name

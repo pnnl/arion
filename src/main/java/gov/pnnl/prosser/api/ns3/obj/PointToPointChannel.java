@@ -3,14 +3,19 @@
  */
 package gov.pnnl.prosser.api.ns3.obj;
 
-import gov.pnnl.prosser.api.AbstractNs3Object;
 import gov.pnnl.prosser.api.c.obj.Pointer;
 
 /**
  * @author happ546
  *
  */
-public class PointToPointChannel extends AbstractNs3Object {
+public class PointToPointChannel extends Channel {
+	
+	/**
+	 * Creates a nameless PointToPointChannel
+	 */
+	public PointToPointChannel() {
+	}
 	
 	/**
 	 * @param name
