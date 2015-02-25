@@ -4,6 +4,8 @@
 package gov.pnnl.prosser.api.ns3.obj;
 
 import gov.pnnl.prosser.api.AbstractNs3Object;
+import gov.pnnl.prosser.api.c.obj.Pointer;
+
 import java.util.ArrayList;
 
 /**
@@ -49,6 +51,13 @@ public class NodeContainer extends AbstractNs3Object {
 	 */
 	void addNode(Node node) {
 		this.nodes.add(node);
+	}
+
+	/**
+	 * @param node the Pointer<Node> to add to this NodeContainer
+	 */
+	public void addNode(Pointer<Node> node) {
+		appendPrintObj(this.getName() + ".Add(" + node.getName() + ");\n");		
 	}
 	
 	/**

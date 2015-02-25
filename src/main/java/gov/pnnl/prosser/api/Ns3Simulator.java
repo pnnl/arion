@@ -28,7 +28,8 @@ public class Ns3Simulator {
 	private Ns3Network network;
 	private List<Module> modules;
 	private List<Namespace> namespaces;
-	private List<AbstractNs3Object> objects;
+	private List<AbstractNs3Object> ns3Objects;
+	private List<AbstractProsserObject> gldObjects;
 
 	
 	/**
@@ -42,10 +43,10 @@ public class Ns3Simulator {
 		network.setAddrBase("10.1."); // First 2 values of IPV4 address to use as base in IP addr distribution
 		network.setAddrMask("255.255.255.0");
 		
-//		network.setBackboneType(NetworkType.CSMA);
-//		network.setAuctionType(NetworkType.WIFI);
 		network.setBackboneType(NetworkType.CSMA);
-		network.setAuctionType(NetworkType.LTE);
+		network.setAuctionType(NetworkType.WIFI);
+//		network.setBackboneType(NetworkType.CSMA);
+//		network.setAuctionType(NetworkType.LTE);
 		
 		
 		//TODO stop time from user
@@ -74,7 +75,7 @@ public class Ns3Simulator {
      */
 	public List<AbstractNs3Object> getObjects() {
 		
-		final List<AbstractNs3Object> objects = network.createLte();//network.createWifi("10.0.0.0", "4ms");
+		final List<AbstractNs3Object> objects = network.createWifi("10.0.0.0", "4ms");//network.createLte();
 		
 		// List of ns-3 Nodes to keep track of specific Nodes
 		List<Node> nodes = network.getNodes();
@@ -117,8 +118,15 @@ public class Ns3Simulator {
 		}
 	}
 	
+	/**
+	 * TODO get purpose of this method; add obj to list of GLD objects to pass to Ns3Network or setup a Channel and pass it to Ns3Network?
+	 * @param obj the AbstractProsserObject to add to this Ns3Simulator
+	 */
 	public void add(AbstractProsserObject obj) {
+		//network.addGldObject(obj);
 		
+		//Channel c = obj.getChannel();
+		//network.addChannel(c); // Do more Channel setup here or in Ns3Network?
 	}
 
 }

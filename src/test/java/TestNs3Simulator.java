@@ -20,14 +20,11 @@ public class TestNs3Simulator {
 	private Ns3Network network;
 	
 	public void setup() {
-		// Get list of end devices from Peter
-		// List<..AbstractProsserObject?..> gldList = peter'sList;
 		
 		// User inputs basic params (Network type, addr base & mask, # of nodes [or infer from gldList?])
 		network = new Ns3Network();
 		network.setAddrBase("10.1."); // First 2 values of IPV4 address to use as base in IP addr distribution
 		network.setAddrMask("255.255.255.0");
-		//network.setGldObjects(gldList); //TODO
 		
 		//TODO stop time from user
 		network.setStopTime(10.0);

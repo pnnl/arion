@@ -40,13 +40,13 @@ public class CsmaHelper extends NetworkHelper {
 	
 	/**
 	 * @param nodePtr
-	 * @param csmaChannelPtr
+	 * @param channel the CsmaChannel
 	 * @param destinationContainer
 	 */
-	public void install(Pointer<Node> nodePtr, Pointer<CsmaChannel> csmaChannelPtr, 
+	public void install(Pointer<Node> nodePtr, Pointer<Channel> channel, 
 						NetDeviceContainer destinationContainer) {
 		appendPrintObj(destinationContainer.getName() + " = " + this.getName() + 
-				".Install(" + nodePtr.getName() + ", " + csmaChannelPtr.getName() + ");\n");
+				".Install(" + nodePtr.getName() + ", " + channel.getName() + ");\n");
 	}
 	
 	/**

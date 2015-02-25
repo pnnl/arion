@@ -22,8 +22,6 @@ public class Ns3SimulatorWriter {
 	
 	public static void writeNs3Simulator(final Path path, final Ns3Simulator ns3Simulator) throws IOException {
 		
-		ns3Simulator.setup();
-		
 		final List<Module> modules = ns3Simulator.getModules();
 		final List<Namespace> namespaces = ns3Simulator.getNamespaces();
         final List<AbstractNs3Object> objects = ns3Simulator.getObjects();
