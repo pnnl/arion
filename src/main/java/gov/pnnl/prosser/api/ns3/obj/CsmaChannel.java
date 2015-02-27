@@ -17,12 +17,14 @@ public class CsmaChannel extends Channel {
 	 * Creates a nameless CsmaChannel
 	 */
 	public CsmaChannel() {
+		super();
 	}
 
 	/**
 	 * @param name
 	 */
 	public CsmaChannel(String name) {
+		super();
 		this.setName(name);
 	}
 

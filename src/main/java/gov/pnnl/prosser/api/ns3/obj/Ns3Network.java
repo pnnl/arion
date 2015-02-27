@@ -786,6 +786,18 @@ public class Ns3Network {
 		
 		lteHelper.setEpcHelper(epcHelperPointer);
 		
+		Pointer<Node> pgw = new Pointer<Node>("pgw");
+		pgw.setType(new Node());
+		epcHelper.getPgwNode(pgw);
+
+		//TODO fix backbonetype so don't have to do this
+		this.setBackboneType(NetworkType.P2P);
+		PointToPointHelper p2pHelper = new PointToPointHelper("p2pHelper");
+		p2pHelper.setDeviceAttribute("DataRate", "100Gb/s");
+		p2pHelper.setDeviceAttribute("Mtu", 1500); // TODO may be able to use string for this as well
+		p2pHelper.setChannelAttribute("Delay", "10ms");
+		ns3Objects.add(p2pHelper);
+		
 		// Internet helpers for IP setup
 		InternetStackHelper iStackHelper = new InternetStackHelper("iStackHelper");
 		ns3Objects.add(iStackHelper);
@@ -795,14 +807,6 @@ public class Ns3Network {
 		
 		Ipv4InterfaceContainer ipv4Interfaces = new Ipv4InterfaceContainer("ipv4Interfaces");
 		ns3Objects.add(ipv4Interfaces);
-		
-		//TODO fix backbonetype so don't have to do this
-		this.setBackboneType(NetworkType.P2P);
-		PointToPointHelper p2pHelper = new PointToPointHelper("p2pHelper");
-		p2pHelper.setDeviceAttribute("DataRate", "100Gb/s");
-		p2pHelper.setDeviceAttribute("Mtu", 1500); // TODO may be able to use string for this as well
-		p2pHelper.setChannelAttribute("Delay", "10ms");
-		ns3Objects.add(p2pHelper);
 		
 		List<NetDeviceContainer> lteDeviceContainers = new ArrayList<NetDeviceContainer>();
 		

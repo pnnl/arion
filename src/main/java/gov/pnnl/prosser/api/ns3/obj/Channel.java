@@ -3,10 +3,12 @@
  */
 package gov.pnnl.prosser.api.ns3.obj;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import gov.pnnl.prosser.api.AbstractNs3Object;
 import gov.pnnl.prosser.api.AbstractProsserObject;
 import gov.pnnl.prosser.api.Ns3Simulator;
-import gov.pnnl.prosser.api.ns3.enums.NetworkType;
 
 /**
  * The base class for the ns-3 channels; the connection between 
@@ -18,44 +20,49 @@ import gov.pnnl.prosser.api.ns3.enums.NetworkType;
 public class Channel extends AbstractNs3Object {
 	
 	/**
-	 * The Ns3Simulator that contains the GLD object this 
-	 * Channel is being attached to.
+	 * The Ns3Simulator that this Channel belongs to
 	 */
 	private Ns3Simulator owner;
 	
 	/**
-	 * The AbstractProsserObject that this Channel is 
-	 * attached to.
+	 * The AbstractProsserObjects (GridLab-D/GLD objects) attached to this Channel
 	 */
-	private AbstractProsserObject gldObj;
-
+	private List<AbstractProsserObject> gldObjs;
+	
 	
 	/**
-	 * @return the owner
+	 * Creates a new Channel
+	 */
+	public Channel() {
+		this.gldObjs = new ArrayList<>();
+	}
+	
+	/**
+	 * @return the Ns3Simulator parent simulator of this Channel
 	 */
 	public Ns3Simulator getOwner() {
 		return owner;
 	}
 
 	/**
-	 * @param owner the owner to set
+	 * @param owner the Ns3Simulator owner to set
 	 */
 	public void setOwner(Ns3Simulator owner) {
 		this.owner = owner;
 	}
 
 	/**
-	 * @return the gldObj
+	 * @return the List of GLD objects attached to this Channel
 	 */
-	public AbstractProsserObject getGldObj() {
-		return gldObj;
+	public List<AbstractProsserObject> getGldObjs() {
+		return gldObjs;
 	}
 
 	/**
-	 * @param gldObj the gldObj to set
+	 * @param gldObj the gldObj to add to this Channel
 	 */
-	public void setGldObj(AbstractProsserObject gldObj) {
-		this.gldObj = gldObj;
+	public void addGldObj(AbstractProsserObject gldObj) {
+		this.gldObjs.add(gldObj);
 	}
-	
+
 }

@@ -25,12 +25,12 @@ public class PointToPointEpcHelper extends NetworkHelper {
 	
 	/**
 	 * Gets the PGW (Packet data network GateWay) node of the LTE network 
-	 * and puts it into the given Pointer
+	 * and puts it into the given Pointer Node
 	 */
-	public void getPgwNode(Pointer<PointToPointEpcHelper> ptr) {
+	public void getPgwNode(Pointer<Node> node) {
 		// Set the dereferencer operator appropriately for pointer encapsulation or not
 		String deref = this.getPointer() ? "->" : ".";
-		appendPrintObj(ptr.getName() + " = " + this.getName() + deref + "GetPgwNode();\n");
+		appendPrintObj(node.getName() + " = " + this.getName() + deref + "GetPgwNode();\n");
 	}
 	
 	/**

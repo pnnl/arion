@@ -9,7 +9,9 @@ import gov.pnnl.prosser.api.AbstractNs3Object;
  * @author happ546
  *
  */
-public class Pointer<T> extends AbstractNs3Object {
+public class Pointer<T extends AbstractNs3Object> extends AbstractNs3Object {
+
+	private T object;
 	
 	/**
 	 * @param name
@@ -17,8 +19,6 @@ public class Pointer<T> extends AbstractNs3Object {
 	public Pointer(String name) {
 		this.setName(name);
 	}
-
-	private AbstractNs3Object object;
 
 	@Override
 	public void setName(String name) {
@@ -44,7 +44,7 @@ public class Pointer<T> extends AbstractNs3Object {
 	/**
 	 * @param obj
 	 */
-	public void construct(AbstractNs3Object obj) {
+	public void construct(T obj) {
 		this.object = obj;
 		this.object.setNameString(this.getName());
 		this.object.setPointer(true);
