@@ -6,6 +6,7 @@ import gov.pnnl.prosser.api.*;
 import gov.pnnl.prosser.api.gld.enums.*;
 import gov.pnnl.prosser.api.gld.lib.*;
 import gov.pnnl.prosser.api.gld.obj.*;
+import gov.pnnl.prosser.api.ns3.obj.Channel;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -75,7 +76,8 @@ public class ExperimentFncsTest {
     public static void main(final String[] args) throws IOException {
         final Path outPath = Paths.get(args[0]).toRealPath();
         final String controllerNIPrefix = "F1_C_NI";
-        final GldSimulator gldSim = constructGldSim(controllerNIPrefix);
+        final List<Channel> channels = new ArrayList<>();
+        final GldSimulator gldSim = constructGldSim(controllerNIPrefix, channels);
         GldSimulatorWriter.writeGldSimulator(outPath.resolve("prosser.glm"), gldSim);
         // TODO: No passing of information between simulators here; not maintainable approach; force objects to create simulator relationships
         // For this test there will be one object in each list but in general there could be multiple
@@ -100,10 +102,12 @@ public class ExperimentFncsTest {
 
     /**
      * The gld simulator for this experiment
+     * @param controllerNIPrefix Prefix to network controllers in Houses and will be enclosed in the auction object
+     * @param channels the network channels to use - channel 0 will be used for the auction, and then channels other than 0 will have up to 20 controllers on it
      *
      * @return
      */
-    private static GldSimulator constructGldSim(final String controllerNIPrefix) {
+    private static GldSimulator constructGldSim(final String controllerNIPrefix, final List<Channel> channels) {
         final int numHouses = 1;
         // final boolean useMarket = true;
         final String marketName = "Market1";
@@ -184,6 +188,7 @@ public class ExperimentFncsTest {
         auction.setNetworkStdevPriceProperty(marketStdev);
         auction.setNetworkAdjustPriceProperty("adjust_price");
         auction.setFncsControllerPrefix(controllerNIPrefix);
+        channels.get(0).addAuction(auction);
 
         // Add a player to the auction for one of its values
         final PlayerObject player = auction.player();
@@ -325,7 +330,8 @@ public class ExperimentFncsTest {
                 meter = tripMeterC;
                 phase = PhaseCode.C;
             }
-            generateHouse(sim, i, meter, tripLineConf, auction, phase, controllerNIPrefix);
+            // TODO only put 20 houses on each channel 1-n
+            generateHouse(sim, i, meter, tripLineConf, auction, phase, controllerNIPrefix, channels.get(1));
         }
 
         return sim;
@@ -361,7 +367,7 @@ public class ExperimentFncsTest {
      *            the Auction to connect the controller to
      */
     private static void generateHouse(final GldSimulator sim, final int id, final TriplexMeter tripMeterA,
-            final TriplexLineConfiguration tripLineConf, final AuctionObject auction, final PhaseCode phase, final String controllerNIPrefix) {
+            final TriplexLineConfiguration tripLineConf, final AuctionObject auction, final PhaseCode phase, final String controllerNIPrefix, final Channel channel) {
         final EnumSet<PhaseCode> phases;
         switch (phase) {
             case A:
@@ -472,6 +478,7 @@ public class ExperimentFncsTest {
         controller.setLoad("hvac_load");
         controller.setState("power_state");
         controller.setNetworkInterfaceName(controllerNIPrefix + id);
+        channel.addController(auction);
 
         // Generate the loads on the house
         generateLightsLoad(house, scheduleSkew);
