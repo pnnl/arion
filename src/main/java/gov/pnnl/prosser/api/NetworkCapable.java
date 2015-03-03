@@ -11,6 +11,4 @@ public interface NetworkCapable {
 
     public String getNetworkInterfaceName();
 
-    public String getNetwork();
-
 }

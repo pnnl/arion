@@ -63,10 +63,8 @@ public class Controller extends AbstractProsserObject implements NetworkCapable 
     private String load;
 
     private String state;
-
-    private String namePrefix;
-
-    private Integer id;
+    
+    private String networkInterfaceName;
 
     /**
      * @return the useOverride
@@ -428,48 +426,13 @@ public class Controller extends AbstractProsserObject implements NetworkCapable 
         this.state = state;
     }
 
-    /**
-     * @return the namePrefix
-     */
-    public String getNamePrefix() {
-        return namePrefix;
-    }
-
-    /**
-     * @param namePrefix
-     *            the namePrefix to set
-     */
-    public void setNamePrefix(final String namePrefix) {
-        this.namePrefix = namePrefix;
-    }
-
-    /**
-     * @return the id
-     */
-    public Integer getId() {
-        return id;
-    }
-
-    /**
-     * @param id
-     *            the id to set
-     */
-    public void setId(final Integer id) {
-        this.id = id;
-    }
-
     @Override
     public String getNetworkInterfaceName() {
-        if (namePrefix != null) {
-            return this.namePrefix + "NI" + id;
-        } else {
-            return this.getName() + "NI";
-        }
+        return this.networkInterfaceName;
     }
-
-    @Override
-    public String getNetwork() {
-        return null;
+    
+    public void setNetworkInterfaceName(final String networkInterfaceName) {
+        this.networkInterfaceName = networkInterfaceName;
     }
 
     @Override

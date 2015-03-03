@@ -12,7 +12,9 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.EnumSet;
 import java.util.List;
+import java.util.Random;
 
 /**
  * First FNCS experiment
@@ -22,9 +24,58 @@ import java.util.List;
  */
 public class ExperimentFncsTest {
 
+    private static final Random rand = new Random(13);
+
+    // %% Unchanging? parameters
+    // % most of these values were obtained from survey data
+    private static final double heat_gas_perc_pre = 0.85;
+    private static final double heat_pump_perc_pre = 0.15;
+
+    private static final double heat_gas_perc_post = 0.70;
+    private static final double heat_pump_perc_post = 0.30;
+
+    private static final double cool_none_pre = 0.0;
+    private static final double cool_pump_pre = 0.0;
+    private static final double cool_electric_pre = 1 - cool_none_pre - cool_pump_pre;
+
+    private static final double cool_none_post = 0.0;
+    private static final double cool_pump_post = 0.0;
+    private static final double cool_electric_post = 1 - cool_none_post - cool_pump_post;
+
+    private static final double wh_perc_elec_pre = 0;
+    private static final double wh_perc_elec_post = 0;
+
+    // %house parameters extracting them here
+    private static final double smallhome_floorarea_1 = 1100;
+    private static final double smallhome_floorarea_2 = 500;
+
+    private static final double largehome_floorarea_1 = 3000;
+    private static final double largehome_floorarea_2 = 900;
+
+    private static final double mobilehome_floorarea_1 = 750;
+
+    // % Parameter distributions (same for all) (average +/- range)
+    private static final double wtrdem_1 = 1.0;
+    private static final double wtrdem_2 = 0.2;
+    private static final double cool_1 = 1;
+    private static final double cool_2 = 0.05;
+    private static final double tankset_1 = 125;
+    private static final double tankset_2 = 5;
+    private static final double thermdb_1 = 2.0;
+    private static final double thermdb_2 = 0.2;
+    private static final double cooloffset_1 = 4;
+    private static final double cooloffset_2 = 2;
+    private static final double heatoffset_1 = 0;
+    private static final double heatoffset_2 = 3;
+    private static final double basepwr_1 = 1;
+    private static final double basepwr_2 = 0.5;
+    private static final double tankUA_1 = 2.0;
+    private static final double tankUA_2 = 0.2;
+
     public static void main(final String[] args) throws IOException {
         final Path outPath = Paths.get(args[0]).toRealPath();
-        final GldSimulator gldSim = constructGldSim();
+        final String controllerNIPrefix = "F1_C_NI";
+        final GldSimulator gldSim = constructGldSim(controllerNIPrefix);
         GldSimulatorWriter.writeGldSimulator(outPath.resolve("prosser.glm"), gldSim);
         // TODO: No passing of information between simulators here; not maintainable approach; force objects to create simulator relationships
         // For this test there will be one object in each list but in general there could be multiple
@@ -38,11 +89,10 @@ public class ExperimentFncsTest {
             }
         });
 
-        final String controllerPrefix = "F1_C_NI";
         final Ns3Simulator ns3Simulator = new Ns3Simulator();
-//        ns3Simulator.setAuctions(auctions);
-//        ns3Simulator.setControllers(controllers);
-//        ns3Simulator.setGldNodePrefix(controllerPrefix);
+        // ns3Simulator.setAuctions(auctions);
+        // ns3Simulator.setControllers(controllers);
+        // ns3Simulator.setGldNodePrefix(controllerPrefix);
         Ns3SimulatorWriter.writeNs3Simulator(outPath.resolve("ns3.cc"), ns3Simulator);
         System.out.println("Written!");
         // TODO FNCS Integration
@@ -53,15 +103,34 @@ public class ExperimentFncsTest {
      *
      * @return
      */
-    private static GldSimulator constructGldSim() {
+    private static GldSimulator constructGldSim(final String controllerNIPrefix) {
+        final int numHouses = 1;
+        // final boolean useMarket = true;
+        final String marketName = "Market1";
+        final int marketPeriod = 300;
+        final String marketMean = "current_price_mean_24h";
+        final String marketStdev = "current_price_stdev_24h";
+        // final double percentPenetration = 1;
+        // final double sliderSetting = 1;
+
         // Construct the simulator
-        final GldSimulator sim = new GldSimulator("fncs_GLD_100node_Feeder_1");
+        final GldSimulator sim = new GldSimulator("fncs_GLD_1node_Feeder_1");
 
         // Setup the clock
         final GldClock clock = sim.clock();
         clock.setTimezone("EST+5EDT");
         clock.setStartTime(LocalDateTime.of(2009, 07, 21, 00, 00));
         clock.setStopTime(LocalDateTime.of(2009, 07, 23, 00, 00));
+
+        // Add settings, configures simulation
+        sim.addSetting("profiler", "1");
+        sim.addSetting("double_format", "%+.12lg");
+        sim.addSetting("randomseed", "10");
+        sim.addSetting("relax_naming_rules", "1");
+        // sim.addSetting("minimum_timestep", "1");
+
+        // Add includes, extra glm files that help with simulation
+        sim.addIncludes("water_and_setpoint_schedule_v3.glm", "appliance_schedules.glm");
 
         // Setup the modules
         sim.marketModule();
@@ -71,15 +140,6 @@ public class ExperimentFncsTest {
         sim.residentialModule("NONE");
         sim.powerflowModule(SolverMethod.FBS, 100L);
 
-        // Add settings, configures simulation
-        sim.addSetting("profiler", "1");
-        sim.addSetting("double_format", "%+.12lg");
-        sim.addSetting("randomseed", "10");
-        sim.addSetting("relax_naming_rules", "1");
-
-        // Add includes, extra glm files that help with simulation
-        sim.addIncludes("water_and_setpoint_schedule_v3.glm", "appliance_schedules.glm");
-
         // Add a player class def to allow references to value from player objects
         final PlayerClass playerClass = sim.playerClass();
         playerClass.addField("value", "double");
@@ -88,8 +148,8 @@ public class ExperimentFncsTest {
         final AuctionClass auctionClass = sim.auctionClass();
         auctionClass.addField("day_ahead_average", "double");
         auctionClass.addField("day_ahead_std", "double");
-        auctionClass.addField("current_price_mean_24h", "double");
-        auctionClass.addField("current_price_stdev_24h", "double");
+        auctionClass.addField(marketMean, "double");
+        auctionClass.addField(marketStdev, "double");
 
         // Create Player for the Phase A load on the substation
         final PlayerObject phaseALoad = sim.playerObject("phase_A_load");
@@ -113,16 +173,17 @@ public class ExperimentFncsTest {
         climate.addCsvReader("CSVREADER");
 
         // Create the FNCS auction
-        final AuctionObject auction = sim.auctionObject("Market1");
+        final AuctionObject auction = sim.auctionObject(marketName);
         auction.setUnit("kW");
-        auction.setPeriod(300);
+        auction.setPeriod(marketPeriod);
         auction.setPriceCap(3.78);
-        auction.setTransactionLogFile("log_file_fncs_GLD_300node_feeder_1_base_case.csv");
-        auction.setCurveLogFile("bid_curve_fncs_GLD_300node_feeder_1_base_case.csv");
+        auction.setTransactionLogFile("log_file_" + sim.getName() + ".csv");
+        auction.setCurveLogFile("bid_curve_" + sim.getName() + ".csv");
         auction.setCurveLogInfo(CurveOutput.EXTRA);
-        auction.setNetworkAveragePriceProperty("current_price_mean_24h");
-        auction.setNetworkStdevPriceProperty("current_price_stdev_24h");
+        auction.setNetworkAveragePriceProperty(marketMean);
+        auction.setNetworkStdevPriceProperty(marketStdev);
         auction.setNetworkAdjustPriceProperty("adjust_price");
+        auction.setFncsControllerPrefix(controllerNIPrefix);
 
         // Add a player to the auction for one of its values
         final PlayerObject player = auction.player();
@@ -140,7 +201,7 @@ public class ExperimentFncsTest {
         recorder.setProperty("capacity_reference_bid_price, current_market.clearing_price, current_market.clearing_quantity");
         recorder.setLimit(100000000);
         recorder.setInterval(300L);
-        recorder.setFile("baseprice_clearedprice_clearedquantity_fncs_GLD_300node_feeder_1.csv");
+        recorder.setFile("baseprice_clearedprice_clearedquantity_" + sim.getName() + ".csv");
 
         auction.setInitPrice(0.042676);
         auction.setInitStdev(0.02);
@@ -153,24 +214,24 @@ public class ExperimentFncsTest {
         substationConfig.setInstallationType(InstallationType.PADMOUNT);
         substationConfig.setPrimaryVoltage(7200);
         substationConfig.setSecondaryVoltage(7200);
-        substationConfig.setPowerRating(4500.0);
-        substationConfig.setPhaseARating(1500.0);
-        substationConfig.setPhaseBRating(1500.0);
-        substationConfig.setPhaseCRating(1500.0);
+        substationConfig.setPowerRating(3 * numHouses * 5.0);
+        substationConfig.setPhaseARating(numHouses * 5.0);
+        substationConfig.setPhaseBRating(numHouses * 5.0);
+        substationConfig.setPhaseCRating(numHouses * 5.0);
         substationConfig.setImpedance(0.0015, 0.00675);
 
         // Create the transformer configuration for each phase from the substation
         final TransformerConfiguration defaultTransformerA = sim.transformerConfiguration("default_transformer_A");
-        defaultTransformerA.setPhaseARating(1500.0);
-        setupSubstationTransformerBase(defaultTransformerA);
+        defaultTransformerA.setPhaseARating(numHouses * 5.0);
+        setupSubstationTransformerBase(defaultTransformerA, numHouses);
 
         final TransformerConfiguration defaultTransformerB = sim.transformerConfiguration("default_transformer_B");
-        defaultTransformerB.setPhaseBRating(1500.0);
-        setupSubstationTransformerBase(defaultTransformerB);
+        defaultTransformerB.setPhaseBRating(numHouses * 5.0);
+        setupSubstationTransformerBase(defaultTransformerB, numHouses);
 
         final TransformerConfiguration defaultTransformerC = sim.transformerConfiguration("default_transformer_C");
-        defaultTransformerC.setPhaseCRating(1500.0);
-        setupSubstationTransformerBase(defaultTransformerC);
+        defaultTransformerC.setPhaseCRating(numHouses * 5.0);
+        setupSubstationTransformerBase(defaultTransformerC, numHouses);
 
         // Create the triplex line conductor used everywhere
         final TriplexLineConductor tripLineCond1AA = sim.triplexLineConductor("Name_1_0_AA_triplex");
@@ -251,7 +312,21 @@ public class ExperimentFncsTest {
         centerTapTransformerC.setConfiguration(defaultTransformerC);
 
         // TODO: Move generate house and other convienence methods to a library
-        generateHouse(sim, 1, tripMeterA, tripLineConf, auction);
+        for (int i = 1; i < numHouses; i++) {
+            TriplexMeter meter;
+            PhaseCode phase;
+            if (i <= numHouses / 3) {
+                meter = tripMeterA;
+                phase = PhaseCode.A;
+            } else if (i <= (numHouses * 2) / 3) {
+                meter = tripMeterB;
+                phase = PhaseCode.B;
+            } else {
+                meter = tripMeterC;
+                phase = PhaseCode.C;
+            }
+            generateHouse(sim, i, meter, tripLineConf, auction, phase, controllerNIPrefix);
+        }
 
         return sim;
     }
@@ -262,12 +337,12 @@ public class ExperimentFncsTest {
      * @param config
      *            Config to modify
      */
-    private static void setupSubstationTransformerBase(final TransformerConfiguration config) {
+    private static void setupSubstationTransformerBase(final TransformerConfiguration config, final int numHouses) {
         config.setConnectionType(ConnectionType.SINGLE_PHASE_CENTER_TAPPED);
         config.setInstallationType(InstallationType.PADMOUNT);
         config.setPrimaryVoltage(7200);
         config.setSecondaryVoltage(124);
-        config.setPowerRating(1500.0);
+        config.setPowerRating(numHouses * 5.0);
         config.setImpedance(0.015, 0.0675);
     }
 
@@ -286,12 +361,26 @@ public class ExperimentFncsTest {
      *            the Auction to connect the controller to
      */
     private static void generateHouse(final GldSimulator sim, final int id, final TriplexMeter tripMeterA,
-            final TriplexLineConfiguration tripLineConf, final AuctionObject auction) {
+            final TriplexLineConfiguration tripLineConf, final AuctionObject auction, final PhaseCode phase, final String controllerNIPrefix) {
+        final EnumSet<PhaseCode> phases;
+        switch (phase) {
+            case A:
+                phases = PhaseCode.AS;
+                break;
+            case B:
+                phases = PhaseCode.BS;
+                break;
+            case C:
+                phases = PhaseCode.CS;
+                break;
+            default:
+                throw new RuntimeException("Phase code unsupported " + phase);
+        }
         // Create the flatrate meter
         // TODO what is a flatrate meter?
-        final TriplexMeter tripMeterFlatrate = sim.triplexMeter("F1_tpm_flatrate_A" + id);
+        final TriplexMeter tripMeterFlatrate = sim.triplexMeter("F1_tpm_flatrate_" + phase.name() + id);
         tripMeterFlatrate.setNominalVoltage(124.0);
-        tripMeterFlatrate.setPhases(PhaseCode.AS);
+        tripMeterFlatrate.setPhases(phases);
         tripMeterFlatrate.setGroupId("F1_flatrate_meter");
 
         // Create the line from the transformer
@@ -299,22 +388,43 @@ public class ExperimentFncsTest {
         tripLine.setFrom(tripMeterA);
         tripLine.setTo(tripMeterFlatrate);
         tripLine.setGroupId("F1_Triplex_Line");
-        tripLine.setPhases(PhaseCode.AS);
+        tripLine.setPhases(phases);
         tripLine.setLength(10);
         tripLine.setConfiguration(tripLineConf);
 
         // Create the rt meter
         // TODO what is an rt meter?
-        final TriplexMeter tripMeterRt = sim.triplexMeter("F1_tpm_rt_A" + id);
+        final TriplexMeter tripMeterRt = sim.triplexMeter("F1_tpm_rt_" + phase.name() + id);
         tripMeterRt.setNominalVoltage(124.0);
-        tripMeterRt.setPhases(PhaseCode.AS);
+        tripMeterRt.setPhases(phases);
         tripMeterRt.setGroupId("F1_rt_meter");
         tripMeterRt.setParent(tripMeterFlatrate);
+
+        final double typeRand = rand.nextDouble();
+        int houseType;
+        if (typeRand <= 0.3) {
+            houseType = 1;
+        } else if (typeRand > 0.3 && typeRand <= 0.58) {
+            houseType = 2;
+        } else if (typeRand > 0.58 && typeRand <= 0.75) {
+            houseType = 3;
+        } else if (typeRand > 0.75 && typeRand <= 0.86) {
+            houseType = 4;
+        } else if (typeRand > 0.86 && typeRand <= 0.96) {
+            houseType = 5;
+        } else { // typeRand > 0.96
+            houseType = 5;
+        }
+        //dryer_flag_perc  = rand();
+        //dishwasher_flag_perc = rand();
+        //freezer_flag_perc = rand();
+        double houseLoad = 1;
+        double houseVA = 1;
 
         final long scheduleSkew = -685L;
 
         // Create the house
-        final House house = sim.house("F1_H_" + id);
+        final House house = sim.house("F1_house_" + phase.name() + id);
         house.setParent(tripMeterRt);
         house.setScheduleSkew(scheduleSkew);
         house.setRroof(33.69);
@@ -337,7 +447,7 @@ public class ExperimentFncsTest {
         house.setHeatingSetpointFn("heating7*1.017+2.41");
 
         // Create the controller
-        final Controller controller = house.controller("F1_C_" + id);
+        final Controller controller = house.controller("F1_controller_" + phase.name() + id);
         controller.setUseOverride(UseOverride.ON);
         controller.setOverride("override");
         controller.setAuction(auction);
@@ -361,8 +471,7 @@ public class ExperimentFncsTest {
         controller.setTotal("total_load");
         controller.setLoad("hvac_load");
         controller.setState("power_state");
-        controller.setNamePrefix("F1_C_");
-        controller.setId(id);
+        controller.setNetworkInterfaceName(controllerNIPrefix + id);
 
         // Generate the loads on the house
         generateLightsLoad(house, scheduleSkew);
@@ -373,6 +482,183 @@ public class ExperimentFncsTest {
         generateRangeLoad(house, scheduleSkew);
         generateMicrowaveLoad(house, scheduleSkew);
     }
+
+    private static void setupResidential1(final House house) {
+//        % OLD/SMALL
+//        % Distribution of parameters (average +/- range)    
+//    %     cool_none_pre = 0.20;
+//    %     cool_pump_pre = 0.0;
+//    %     cool_electric_pre = 1 - cool_none_pre - cool_pump_pre;
+//        Rroof_1=19;
+//        Rroof_2=4;
+//        Rwall_1=11;
+//        Rwall_2=3;             
+//        Rfloor_1=11;
+//        Rfloor_2=1;
+//        Rdoors=3;
+//        Rwindows_1=1.25;
+//        Rwindows_2=0.5;
+//        airchange_1=1;
+//        airchange_2=0.2;      
+//        floorarea_1=smallhome_floorarea_1;
+//        floorarea_2=smallhome_floorarea_2;     
+//        tankvol_1=45;
+//        tankvol_2=5;
+//        heatcap_1=4500;
+//        heatcap_2=500;       
+//        wh_type1 = 'old';
+//        wh_type2 = 'small';
+//        hp_perc=heat_pump_perc_pre;
+//        g_perc=heat_gas_perc_pre;
+//        c_perc=cool_electric_pre;
+//        wh_elec = wh_perc_elec_pre;
+//        load_scalar = 1;
+    }
+    
+    private static void setupResidential2(final House house) {
+//      % NEW/SMALL
+//        % Distribution of parameters (average +/- range)   
+//        Rroof_1=30;
+//        Rroof_2=5;                
+//        Rwall_1=19;
+//        Rwall_2=3;             
+//        Rfloor_1=15;
+//        Rfloor_2=3;              
+//        Rdoors=5;
+//        Rwindows_1=1.75;
+//        Rwindows_2=0.5;      
+//        airchange_1=1;
+//        airchange_2=0.2;      
+//        floorarea_1=smallhome_floorarea_1;
+//        floorarea_2=smallhome_floorarea_2;      
+//        tankvol_1=45;
+//        tankvol_2=5;            
+//        heatcap_1=4500;
+//        heatcap_2=500;
+//        wh_type1 = 'new';
+//        wh_type2 = 'small';
+//        hp_perc=heat_pump_perc_post; 
+//        g_perc=heat_gas_perc_post; 
+//        c_perc=cool_electric_post;
+//        wh_elec = wh_perc_elec_post;
+//        load_scalar = 0.95;
+  }
+    private static void setupResidential3(final House house) {
+//      % OLD/LARGE 
+//        % Distribution of parameters (average +/- range)
+//        Rroof_1=19;
+//        Rroof_2=4;                
+//        Rwall_1=11;
+//        Rwall_2=3;             
+//        Rfloor_1=11;
+//        Rfloor_2=1;              
+//        Rdoors=3;
+//        Rwindows_1=1.25;
+//        Rwindows_2=0.5;      
+//        airchange_1=1;
+//        airchange_2=0.2;      
+//        floorarea_1=largehome_floorarea_1;
+//        floorarea_2=largehome_floorarea_2;  
+//        tankvol_1=55;
+//        tankvol_2=5;            
+//        heatcap_1=4500;
+//        heatcap_2=500;     
+//        wh_type1 = 'old';
+//        wh_type2 = 'large';
+//        hp_perc=heat_pump_perc_pre; 
+//        g_perc=heat_gas_perc_pre; 
+//        c_perc=cool_electric_pre;
+//        wh_elec = wh_perc_elec_pre;
+//        load_scalar = 0.85;
+  }
+    
+    private static void setupResidential4(final House house) {
+//      % NEW/LARGE
+//        % Distribution of parameters (average +/- range)
+//        Rroof_1=30;
+//        Rroof_2=5;                
+//        Rwall_1=19;
+//        Rwall_2=3;             
+//        Rfloor_1=15;
+//        Rfloor_2=3;              
+//        Rdoors=5;
+//        Rwindows_1=1.75;
+//        Rwindows_2=0.5;      
+//        airchange_1=1;
+//        airchange_2=0.2;      
+//        floorarea_1=largehome_floorarea_1-200;
+//        floorarea_2=largehome_floorarea_2;      
+//        tankvol_1=55;
+//        tankvol_2=5;            
+//        heatcap_1=4500;
+//        heatcap_2=500;
+//        wh_type1 = 'new';
+//        wh_type2 = 'large';
+//        % we'll assume there are no 3000 sq ft new homes w/ resistive heat
+//        hp_perc=heat_pump_perc_post; 
+//        g_perc=1-hp_perc; 
+//        c_perc=cool_electric_post;
+//        wh_elec = wh_perc_elec_post;
+//        load_scalar = 0.8;
+  }
+    
+    private static void setupResidential5(final House house) {
+//      % Mobile homes
+//        % Distribution of parameters (average +/- range)        
+//        Rroof_1=14;
+//        Rroof_2=4;                
+//        Rwall_1=6;Rwall_2=2;             
+//        Rfloor_1=5;
+//        Rfloor_2=1;               
+//        Rdoors=3;
+//        Rwindows_1=1.25;
+//        Rwindows_2=0.5;      
+//        airchange_1=1.4;
+//        airchange_2=0.2;      
+//        floorarea_1=mobilehome_floorarea_1;
+//        floorarea_2=150;     
+//        tankvol_1=35;
+//        tankvol_2=5;            
+//        heatcap_1=3500;
+//        heatcap_2=500;   
+//        wh_type1 = 'old';
+//        wh_type2 = 'small';
+//    %     hp_perc=0.0; g_perc=0.90; c_perc=cool_electric_pre;
+//    %     wh_elec = wh_perc_elec_pre;
+//        hp_perc=heat_pump_perc_post; 
+//        g_perc=1-hp_perc; 
+//        c_perc=cool_electric_post;
+//        wh_elec = wh_perc_elec_post;
+//        load_scalar = 0.7;    
+  }
+    
+    private static void setupResidential6(final House house) {
+//      % Distribution of parameters (average +/- range)
+//        Rroof_1=14;
+//        Rroof_2=4;                
+//        Rwall_1=6;
+//        Rwall_2=2;             
+//        Rfloor_1=5;
+//        Rfloor_2=1;               
+//        Rdoors=3;
+//        Rwindows_1=1.25;
+//        Rwindows_2=0.5;      
+//        airchange_1=1.4;
+//        airchange_2=0.2;      
+//        floorarea_1=500;
+//        floorarea_2=200;    
+//        tankvol_1=35;
+//        tankvol_2=5;            
+//        heatcap_1=3500;
+//        heatcap_2=500;
+//        wh_type1 = 'old';
+//        wh_type2 = 'small';
+//        hp_perc=heat_pump_perc_pre; 
+//        g_perc=heat_gas_perc_pre; 
+//        c_perc=cool_electric_pre;
+//        wh_elec = wh_perc_elec_pre;
+//        load_scalar = 0.5;
+  }
 
     /**
      * Generate load on a house for lights

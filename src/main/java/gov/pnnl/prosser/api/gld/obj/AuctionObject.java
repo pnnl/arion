@@ -55,6 +55,8 @@ public class AuctionObject extends AbstractProsserObject implements NetworkCapab
     private String networkStdevPriceProperty;
 
     private String networkAdjustPriceProperty;
+    
+    private String fncsControllerPrefix;
 
     /**
      * @return the unit
@@ -296,15 +298,23 @@ public class AuctionObject extends AbstractProsserObject implements NetworkCapab
         this.networkAdjustPriceProperty = networkAdjustPriceProperty;
     }
 
-    @Override
-    public String getNetworkInterfaceName() {
-        return this.getName() + "NI";
+    /**
+     * @return the fncsControllerPrefix
+     */
+    public String getFncsControllerPrefix() {
+        return fncsControllerPrefix;
+    }
+
+    /**
+     * @param fncsControllerPrefix the fncsControllerPrefix to set
+     */
+    public void setFncsControllerPrefix(String fncsControllerPrefix) {
+        this.fncsControllerPrefix = fncsControllerPrefix;
     }
 
     @Override
-    public String getNetwork() {
-        // TODO Auto-generated method stub
-        return null;
+    public String getNetworkInterfaceName() {
+        return this.getName() + "NI";
     }
 
     @Override
