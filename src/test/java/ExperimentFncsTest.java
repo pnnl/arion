@@ -75,9 +75,13 @@ public class ExperimentFncsTest {
 
     public static void main(final String[] args) throws IOException {
         final Path outPath = Paths.get(args[0]).toRealPath();
+        final int numHouses = 1;
+        final int numChannels = (numHouses / 20) + 2;
         final String controllerNIPrefix = "F1_C_NI";
+        
+        
         final List<Channel> channels = new ArrayList<>();
-        final GldSimulator gldSim = constructGldSim(controllerNIPrefix, channels);
+        final GldSimulator gldSim = constructGldSim(numHouses, controllerNIPrefix, channels);
         GldSimulatorWriter.writeGldSimulator(outPath.resolve("prosser.glm"), gldSim);
         // TODO: No passing of information between simulators here; not maintainable approach; force objects to create simulator relationships
         // For this test there will be one object in each list but in general there could be multiple
@@ -107,8 +111,7 @@ public class ExperimentFncsTest {
      *
      * @return
      */
-    private static GldSimulator constructGldSim(final String controllerNIPrefix, final List<Channel> channels) {
-        final int numHouses = 1;
+    private static GldSimulator constructGldSim(final int numHouses, final String controllerNIPrefix, final List<Channel> channels) {
         // final boolean useMarket = true;
         final String marketName = "Market1";
         final int marketPeriod = 300;
