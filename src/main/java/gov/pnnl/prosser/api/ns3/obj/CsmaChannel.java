@@ -34,5 +34,14 @@ public class CsmaChannel extends Channel {
 	public void attach(Pointer<CsmaNetDevice> device) {
 		appendPrintObj(this.getName() + ".Attach(" + device.getName() + ");\n");
 	}
+
+	/**
+	 * Sets the specified attribute of this channel to the given value
+	 * @param attribute
+	 * @param value
+	 */
+	public void setAttribute(String attribute, String value) {
+		appendPrintObj(this.getName() + ".SetAttribute(" + attribute + ", " + value + ");\n");
+	}
 	
 }

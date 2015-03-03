@@ -7,8 +7,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import gov.pnnl.prosser.api.AbstractNs3Object;
-import gov.pnnl.prosser.api.AbstractProsserObject;
+import gov.pnnl.prosser.api.NetworkCapable;
 import gov.pnnl.prosser.api.Ns3Simulator;
+import gov.pnnl.prosser.api.gld.obj.Controller;
 
 /**
  * The base class for the ns-3 channels; the connection between 
@@ -25,16 +26,17 @@ public class Channel extends AbstractNs3Object {
 	private Ns3Simulator owner;
 	
 	/**
-	 * The AbstractProsserObjects (GridLab-D/GLD objects) attached to this Channel
+	 * The Controllers attached to this Channel
 	 */
-	private List<AbstractProsserObject> gldObjs;
+	// TODO Should we just have list of Controllers? Since controllers contain Auction object, it would work
+	private List<NetworkCapable> controllers;
 	
 	
 	/**
 	 * Creates a new Channel
 	 */
 	public Channel() {
-		this.gldObjs = new ArrayList<>();
+		this.controllers = new ArrayList<>();
 	}
 	
 	/**
@@ -52,17 +54,17 @@ public class Channel extends AbstractNs3Object {
 	}
 
 	/**
-	 * @return the List of GLD objects attached to this Channel
+	 * @return the List of Controllers attached to this Channel
 	 */
-	public List<AbstractProsserObject> getGldObjs() {
-		return gldObjs;
+	public List<NetworkCapable> getControllers() {
+		return controllers;
 	}
 
 	/**
 	 * @param gldObj the gldObj to add to this Channel
 	 */
-	public void addGldObj(AbstractProsserObject gldObj) {
-		this.gldObjs.add(gldObj);
+	public void add(NetworkCapable gldObj) {
+		this.controllers.add(gldObj);
 	}
 
 }

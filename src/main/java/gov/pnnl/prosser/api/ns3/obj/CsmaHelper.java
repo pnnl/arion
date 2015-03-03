@@ -28,7 +28,6 @@ public class CsmaHelper extends NetworkHelper {
 	}
 	
 	/**
-	 * 
 	 * @param sourceNodes the NodeContainer holding the Nodes to install this CSMA device on
 	 * @param destinationContainer the NetDeviceContainer to add the Nodes from sourceNodes to
 	 */
@@ -43,10 +42,21 @@ public class CsmaHelper extends NetworkHelper {
 	 * @param channel the CsmaChannel
 	 * @param destinationContainer
 	 */
-	public void install(Pointer<Node> nodePtr, Pointer<Channel> channel, 
+	public void install(Pointer<Node> nodePtr, Pointer<CsmaChannel> channel, 
 						NetDeviceContainer destinationContainer) {
 		appendPrintObj(destinationContainer.getName() + " = " + this.getName() + 
 				".Install(" + nodePtr.getName() + ", " + channel.getName() + ");\n");
+	}
+
+	/**
+	 * @param nodes the NodeContainer to install the CSMA devices on
+	 * @param channel the Pointer<Channel> to connect the CSMA devices to
+	 * @param destinationContainer the NetDeviceContainer to add the Nodes from sourceNodes to
+	 */
+	public void install(NodeContainer sourceNodes,
+			Pointer<CsmaChannel> channel, NetDeviceContainer destinationContainer) {
+		appendPrintObj(destinationContainer.getName() + " = " + this.getName() + 
+				".Install(" + sourceNodes.getName() + ", " + channel.getName() + ");\n");		
 	}
 	
 	/**
