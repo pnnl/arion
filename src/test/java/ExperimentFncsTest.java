@@ -330,8 +330,9 @@ public class ExperimentFncsTest {
                 meter = tripMeterC;
                 phase = PhaseCode.C;
             }
+            int channelId = ((i - 1) / 20) + 1;
             // TODO only put 20 houses on each channel 1-n
-            generateHouse(sim, i, meter, tripLineConf, auction, phase, controllerNIPrefix, channels.get(1));
+            generateHouse(sim, i, meter, tripLineConf, auction, phase, controllerNIPrefix, channels.get(channelId));
         }
 
         return sim;
