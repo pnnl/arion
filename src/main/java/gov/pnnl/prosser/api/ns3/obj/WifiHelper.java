@@ -47,7 +47,6 @@ public class WifiHelper extends NetworkHelper {
 			NodeContainer sourceNodes, NetDeviceContainer destinationContainer) {
 		appendPrintObj(destinationContainer.getName() + " = " + this.getName() + 
 				".Install(" + phy.getName() + ", " + mac.getName() + ", " + sourceNodes.getName() + ");\n");
-		
 	}
 
 	/**

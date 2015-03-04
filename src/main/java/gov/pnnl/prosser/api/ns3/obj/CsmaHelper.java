@@ -28,16 +28,6 @@ public class CsmaHelper extends NetworkHelper {
 	}
 	
 	/**
-	 * @param sourceNodes the NodeContainer holding the Nodes to install this CSMA device on
-	 * @param destinationContainer the NetDeviceContainer to add the Nodes from sourceNodes to
-	 */
-	public void install(NodeContainer sourceNodes, NetDeviceContainer destinationContainer) {
-		destinationContainer.addNodes(sourceNodes);
-		appendPrintObj(destinationContainer.getName() + " = " + this.getName() + 
-				".Install(" + sourceNodes.getName() + ");\n");
-	}
-	
-	/**
 	 * @param nodePtr
 	 * @param channel the CsmaChannel
 	 * @param destinationContainer

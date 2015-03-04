@@ -4,6 +4,7 @@
 package gov.pnnl.prosser.api.ns3.obj;
 
 import gov.pnnl.prosser.api.AbstractNs3Object;
+import gov.pnnl.prosser.api.c.obj.Pointer;
 
 /**
  * @author happ546
@@ -16,6 +17,13 @@ public class InternetStackHelper extends AbstractNs3Object {
 	 */
 	public InternetStackHelper(String name) {
 		this.setName(name);
+	}
+	
+	/**
+	 * @param node the Pointer<Node> to install the IP stack on
+	 */
+	public void install(Pointer<Node> node) {
+		appendPrintObj(this.getName() + ".Install(" + node.getName() + ");\n");
 	}
 
 	/**

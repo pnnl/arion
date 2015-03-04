@@ -49,7 +49,7 @@ public class TestExperimentNs3Simulator {
         if (numAuctionNodes % 20 > 0) {
             numBackboneNodes++;
         }        
-        network.setNumAuctionNodes(numAuctionNodes);
+
         network.setNumBackboneNodes(numBackboneNodes);
         
         // WiFi and CSMA work; also need to change network.create...() in getObjects()

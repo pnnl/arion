@@ -7,8 +7,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import gov.pnnl.prosser.api.AbstractNs3Object;
-import gov.pnnl.prosser.api.NetworkCapable;
 import gov.pnnl.prosser.api.Ns3Simulator;
+import gov.pnnl.prosser.api.gld.obj.AuctionObject;
 import gov.pnnl.prosser.api.gld.obj.Controller;
 
 /**
@@ -21,6 +21,11 @@ import gov.pnnl.prosser.api.gld.obj.Controller;
 public class Channel extends AbstractNs3Object {
 	
 	/**
+	 * The base IP address of this Channel (full 4 byte IPv4)
+	 */
+	private String addressBase;
+	
+	/**
 	 * The Ns3Simulator that this Channel belongs to
 	 */
 	private Ns3Simulator owner;
@@ -28,8 +33,13 @@ public class Channel extends AbstractNs3Object {
 	/**
 	 * The Controllers attached to this Channel
 	 */
-	// TODO Should we just have list of Controllers? Since controllers contain Auction object, it would work
-	private List<NetworkCapable> controllers;
+	// TODO Look at combining controllers and auctions into List<NetworkCapable>
+	private List<Controller> controllers;
+	
+	/**
+	 * The Auctions attached to this Channel
+	 */
+	private List<AuctionObject> auctions;
 	
 	
 	/**
@@ -37,8 +47,23 @@ public class Channel extends AbstractNs3Object {
 	 */
 	public Channel() {
 		this.controllers = new ArrayList<>();
+		this.auctions = new ArrayList<>();
 	}
 	
+	/**
+	 * @return the addressBase
+	 */
+	public String getAddressBase() {
+		return addressBase;
+	}
+
+	/**
+	 * @param addressBase the addressBase to set
+	 */
+	public void setAddressBase(String addressBase) {
+		this.addressBase = addressBase;
+	}
+
 	/**
 	 * @return the Ns3Simulator parent simulator of this Channel
 	 */
@@ -56,15 +81,29 @@ public class Channel extends AbstractNs3Object {
 	/**
 	 * @return the List of Controllers attached to this Channel
 	 */
-	public List<NetworkCapable> getControllers() {
+	public List<Controller> getControllers() {
 		return controllers;
 	}
 
 	/**
-	 * @param gldObj the gldObj to add to this Channel
+	 * @param controller the Controller to add to this Channel
 	 */
-	public void add(NetworkCapable gldObj) {
-		this.controllers.add(gldObj);
+	public void addController(Controller controller) {
+		this.controllers.add(controller);
+	}
+
+	/**
+	 * @return the auctions
+	 */
+	public List<AuctionObject> getAuctions() {
+		return auctions;
+	}
+
+	/**
+	 * @param auctions the auction to add to this Channel
+	 */
+	public void addAuction(AuctionObject auction) {
+		this.auctions.add(auction);
 	}
 
 }

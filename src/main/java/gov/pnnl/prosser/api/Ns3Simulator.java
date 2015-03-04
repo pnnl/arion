@@ -10,7 +10,6 @@ import gov.pnnl.prosser.api.ns3.module.Module;
 import gov.pnnl.prosser.api.ns3.module.Namespace;
 import gov.pnnl.prosser.api.ns3.obj.Channel;
 import gov.pnnl.prosser.api.ns3.obj.CsmaChannel;
-import gov.pnnl.prosser.api.ns3.obj.Node;
 import gov.pnnl.prosser.api.ns3.obj.Ns3Network;
 import gov.pnnl.prosser.api.ns3.obj.PointToPointChannel;
 import gov.pnnl.prosser.api.ns3.obj.YansWifiChannel;
@@ -36,17 +35,18 @@ public class Ns3Simulator {
 	 * Initializes the modules, namespaces, and objects used in this network based on 
 	 * the user specified parameters TODO supply user params
 	 */
-	public void setup() {
+	public void setup(final int numChannels) {
 		
 		// User inputs basic params (Network type, addr base & mask, # of nodes [or infer from gldList?])
 		network = new Ns3Network();
 		network.setAddrBase("10.1."); // First 2 values of IPV4 address to use as base in IP addr distribution
 		network.setAddrMask("255.255.255.0");
+		network.setNumChannels(numChannels);
 		
-		network.setBackboneType(NetworkType.CSMA);
-		network.setAuctionType(NetworkType.WIFI);
 //		network.setBackboneType(NetworkType.CSMA);
-//		network.setAuctionType(NetworkType.LTE);
+//		network.setAuctionType(NetworkType.WIFI);
+		network.setBackboneType(NetworkType.CSMA);
+		network.setAuctionType(NetworkType.LTE);
 		
 		
 		//TODO stop time from user
@@ -75,10 +75,7 @@ public class Ns3Simulator {
      */
 	public List<AbstractNs3Object> getObjects() {
 		
-		final List<AbstractNs3Object> objects = network.createWifi("10.0.0.0", "4ms");//network.createLte();
-		
-		// List of ns-3 Nodes to keep track of specific Nodes
-		List<Node> nodes = network.getNodes();
+		final List<AbstractNs3Object> objects = network.createLte();//network.createWifi("10.0.0.0", "4ms");
 		
 		return objects;
 	}

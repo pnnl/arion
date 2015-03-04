@@ -96,9 +96,7 @@ public class ExperimentFncsTest {
         });
 
         final Ns3Simulator ns3Simulator = new Ns3Simulator();
-        // ns3Simulator.setAuctions(auctions);
-        // ns3Simulator.setControllers(controllers);
-        // ns3Simulator.setGldNodePrefix(controllerPrefix);
+        ns3Simulator.setup(numChannels);
         Ns3SimulatorWriter.writeNs3Simulator(outPath.resolve("ns3.cc"), ns3Simulator);
         System.out.println("Written!");
         // TODO FNCS Integration
@@ -482,7 +480,7 @@ public class ExperimentFncsTest {
         controller.setLoad("hvac_load");
         controller.setState("power_state");
         controller.setNetworkInterfaceName(controllerNIPrefix + id);
-        channel.addController(auction);
+        channel.addController(controller);
 
         // Generate the loads on the house
         generateLightsLoad(house, scheduleSkew);
