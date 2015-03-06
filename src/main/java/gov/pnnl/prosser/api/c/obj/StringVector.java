@@ -32,10 +32,12 @@ public class StringVector<T1> extends AbstractNs3Object {
 	
 	/**
 	 * 
-	 * @param controller the Controller with the name to add to this StringVector
+	 * @param obj the NetworkCapable object (AuctionObject or Controller) 
+	 * 			with the name to add to this StringVector
 	 */
 	public void pushBack(NetworkCapable obj) {
-		appendPrintObj(this.getName() + ".push_back(\"" + obj.getNetworkInterfaceName() + "\");\n");
+		appendPrintObj(this.getName() + ".push_back(\"" + 
+					obj.getNetworkInterfaceName() + "\");\n");
 	}
 	
 }

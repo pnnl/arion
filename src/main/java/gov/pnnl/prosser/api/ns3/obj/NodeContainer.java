@@ -66,7 +66,7 @@ public class NodeContainer extends AbstractNs3Object {
 	 * @param index the index of the Node to be added
 	 */
 	public void addNode(NodeContainer container, int index) {
-		this.addNode(container.getNode(index));
+		this.addNode(container.getNodeNoPrint(index));
 		appendPrintObj(this.getName() + ".Add(" + container.getName() + ".Get(" + index + "));\n");
 	}
 	
@@ -76,7 +76,7 @@ public class NodeContainer extends AbstractNs3Object {
 	 */
 	public void addNodeContainer(NodeContainer sourceNodes) {
 		for (int i = 0; i < sourceNodes.getNumNodes(); i++) {
-			this.nodes.add(sourceNodes.getNode(i));
+			this.nodes.add(sourceNodes.getNodeNoPrint(i));
 		}
 		appendPrintObj(this.getName() + ".Add(" + sourceNodes.getName() + ");\n");
 	}
@@ -87,7 +87,7 @@ public class NodeContainer extends AbstractNs3Object {
 	 */
 	public void addNodeContainerNoPrint(NodeContainer sourceNodes) {
 		for (int i = 0; i < sourceNodes.getNumNodes(); i++) {
-			this.nodes.add(sourceNodes.getNode(i));
+			this.nodes.add(sourceNodes.getNodeNoPrint(i));
 		}
 	}
 	
@@ -107,13 +107,21 @@ public class NodeContainer extends AbstractNs3Object {
 	public int getNumNodes() {
 		return this.nodes.size();
 	}
+	
+	/**
+	 * @param index
+	 * @param destination the NodeContainer to add the node at index to
+	 */
+	public void getNode(int index, Node destination) {
+		appendPrintObj(destination.getName() + " = " + this.getName() + ".Get(" + index + ");\n");
+	}
 
 	/**
 	 * 
 	 * @param index the integer index of the Node to retrieve from the NodeContainer
 	 * @return the Node at the given index or null if there is no node at that index
 	 */
-	public Node getNode(int index) {
+	public Node getNodeNoPrint(int index) {
 		if (index >= this.nodes.size() || this.nodes.get(index) == null) {
 			return null;
 		}

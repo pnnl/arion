@@ -45,7 +45,7 @@ public class TestNs3Simulator {
 
 	public List<AbstractNs3Object> getObjects() {
 		
-		final List<AbstractNs3Object> objects = network.build(); // Not a real builder pattern; after necessary params, use network type for type-specific method to construct nodes, install devices/applications, etc.
+		final List<AbstractNs3Object> objects = null; //network.build(); // Not a real builder pattern; after necessary params, use network type for type-specific method to construct nodes, install devices/applications, etc.
 		
 		return objects;
 	}

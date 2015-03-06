@@ -40,7 +40,7 @@ public class CsmaHelper extends NetworkHelper {
 
 	/**
 	 * @param nodes the NodeContainer to install the CSMA devices on
-	 * @param channel the Pointer<Channel> to connect the CSMA devices to
+	 * @param channel the Pointer<CsmaChannel> to connect the CSMA devices to
 	 * @param destinationContainer the NetDeviceContainer to add the Nodes from sourceNodes to
 	 */
 	public void install(NodeContainer sourceNodes,

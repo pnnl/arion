@@ -4,7 +4,9 @@
 package gov.pnnl.prosser.api.ns3.obj;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import gov.pnnl.prosser.api.AbstractNs3Object;
 import gov.pnnl.prosser.api.Ns3Simulator;
@@ -24,6 +26,8 @@ public class Channel extends AbstractNs3Object {
 	 * The base IP address of this Channel (full 4 byte IPv4)
 	 */
 	private String addressBase;
+	
+	private Map<String, String> attributes;
 	
 	/**
 	 * The Ns3Simulator that this Channel belongs to
@@ -48,6 +52,7 @@ public class Channel extends AbstractNs3Object {
 	public Channel() {
 		this.controllers = new ArrayList<>();
 		this.auctions = new ArrayList<>();
+		this.attributes = new HashMap<>();
 	}
 	
 	/**
@@ -62,6 +67,24 @@ public class Channel extends AbstractNs3Object {
 	 */
 	public void setAddressBase(String addressBase) {
 		this.addressBase = addressBase;
+	}
+	
+	/**
+	 * @param key
+	 * @return the attribute value of the given key
+	 */
+	public String getAttribute(String key) {
+		return this.attributes.get(key);
+	}
+	
+	/**
+	 * Sets the specified attribute of this channel to the given value
+	 * @param attribute
+	 * @param value
+	 */
+	public void setAttribute(String attribute, String value) {
+		this.attributes.put(attribute, value);
+		appendPrintObj(this.getName() + ".SetAttribute(" + attribute + ", " + value + ");\n");
 	}
 
 	/**

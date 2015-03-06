@@ -3,6 +3,8 @@
  */
 package gov.pnnl.prosser.api.ns3.obj;
 
+import gov.pnnl.prosser.api.c.obj.Pointer;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -41,7 +43,8 @@ public class PointToPointHelper extends NetworkHelper {
 	 */
 	public void setChannelAttribute(String attr, String value) {
 		channelAttributes.put(attr, value);
-		appendPrintObj(this.getName() + ".SetChannelAttribute(\"" + attr + "\", StringValue(\"" + value + "\"));\n");
+		appendPrintObj(this.getName() + ".SetChannelAttribute(\"" + attr 
+				+ "\", StringValue(\"" + value + "\"));\n");
 	}
 	
 	/**
@@ -57,7 +60,8 @@ public class PointToPointHelper extends NetworkHelper {
 			valueWrapperPrefix = "DataRateValue(DataRate(\"";
 			valueWrapperSuffix = "\"))";
 		}
-		appendPrintObj(this.getName() + ".SetDeviceAttribute(\"" + attr + "\", " + valueWrapperPrefix + value + valueWrapperSuffix + ");\n");
+		appendPrintObj(this.getName() + ".SetDeviceAttribute(\"" + attr + "\", " 
+				+ valueWrapperPrefix + value + valueWrapperSuffix + ");\n");
 	}
 
 	/**
@@ -66,7 +70,20 @@ public class PointToPointHelper extends NetworkHelper {
 	 */
 	public void setDeviceAttribute(String attr, int value) {
 		deviceAttributes.put(attr, "" + value);
-		appendPrintObj(this.getName() + ".SetDeviceAttribute(\"" + attr + "\", UintegerValue(" + value + "));\n");		
+		appendPrintObj(this.getName() + ".SetDeviceAttribute(\"" + attr 
+				+ "\", UintegerValue(" + value + "));\n");
+	}
+
+	/**
+	 * Creates a PointToPointNetDevice on each Node and connects them with a p2p channel
+	 * @param node1 Pointer<Node>
+	 * @param node2 Pointer<Node>
+	 * @param destination the NetDeviceContainer to hold the created p2pNetDevices
+	 */
+	public void install(Pointer<Node> node1, Pointer<Node> node2, 
+			NetDeviceContainer destination) {
+		appendPrintObj(destination.getName() + " = " + this.getName() 
+				+ ".Install(" + node1.getName() + ", " + node2.getName() + ");\n");
 	}
 
 }
