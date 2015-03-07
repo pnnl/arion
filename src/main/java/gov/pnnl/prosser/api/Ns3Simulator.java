@@ -28,7 +28,15 @@ public class Ns3Simulator {
 	private List<Module> modules;
 	private List<Namespace> namespaces;
 	private List<AbstractNs3Object> ns3Objects;
-	private List<AbstractProsserObject> gldObjects;
+	
+	/**
+	 * Create a new Ns3Simulator
+	 */
+	public Ns3Simulator() {
+		this.modules = new ArrayList<>();
+		this.namespaces = new ArrayList<>();
+		this.ns3Objects = new ArrayList<>();
+	}
 
 	
 	/**
@@ -39,6 +47,9 @@ public class Ns3Simulator {
 		
 		// User inputs basic params (Network type, addr base & mask, # of nodes [or infer from gldList?])
 		network = new Ns3Network();
+		
+		namespaces.add(new Namespace("ns3"));
+		
 		network.setAddrBase("10.1."); // First 2 values of IPV4 address to use as base in IP addr distribution
 		network.setAddrMask("255.255.255.0");
 		network.setNumChannels(numChannels);
@@ -48,9 +59,13 @@ public class Ns3Simulator {
 		network.setBackboneType(NetworkType.CSMA);
 		network.setAuctionType(NetworkType.LTE);
 		
+		network.setBackboneDataRate("10Gbps");
+		network.setBackboneDelay("1ms");
 		
 		//TODO stop time from user
 		network.setStopTime(10.0);
+		
+		network.buildBackbone();
 	}
 	
     /**
@@ -64,20 +79,14 @@ public class Ns3Simulator {
      * Gets the Namespaces used in this simulation
      */
 	public List<Namespace> getNamespaces() {
-		List<Namespace> namespaces = new ArrayList<Namespace>();
-		namespaces.add(new Namespace("ns3"));
-		
-		return namespaces;
+		return this.namespaces;
 	}
 	
     /**
      * Gets the ns-3 objects used in this simulation
      */
-	public List<AbstractNs3Object> getObjects() {
-		
-		final List<AbstractNs3Object> objects = network.createLte();//network.createWifi("10.0.0.0", "4ms");
-		
-		return objects;
+	public List<AbstractNs3Object> getObjects() {		
+		return ns3Objects;
 	}
 
 	/**
@@ -124,6 +133,20 @@ public class Ns3Simulator {
 		
 		//Channel c = obj.getChannel();
 		//network.addChannel(c); // Do more Channel setup here or in Ns3Network?
+	}
+
+	/**
+	 * @return the list of Channels for the Ns3Network
+	 */
+	public List<Channel> getChannels() {
+		return this.network.getChannels();
+	}
+
+	/**
+	 * Build the Controller and Auction nodes and connect to backbone network
+	 */
+	public void buildFrontend() {
+		this.ns3Objects = network.buildFrontend();
 	}
 
 }

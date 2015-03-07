@@ -20,6 +20,11 @@ import java.util.List;
  */
 public class Ns3SimulatorWriter {
 	
+	/**
+	 * @param path the Path for the output file
+	 * @param ns3Simulator the Ns3Simulator
+	 * @throws IOException
+	 */
 	public static void writeNs3Simulator(final Path path, final Ns3Simulator ns3Simulator) throws IOException {
 		
 		final List<Module> modules = ns3Simulator.getModules();

@@ -110,10 +110,10 @@ public class NodeContainer extends AbstractNs3Object {
 	
 	/**
 	 * @param index
-	 * @param destination the NodeContainer to add the node at index to
+	 * @param backboneRouterPtr the Pointer<Node> to add the node at index to
 	 */
-	public void getNode(int index, Node destination) {
-		appendPrintObj(destination.getName() + " = " + this.getName() + ".Get(" + index + ");\n");
+	public void getNode(int index, Pointer<Node> backboneRouterPtr) {
+		appendPrintObj(backboneRouterPtr.getName() + " = " + this.getName() + ".Get(" + index + ");\n");
 	}
 
 	/**

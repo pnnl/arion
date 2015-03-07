@@ -84,7 +84,7 @@ public class Channel extends AbstractNs3Object {
 	 */
 	public void setAttribute(String attribute, String value) {
 		this.attributes.put(attribute, value);
-		appendPrintObj(this.getName() + ".SetAttribute(" + attribute + ", " + value + ");\n");
+		//appendPrintObj(this.getName() + ".SetAttribute(\"" + attribute + "\", StringValue(\"" + value + "\"));\n");
 	}
 
 	/**

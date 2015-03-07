@@ -44,6 +44,7 @@ public class PointToPointChannel extends Channel {
 	 */
 	public void setNodeA(Pointer<Node> node) {
 		nodeA = node;
+		nodeA.setNameString(node.getName());
 	}
 
 	/**
@@ -58,6 +59,7 @@ public class PointToPointChannel extends Channel {
 	 */
 	public void setNodeB(Pointer<Node> node) {
 		nodeB = node;
+		nodeB.setNameString(node.getName());
 	}
 
 	/**

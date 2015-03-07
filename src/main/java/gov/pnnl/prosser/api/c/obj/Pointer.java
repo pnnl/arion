@@ -19,6 +19,15 @@ public class Pointer<T extends AbstractNs3Object> extends AbstractNs3Object {
 	public Pointer(String name) {
 		this.setName(name);
 	}
+	
+	/**
+	 * @param name
+	 * @param obj
+	 */
+	public Pointer(String name, AbstractNs3Object obj) {
+		this.setName(name);
+		this.setType(obj);
+	}
 
 	@Override
 	public void setName(String name) {
@@ -31,7 +40,8 @@ public class Pointer<T extends AbstractNs3Object> extends AbstractNs3Object {
 	 * @param obj the AbstractNs3Object to wrap in a pointer
 	 */
 	public void encapsulate(AbstractNs3Object obj) {
-		appendPrintObj("Ptr<" + obj.getClass().getSimpleName() + "> " + this.getName() + "(" + obj.getName() + ");\n");
+		appendPrintObj("Ptr<" + obj.getClass().getSimpleName() + "> " 
+					+ this.getName() + "(" + obj.getName() + ");\n");
 	}
 	
 	/**
@@ -44,11 +54,11 @@ public class Pointer<T extends AbstractNs3Object> extends AbstractNs3Object {
 	/**
 	 * @param obj
 	 */
-	public void construct(T obj) {
+	public void createObject(T obj) {
 		this.object = obj;
-		this.object.setNameString(this.getName());
 		this.object.setPointer(true);
-		appendPrintObj("Ptr<" + obj.getClass().getSimpleName() + "> " + this.getName() + " = CreateObject<" + obj.getClass().getSimpleName() + ">();\n");
+		appendPrintObj("Ptr<" + obj.getClass().getSimpleName() + "> " 
+					+ this.getName() + " = CreateObject<" + obj.getClass().getSimpleName() + ">();\n");
 	}
 	
 	/**

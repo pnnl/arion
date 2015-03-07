@@ -79,25 +79,18 @@ public class ExperimentFncsTest {
         final int numChannels = (numHouses / 20) + 2;
         final String controllerNIPrefix = "F1_C_NI";
         
-        
-        final List<Channel> channels = new ArrayList<>();
-        final GldSimulator gldSim = constructGldSim(numHouses, controllerNIPrefix, channels);
-        GldSimulatorWriter.writeGldSimulator(outPath.resolve("prosser.glm"), gldSim);
-        // TODO: No passing of information between simulators here; not maintainable approach; force objects to create simulator relationships
-        // For this test there will be one object in each list but in general there could be multiple
-        final List<AuctionObject> auctions = new ArrayList<>();
-        final List<Controller> controllers = new ArrayList<>();
-        gldSim.getObjects().forEach((o) -> {
-            if (o instanceof AuctionObject) {
-                auctions.add((AuctionObject) o);
-            } else if (o instanceof House) {
-                controllers.add(((House) o).getController());
-            }
-        });
-
+        // Set parameters for Ns3Network and build backend network
         final Ns3Simulator ns3Simulator = new Ns3Simulator();
         ns3Simulator.setup(numChannels);
+        
+        final List<Channel> channels = ns3Simulator.getChannels();
+        final GldSimulator gldSim = constructGldSim(numHouses, controllerNIPrefix, channels);
+        GldSimulatorWriter.writeGldSimulator(outPath.resolve("prosser.glm"), gldSim);
+        
+        // Connect Controllers and Auctions to backbone network
+        ns3Simulator.buildFrontend();
         Ns3SimulatorWriter.writeNs3Simulator(outPath.resolve("ns3.cc"), ns3Simulator);
+
         System.out.println("Written!");
         // TODO FNCS Integration
     }

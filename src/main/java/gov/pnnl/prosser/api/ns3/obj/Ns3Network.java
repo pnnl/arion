@@ -29,7 +29,9 @@ public class Ns3Network {
 	private NetworkType backboneType, auctionType;
 	private String addrBase, addrMask;
 	private String gldNodePrefix;
+	private String backboneDataRate, backboneDelay;
 	private int numBackboneNodes, numChannels;
+	private int count;
 	private double stopTime;
 	private NodeContainer backboneNodes, nodes;
 	private List<Module> modules;
@@ -48,6 +50,7 @@ public class Ns3Network {
 		this.auctionType = null;
 		this.addrBase = "10.1.0.0";
 		this.addrMask = "255.255.255.0";
+		this.count = 0;
 		this.stopTime = Double.MAX_VALUE;
 		this.backboneNodes = new NodeContainer(); // TODO set name & add to printObj at appropriate time
 		this.nodes = new NodeContainer();
@@ -130,6 +133,41 @@ public class Ns3Network {
 	 */
 	public void setGldNodePrefix(String gldNodePrefix) {
 		this.gldNodePrefix = gldNodePrefix;
+	}
+	
+	/**
+	 * @return the backboneDataRate
+	 */
+	public String getBackboneDataRate() {
+		return backboneDataRate;
+	}
+
+	/**
+	 * @param backboneDataRate the backboneDataRate to set
+	 */
+	public void setBackboneDataRate(String backboneDataRate) {
+		this.backboneDataRate = backboneDataRate;
+	}
+
+	/**
+	 * @return the backboneDelay
+	 */
+	public String getBackboneDelay() {
+		return backboneDelay;
+	}
+
+	/**
+	 * @param backboneDelay the backboneDelay to set
+	 */
+	public void setBackboneDelay(String backboneDelay) {
+		this.backboneDelay = backboneDelay;
+	}
+	
+	/**
+	 * @return the list of Channels
+	 */
+	public List<Channel> getChannels() {
+		return this.channels;
 	}
 
 	/**
@@ -279,6 +317,7 @@ public class Ns3Network {
 		int numChannels = this.channels.size();
 		
 		InternetStackHelper iStackHelper = new InternetStackHelper("iStackHelper");
+		ns3Objects.add(iStackHelper);
 		Ipv4AddressHelper ipv4AddrHelper = new Ipv4AddressHelper("ipv4AddrHelper");
 		
 		// Vector to hold controller names
@@ -289,19 +328,22 @@ public class Ns3Network {
 			Channel channel = getChannel(i);
 			
 			// Set the base address and subnet mask for the IPv4 addresses
-			ipv4AddrHelper.setBase(channel.getAddressBase(), "255.255.255.0");
+			ipv4AddrHelper.setBase("192.168.1.0", "255.255.255.0");
 			
 			List<Controller> controllers = channel.getControllers();
+			// TODO structure methods in build() so that backbone network & channels are created first
+			// 	then given back to me after GLD stuff adds controllers to the channels
 			
 			if (channel.getClass().getSimpleName().equalsIgnoreCase("csmachannel")) {
 				Pointer<CsmaChannel> chanPtr  = new Pointer<CsmaChannel>("chanPtr_" + i);
-				chanPtr.encapsulate(channel);
+				chanPtr.createObject((CsmaChannel) channel);
 				
 				CsmaHelper csmaHelper = new CsmaHelper("csmaHelper_" + i);
 				NodeContainer csmaNodes = new NodeContainer("csmaNodes_" + i);
 				NetDeviceContainer csmaDevices = new NetDeviceContainer("csmaDevices_" + i);
 				
 				Pointer<Node> csmaNodePtr = new Pointer<Node>("csmaNode_" + i);
+				csmaNodePtr.createObject(new Node());
 				
 				// Create new CSMA Node for each Controller
 				for (int j = 0; j < controllers.size(); j++) {
@@ -426,17 +468,17 @@ public class Ns3Network {
 			AuctionObject auction = auctions.get(i);
 			
 			Node node = new Node("auctionNode_" + i);
-			Pointer<Node> nodePtr = new Pointer<Node>("auctionNode_" + i);
-			nodePtr.encapsulate(node);
+			Pointer<Node> nodePtr = new Pointer<Node>("auctionNodePtr_" + i);
+			nodePtr.createObject(node);
 			
 		    node.setAuction(auction);
 		    // Add node to global list of nodes
 		    addNode(node);
 		    
 			// IP setup
-			Ipv4AddressHelper addresses = new Ipv4AddressHelper("addresses");
+			Ipv4AddressHelper addresses = new Ipv4AddressHelper("auctionAddresses");
 			addresses.setBase(auctionChannel.getAddressBase(), "255.255.255.0");
-			InternetStackHelper stack = new InternetStackHelper("stack");
+			InternetStackHelper stack = new InternetStackHelper("auctionStack");
 			setupInternetStackAndRouting(stack);
 		    
 		    if (auctionChannel.getClass().getSimpleName().equalsIgnoreCase("csmachannel")) {
@@ -457,16 +499,17 @@ public class Ns3Network {
 		    } else if (auctionChannel.getClass().getSimpleName().equalsIgnoreCase("pointtopointchannel")) {
 		    	
 		    	Pointer<PointToPointChannel> p2pChannelPtr = new Pointer<PointToPointChannel>("p2pChannelPtr_" + i);
-		    	p2pChannelPtr.encapsulate(auctionChannel);
+		    	p2pChannelPtr.createObject((PointToPointChannel) auctionChannel);
 		    	
 		    	PointToPointHelper p2pHelper = new PointToPointHelper("p2pHelper_" + i);
 		    	p2pHelper.setDeviceAttribute("DataRate", auctionChannel.getAttribute("DataRate"));
 		    	p2pHelper.setChannelAttribute("Delay", auctionChannel.getAttribute("Delay"));
 		    	NetDeviceContainer p2pDevices = new NetDeviceContainer("p2pDevices_" + i);
-		    	p2pHelper.install(nodePtr, ((PointToPointChannel) auctionChannel).getNodeB(), p2pDevices); // TODO fix getNodeB to return pointer with nodeB's name
+		    	
+		    	p2pHelper.install(((PointToPointChannel) auctionChannel).getNodeA(), ((PointToPointChannel) auctionChannel).getNodeB(), p2pDevices);
 		    	
 		    } else if (auctionChannel.getClass().getSimpleName().equalsIgnoreCase("yanswifichannel")) {
-		    	
+		    	// TODO WiFi auction
 		    }
 		    
 	    	addresses.assign(devices);
@@ -504,15 +547,18 @@ public class Ns3Network {
 	 * @param stack the InternetStackHelper used to set up the IP routing tables
 	 */
 	private void setupInternetStackAndRouting(InternetStackHelper stack) {
-		Ipv4NixVectorHelper nixRouting = new Ipv4NixVectorHelper("nixRouting");
+		Ipv4NixVectorHelper nixRouting = new Ipv4NixVectorHelper("nixRouting_" + count);
 		
-		Ipv4StaticRoutingHelper staticRouting = new Ipv4StaticRoutingHelper("staticRouting");
+		Ipv4StaticRoutingHelper staticRouting = new Ipv4StaticRoutingHelper("staticRouting_" + count);
 		
-		Ipv4ListRoutingHelper list = new Ipv4ListRoutingHelper("list");
+		Ipv4ListRoutingHelper list = new Ipv4ListRoutingHelper("list_" + count);
 		list.add(staticRouting, 0);
 		list.add(nixRouting, 10);
 		
 		stack.setRoutingHelper(list);
+		
+		// Increment the count to avoid future naming conflicts
+		count++;
 	}
 	
 	/**
@@ -599,9 +645,6 @@ public class Ns3Network {
 	 * @return objects a List of all AbstractNs3Objects created for this WiFi network
 	 */
 	public List<AbstractNs3Object> createWifi(String latency) {
-		
-		// TODO put this into "build" method
-		setupFncsSimulator();
 		
 		// Add the necessary modules for WiFi
 		this.addModule(new Mobility());
@@ -902,9 +945,6 @@ public class Ns3Network {
 		this.addModule(new Lte());
 		this.addModule(new Mobility());
 		
-		// Creates the FNCS simulator
-		setupFncsSimulator();
-		
 		// A map<string, string> mapping AuctionObject name to a Controller name
 		StringMap<String, String> marketToControllerMap = new StringMap<String, String>("marketToControllerMap");
 		
@@ -923,7 +963,7 @@ public class Ns3Network {
 		ns3Objects.add(epcHelper);
 		
 		Pointer<PointToPointEpcHelper> epcHelperPointer = new Pointer<>("epcHelperPointer");
-		epcHelperPointer.construct(epcHelper);
+		epcHelperPointer.createObject(epcHelper);
 		
 		lteHelper.setEpcHelper(epcHelperPointer);
 		
@@ -1057,17 +1097,15 @@ public class Ns3Network {
 		this.addModule(new Applications());
 		this.addModule(new Network());
 		this.addModule(new Csma());
+		this.addModule(new PointToPoint());
 		this.addModule(new Internet());
-		//this.addModule("nix-vector-routing-module");
-		
-		// Creates the FNCS simulator
-		setupFncsSimulator();	
-		
+		this.addModule(new NixVectorRouting());
+
 		final int numChannels = getNumChannels();
 		
 		// IP setup
-		Ipv4AddressHelper addresses = new Ipv4AddressHelper("addresses");
-		InternetStackHelper stack = new InternetStackHelper("stack");
+		Ipv4AddressHelper addresses = new Ipv4AddressHelper("backboneAddresses");
+		InternetStackHelper stack = new InternetStackHelper("backboneStack");
 		setupInternetStackAndRouting(stack);
 		
 		// CSMA channel/device setup
@@ -1081,23 +1119,21 @@ public class Ns3Network {
 		PointToPointChannel auctionChannel = new PointToPointChannel("p2pAuctionChannel");
 		auctionChannel.setAttribute("DataRate", dataRate);
 		auctionChannel.setAttribute("Delay", delay);
-		auctionChannel.setAddressBase(this.getAddrBase() + "0.1"); // TODO implement user-settable Auction addrBase
+		auctionChannel.setAddressBase(this.getAddrBase() + "10.0"); // TODO implement user-settable Auction addrBase
 		addChannel(auctionChannel);
 		
 		// Creates main backbone router
 		NodeContainer backboneRouter = new NodeContainer("backboneRouter");
 		backboneRouter.create(1);
 		// Store backboneRouter in Pointer for p2pHelper.install
-		Pointer<Node> backboneRouterPtr = new Pointer<Node>("backboneRouterPtr");
-		Node tempNode = new Node("tempNode");
-		backboneRouter.getNode(0, tempNode);
-		backboneRouterPtr.encapsulate(tempNode);
+		Pointer<Node> backboneRouterPtr = new Pointer<Node>("backboneRouterPtr", new Node());
+		backboneRouter.getNode(0, backboneRouterPtr);
 		
 		// Add the backbone router node to p2p auction channel
 		auctionChannel.setNodeA(backboneRouterPtr);
 		
 		// Creates access point routers
-		NodeContainer apNodes = new NodeContainer("apNodes");
+		NodeContainer apNodes = new NodeContainer("apNodes_backbone");
 		apNodes.create(numChannels);
 		
 		for (int i = 1; i < numChannels; i++) {
@@ -1106,7 +1142,7 @@ public class Ns3Network {
 			String ipBase = this.getAddrBase() + 2*i + ".0";
 			
 			// Create the CSMA Channel & add it to list of channels
-			CsmaChannel channel = new CsmaChannel("csmaChannel_" + i);
+			CsmaChannel channel = new CsmaChannel("csmaChannel_backbone_" + i);
 			channel.setAttribute("DataRate", dataRate);
 			channel.setAttribute("Delay", delay);
 			// Add IP address base to Channel for use later in Market/Controller integration
@@ -1114,25 +1150,24 @@ public class Ns3Network {
 			addChannel(channel);
 			
 			// Wrap channel in pointer for CsmaHelper.Install
-			Pointer<CsmaChannel> channelPtr = new Pointer<CsmaChannel>("csmaChannelPtr_" + i);
-			channelPtr.encapsulate(channel);
+			Pointer<CsmaChannel> channelPtr = new Pointer<CsmaChannel>("csmaChannelPtr_backbone_" + i);
+			channelPtr.createObject(channel);
 					
-			Pointer<Node> apNodePtr = new Pointer<Node>("csmaNode_" + i);
-			Node tempApNode = new Node("tempNode_" + i);
-			apNodes.getNode(i, tempApNode);
-			apNodePtr.encapsulate(tempApNode);
+			Pointer<Node> apNodePtr = new Pointer<Node>("csmaNode_backbone_" + i, new Node());
+			apNodes.getNode(i, apNodePtr);
 			
-			NetDeviceContainer csmaDevices = new NetDeviceContainer("csmaDevices_" + i);
+			NetDeviceContainer csmaDevices = new NetDeviceContainer("csmaDevices_backbone_" + i);
 			
 			// Installs the CSMA protocols on the devices using the given channel
 			csmaHelper.install(apNodePtr, channelPtr, csmaDevices);
-			// Installs the IP stack protocols on the CSMA Node
+			// Installs the IP stack protocols on the CSMA & router Nodes
 			stack.install(apNodePtr);
+			stack.install(backboneRouterPtr);
 			
 			addresses.setBase(ipBase, "255.255.255.0"); // IPbase, mask
 			addresses.assign(csmaDevices);
 			
-			NetDeviceContainer p2pDevices = new NetDeviceContainer("p2pDevices_" + i);
+			NetDeviceContainer p2pDevices = new NetDeviceContainer("p2pDevices_backbone_" + i);
 			
 			// Install p2p devices on ap node and backbone router & connect via p2p channel
 			p2pHelper.install(apNodePtr, backboneRouterPtr, p2pDevices);
@@ -1147,11 +1182,34 @@ public class Ns3Network {
 	}
 
 	/**
+	 * @return ns3Objects a list of all objects created in this network
 	 * 
 	 */
+	// TODO add all objects to ns3Objects or just add 1 (only need 1 to print all ns3 setup text)
 	// TODO give params to Ns3Network, then call this to call all other necessary methods
-	public void build() {
+	public List<AbstractNs3Object> buildBackbone() {
 		
+		setupFncsSimulator();
+		
+		// Sets name for global NodeContainer for use in FNCSApplicationHelper.setApps(...)
+		nodes.setName("allNodes");
+		
+		// Creates backbone network
+		// TODO build appropriate network(s) type
+		createCsma(this.getBackboneDataRate(), this.getBackboneDelay());
+		
+		return ns3Objects;
+	}
+	
+	/**
+	 * @return ns3Objects a list of all objects created in this network
+	 */
+	public List<AbstractNs3Object> buildFrontend() {
+		
+		// Connect the Controllers and Auction to the backbone network
+		connectControllerChannels();
+		
+		return ns3Objects;
 		
 	}
 	
