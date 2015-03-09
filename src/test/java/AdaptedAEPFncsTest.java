@@ -23,10 +23,55 @@ import java.util.Random;
  * @author nord229
  *
  */
-public class ExperimentFncsTest {
+public class AdaptedAEPFncsTest {
 
     private static final Random rand = new Random(13);
 
+    // %% Unchanging? parameters
+    // % most of these values were obtained from survey data
+    private static final double heat_gas_perc_pre = 0.85;
+    private static final double heat_pump_perc_pre = 0.15;
+
+    private static final double heat_gas_perc_post = 0.70;
+    private static final double heat_pump_perc_post = 0.30;
+
+    private static final double cool_none_pre = 0.0;
+    private static final double cool_pump_pre = 0.0;
+    private static final double cool_electric_pre = 1 - cool_none_pre - cool_pump_pre;
+
+    private static final double cool_none_post = 0.0;
+    private static final double cool_pump_post = 0.0;
+    private static final double cool_electric_post = 1 - cool_none_post - cool_pump_post;
+
+    private static final double wh_perc_elec_pre = 0;
+    private static final double wh_perc_elec_post = 0;
+
+    // %house parameters extracting them here
+    private static final double smallhome_floorarea_1 = 1100;
+    private static final double smallhome_floorarea_2 = 500;
+
+    private static final double largehome_floorarea_1 = 3000;
+    private static final double largehome_floorarea_2 = 900;
+
+    private static final double mobilehome_floorarea_1 = 750;
+
+    // % Parameter distributions (same for all) (average +/- range)
+    private static final double wtrdem_1 = 1.0;
+    private static final double wtrdem_2 = 0.2;
+    private static final double cool_1 = 1;
+    private static final double cool_2 = 0.05;
+    private static final double tankset_1 = 125;
+    private static final double tankset_2 = 5;
+    private static final double thermdb_1 = 2.0;
+    private static final double thermdb_2 = 0.2;
+    private static final double cooloffset_1 = 4;
+    private static final double cooloffset_2 = 2;
+    private static final double heatoffset_1 = 0;
+    private static final double heatoffset_2 = 3;
+    private static final double basepwr_1 = 1;
+    private static final double basepwr_2 = 0.5;
+    private static final double tankUA_1 = 2.0;
+    private static final double tankUA_2 = 0.2;
 
     public static void main(final String[] args) throws IOException {
         final Path outPath = Paths.get(args[0]).toRealPath();
@@ -34,18 +79,27 @@ public class ExperimentFncsTest {
         final int numChannels = (numHouses / 20) + 2;
         final String controllerNIPrefix = "F1_C_NI";
         
-        // Set parameters for Ns3Network and build backend network
-        final Ns3Simulator ns3Simulator = new Ns3Simulator();
-        ns3Simulator.setup(numChannels);
         
-        final List<Channel> channels = ns3Simulator.getChannels();
+        final List<Channel> channels = new ArrayList<>();
         final GldSimulator gldSim = constructGldSim(numHouses, controllerNIPrefix, channels);
         GldSimulatorWriter.writeGldSimulator(outPath.resolve("prosser.glm"), gldSim);
-        
-        // Connect Controllers and Auctions to backbone network
-        ns3Simulator.buildFrontend();
-        Ns3SimulatorWriter.writeNs3Simulator(outPath.resolve("ns3.cc"), ns3Simulator);
+        // TODO: No passing of information between simulators here; not maintainable approach; force objects to create simulator relationships
+        // For this test there will be one object in each list but in general there could be multiple
+        final List<AuctionObject> auctions = new ArrayList<>();
+        final List<Controller> controllers = new ArrayList<>();
+        gldSim.getObjects().forEach((o) -> {
+            if (o instanceof AuctionObject) {
+                auctions.add((AuctionObject) o);
+            } else if (o instanceof House) {
+                controllers.add(((House) o).getController());
+            }
+        });
 
+        final Ns3Simulator ns3Simulator = new Ns3Simulator();
+        // ns3Simulator.setAuctions(auctions);
+        // ns3Simulator.setControllers(controllers);
+        // ns3Simulator.setGldNodePrefix(controllerPrefix);
+        Ns3SimulatorWriter.writeNs3Simulator(outPath.resolve("ns3.cc"), ns3Simulator);
         System.out.println("Written!");
         // TODO FNCS Integration
     }
@@ -279,8 +333,8 @@ public class ExperimentFncsTest {
                 meter = tripMeterC;
                 phase = PhaseCode.C;
             }
-            // distributes houses to channels, 20 per channel (1-n)
             int channelId = ((i - 1) / 20) + 1;
+            // TODO only put 20 houses on each channel 1-n
             generateHouse(sim, i, meter, tripLineConf, auction, phase, controllerNIPrefix, channels.get(channelId));
         }
 
@@ -356,6 +410,27 @@ public class ExperimentFncsTest {
         tripMeterRt.setGroupId("F1_rt_meter");
         tripMeterRt.setParent(tripMeterFlatrate);
 
+        final double typeRand = rand.nextDouble();
+        int houseType;
+        if (typeRand <= 0.3) {
+            houseType = 1;
+        } else if (typeRand > 0.3 && typeRand <= 0.58) {
+            houseType = 2;
+        } else if (typeRand > 0.58 && typeRand <= 0.75) {
+            houseType = 3;
+        } else if (typeRand > 0.75 && typeRand <= 0.86) {
+            houseType = 4;
+        } else if (typeRand > 0.86 && typeRand <= 0.96) {
+            houseType = 5;
+        } else { // typeRand > 0.96
+            houseType = 5;
+        }
+        //dryer_flag_perc  = rand();
+        //dishwasher_flag_perc = rand();
+        //freezer_flag_perc = rand();
+        double houseLoad = 1;
+        double houseVA = 1;
+
         final long scheduleSkew = -685L;
 
         // Create the house
@@ -418,6 +493,257 @@ public class ExperimentFncsTest {
         generateRangeLoad(house, scheduleSkew);
         generateMicrowaveLoad(house, scheduleSkew);
     }
+
+    private static void setupResidential1(final House house, final double scaleFloor, final double hvacPowerFactor) {
+//        % OLD/SMALL
+//        % Distribution of parameters (average +/- range)    
+//    %     cool_none_pre = 0.20;
+//    %     cool_pump_pre = 0.0;
+//    %     cool_electric_pre = 1 - cool_none_pre - cool_pump_pre;
+//        Rroof_1=19;
+//        Rroof_2=4;
+//        Rwall_1=11;
+//        Rwall_2=3;             
+//        Rfloor_1=11;
+//        Rfloor_2=1;
+//        Rdoors=3;
+//        Rwindows_1=1.25;
+//        Rwindows_2=0.5;
+//        airchange_1=1;
+//        airchange_2=0.2;      
+//        floorarea_1=smallhome_floorarea_1;
+//        floorarea_2=smallhome_floorarea_2;     
+//        tankvol_1=45;
+//        tankvol_2=5;
+//        heatcap_1=4500;
+//        heatcap_2=500;       
+//        wh_type1 = 'old';
+//        wh_type2 = 'small';
+//        hp_perc=heat_pump_perc_pre;
+//        g_perc=heat_gas_perc_pre;
+//        c_perc=cool_electric_pre;
+//        wh_elec = wh_perc_elec_pre;
+//        load_scalar = 1;
+        setRroof(house, 19, 4);
+        setRwall(house, 11, 3);
+        setRfloor(house, 11, 1);
+        house.setRdoors(3.0);
+        setRwindows(house, 1.25, 0.5);
+        setAirchange(house, 1, 0.2);
+        setGenericHouseInfo(house, "Residential1", hvacPowerFactor);
+        setFloorarea(house, smallhome_floorarea_1, smallhome_floorarea_2, scaleFloor);
+        final double initTemp = 68 + 4*rand.nextDouble();
+        house.setAirTemperature(initTemp);
+        house.setMassTemperature(initTemp);
+    }
+    
+    private static void setGenericHouseInfo(final House house, final String houseTag, final double hvacPowerFactor) {
+        final CoolingSystemType cType = CoolingSystemType.ELECTRIC;
+        house.setHvacPowerFactor(hvacPowerFactor);
+        house.setCoolingSystemType(cType);
+        house.setHeatingSystemType(HeatingSystemType.GAS);
+        house.setFanType(FanType.ONE_SPEED);
+        house.setHvacBreakerRating(200.0);
+        house.setTotalThermalMassPerFloorArea(rand.nextDouble()*2 + 3);
+        final double a;
+        final double b;
+        if(houseTag.equals("Residential5")) {
+            a = 2.0;
+            b = 3.5; 
+        }else if (houseTag.equals("Residential1") || houseTag.equals("Residential3")) {
+            a = 2.6;
+            b = 3.8;
+        }else{
+            a = 3.4;
+            b = 4.2;
+        }
+
+        final double tempRandNum = a + (b-a)*rand.nextDouble();
+
+        if (cType == CoolingSystemType.ELECTRIC) {
+            house.setMotorEfficiency(MotorEfficiency.AVERAGE);
+            house.setMotorModel(MotorModel.BASIC);
+            house.setCoolingCop(tempRandNum);
+        }
+    }
+    
+    private static void setRroof(final House house, final double Rroof1, final double Rroof2) {
+        house.setRroof((Rroof1-Rroof2)+2*Rroof2*rand.nextDouble());
+    }
+    
+    private static void setRwall(final House house, final double Rwall1, final double Rwall2) {
+        house.setRwall((Rwall1-Rwall2)+2*Rwall2*rand.nextDouble());
+    }
+    
+    private static void setRfloor(final House house, final double Rfloor1, final double Rfloor2) {
+        house.setRfloor((Rfloor1-Rfloor2)+2*Rfloor2*rand.nextDouble());
+    }
+    
+    private static void setRwindows(final House house, final double Rwindows1, final double Rwindows2) {
+        house.setRwindows((Rwindows1-Rwindows2)+2*Rwindows2*rand.nextDouble());
+    }
+    
+    private static void setAirchange(final House house, final double airchange1, final double airchange2) {
+        house.setAirchangePerHour((airchange1-airchange2)+2*airchange2*rand.nextDouble());
+    }
+    
+    private static void setFloorarea(final House house, final double floorarea1, final double floorarea2, final double scaleFloor) {
+        house.setFloorArea(scaleFloor * (floorarea1-floorarea2)+2*floorarea2*rand.nextDouble());
+        house.setNumberOfDoors(Math.ceil(house.getFloorArea()/1000));
+    }
+    
+    private static void setTankvol(final House house, final double Rwindows1, final double Rwindows2) {
+        house.setRwindows((Rwindows1-Rwindows2)+2*Rwindows2*rand.nextDouble());
+    }
+    
+    private static void setHeatcap(final House house, final double Rwindows1, final double Rwindows2) {
+        house.setRwindows((Rwindows1-Rwindows2)+2*Rwindows2*rand.nextDouble());
+    }
+    
+    private static void setupResidential2(final House house) {
+//      % NEW/SMALL
+//        % Distribution of parameters (average +/- range)   
+//        Rroof_1=30;
+//        Rroof_2=5;                
+//        Rwall_1=19;
+//        Rwall_2=3;             
+//        Rfloor_1=15;
+//        Rfloor_2=3;              
+//        Rdoors=5;
+//        Rwindows_1=1.75;
+//        Rwindows_2=0.5;      
+//        airchange_1=1;
+//        airchange_2=0.2;      
+//        floorarea_1=smallhome_floorarea_1;
+//        floorarea_2=smallhome_floorarea_2;      
+//        tankvol_1=45;
+//        tankvol_2=5;            
+//        heatcap_1=4500;
+//        heatcap_2=500;
+//        wh_type1 = 'new';
+//        wh_type2 = 'small';
+//        hp_perc=heat_pump_perc_post; 
+//        g_perc=heat_gas_perc_post; 
+//        c_perc=cool_electric_post;
+//        wh_elec = wh_perc_elec_post;
+//        load_scalar = 0.95;
+  }
+    private static void setupResidential3(final House house) {
+//      % OLD/LARGE 
+//        % Distribution of parameters (average +/- range)
+//        Rroof_1=19;
+//        Rroof_2=4;                
+//        Rwall_1=11;
+//        Rwall_2=3;             
+//        Rfloor_1=11;
+//        Rfloor_2=1;              
+//        Rdoors=3;
+//        Rwindows_1=1.25;
+//        Rwindows_2=0.5;      
+//        airchange_1=1;
+//        airchange_2=0.2;      
+//        floorarea_1=largehome_floorarea_1;
+//        floorarea_2=largehome_floorarea_2;  
+//        tankvol_1=55;
+//        tankvol_2=5;            
+//        heatcap_1=4500;
+//        heatcap_2=500;     
+//        wh_type1 = 'old';
+//        wh_type2 = 'large';
+//        hp_perc=heat_pump_perc_pre; 
+//        g_perc=heat_gas_perc_pre; 
+//        c_perc=cool_electric_pre;
+//        wh_elec = wh_perc_elec_pre;
+//        load_scalar = 0.85;
+  }
+    
+    private static void setupResidential4(final House house) {
+//      % NEW/LARGE
+//        % Distribution of parameters (average +/- range)
+//        Rroof_1=30;
+//        Rroof_2=5;                
+//        Rwall_1=19;
+//        Rwall_2=3;             
+//        Rfloor_1=15;
+//        Rfloor_2=3;              
+//        Rdoors=5;
+//        Rwindows_1=1.75;
+//        Rwindows_2=0.5;      
+//        airchange_1=1;
+//        airchange_2=0.2;      
+//        floorarea_1=largehome_floorarea_1-200;
+//        floorarea_2=largehome_floorarea_2;      
+//        tankvol_1=55;
+//        tankvol_2=5;            
+//        heatcap_1=4500;
+//        heatcap_2=500;
+//        wh_type1 = 'new';
+//        wh_type2 = 'large';
+//        % we'll assume there are no 3000 sq ft new homes w/ resistive heat
+//        hp_perc=heat_pump_perc_post; 
+//        g_perc=1-hp_perc; 
+//        c_perc=cool_electric_post;
+//        wh_elec = wh_perc_elec_post;
+//        load_scalar = 0.8;
+  }
+    
+    private static void setupResidential5(final House house) {
+//      % Mobile homes
+//        % Distribution of parameters (average +/- range)        
+//        Rroof_1=14;
+//        Rroof_2=4;                
+//        Rwall_1=6;Rwall_2=2;             
+//        Rfloor_1=5;
+//        Rfloor_2=1;               
+//        Rdoors=3;
+//        Rwindows_1=1.25;
+//        Rwindows_2=0.5;      
+//        airchange_1=1.4;
+//        airchange_2=0.2;      
+//        floorarea_1=mobilehome_floorarea_1;
+//        floorarea_2=150;     
+//        tankvol_1=35;
+//        tankvol_2=5;            
+//        heatcap_1=3500;
+//        heatcap_2=500;   
+//        wh_type1 = 'old';
+//        wh_type2 = 'small';
+//    %     hp_perc=0.0; g_perc=0.90; c_perc=cool_electric_pre;
+//    %     wh_elec = wh_perc_elec_pre;
+//        hp_perc=heat_pump_perc_post; 
+//        g_perc=1-hp_perc; 
+//        c_perc=cool_electric_post;
+//        wh_elec = wh_perc_elec_post;
+//        load_scalar = 0.7;    
+  }
+    
+    private static void setupResidential6(final House house) {
+//      % Distribution of parameters (average +/- range)
+//        Rroof_1=14;
+//        Rroof_2=4;                
+//        Rwall_1=6;
+//        Rwall_2=2;             
+//        Rfloor_1=5;
+//        Rfloor_2=1;               
+//        Rdoors=3;
+//        Rwindows_1=1.25;
+//        Rwindows_2=0.5;      
+//        airchange_1=1.4;
+//        airchange_2=0.2;      
+//        floorarea_1=500;
+//        floorarea_2=200;    
+//        tankvol_1=35;
+//        tankvol_2=5;            
+//        heatcap_1=3500;
+//        heatcap_2=500;
+//        wh_type1 = 'old';
+//        wh_type2 = 'small';
+//        hp_perc=heat_pump_perc_pre; 
+//        g_perc=heat_gas_perc_pre; 
+//        c_perc=cool_electric_pre;
+//        wh_elec = wh_perc_elec_pre;
+//        load_scalar = 0.5;
+  }
 
     /**
      * Generate load on a house for lights
