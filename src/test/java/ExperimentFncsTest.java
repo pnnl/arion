@@ -30,7 +30,7 @@ public class ExperimentFncsTest {
 
     public static void main(final String[] args) throws IOException {
         final Path outPath = Paths.get(args[0]).toRealPath();
-        final int numHouses = 1;
+        final int numHouses = 3;
         final int numChannels = (numHouses / 20) + 2;
         final String controllerNIPrefix = "F1_C_NI";
         
@@ -266,7 +266,7 @@ public class ExperimentFncsTest {
         centerTapTransformerC.setConfiguration(defaultTransformerC);
 
         // TODO: Move generate house and other convienence methods to a library
-        for (int i = 1; i < numHouses; i++) {
+        for (int i = 1; i <= numHouses; i++) {
             TriplexMeter meter;
             PhaseCode phase;
             if (i <= numHouses / 3) {
