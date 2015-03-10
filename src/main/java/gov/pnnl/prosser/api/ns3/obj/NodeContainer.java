@@ -41,7 +41,8 @@ public class NodeContainer extends AbstractNs3Object {
 	 */
 	public void create(int numNodes) {
 		for (int i = 0; i < numNodes; i++) {
-			this.addNode(new Node());
+			String name = this.getName() + "_container_node_" + (i + 1) * Math.random();
+			this.addNode(new Node(name.replace('.', '_')));
 		}
 		appendPrintObj(this.getName() + ".Create(" + numNodes + ");\n");
 	}

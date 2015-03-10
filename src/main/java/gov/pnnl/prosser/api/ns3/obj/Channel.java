@@ -113,6 +113,7 @@ public class Channel extends AbstractNs3Object {
 	 */
 	public void addController(Controller controller) {
 		this.controllers.add(controller);
+		System.out.println("Controller added"); // TODO debugging
 	}
 
 	/**

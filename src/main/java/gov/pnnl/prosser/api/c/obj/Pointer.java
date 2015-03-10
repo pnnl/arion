@@ -4,6 +4,7 @@
 package gov.pnnl.prosser.api.c.obj;
 
 import gov.pnnl.prosser.api.AbstractNs3Object;
+import gov.pnnl.prosser.api.ns3.obj.Node;
 
 /**
  * @author happ546
@@ -32,6 +33,10 @@ public class Pointer<T extends AbstractNs3Object> extends AbstractNs3Object {
 	@Override
 	public void setName(String name) {
 		super.setNameString(name);
+	}
+	
+	public void assign(AbstractNs3Object obj) {
+		appendPrintObj(this.getName() + " = " + obj.getName() + ";\n");
 	}
 	
 	/**

@@ -5,7 +5,7 @@ package gov.pnnl.prosser.api.ns3.obj;
 
 import gov.pnnl.prosser.api.AbstractNs3Object;
 import gov.pnnl.prosser.api.c.obj.StringMap;
-import gov.pnnl.prosser.api.c.obj.StringVector;
+import gov.pnnl.prosser.api.c.obj.Vector;
 
 /**
  * @author happ546
@@ -27,7 +27,7 @@ public class FNCSApplicationHelper extends AbstractNs3Object {
 	 * 			to the ControllerNetworkInterface name String
 	 * @param destContainer the ApplicationContainer to hold the generated application
 	 */
-	public void setApps(StringVector<String> names, NodeContainer gldNodes, 
+	public void setApps(Vector<String> names, NodeContainer gldNodes, 
 						StringMap<String, String> marketToControllerMapName, ApplicationContainer destContainer) {
 		appendPrintObj(destContainer.getName() + " = " + this.getName() 
 						+ ".SetApps(" + names.getName() + ", " 

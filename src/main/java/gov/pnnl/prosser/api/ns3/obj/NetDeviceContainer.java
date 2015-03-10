@@ -42,10 +42,18 @@ public class NetDeviceContainer extends AbstractNs3Object {
 	}
 	
 	/**
+	 * @param sourceDevices the NetDeviceContainer to append to this container
+	 */
+	public void addDevices(NetDeviceContainer sourceDevices) {
+		this.addDevicesNoPrint(sourceDevices);
+		appendPrintObj(this.getName() + ".Add(" + sourceDevices.getName() + ");\n");
+	}
+	
+	/**
 	 * 
 	 * @param sourceNodes the NodeContainer to append to this NetDeviceContainer
 	 */
-	public void addDevices(NetDeviceContainer sourceDevices) {
+	public void addDevicesNoPrint(NetDeviceContainer sourceDevices) {
 		this.nodes.addNetDeviceContainerNoPrint(sourceDevices);
 	}
 

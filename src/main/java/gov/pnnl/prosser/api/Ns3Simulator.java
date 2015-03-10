@@ -49,6 +49,7 @@ public class Ns3Simulator {
 		network = new Ns3Network();
 		
 		namespaces.add(new Namespace("ns3"));
+		namespaces.add(new Namespace("std"));
 		
 		network.setAddrBase("10.1."); // First 2 values of IPV4 address to use as base in IP addr distribution
 		network.setAddrMask("255.255.255.0");

@@ -24,7 +24,7 @@ public class StringMap<T1, T2> extends AbstractNs3Object {
 	@Override
 	public void setName(String name) {
 		this.setNameString(name);
-		appendPrintObj("std::map<string, string> " + this.getName() + ";\n");
+		appendPrintObj("map<string, string> " + this.getName() + ";\n");
 	}
 	
 	/**
