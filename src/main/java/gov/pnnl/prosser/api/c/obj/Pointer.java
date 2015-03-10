@@ -4,7 +4,6 @@
 package gov.pnnl.prosser.api.c.obj;
 
 import gov.pnnl.prosser.api.AbstractNs3Object;
-import gov.pnnl.prosser.api.ns3.obj.Node;
 
 /**
  * @author happ546
@@ -35,6 +34,10 @@ public class Pointer<T extends AbstractNs3Object> extends AbstractNs3Object {
 		super.setNameString(name);
 	}
 	
+	/**
+	 * Equivalent to this.pointer = obj;
+	 * @param obj the AbstractNs3Object to set as this pointer
+	 */
 	public void assign(AbstractNs3Object obj) {
 		appendPrintObj(this.getName() + " = " + obj.getName() + ";\n");
 	}
@@ -61,7 +64,7 @@ public class Pointer<T extends AbstractNs3Object> extends AbstractNs3Object {
 	 */
 	public void createObject(T obj) {
 		this.object = obj;
-		this.object.setPointer(true);
+		this.object.setPointerFlag(true);
 		appendPrintObj("Ptr<" + obj.getClass().getSimpleName() + "> " 
 					+ this.getName() + " = CreateObject<" + obj.getClass().getSimpleName() + ">();\n");
 	}

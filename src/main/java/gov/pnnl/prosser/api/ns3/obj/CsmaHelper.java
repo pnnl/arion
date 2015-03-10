@@ -70,5 +70,5 @@ public class CsmaHelper extends NetworkHelper {
 		appendPrintObj(this.getName() + ".SetDeviceAttribute(\"" + attr + 
 				"\", StringValue(\"" + value + "\"));\n");
 	}
-	
+
 }

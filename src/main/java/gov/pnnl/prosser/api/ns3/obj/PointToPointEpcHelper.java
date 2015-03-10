@@ -18,7 +18,7 @@ public class PointToPointEpcHelper extends NetworkHelper {
 	public void assignUeIpv4Address(NetDeviceContainer ueDevices, 
 									Ipv4InterfaceContainer destination) {
 		// Set the dereferencer operator appropriately for pointer encapsulation or not
-		String deref = this.getPointer() ? "->" : ".";
+		String deref = this.isPointer() ? "->" : ".";
 		appendPrintObj(destination.getName() + " = " + this.getName() + deref + 
 						"AssignUeIpv4Address(" + ueDevices.getName() + ");\n");
 	}
@@ -29,7 +29,7 @@ public class PointToPointEpcHelper extends NetworkHelper {
 	 */
 	public void getPgwNode(Pointer<Node> node) {
 		// Set the dereferencer operator appropriately for pointer encapsulation or not
-		String deref = this.getPointer() ? "->" : ".";
+		String deref = this.isPointer() ? "->" : ".";
 		appendPrintObj(node.getName() + " = " + this.getName() + deref + "GetPgwNode();\n");
 	}
 	
@@ -38,7 +38,7 @@ public class PointToPointEpcHelper extends NetworkHelper {
 	 */
 	public Ipv4Address getUeDefaultGatewayAddress() {
 		// Set the dereferencer operator appropriately for pointer encapsulation or not
-		String deref = this.getPointer() ? "->" : ".";
+		String deref = this.isPointer() ? "->" : ".";
 		appendPrintObj(this.getName() + deref + "GetUeDefaultGatewayAddress();\n");
 		return new Ipv4Address(null);
 	}

@@ -10,6 +10,7 @@ import java.util.Map;
 
 import gov.pnnl.prosser.api.AbstractNs3Object;
 import gov.pnnl.prosser.api.Ns3Simulator;
+import gov.pnnl.prosser.api.c.obj.Pointer;
 import gov.pnnl.prosser.api.gld.obj.AuctionObject;
 import gov.pnnl.prosser.api.gld.obj.Controller;
 
@@ -33,6 +34,8 @@ public class Channel extends AbstractNs3Object {
 	 * The Ns3Simulator that this Channel belongs to
 	 */
 	private Ns3Simulator owner;
+	
+	private Pointer<Channel> pointer;
 	
 	/**
 	 * The Controllers attached to this Channel
@@ -84,7 +87,6 @@ public class Channel extends AbstractNs3Object {
 	 */
 	public void setAttribute(String attribute, String value) {
 		this.attributes.put(attribute, value);
-		//appendPrintObj(this.getName() + ".SetAttribute(\"" + attribute + "\", StringValue(\"" + value + "\"));\n");
 	}
 
 	/**
@@ -113,7 +115,6 @@ public class Channel extends AbstractNs3Object {
 	 */
 	public void addController(Controller controller) {
 		this.controllers.add(controller);
-		System.out.println("Controller added"); // TODO debugging
 	}
 
 	/**
@@ -128,6 +129,23 @@ public class Channel extends AbstractNs3Object {
 	 */
 	public void addAuction(AuctionObject auction) {
 		this.auctions.add(auction);
+	}
+	
+	/**
+	 * @return the Ptr<Channel> attached to this Channel
+	 */
+	public Pointer<Channel> getPointer() {
+		return pointer;
+	}
+	
+	/**
+	 * @param pointer the Ptr<Channel> to attach to this Channel
+	 */
+	// TODO how can I check this assignment?
+	public void setPointer(Pointer<? extends Channel> pointer) {
+		if (pointer instanceof Pointer<?>) {
+			this.pointer = (Pointer<Channel>) pointer;
+		}
 	}
 
 }

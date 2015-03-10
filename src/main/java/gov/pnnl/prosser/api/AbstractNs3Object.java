@@ -130,7 +130,7 @@ public abstract class AbstractNs3Object {
      * 		true if this object is encapsulated in a pointer
      * 		false otherwise
      */
-    public boolean getPointer() {
+    public boolean isPointer() {
     	return this.pointer;
     }
 
@@ -138,7 +138,7 @@ public abstract class AbstractNs3Object {
 	 * @param b true if this object is encapsulated in a pointer
 	 * 			false otherwise
 	 */
-	public void setPointer(boolean b) {
+	public void setPointerFlag(boolean b) {
 		this.pointer = b;
 	}
 	

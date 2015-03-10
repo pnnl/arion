@@ -30,8 +30,9 @@ public class ExperimentFncsTest {
 
     public static void main(final String[] args) throws IOException {
         final Path outPath = Paths.get(args[0]).toRealPath();
-        final int numHouses = 3;
-        final int numChannels = (numHouses / 20) + 2;
+        final int numHouses = 60;
+        final int numChannels = (numHouses % 20) == 0 ? (numHouses / 20) + 1 : (numHouses / 20) + 2;
+        System.out.println(numChannels); // TODO debugging
         final String controllerNIPrefix = "F1_C_NI";
         
         // Set parameters for Ns3Network and build backend network
@@ -44,7 +45,7 @@ public class ExperimentFncsTest {
         
         // Connect Controllers and Auctions to backbone network
         ns3Simulator.buildFrontend();
-        Ns3SimulatorWriter.writeNs3Simulator(outPath.resolve("ns3.cc"), ns3Simulator);
+        Ns3SimulatorWriter.writeNs3Simulator(outPath.resolve("edited_ns3.cc"), ns3Simulator);
 
         System.out.println("Written!");
         // TODO FNCS Integration

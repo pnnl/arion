@@ -12,13 +12,20 @@ import gov.pnnl.prosser.api.c.obj.Pointer;
  */
 public class InternetStackHelper extends AbstractNs3Object {
 
+	
+	/**
+	 * Creates a nameless InternetStackHelper
+	 */
+	public InternetStackHelper() {
+	}
+	
 	/**
 	 * @param name
 	 */
 	public InternetStackHelper(String name) {
 		this.setName(name);
 	}
-	
+
 	/**
 	 * @param node the Pointer<Node> to install the IP stack on
 	 */

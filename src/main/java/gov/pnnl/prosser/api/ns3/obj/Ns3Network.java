@@ -31,9 +31,9 @@ public class Ns3Network {
 	private String gldNodePrefix;
 	private String backboneDataRate, backboneDelay;
 	private int numBackboneNodes, numChannels;
-	private int count;
 	private double stopTime;
 	private NodeContainer backboneNodes, nodes;
+	private InternetStackHelper iStackHelper;
 	private List<Module> modules;
 	private List<AuctionObject> auctions;
 	private List<Controller> controllers;
@@ -51,10 +51,10 @@ public class Ns3Network {
 		this.auctionType = null;
 		this.addrBase = "10.1.0.0";
 		this.addrMask = "255.255.255.0";
-		this.count = 0;
 		this.stopTime = Double.MAX_VALUE;
-		this.backboneNodes = new NodeContainer(); // TODO set name & add to printObj at appropriate time
+		this.backboneNodes = new NodeContainer();
 		this.nodes = new NodeContainer();
+		this.iStackHelper = new InternetStackHelper();
 		this.modules = new ArrayList<Module>();
 		this.auctions = new ArrayList<>();
 		this.controllers = new ArrayList<>();
@@ -317,7 +317,6 @@ public class Ns3Network {
 		
 		int numChannels = this.channels.size();
 		
-		InternetStackHelper iStackHelper = new InternetStackHelper("iStackHelper");
 		ns3Objects.add(iStackHelper);
 		Ipv4AddressHelper ipv4AddrHelper = new Ipv4AddressHelper("ipv4AddrHelper");
 		
@@ -327,59 +326,45 @@ public class Ns3Network {
 			Channel channel = getChannel(i);
 			
 			// Set the base address and subnet mask for the IPv4 addresses
-			ipv4AddrHelper.setBase("192.168.1.0", "255.255.255.0");
+			ipv4AddrHelper.setBase("192.168." + i + ".0", "255.255.255.0");
 			
 			List<Controller> controllers = channel.getControllers();
-			System.out.println("Controllers.size = " + controllers.size()); // TODO debugging
 			// TODO structure methods in build() so that backbone network & channels are created first
 			// 	then given back to me after GLD stuff adds controllers to the channels
 			
 			if (channel.getClass().getSimpleName().equalsIgnoreCase("csmachannel")) {
-				Pointer<CsmaChannel> chanPtr  = new Pointer<CsmaChannel>("chanPtr_" + i);
-				chanPtr.assign(channel);
+				Pointer<CsmaChannel> chanPtr  = new Pointer<CsmaChannel>("chanPtr_" + i, new CsmaChannel());
+				chanPtr.assign(channel.getPointer());
 				
 				CsmaHelper csmaHelper = new CsmaHelper("csmaHelper_" + i);
 				NodeContainer csmaNodes = new NodeContainer("csmaNodes_" + i);
 				NetDeviceContainer csmaDevices = new NetDeviceContainer("csmaDevices_" + i);
-				
-				Pointer<Node> csmaNodePtr = new Pointer<Node>("tempName");
-				
+								
 				// Create new CSMA Node for each Controller
 				for (int j = 0; j < controllers.size(); j++) {
-					//Node node = new Node("node_" + i + "_" + j);
 					
-					Controller controller = controllers.get(j);
-					
-					//node.setController(controller);
-					
-					csmaNodePtr.setName("csmaNodePtr_" + i + "_" + j);
-					// Wrap node in a Pointer
-					csmaNodePtr.createObject(new Node());
+					Controller controller = controllers.get(j);					
+			    	// Adds the name of the Controller to the names Vector
+			    	names.pushBack(controller);
+			    	
+			    	Pointer<Node> csmaNodePtr = new Pointer<Node>("csmaControllerNodePtr_" + i + "_" + j);
+			    	csmaNodePtr.createObject(new Node());
 
 					// Add Node to NodeContainer for IP stuff later
 					csmaNodes.addNode(csmaNodePtr);
-					
-			    	// Adds the name of the Controller & Node to the names Vector
-			    	names.pushBack(controller);
-			    	names.pushBack(csmaNodePtr);
+
 				}
 
-				// Attaches Channel to a new CsmaNetDevice and attaches the NetDevice to 
-				// 	the node; places the net device in ...Devices
-				csmaHelper.install(csmaNodePtr, chanPtr, csmaDevices);
-				
 				// Adds csmaNodes to global NodeContainer for FNCSApplicationHelper
 				nodes.addNodeContainer(csmaNodes);
-				
-				NetDeviceContainer tempCont = new NetDeviceContainer("csmaTempDevCont_" + i);
-				
-				// Install CSMA protocol stack on csmaNodes
-				csmaHelper.install(csmaNodes, tempCont);
-				
-				csmaDevices.addDevices(tempCont);
-				
+								
+				// Install CSMA protocol stack on csmaNodes & connect to ith Channel
+				csmaHelper.install(csmaNodes, chanPtr, csmaDevices);
+								
 				// Sets up IP routing tables, installs IP stack on nodes, and assigns IP addresses
-				setupIp(iStackHelper, ipv4AddrHelper, csmaNodes, csmaDevices);
+				//setupIp(ipv4AddrHelper, csmaNodes, csmaDevices);
+				iStackHelper.install(csmaNodes);
+				ipv4AddrHelper.assign(csmaDevices);
 				
 			} else if (channel.getClass().getSimpleName().equalsIgnoreCase("pointtopointchannel")) {
 				Pointer<PointToPointChannel> chanPtr  = new Pointer<PointToPointChannel>("chanPtr_" + i);
@@ -408,9 +393,8 @@ public class Ns3Network {
 					// Add Node to NodeContainer for IP stuff later
 					p2pNodes.addNode(p2pNodePtr);
 					
-			    	// Adds the name of the Controller & Node to the names Vector
+			    	// Adds the name of the Controller to the names Vector
 			    	names.pushBack(controller);
-			    	names.pushBack(node);
 			    	
 				}
 				
@@ -421,7 +405,7 @@ public class Ns3Network {
 				p2pHelper.install(p2pNodes, p2pDevices);
 				
 				// Sets up IP routing tables, installs IP stack on nodes, and assigns IP addresses
-				setupIp(iStackHelper, ipv4AddrHelper, p2pNodes, p2pDevices);
+				setupIp(ipv4AddrHelper, p2pNodes, p2pDevices);
 				
 			} else if (channel.getClass().getSimpleName().equalsIgnoreCase("wifichannel_" + i)) {
 				Pointer<YansWifiChannel> chanPtr  = new Pointer<YansWifiChannel>("chanPtr_" + i);
@@ -450,7 +434,7 @@ public class Ns3Network {
 				wifiHelper.install(phy, mac, wifiNodes, wifiDevices);
 				
 				// Sets up IP routing tables, installs IP stack on nodes, and assigns IP addresses
-				setupIp(iStackHelper, ipv4AddrHelper, wifiNodes, wifiDevices);
+				setupIp(ipv4AddrHelper, wifiNodes, wifiDevices);
 			}
 		}
 		
@@ -487,14 +471,9 @@ public class Ns3Network {
 		    // Adds node to global list of nodes
 		    nodes.addNode(nodePtr);
 		    
-		    // Adds node name to names Vector for FNCSApplicationHelper
-		    names.pushBack(node);
-		    
 			// IP setup
 			Ipv4AddressHelper addresses = new Ipv4AddressHelper("auctionAddresses");
 			addresses.setBase(auctionChannel.getAddressBase(), "255.255.255.0");
-			InternetStackHelper stack = new InternetStackHelper("auctionStack");
-			setupInternetStackAndRouting(stack);
 		    
 		    if (auctionChannel.getClass().getSimpleName().equalsIgnoreCase("csmachannel")) {
 		    	
@@ -507,9 +486,6 @@ public class Ns3Network {
 		    	NetDeviceContainer csmaDevices = new NetDeviceContainer("csmaDevices_" + i);
 		    	csmaHelper.install(nodePtr, csmaChannelPtr, csmaDevices);
 		    	auctionDevices.addDevices(csmaDevices);
-		    	
-		    	// Installs IP stack on csmaDevices
-		    	stack.install(nodePtr);
 
 		    } else if (auctionChannel.getClass().getSimpleName().equalsIgnoreCase("pointtopointchannel")) {
 		    	
@@ -536,7 +512,7 @@ public class Ns3Network {
 		    }
 		    
 		    // Install the IP stack on the auctioNodes
-		    stack.install(auctionNodes);
+		    iStackHelper.install(auctionNodes);
 		    
 		    // Assigns IPv4 address to devices
 	    	addresses.assign(auctionDevices);
@@ -552,40 +528,33 @@ public class Ns3Network {
 
 	/**
 	 * 
-	 * @param stack the InternetStackHelper
 	 * @param addr the Ipv4AddressHelper
 	 * @param nodes the NodeContainer to enable for IP communication
 	 * @param devices the NetDeviceContainer to hold the IP-enabled devices
 	 */
-	private void setupIp(InternetStackHelper stack, Ipv4AddressHelper addr,
-							NodeContainer nodes, NetDeviceContainer devices) {
-		// Set up IP routing tables
-		setupInternetStackAndRouting(stack);
+	private void setupIp(Ipv4AddressHelper addr, NodeContainer nodes, 
+						NetDeviceContainer devices) {
 				
 		// Install the IP stack protocols on the nodes
-		stack.install(nodes);
+		iStackHelper.install(nodes);
 		
 		// Assign IPv4 addresses to devices
 		addr.assign(devices);
 	}
 
 	/**
-	 * 
+	 * Sets up static routing on the global InternetStackHelper
 	 * @param stack the InternetStackHelper used to set up the IP routing tables
 	 */
-	private void setupInternetStackAndRouting(InternetStackHelper stack) {
-		Ipv4NixVectorHelper nixRouting = new Ipv4NixVectorHelper("nixRouting_" + count);
+	private void setupInternetStackAndRouting() {
 		
-		Ipv4StaticRoutingHelper staticRouting = new Ipv4StaticRoutingHelper("staticRouting_" + count);
+		Ipv4StaticRoutingHelper staticRouting = new Ipv4StaticRoutingHelper("staticRoutingHelper");
 		
-		Ipv4ListRoutingHelper list = new Ipv4ListRoutingHelper("list_" + count);
+		Ipv4ListRoutingHelper list = new Ipv4ListRoutingHelper("listRoutingHelper");
 		list.add(staticRouting, 0);
-		list.add(nixRouting, 10);
 		
-		stack.setRoutingHelper(list);
-		
-		// Increment the count to avoid future naming conflicts
-		count++;
+		iStackHelper.setRoutingHelper(list);
+
 	}
 	
 	/**
@@ -902,11 +871,6 @@ public class Ns3Network {
 		this.addModule(new Fncs());
 		this.addModule(new FncsApplication());
 		
-		// TODO debugging
-		for (int i = 0; i < this.nodes.getNumNodes(); i++) {
-			System.out.println(this.nodes.getNodeNoPrint(i).getName());
-		}
-		
 		FNCSApplicationHelper fncsHelper = new FNCSApplicationHelper("fncsHelper");
 		
 		ApplicationContainer fncsAps = new ApplicationContainer("fncsAps");
@@ -1130,8 +1094,6 @@ public class Ns3Network {
 		
 		// IP setup
 		Ipv4AddressHelper addresses = new Ipv4AddressHelper("backboneAddresses");
-		InternetStackHelper stack = new InternetStackHelper("backboneStack");
-		setupInternetStackAndRouting(stack);
 		
 		// CSMA channel/device setup
 		CsmaHelper csmaHelper = new CsmaHelper("csmaHelper");
@@ -1154,6 +1116,9 @@ public class Ns3Network {
 		Pointer<Node> backboneRouterPtr = new Pointer<Node>("backboneRouterPtr", new Node());
 		backboneRouter.getNode(0, backboneRouterPtr);
 		
+		// Install IP stack on backboneRouterPtr
+		iStackHelper.install(backboneRouterPtr);
+		
 		// Adds the backbone router node to p2p auction channel
 		auctionChannel.setNodeA(backboneRouterPtr);
 		
@@ -1168,6 +1133,7 @@ public class Ns3Network {
 		// Adds node names to global Vector of names for FNCSApplicationHelper
 		names.pushBack(backboneRouterPtr);
 		names.pushBack(apNodes);
+
 		
 		for (int i = 0; i < numChannels - 1; i++) {
 			
@@ -1185,20 +1151,19 @@ public class Ns3Network {
 			// Wrap channel in pointer for CsmaHelper.Install
 			Pointer<CsmaChannel> channelPtr = new Pointer<CsmaChannel>("csmaChannelPtr_backbone_" + i);
 			channelPtr.createObject(channel);
+			
+			// Attach this Pointer<CsmaChannel> to Channel
+			channel.setPointer(channelPtr);
 					
 			Pointer<Node> apNodePtr = new Pointer<Node>("csmaNode_backbone_" + i, new Node());
 			apNodes.getNode(i, apNodePtr);
-			
-			// Adds name of apNodePtr to global Vector of names for FNCSApplicationHelper
-			names.pushBack(apNodePtr);
 			
 			NetDeviceContainer csmaDevices = new NetDeviceContainer("csmaDevices_backbone_" + i);
 			
 			// Installs the CSMA protocols on the devices using the given channel
 			csmaHelper.install(apNodePtr, channelPtr, csmaDevices);
-			// Installs the IP stack protocols on the CSMA & router Nodes
-			stack.install(apNodePtr);
-			stack.install(backboneRouterPtr);
+			// Installs the IP stack protocols on the CSMA nodes
+			iStackHelper.install(apNodePtr);
 			
 			addresses.setBase(ipBase, "255.255.255.0"); // IPbase, mask
 			addresses.assign(csmaDevices);
@@ -1229,6 +1194,11 @@ public class Ns3Network {
 		
 		// Sets name for global NodeContainer for use in FNCSApplicationHelper.setApps(...)
 		nodes.setName("allNodes");
+		// Sets name for global InternetStackHelper (to utilize NixVectorRouting)
+		iStackHelper.setName("iStackHelper");
+		// Sets up iStackHelper with static and nix vector routing
+		setupInternetStackAndRouting();
+		
 		// Instantiates global Vector names for use in FNCSApplicationHelper.setApps(...)
 		names = new Vector<String>("allNames", String.class);
 		
@@ -1254,7 +1224,7 @@ public class Ns3Network {
 		
 		return ns3Objects;
 		
-		// TODO Set global IStackHelper & use nixRouting; reduce objects added to names and allNodes to bare min.
+		// TODO reduce objects added to names and allNodes to bare min.
 		
 		
 	}
