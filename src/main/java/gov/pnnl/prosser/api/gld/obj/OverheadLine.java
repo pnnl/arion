@@ -13,8 +13,11 @@ import gov.pnnl.prosser.api.gld.lib.OverheadLineConductor;
  */
 public class OverheadLine extends Line<OverheadLineConductor, LineConfiguration<OverheadLineConductor>> {
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public String getGldObjectType() {
+    protected String getGldObjectType() {
         return "overhead_line";
     }
 

@@ -3,7 +3,7 @@
  */
 package gov.pnnl.prosser.api.gld.lib;
 
-import gov.pnnl.prosser.api.GldUtils;
+import gov.pnnl.prosser.api.gld.GldUtils;
 
 /**
  * Overhead Line Conductor definition
@@ -28,6 +28,8 @@ public class OverheadLineConductor extends Conductor {
     private double diameter;
 
     /**
+     * Get the radius of the conductor in feet
+     * 
      * @return the geometricMeanRadius
      */
     public double getGeometricMeanRadius() {
@@ -35,6 +37,8 @@ public class OverheadLineConductor extends Conductor {
     }
 
     /**
+     * Set the radius of the conductor in feet
+     * 
      * @param geometricMeanRadius
      *            the geometricMeanRadius to set
      */
@@ -43,6 +47,8 @@ public class OverheadLineConductor extends Conductor {
     }
 
     /**
+     * Get the resistance in Ohms/mile of the conductor
+     * 
      * @return the resistance
      */
     public double getResistance() {
@@ -50,6 +56,8 @@ public class OverheadLineConductor extends Conductor {
     }
 
     /**
+     * Set the resistance in Ohms/mile of the conductor
+     * 
      * @param resistance
      *            the resistance to set
      */
@@ -58,6 +66,8 @@ public class OverheadLineConductor extends Conductor {
     }
 
     /**
+     * Get the Diameter of line for capacitance calculations in inches
+     * 
      * @return the diameter
      */
     public double getDiameter() {
@@ -65,6 +75,8 @@ public class OverheadLineConductor extends Conductor {
     }
 
     /**
+     * Set the Diameter of line for capacitance calculations in inches
+     * 
      * @param diameter
      *            the diameter to set
      */
@@ -72,11 +84,17 @@ public class OverheadLineConductor extends Conductor {
         this.diameter = diameter;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public String getGldObjectType() {
+    protected String getGldObjectType() {
         return "overhead_line_conductor";
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     protected void writeGldProperties(final StringBuilder sb) {
         GldUtils.writeProperty(sb, "geometric_mean_radius", this.geometricMeanRadius, "ft");

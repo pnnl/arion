@@ -4,10 +4,10 @@
 package gov.pnnl.prosser.api.ns3.obj;
 
 import gov.pnnl.prosser.api.AbstractNs3Object;
-import gov.pnnl.prosser.api.AbstractProsserObject;
 import gov.pnnl.prosser.api.c.obj.Pointer;
 import gov.pnnl.prosser.api.c.obj.StringMap;
 import gov.pnnl.prosser.api.c.obj.Vector;
+import gov.pnnl.prosser.api.gld.AbstractGldObject;
 import gov.pnnl.prosser.api.gld.obj.AuctionObject;
 import gov.pnnl.prosser.api.gld.obj.Controller;
 import gov.pnnl.prosser.api.ns3.enums.NetworkType;
@@ -38,7 +38,7 @@ public class Ns3Network {
 	private List<AuctionObject> auctions;
 	private List<Controller> controllers;
 	private List<AbstractNs3Object> ns3Objects;
-	private List<AbstractProsserObject> gldObjects;
+	private List<AbstractGldObject> gldObjects;
 	private List<Channel> channels;
 	private Vector<String> names;
 
@@ -288,7 +288,7 @@ public class Ns3Network {
 	 * @param obj the AbstractProsserObject to add to this Ns3Network
 	 */
 	// TODO use only this or addChannel method, once ns3.add(...) is coded out
-	public void addGldObject(AbstractProsserObject obj) {
+	public void addGldObject(AbstractGldObject obj) {
 		this.gldObjects.add(obj);
 	}
 	

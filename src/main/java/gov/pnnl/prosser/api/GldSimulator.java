@@ -3,6 +3,7 @@
  */
 package gov.pnnl.prosser.api;
 
+import gov.pnnl.prosser.api.gld.AbstractGldObject;
 import gov.pnnl.prosser.api.gld.enums.SolverMethod;
 import gov.pnnl.prosser.api.gld.lib.GldClock;
 import gov.pnnl.prosser.api.gld.lib.LineSpacing;
@@ -54,7 +55,7 @@ public class GldSimulator {
 
     private final String name;
 
-    private final List<AbstractProsserObject> objects = new ArrayList<>();
+    private final List<AbstractGldObject> objects = new ArrayList<>();
 
     private GldClock clock;
 
@@ -90,7 +91,7 @@ public class GldSimulator {
      *
      * @return the objects
      */
-    public List<AbstractProsserObject> getObjects() {
+    public List<AbstractGldObject> getObjects() {
         return this.objects;
     }
 
@@ -266,7 +267,7 @@ public class GldSimulator {
      *            the name to set on the object
      * @return the object reference from the object parameter
      */
-    private <T extends AbstractProsserObject> T setupObject(final T object, final String name) {
+    private <T extends AbstractGldObject> T setupObject(final T object, final String name) {
         object.setName(name);
         object.setSimulator(this);
         this.objects.add(object);

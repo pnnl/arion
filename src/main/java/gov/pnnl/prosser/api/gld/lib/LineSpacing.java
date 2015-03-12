@@ -3,7 +3,7 @@
  */
 package gov.pnnl.prosser.api.gld.lib;
 
-import gov.pnnl.prosser.api.GldUtils;
+import gov.pnnl.prosser.api.gld.GldUtils;
 
 /**
  * Generic Line Spacing
@@ -43,6 +43,8 @@ public class LineSpacing extends PowerflowLibrary {
     private double distanceCToN;
 
     /**
+     * Get the distance between cables A and B in feet
+     * 
      * @return the distanceAToB
      */
     public double getDistanceAToB() {
@@ -50,6 +52,8 @@ public class LineSpacing extends PowerflowLibrary {
     }
 
     /**
+     * Set the distance between cables A and B in feet
+     * 
      * @param distanceAToB
      *            the distanceAToB to set
      */
@@ -58,6 +62,8 @@ public class LineSpacing extends PowerflowLibrary {
     }
 
     /**
+     * Get the distance between cables B and C in feet
+     * 
      * @return the distanceBToC
      */
     public double getDistanceBToC() {
@@ -65,6 +71,8 @@ public class LineSpacing extends PowerflowLibrary {
     }
 
     /**
+     * Set the distance between cables B and C in feet
+     * 
      * @param distanceBToC
      *            the distanceBToC to set
      */
@@ -73,6 +81,8 @@ public class LineSpacing extends PowerflowLibrary {
     }
 
     /**
+     * Get the distance between cables A and C in feet
+     * 
      * @return the distanceAToC
      */
     public double getDistanceAToC() {
@@ -80,6 +90,8 @@ public class LineSpacing extends PowerflowLibrary {
     }
 
     /**
+     * Set the distance between cables A and C in feet
+     * 
      * @param distanceAToC
      *            the distanceAToC to set
      */
@@ -88,6 +100,8 @@ public class LineSpacing extends PowerflowLibrary {
     }
 
     /**
+     * Get the distance between cables A and Neutral in feet
+     * 
      * @return the distanceAToN
      */
     public double getDistanceAToN() {
@@ -95,6 +109,8 @@ public class LineSpacing extends PowerflowLibrary {
     }
 
     /**
+     * Set the distance between cables A and Neutral in feet
+     * 
      * @param distanceAToN
      *            the distanceAToN to set
      */
@@ -103,6 +119,8 @@ public class LineSpacing extends PowerflowLibrary {
     }
 
     /**
+     * Get the distance between cables B and Neutral in feet
+     * 
      * @return the distanceBToN
      */
     public double getDistanceBToN() {
@@ -110,6 +128,8 @@ public class LineSpacing extends PowerflowLibrary {
     }
 
     /**
+     * Get the distance between cables B and Neutral in feet
+     * 
      * @param distanceBToN
      *            the distanceBToN to set
      */
@@ -118,6 +138,8 @@ public class LineSpacing extends PowerflowLibrary {
     }
 
     /**
+     * Get the distance between cables C and Neutral in feet
+     * 
      * @return the distanceCToN
      */
     public double getDistanceCToN() {
@@ -125,6 +147,8 @@ public class LineSpacing extends PowerflowLibrary {
     }
 
     /**
+     * Get the distance between cables C and Neutral in feet
+     * 
      * @param distanceCToN
      *            the distanceCToN to set
      */
@@ -132,11 +156,17 @@ public class LineSpacing extends PowerflowLibrary {
         this.distanceCToN = distanceCToN;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public String getGldObjectType() {
+    protected String getGldObjectType() {
         return "line_spacing";
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     protected void writeGldProperties(final StringBuilder sb) {
         GldUtils.writeProperty(sb, "distance_AB", this.distanceAToB);

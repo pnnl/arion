@@ -3,7 +3,7 @@
  */
 package gov.pnnl.prosser.api.gld.obj;
 
-import gov.pnnl.prosser.api.GldUtils;
+import gov.pnnl.prosser.api.gld.GldUtils;
 
 /**
  * ZipLoad Object
@@ -182,11 +182,17 @@ public class ZIPLoad extends ResidentialEnduse {
         this.impedanceFraction = impedanceFraction;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public String getGldObjectType() {
+    protected String getGldObjectType() {
         return "ZIPload";
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     protected void writeGldProperties(final StringBuilder sb) {
         super.writeGldProperties(sb);

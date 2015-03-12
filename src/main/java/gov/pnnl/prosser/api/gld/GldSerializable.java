@@ -1,7 +1,7 @@
 /**
  *
  */
-package gov.pnnl.prosser.api;
+package gov.pnnl.prosser.api.gld;
 
 /**
  * GridLabD specific serialization interface

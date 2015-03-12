@@ -3,14 +3,14 @@
  */
 package gov.pnnl.prosser.api.gld.obj;
 
-import gov.pnnl.prosser.api.AbstractProsserObject;
-import gov.pnnl.prosser.api.GldUtils;
+import gov.pnnl.prosser.api.gld.AbstractGldObject;
+import gov.pnnl.prosser.api.gld.GldUtils;
 
 /**
  * @author nord229
  *
  */
-public class CsvReader extends AbstractProsserObject {
+public class CsvReader extends AbstractGldObject {
 
     private String filename;
 
@@ -29,14 +29,19 @@ public class CsvReader extends AbstractProsserObject {
         this.filename = filename;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public String getGldObjectType() {
+    protected String getGldObjectType() {
         return "csv_reader";
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     protected void writeGldProperties(final StringBuilder sb) {
-        // TODO Auto-generated method stub
         GldUtils.writeProperty(sb, "filename", filename);
     }
 

@@ -1,16 +1,18 @@
 /**
  *
  */
-package gov.pnnl.prosser.api;
+package gov.pnnl.prosser.api.gld;
+
+import gov.pnnl.prosser.api.GldSimulator;
 
 import java.util.Objects;
 
 /**
- * Object to encompass shared properties for all objects
+ * Object to encompass shared properties for all GridLabD objects
  *
  * @author nord229
  */
-public abstract class AbstractProsserObject implements GldSerializable {
+public abstract class AbstractGldObject implements GldSerializable {
 
     /**
      * Object name for referencing in files
@@ -101,7 +103,7 @@ public abstract class AbstractProsserObject implements GldSerializable {
         if (getClass() != obj.getClass()) {
             return false;
         }
-        final AbstractProsserObject other = (AbstractProsserObject) obj;
+        final AbstractGldObject other = (AbstractGldObject) obj;
         return Objects.equals(this.name, other.name)
                 && Objects.equals(this.groupId, other.groupId);
     }
@@ -111,7 +113,7 @@ public abstract class AbstractProsserObject implements GldSerializable {
      * 
      * @return the object type string
      */
-    public abstract String getGldObjectType();
+    protected abstract String getGldObjectType();
 
     @Override
     public void writeGldString(final StringBuilder sb) {

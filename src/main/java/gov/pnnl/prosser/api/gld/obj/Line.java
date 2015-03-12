@@ -3,7 +3,7 @@
  */
 package gov.pnnl.prosser.api.gld.obj;
 
-import gov.pnnl.prosser.api.GldUtils;
+import gov.pnnl.prosser.api.gld.GldUtils;
 import gov.pnnl.prosser.api.gld.lib.Conductor;
 import gov.pnnl.prosser.api.gld.lib.LineConfiguration;
 
@@ -25,6 +25,7 @@ public abstract class Line<C extends Conductor, Q extends LineConfiguration<C>> 
     private Q configuration;
 
     /**
+     * Get the length of line in feet
      * @return the length
      */
     public double getLength() {
@@ -32,6 +33,7 @@ public abstract class Line<C extends Conductor, Q extends LineConfiguration<C>> 
     }
 
     /**
+     * Set the length of line in feet
      * @param length
      *            the length to set
      */
@@ -40,6 +42,7 @@ public abstract class Line<C extends Conductor, Q extends LineConfiguration<C>> 
     }
 
     /**
+     * Get the Line Configuration
      * @return the configuration
      */
     public Q getConfiguration() {
@@ -47,6 +50,7 @@ public abstract class Line<C extends Conductor, Q extends LineConfiguration<C>> 
     }
 
     /**
+     * Set the Line Configuration
      * @param configuration
      *            the configuration to set
      */
@@ -54,6 +58,9 @@ public abstract class Line<C extends Conductor, Q extends LineConfiguration<C>> 
         this.configuration = configuration;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     protected void writeGldProperties(final StringBuilder sb) {
         super.writeGldProperties(sb);

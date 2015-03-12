@@ -3,7 +3,7 @@
  */
 package gov.pnnl.prosser.api.gld.module;
 
-import gov.pnnl.prosser.api.GldUtils;
+import gov.pnnl.prosser.api.gld.GldUtils;
 
 import java.util.Objects;
 

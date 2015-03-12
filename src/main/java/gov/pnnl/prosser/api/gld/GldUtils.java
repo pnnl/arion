@@ -1,7 +1,7 @@
 /**
  *
  */
-package gov.pnnl.prosser.api;
+package gov.pnnl.prosser.api.gld;
 
 import java.text.DecimalFormat;
 
@@ -64,7 +64,7 @@ public abstract class GldUtils {
         writeProperty(sb, propName, propValue, null);
     }
 
-    public static void writeProperty(final StringBuilder sb, final String propName, final AbstractProsserObject propValue) {
+    public static void writeProperty(final StringBuilder sb, final String propName, final AbstractGldObject propValue) {
         if (propValue == null) {
             return;
         }

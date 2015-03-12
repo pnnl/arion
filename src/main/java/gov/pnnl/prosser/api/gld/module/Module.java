@@ -3,7 +3,7 @@
  */
 package gov.pnnl.prosser.api.gld.module;
 
-import gov.pnnl.prosser.api.GldSerializable;
+import gov.pnnl.prosser.api.gld.GldSerializable;
 
 /**
  * GridLabD Modules

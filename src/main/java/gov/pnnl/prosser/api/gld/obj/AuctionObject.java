@@ -3,9 +3,9 @@
  */
 package gov.pnnl.prosser.api.gld.obj;
 
-import gov.pnnl.prosser.api.AbstractProsserObject;
-import gov.pnnl.prosser.api.GldUtils;
 import gov.pnnl.prosser.api.NetworkCapable;
+import gov.pnnl.prosser.api.gld.AbstractGldObject;
+import gov.pnnl.prosser.api.gld.GldUtils;
 import gov.pnnl.prosser.api.gld.enums.CurveOutput;
 import gov.pnnl.prosser.api.gld.enums.SpecialMode;
 
@@ -13,7 +13,7 @@ import gov.pnnl.prosser.api.gld.enums.SpecialMode;
  * @author nord229
  *
  */
-public class AuctionObject extends AbstractProsserObject implements NetworkCapable {
+public class AuctionObject extends AbstractGldObject implements NetworkCapable {
 
     /**
      * unit of quantity
@@ -317,11 +317,17 @@ public class AuctionObject extends AbstractProsserObject implements NetworkCapab
         return this.getName() + "NI";
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public String getGldObjectType() {
+    protected String getGldObjectType() {
         return "auction";
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     protected void writeGldProperties(final StringBuilder sb) {
         GldUtils.writeProperty(sb, "unit", unit);

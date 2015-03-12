@@ -9,8 +9,11 @@ package gov.pnnl.prosser.api.gld.obj;
  */
 public class Meter extends Node {
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public String getGldObjectType() {
+    protected String getGldObjectType() {
         return "meter";
     }
 

@@ -3,7 +3,7 @@
  */
 package gov.pnnl.prosser.api.gld.obj;
 
-import gov.pnnl.prosser.api.GldUtils;
+import gov.pnnl.prosser.api.gld.GldUtils;
 import gov.pnnl.prosser.api.gld.enums.BusType;
 
 import org.apache.commons.math3.complex.Complex;
@@ -30,9 +30,14 @@ public class Node extends PowerflowObject {
      */
     private Complex voltageC;
 
+    /**
+     * type of bus used in this node
+     */
     private BusType busType;
 
     /**
+     * Get the bus voltage, Phase A to ground
+     * 
      * @return the voltageA
      */
     public Complex getVoltageA() {
@@ -40,6 +45,8 @@ public class Node extends PowerflowObject {
     }
 
     /**
+     * Set the bus voltage, Phase A to ground
+     * 
      * @param voltageA
      *            the voltageA to set
      */
@@ -48,6 +55,8 @@ public class Node extends PowerflowObject {
     }
 
     /**
+     * Set the bus voltage, Phase A to ground
+     * 
      * @param real
      *            the real part of the complex number for VoltageA
      * @param imaginary
@@ -58,6 +67,8 @@ public class Node extends PowerflowObject {
     }
 
     /**
+     * Get the bus voltage, Phase B to ground
+     * 
      * @return the voltageB
      */
     public Complex getVoltageB() {
@@ -65,6 +76,8 @@ public class Node extends PowerflowObject {
     }
 
     /**
+     * Set the bus voltage, Phase B to ground
+     * 
      * @param voltageB
      *            the voltageB to set
      */
@@ -73,6 +86,8 @@ public class Node extends PowerflowObject {
     }
 
     /**
+     * Set the bus voltage, Phase B to ground
+     * 
      * @param real
      *            the real part of the complex number for VoltageB
      * @param imaginary
@@ -83,6 +98,8 @@ public class Node extends PowerflowObject {
     }
 
     /**
+     * Get the bus voltage, Phase C to ground
+     * 
      * @return the voltageC
      */
     public Complex getVoltageC() {
@@ -90,6 +107,8 @@ public class Node extends PowerflowObject {
     }
 
     /**
+     * Set the bus voltage, Phase C to ground
+     * 
      * @param voltageC
      *            the voltageC to set
      */
@@ -98,6 +117,8 @@ public class Node extends PowerflowObject {
     }
 
     /**
+     * Set the bus voltage, Phase C to ground
+     * 
      * @param real
      *            the real part of the complex number for VoltageC
      * @param imaginary
@@ -108,6 +129,8 @@ public class Node extends PowerflowObject {
     }
 
     /**
+     * Get the type of bus used in this node
+     * 
      * @return the busType
      */
     public BusType getBusType() {
@@ -115,6 +138,8 @@ public class Node extends PowerflowObject {
     }
 
     /**
+     * Set the type of bus used in this node
+     * 
      * @param busType
      *            the busType to set
      */
@@ -122,11 +147,17 @@ public class Node extends PowerflowObject {
         this.busType = busType;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public String getGldObjectType() {
+    protected String getGldObjectType() {
         return "node";
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     protected void writeGldProperties(final StringBuilder sb) {
         super.writeGldProperties(sb);

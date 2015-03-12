@@ -3,7 +3,7 @@
  */
 package gov.pnnl.prosser.api.gld.lib;
 
-import gov.pnnl.prosser.api.GldUtils;
+import gov.pnnl.prosser.api.gld.GldUtils;
 
 /**
  * Standard Line configuration for Overhead and other lines
@@ -12,17 +12,34 @@ import gov.pnnl.prosser.api.GldUtils;
  */
 public class StandardLineConfiguration<C extends Conductor> extends LineConfiguration<C> {
 
+    /**
+     * Conductor for Phase A
+     */
     private C phaseAConductor;
 
+    /**
+     * Conductor for Phase B
+     */
     private C phaseBConductor;
 
+    /**
+     * Conductor for Phase C
+     */
     private C phaseCConductor;
 
+    /**
+     * Conductor for Neutral Phase
+     */
     private C phaseNConductor;
 
+    /**
+     * Line Spacing for this Line
+     */
     private LineSpacing spacing;
 
     /**
+     * Get the Conductor for Phase A
+     * 
      * @return the phaseAConductor
      */
     public C getPhaseAConductor() {
@@ -30,6 +47,8 @@ public class StandardLineConfiguration<C extends Conductor> extends LineConfigur
     }
 
     /**
+     * Set the Conductor for Phase A
+     * 
      * @param phaseAConductor
      *            the phaseAConductor to set
      */
@@ -38,6 +57,8 @@ public class StandardLineConfiguration<C extends Conductor> extends LineConfigur
     }
 
     /**
+     * Get the Conductor for Phase B
+     * 
      * @return the phaseBConductor
      */
     public C getPhaseBConductor() {
@@ -45,6 +66,8 @@ public class StandardLineConfiguration<C extends Conductor> extends LineConfigur
     }
 
     /**
+     * Set the Conductor for Phase B
+     * 
      * @param phaseBConductor
      *            the phaseBConductor to set
      */
@@ -53,6 +76,8 @@ public class StandardLineConfiguration<C extends Conductor> extends LineConfigur
     }
 
     /**
+     * Get the Conductor for Phase C
+     * 
      * @return the phaseCConductor
      */
     public C getPhaseCConductor() {
@@ -60,6 +85,8 @@ public class StandardLineConfiguration<C extends Conductor> extends LineConfigur
     }
 
     /**
+     * Set the Conductor for Phase C
+     * 
      * @param phaseCConductor
      *            the phaseCConductor to set
      */
@@ -68,6 +95,8 @@ public class StandardLineConfiguration<C extends Conductor> extends LineConfigur
     }
 
     /**
+     * Get the Conductor for Neutral Phase
+     * 
      * @return the phaseNConductor
      */
     public C getPhaseNConductor() {
@@ -75,6 +104,8 @@ public class StandardLineConfiguration<C extends Conductor> extends LineConfigur
     }
 
     /**
+     * Set the Conductor for Neutral Phase
+     * 
      * @param phaseNConductor
      *            the phaseNConductor to set
      */
@@ -83,6 +114,8 @@ public class StandardLineConfiguration<C extends Conductor> extends LineConfigur
     }
 
     /**
+     * Get the Line Spacing for this Line
+     * 
      * @return the spacing
      */
     public LineSpacing getSpacing() {
@@ -90,6 +123,8 @@ public class StandardLineConfiguration<C extends Conductor> extends LineConfigur
     }
 
     /**
+     * Set the Line Spacing for this Line
+     * 
      * @param spacing
      *            the spacing to set
      */
@@ -97,11 +132,17 @@ public class StandardLineConfiguration<C extends Conductor> extends LineConfigur
         this.spacing = spacing;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public String getGldObjectType() {
+    protected String getGldObjectType() {
         return "line_configuration";
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     protected void writeGldProperties(final StringBuilder sb) {
         GldUtils.writeProperty(sb, "conductor_A", this.phaseAConductor);

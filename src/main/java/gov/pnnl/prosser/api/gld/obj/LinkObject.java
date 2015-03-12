@@ -3,7 +3,7 @@
  */
 package gov.pnnl.prosser.api.gld.obj;
 
-import gov.pnnl.prosser.api.GldUtils;
+import gov.pnnl.prosser.api.gld.GldUtils;
 
 /**
  * Generic Link Object
@@ -13,7 +13,7 @@ import gov.pnnl.prosser.api.GldUtils;
 public abstract class LinkObject extends PowerflowObject {
 
     /**
-     * from_node - source node
+     * from node - source node
      */
     private Node from;
 
@@ -23,6 +23,7 @@ public abstract class LinkObject extends PowerflowObject {
     private Node to;
 
     /**
+     * Get the from node - source node
      * @return the from
      */
     public Node getFrom() {
@@ -30,6 +31,7 @@ public abstract class LinkObject extends PowerflowObject {
     }
 
     /**
+     * Set the Get the from node - source node
      * @param from
      *            the from to set
      */
@@ -38,6 +40,7 @@ public abstract class LinkObject extends PowerflowObject {
     }
 
     /**
+     * Get the to node - load node
      * @return the to
      */
     public Node getTo() {
@@ -45,6 +48,7 @@ public abstract class LinkObject extends PowerflowObject {
     }
 
     /**
+     * Set the to node - load node
      * @param to
      *            the to to set
      */
@@ -52,6 +56,9 @@ public abstract class LinkObject extends PowerflowObject {
         this.to = to;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     protected void writeGldProperties(final StringBuilder sb) {
         super.writeGldProperties(sb);

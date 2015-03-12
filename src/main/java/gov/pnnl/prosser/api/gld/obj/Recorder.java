@@ -3,8 +3,8 @@
  */
 package gov.pnnl.prosser.api.gld.obj;
 
-import gov.pnnl.prosser.api.AbstractProsserObject;
-import gov.pnnl.prosser.api.GldUtils;
+import gov.pnnl.prosser.api.gld.AbstractGldObject;
+import gov.pnnl.prosser.api.gld.GldUtils;
 
 import java.util.Objects;
 
@@ -13,7 +13,7 @@ import java.util.Objects;
  *
  * @author nord229
  */
-public class Recorder extends AbstractProsserObject {
+public class Recorder extends AbstractGldObject {
 
     private Long interval;
 
@@ -21,7 +21,7 @@ public class Recorder extends AbstractProsserObject {
 
     private String property;
 
-    private AbstractProsserObject parent;
+    private AbstractGldObject parent;
 
     private Integer limit;
 
@@ -73,7 +73,7 @@ public class Recorder extends AbstractProsserObject {
     /**
      * @return the parent
      */
-    public AbstractProsserObject getParent() {
+    public AbstractGldObject getParent() {
         return parent;
     }
 
@@ -81,7 +81,7 @@ public class Recorder extends AbstractProsserObject {
      * @param parent
      *            the parent to set
      */
-    public void setParent(final AbstractProsserObject parent) {
+    public void setParent(final AbstractGldObject parent) {
         this.parent = parent;
     }
 
@@ -124,11 +124,17 @@ public class Recorder extends AbstractProsserObject {
                 && Objects.equals(this.limit, other.limit);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public String getGldObjectType() {
+    protected String getGldObjectType() {
         return "recorder";
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     protected void writeGldProperties(final StringBuilder sb) {
         GldUtils.writeProperty(sb, "interval", this.interval, "s");

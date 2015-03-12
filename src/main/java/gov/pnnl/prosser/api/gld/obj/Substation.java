@@ -3,7 +3,7 @@
  */
 package gov.pnnl.prosser.api.gld.obj;
 
-import gov.pnnl.prosser.api.GldUtils;
+import gov.pnnl.prosser.api.gld.GldUtils;
 import gov.pnnl.prosser.api.gld.enums.PhaseCode;
 
 /**
@@ -29,15 +29,21 @@ public class Substation extends Node {
         this.referencePhase = referencePhase;
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected String getGldObjectType() {
+        return "substation";
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
     @Override
     protected void writeGldProperties(final StringBuilder sb) {
         super.writeGldProperties(sb);
         GldUtils.writeProperty(sb, "reference_phase", "PHASE_" + this.referencePhase.name());
-    }
-
-    @Override
-    public String getGldObjectType() {
-        return "substation";
     }
 
 }

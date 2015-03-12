@@ -3,14 +3,14 @@
  */
 package gov.pnnl.prosser.api.gld.obj;
 
-import gov.pnnl.prosser.api.AbstractProsserObject;
-import gov.pnnl.prosser.api.GldUtils;
+import gov.pnnl.prosser.api.gld.AbstractGldObject;
+import gov.pnnl.prosser.api.gld.GldUtils;
 
 /**
  * @author nord229
  *
  */
-public class PlayerObject extends AbstractProsserObject {
+public class PlayerObject extends AbstractGldObject {
 
     private String property;
 
@@ -63,11 +63,17 @@ public class PlayerObject extends AbstractProsserObject {
         this.loop = loop;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public String getGldObjectType() {
+    protected String getGldObjectType() {
         return "player";
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     protected void writeGldProperties(final StringBuilder sb) {
         GldUtils.writeProperty(sb, "property", property);

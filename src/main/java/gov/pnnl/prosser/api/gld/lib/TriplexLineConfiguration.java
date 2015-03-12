@@ -3,7 +3,7 @@
  */
 package gov.pnnl.prosser.api.gld.lib;
 
-import gov.pnnl.prosser.api.GldUtils;
+import gov.pnnl.prosser.api.gld.GldUtils;
 
 /**
  * Triplex Line Configuration
@@ -12,23 +12,34 @@ import gov.pnnl.prosser.api.GldUtils;
  */
 public class TriplexLineConfiguration extends LineConfiguration<TriplexLineConductor> {
 
+    /**
+     * Conductor for Phase 1
+     */
     private TriplexLineConductor phase1Conductor;
 
+    /**
+     * Conductor for Phase 2
+     */
     private TriplexLineConductor phase2Conductor;
 
-    private TriplexLineConductor phaseNConductor;
-
     /**
-     * total diameter of cable in inches
+     * Conductor for Neutral Phase
      */
-    private double insulationThickness;
+    private TriplexLineConductor phaseNConductor;
 
     /**
      * thickness of insulation around cabling in inches
      */
+    private double insulationThickness;
+
+    /**
+     * total diameter of cable in inches
+     */
     private double diameter;
 
     /**
+     * Get the Conductor for Phase 1
+     * 
      * @return the phase1Conductor
      */
     public TriplexLineConductor getPhase1Conductor() {
@@ -36,6 +47,8 @@ public class TriplexLineConfiguration extends LineConfiguration<TriplexLineCondu
     }
 
     /**
+     * Set the Conductor for Phase 1
+     * 
      * @param phase1Conductor
      *            the phase1Conductor to set
      */
@@ -44,6 +57,8 @@ public class TriplexLineConfiguration extends LineConfiguration<TriplexLineCondu
     }
 
     /**
+     * Get the Conductor for Phase 2
+     * 
      * @return the phase2Conductor
      */
     public TriplexLineConductor getPhase2Conductor() {
@@ -51,6 +66,8 @@ public class TriplexLineConfiguration extends LineConfiguration<TriplexLineCondu
     }
 
     /**
+     * Set the Conductor for Phase 2
+     * 
      * @param phase2Conductor
      *            the phase2Conductor to set
      */
@@ -59,6 +76,8 @@ public class TriplexLineConfiguration extends LineConfiguration<TriplexLineCondu
     }
 
     /**
+     * Get the Conductor for Neutral Phase
+     * 
      * @return the phaseNConductor
      */
     public TriplexLineConductor getPhaseNConductor() {
@@ -66,6 +85,8 @@ public class TriplexLineConfiguration extends LineConfiguration<TriplexLineCondu
     }
 
     /**
+     * Set the Conductor for Neutral Phase
+     * 
      * @param phaseNConductor
      *            the phaseNConductor to set
      */
@@ -74,6 +95,8 @@ public class TriplexLineConfiguration extends LineConfiguration<TriplexLineCondu
     }
 
     /**
+     * Get the thickness of insulation around cabling in inches
+     * 
      * @return the insulationThickness
      */
     public double getInsulationThickness() {
@@ -81,6 +104,8 @@ public class TriplexLineConfiguration extends LineConfiguration<TriplexLineCondu
     }
 
     /**
+     * Set the thickness of insulation around cabling in inches
+     * 
      * @param insulationThickness
      *            the insulationThickness to set
      */
@@ -89,6 +114,8 @@ public class TriplexLineConfiguration extends LineConfiguration<TriplexLineCondu
     }
 
     /**
+     * Get the total diameter of cable in inches
+     * 
      * @return the diameter
      */
     public double getDiameter() {
@@ -96,6 +123,8 @@ public class TriplexLineConfiguration extends LineConfiguration<TriplexLineCondu
     }
 
     /**
+     * Set the total diameter of cable in inches
+     * 
      * @param diameter
      *            the diameter to set
      */
@@ -103,11 +132,17 @@ public class TriplexLineConfiguration extends LineConfiguration<TriplexLineCondu
         this.diameter = diameter;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public String getGldObjectType() {
+    protected String getGldObjectType() {
         return "triplex_line_configuration";
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     protected void writeGldProperties(final StringBuilder sb) {
         GldUtils.writeProperty(sb, "conductor_1", this.phase1Conductor);

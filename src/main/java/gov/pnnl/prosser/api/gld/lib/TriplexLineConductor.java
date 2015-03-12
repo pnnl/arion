@@ -3,7 +3,7 @@
  */
 package gov.pnnl.prosser.api.gld.lib;
 
-import gov.pnnl.prosser.api.GldUtils;
+import gov.pnnl.prosser.api.gld.GldUtils;
 
 /**
  * Triplex Line Conductor
@@ -23,6 +23,8 @@ public class TriplexLineConductor extends Conductor {
     private double geometricMeanRadius;
 
     /**
+     * Get the resistance of cable in ohm/mile
+     * 
      * @return the resistance
      */
     public double getResistance() {
@@ -30,6 +32,8 @@ public class TriplexLineConductor extends Conductor {
     }
 
     /**
+     * Set the resistance of cable in ohm/mile
+     * 
      * @param resistance
      *            the resistance to set
      */
@@ -38,6 +42,8 @@ public class TriplexLineConductor extends Conductor {
     }
 
     /**
+     * Get the geometric mean radius of the cable
+     * 
      * @return the geometricMeanRadius
      */
     public double getGeometricMeanRadius() {
@@ -45,6 +51,8 @@ public class TriplexLineConductor extends Conductor {
     }
 
     /**
+     * Set the geometric mean radius of the cable
+     * 
      * @param geometricMeanRadius
      *            the geometricMeanRadius to set
      */
@@ -52,11 +60,17 @@ public class TriplexLineConductor extends Conductor {
         this.geometricMeanRadius = geometricMeanRadius;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public String getGldObjectType() {
+    protected String getGldObjectType() {
         return "triplex_line_conductor";
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     protected void writeGldProperties(final StringBuilder sb) {
         GldUtils.writeProperty(sb, "resistance", this.resistance);

@@ -3,6 +3,7 @@
  */
 package gov.pnnl.prosser.api;
 
+import gov.pnnl.prosser.api.gld.AbstractGldObject;
 import gov.pnnl.prosser.api.gld.obj.AuctionObject;
 import gov.pnnl.prosser.api.gld.obj.Controller;
 import gov.pnnl.prosser.api.ns3.enums.NetworkType;
@@ -129,7 +130,7 @@ public class Ns3Simulator {
 	 * TODO get purpose of this method; add obj to list of GLD objects to pass to Ns3Network or setup a Channel and pass it to Ns3Network?
 	 * @param obj the AbstractProsserObject to add to this Ns3Simulator
 	 */
-	public void add(AbstractProsserObject obj) {
+	public void add(AbstractGldObject obj) {
 		//network.addGldObject(obj);
 		
 		//Channel c = obj.getChannel();

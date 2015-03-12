@@ -13,8 +13,11 @@ import gov.pnnl.prosser.api.gld.lib.TriplexLineConfiguration;
  */
 public class TriplexLine extends Line<TriplexLineConductor, TriplexLineConfiguration> {
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public String getGldObjectType() {
+    protected String getGldObjectType() {
         return "triplex_line";
     }
 

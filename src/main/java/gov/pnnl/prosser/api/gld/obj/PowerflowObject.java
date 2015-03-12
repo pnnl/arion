@@ -3,8 +3,8 @@
  */
 package gov.pnnl.prosser.api.gld.obj;
 
-import gov.pnnl.prosser.api.AbstractProsserObject;
-import gov.pnnl.prosser.api.GldUtils;
+import gov.pnnl.prosser.api.gld.AbstractGldObject;
+import gov.pnnl.prosser.api.gld.GldUtils;
 import gov.pnnl.prosser.api.gld.enums.PhaseCode;
 
 import java.util.EnumSet;
@@ -15,7 +15,7 @@ import java.util.Objects;
  *
  * @author nord229
  */
-public abstract class PowerflowObject extends AbstractProsserObject {
+public abstract class PowerflowObject extends AbstractGldObject {
 
     /**
      * Nominal Voltage
@@ -23,11 +23,13 @@ public abstract class PowerflowObject extends AbstractProsserObject {
     private Double nominalVoltage;
 
     /**
-     * Never null
+     * Phases this object is using
      */
     private EnumSet<PhaseCode> phases;
 
     /**
+     * Get the Nominal Voltage
+     * 
      * @return the nominalVoltage
      */
     public Double getNominalVoltage() {
@@ -35,6 +37,8 @@ public abstract class PowerflowObject extends AbstractProsserObject {
     }
 
     /**
+     * Set the Nominal Voltage
+     * 
      * @param nominalVoltage
      *            the nominalVoltage to set
      */
@@ -43,6 +47,8 @@ public abstract class PowerflowObject extends AbstractProsserObject {
     }
 
     /**
+     * Get the Phases this object is using
+     * 
      * @return the phases
      */
     public EnumSet<PhaseCode> getPhases() {
@@ -50,6 +56,8 @@ public abstract class PowerflowObject extends AbstractProsserObject {
     }
 
     /**
+     * Set the Phases this object is using
+     * 
      * @param phases
      *            the phases to set
      */
@@ -78,6 +86,9 @@ public abstract class PowerflowObject extends AbstractProsserObject {
                 && Objects.equals(this.phases, other.phases);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     protected void writeGldProperties(final StringBuilder sb) {
         final StringBuilder phaseBuilder = new StringBuilder();

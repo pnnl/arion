@@ -3,8 +3,8 @@
  */
 package gov.pnnl.prosser.api.gld.lib;
 
-import gov.pnnl.prosser.api.GldSerializable;
-import gov.pnnl.prosser.api.GldUtils;
+import gov.pnnl.prosser.api.gld.GldSerializable;
+import gov.pnnl.prosser.api.gld.GldUtils;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -92,6 +92,9 @@ public class GldClock implements GldSerializable {
                 && Objects.equals(this.timezone, other.timezone);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void writeGldString(final StringBuilder sb) {
         sb.append("clock {\n");

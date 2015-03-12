@@ -3,7 +3,7 @@
  */
 package gov.pnnl.prosser.api.gld.lib;
 
-import gov.pnnl.prosser.api.GldUtils;
+import gov.pnnl.prosser.api.gld.GldUtils;
 import gov.pnnl.prosser.api.gld.enums.ConnectionType;
 import gov.pnnl.prosser.api.gld.enums.InstallationType;
 
@@ -17,7 +17,7 @@ import org.apache.commons.math3.complex.Complex;
 public class TransformerConfiguration extends PowerflowLibrary {
 
     /**
-     * connect type enum: Wye-Wye, single-phase, etc.
+     * connection type enum: Wye-Wye, single-phase, etc.
      */
     private ConnectionType connectionType;
 
@@ -39,7 +39,6 @@ public class TransformerConfiguration extends PowerflowLibrary {
     /**
      * kVA rating of transformer, total
      */
-
     private Double powerRating;
 
     /**
@@ -86,6 +85,8 @@ public class TransformerConfiguration extends PowerflowLibrary {
     }
 
     /**
+     * Get the connection type enum: Wye-Wye, single-phase, etc.
+     * 
      * @return the connectionType
      */
     public ConnectionType getConnectionType() {
@@ -93,6 +94,8 @@ public class TransformerConfiguration extends PowerflowLibrary {
     }
 
     /**
+     * Set the connection type enum: Wye-Wye, single-phase, etc.
+     * 
      * @param connectionType
      *            the connectionType to set
      */
@@ -101,6 +104,8 @@ public class TransformerConfiguration extends PowerflowLibrary {
     }
 
     /**
+     * Get the location of the transformer installation
+     * 
      * @return the installationType
      */
     public InstallationType getInstallationType() {
@@ -108,6 +113,8 @@ public class TransformerConfiguration extends PowerflowLibrary {
     }
 
     /**
+     * Set the location of the transformer installation
+     * 
      * @param installationType
      *            the installationType to set
      */
@@ -116,6 +123,8 @@ public class TransformerConfiguration extends PowerflowLibrary {
     }
 
     /**
+     * Get the primary voltage level in L-L value kV
+     * 
      * @return the primaryVoltage
      */
     public double getPrimaryVoltage() {
@@ -123,6 +132,8 @@ public class TransformerConfiguration extends PowerflowLibrary {
     }
 
     /**
+     * Set the primary voltage level in L-L value kV
+     * 
      * @param primaryVoltage
      *            the primaryVoltage to set
      */
@@ -131,6 +142,8 @@ public class TransformerConfiguration extends PowerflowLibrary {
     }
 
     /**
+     * Get the secondary voltage level kV
+     * 
      * @return the secondaryVoltage
      */
     public double getSecondaryVoltage() {
@@ -138,6 +151,8 @@ public class TransformerConfiguration extends PowerflowLibrary {
     }
 
     /**
+     * Set the secondary voltage level kV
+     * 
      * @param secondaryVoltage
      *            the secondaryVoltage to set
      */
@@ -146,6 +161,8 @@ public class TransformerConfiguration extends PowerflowLibrary {
     }
 
     /**
+     * Get the kVA rating of transformer, total
+     * 
      * @return the powerRating
      */
     public Double getPowerRating() {
@@ -153,6 +170,8 @@ public class TransformerConfiguration extends PowerflowLibrary {
     }
 
     /**
+     * Set the kVA rating of transformer, total
+     * 
      * @param powerRating
      *            the powerRating to set
      */
@@ -161,6 +180,8 @@ public class TransformerConfiguration extends PowerflowLibrary {
     }
 
     /**
+     * Get the kVA rating of transformer, phase A
+     * 
      * @return the phaseARating
      */
     public Double getPhaseARating() {
@@ -168,6 +189,8 @@ public class TransformerConfiguration extends PowerflowLibrary {
     }
 
     /**
+     * Set the kVA rating of transformer, phase A
+     * 
      * @param phaseARating
      *            the phaseARating to set
      */
@@ -176,6 +199,8 @@ public class TransformerConfiguration extends PowerflowLibrary {
     }
 
     /**
+     * Get the kVA rating of transformer, phase B
+     * 
      * @return the phaseBRating
      */
     public Double getPhaseBRating() {
@@ -183,6 +208,8 @@ public class TransformerConfiguration extends PowerflowLibrary {
     }
 
     /**
+     * Set the kVA rating of transformer, phase B
+     * 
      * @param phaseBRating
      *            the phaseBRating to set
      */
@@ -191,6 +218,8 @@ public class TransformerConfiguration extends PowerflowLibrary {
     }
 
     /**
+     * Get the kVA rating of transformer, phase C
+     * 
      * @return the phaseCRating
      */
     public Double getPhaseCRating() {
@@ -198,6 +227,8 @@ public class TransformerConfiguration extends PowerflowLibrary {
     }
 
     /**
+     * Set the kVA rating of transformer, phase C
+     * 
      * @param phaseCRating
      *            the phaseCRating to set
      */
@@ -206,6 +237,8 @@ public class TransformerConfiguration extends PowerflowLibrary {
     }
 
     /**
+     * Get the Series impedance, pu
+     * 
      * @return the impedance
      */
     public Complex getImpedance() {
@@ -213,6 +246,8 @@ public class TransformerConfiguration extends PowerflowLibrary {
     }
 
     /**
+     * Set the Series impedance, pu
+     * 
      * @param impedance
      *            the impedance to set
      */
@@ -221,6 +256,8 @@ public class TransformerConfiguration extends PowerflowLibrary {
     }
 
     /**
+     * Set the Series impedance, pu
+     * 
      * @param real
      *            the real part of the complex number for impedance
      * @param imaginary
@@ -231,6 +268,8 @@ public class TransformerConfiguration extends PowerflowLibrary {
     }
 
     /**
+     * Get the Shunt impedance on primary side, pu
+     * 
      * @return the shuntImpedance
      */
     public Complex getShuntImpedance() {
@@ -238,6 +277,8 @@ public class TransformerConfiguration extends PowerflowLibrary {
     }
 
     /**
+     * Set the Shunt impedance on primary side, pu
+     * 
      * @param shuntImpedance
      *            the shuntImpedance to set
      */
@@ -246,6 +287,8 @@ public class TransformerConfiguration extends PowerflowLibrary {
     }
 
     /**
+     * Set the Shunt impedance on primary side, pu
+     * 
      * @param real
      *            the real part of the complex number for shunt impedance
      * @param imaginary
@@ -255,11 +298,17 @@ public class TransformerConfiguration extends PowerflowLibrary {
         this.shuntImpedance = new Complex(real, imaginary);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public String getGldObjectType() {
+    protected String getGldObjectType() {
         return "transformer_configuration";
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     protected void writeGldProperties(final StringBuilder sb) {
         GldUtils.writeProperty(sb, "connect_type", this.connectionType);

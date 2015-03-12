@@ -6,7 +6,7 @@ package gov.pnnl.prosser.api.gld.obj;
 import java.util.ArrayList;
 import java.util.List;
 
-import gov.pnnl.prosser.api.GldUtils;
+import gov.pnnl.prosser.api.gld.GldUtils;
 import gov.pnnl.prosser.api.gld.enums.CoolingSystemType;
 import gov.pnnl.prosser.api.gld.enums.FanType;
 import gov.pnnl.prosser.api.gld.enums.HeatingSystemType;
@@ -413,11 +413,17 @@ public class House extends ResidentialEnduse {
         return controller;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public String getGldObjectType() {
+    protected String getGldObjectType() {
         return "house";
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     protected void writeGldProperties(final StringBuilder sb) {
         super.writeGldProperties(sb);

@@ -3,8 +3,8 @@
  */
 package gov.pnnl.prosser.api.gld.obj;
 
-import gov.pnnl.prosser.api.AbstractProsserObject;
-import gov.pnnl.prosser.api.GldUtils;
+import gov.pnnl.prosser.api.gld.AbstractGldObject;
+import gov.pnnl.prosser.api.gld.GldUtils;
 
 import java.util.Objects;
 
@@ -13,7 +13,7 @@ import java.util.Objects;
  *
  * @author nord229
  */
-public class ClimateObject extends AbstractProsserObject {
+public class ClimateObject extends AbstractGldObject {
 
     private String tmyFile;
 
@@ -82,11 +82,17 @@ public class ClimateObject extends AbstractProsserObject {
         return Objects.equals(this.tmyFile, other.tmyFile);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public String getGldObjectType() {
+    protected String getGldObjectType() {
         return "climate";
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     protected void writeGldProperties(final StringBuilder sb) {
         GldUtils.writeProperty(sb, "tmyfile", this.tmyFile);

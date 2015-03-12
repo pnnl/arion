@@ -3,9 +3,9 @@
  */
 package gov.pnnl.prosser.api.gld.obj;
 
-import gov.pnnl.prosser.api.AbstractProsserObject;
-import gov.pnnl.prosser.api.GldUtils;
 import gov.pnnl.prosser.api.NetworkCapable;
+import gov.pnnl.prosser.api.gld.AbstractGldObject;
+import gov.pnnl.prosser.api.gld.GldUtils;
 import gov.pnnl.prosser.api.gld.enums.BidMode;
 import gov.pnnl.prosser.api.gld.enums.ControlMode;
 import gov.pnnl.prosser.api.gld.enums.UseOverride;
@@ -14,7 +14,7 @@ import gov.pnnl.prosser.api.gld.enums.UseOverride;
  * @author nord229
  *
  */
-public class Controller extends AbstractProsserObject implements NetworkCapable {
+public class Controller extends AbstractGldObject implements NetworkCapable {
 
     private UseOverride useOverride;
 
@@ -435,11 +435,17 @@ public class Controller extends AbstractProsserObject implements NetworkCapable 
         this.networkInterfaceName = networkInterfaceName;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public String getGldObjectType() {
+    protected String getGldObjectType() {
         return "controller";
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     protected void writeGldProperties(final StringBuilder sb) {
         GldUtils.writeProperty(sb, "use_override", useOverride);

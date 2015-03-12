@@ -3,6 +3,8 @@
  */
 package gov.pnnl.prosser.api;
 
+import gov.pnnl.prosser.api.gld.AbstractGldObject;
+import gov.pnnl.prosser.api.gld.GldUtils;
 import gov.pnnl.prosser.api.gld.lib.GldClock;
 import gov.pnnl.prosser.api.gld.module.Module;
 import gov.pnnl.prosser.api.gld.obj.AbstractGldClass;
@@ -40,7 +42,7 @@ public class GldSimulatorWriter {
         final GldClock clock = Objects.requireNonNull(gldSimulator.getClock(), "GLD clock must be non null");
         final List<Module> modules = gldSimulator.getModules();
         final List<AbstractGldClass> classes = gldSimulator.getClasses();
-        final List<AbstractProsserObject> objects = gldSimulator.getObjects();
+        final List<AbstractGldObject> objects = gldSimulator.getObjects();
         final StringBuilder sb = new StringBuilder();
         sb.append("//\n");
         sb.append("// BEGIN\n");
