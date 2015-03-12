@@ -15,8 +15,14 @@ import java.util.Objects;
  */
 public class PowerflowModule extends Module {
 
+    /**
+     * powerflow solver methodology
+     */
     private final SolverMethod solverMethod;
 
+    /**
+     * Newton-Raphson iteration limit (per GridLAB-D iteration)
+     */
     private final Long nrIterationLimit;
 
     public PowerflowModule() {
@@ -24,12 +30,18 @@ public class PowerflowModule extends Module {
         this.nrIterationLimit = null;
     }
 
+    /**
+     * Specific constructor 
+     * @param solverMethod powerflow solver methodology
+     * @param nrIterationLimit Newton-Raphson iteration limit (per GridLAB-D iteration)
+     */
     public PowerflowModule(final SolverMethod solverMethod, final Long nrIterationLimit) {
         this.solverMethod = solverMethod;
         this.nrIterationLimit = nrIterationLimit;
     }
 
     /**
+     * Get the powerflow solver methodology
      * @return the solverMethod
      */
     public SolverMethod getSolverMethod() {
@@ -37,6 +49,7 @@ public class PowerflowModule extends Module {
     }
 
     /**
+     * Get the Newton-Raphson iteration limit (per GridLAB-D iteration)
      * @return the nrIterationLimit
      */
     public Long getNrIterationLimit() {
@@ -64,16 +77,25 @@ public class PowerflowModule extends Module {
                 && Objects.equals(this.nrIterationLimit, other.nrIterationLimit);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String getGLDObjectType() {
         return "powerflow";
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean hasProperties() {
         return true;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     protected void writeGLDProperties(final StringBuilder sb) {
         GldUtils.writeProperty(sb, "solver_method", this.solverMethod);

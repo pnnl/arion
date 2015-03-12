@@ -192,9 +192,9 @@ public class GldSimulator {
      * Add the powerflow module to this simulator
      *
      * @param solverMethod
-     *            the solver method, can be null
+     *            the powerflow solver methodology, can be null
      * @param nrIterationLimit
-     *            the number of iterations limit, can be null
+     *            the Newton-Raphson iteration limit (per GridLAB-D iteration), can be null
      */
     public void powerflowModule(final SolverMethod solverMethod, final Long nrIterationLimit) {
         this.modules.add(new PowerflowModule(solverMethod, nrIterationLimit));

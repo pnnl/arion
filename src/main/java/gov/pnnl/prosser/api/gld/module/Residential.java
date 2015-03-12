@@ -51,16 +51,25 @@ public class Residential extends Module {
         return Objects.equals(this.implicitEnduses, other.implicitEnduses);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String getGLDObjectType() {
         return "residential";
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean hasProperties() {
         return true;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     protected void writeGLDProperties(final StringBuilder sb) {
         GldUtils.writeProperty(sb, "implicit_enduses", this.implicitEnduses);
