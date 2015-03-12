@@ -12,15 +12,29 @@ import gov.pnnl.prosser.api.gld.GldUtils;
  */
 public class Load extends Node {
 
+    /**
+     * the parent node to apply this load to
+     */
     private Node parent;
 
+    /**
+     * constant power load on phase A, real only, specified as W
+     */
     private String phaseAConstantReal;
 
+    /**
+     * constant power load on phase B, real only, specified as W
+     */
     private String phaseBConstantReal;
 
+    /**
+     * constant power load on phase C, real only, specified as W
+     */
     private String phaseCConstantReal;
 
     /**
+     * Get the parent node to apply this load to
+     * 
      * @return the parent
      */
     public Node getParent() {
@@ -28,6 +42,8 @@ public class Load extends Node {
     }
 
     /**
+     * Set the parent node to apply this load to
+     * 
      * @param parent
      *            the parent to set
      */
@@ -36,6 +52,8 @@ public class Load extends Node {
     }
 
     /**
+     * Get the constant power load on phase A, real only, specified as W
+     * 
      * @return the phaseAConstantReal
      */
     public String getPhaseAConstantReal() {
@@ -43,6 +61,8 @@ public class Load extends Node {
     }
 
     /**
+     * Set the constant power load on phase A, real only, specified as W
+     * 
      * @param phaseAConstantReal
      *            the phaseAConstantReal to set
      */
@@ -51,6 +71,8 @@ public class Load extends Node {
     }
 
     /**
+     * Get the constant power load on phase B, real only, specified as W
+     * 
      * @return the phaseBConstantReal
      */
     public String getPhaseBConstantReal() {
@@ -58,6 +80,8 @@ public class Load extends Node {
     }
 
     /**
+     * Set the constant power load on phase B, real only, specified as W
+     * 
      * @param phaseBConstantReal
      *            the phaseBConstantReal to set
      */
@@ -66,6 +90,8 @@ public class Load extends Node {
     }
 
     /**
+     * Get the constant power load on phase C, real only, specified as W
+     * 
      * @return the phaseCConstantReal
      */
     public String getPhaseCConstantReal() {
@@ -73,6 +99,8 @@ public class Load extends Node {
     }
 
     /**
+     * Set the constant power load on phase C, real only, specified as W
+     * 
      * @param phaseCConstantReal
      *            the phaseCConstantReal to set
      */

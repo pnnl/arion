@@ -24,6 +24,9 @@ public class ZIPLoad extends ResidentialEnduse {
      */
     private double basePower;
 
+    /**
+     * If the base power is a function of another value, enter that here
+     */
     private String basePowerFn;
 
     /**
@@ -31,6 +34,9 @@ public class ZIPLoad extends ResidentialEnduse {
      */
     private double powerPf;
 
+    /**
+     * the fraction of the total power that is constant power
+     */
     private double powerFraction;
 
     /**
@@ -38,6 +44,9 @@ public class ZIPLoad extends ResidentialEnduse {
      */
     private double currentPf;
 
+    /**
+     * the fraction of total power that is constant current
+     */
     private double currentFraction;
 
     /**
@@ -45,9 +54,14 @@ public class ZIPLoad extends ResidentialEnduse {
      */
     private double impedancePf;
 
+    /**
+     * the fraction of total power that is constant impedance
+     */
     private double impedanceFraction;
 
     /**
+     * Get the Fraction of ZIPload that is transferred as heat
+     * 
      * @return the heatFraction
      */
     public double getHeatFraction() {
@@ -55,6 +69,8 @@ public class ZIPLoad extends ResidentialEnduse {
     }
 
     /**
+     * Set the Fraction of ZIPload that is transferred as heat
+     * 
      * @param heatFraction
      *            the heatFraction to set
      */
@@ -63,6 +79,8 @@ public class ZIPLoad extends ResidentialEnduse {
     }
 
     /**
+     * Get the base real power of the overall load in kW
+     * 
      * @return the basePower
      */
     public double getBasePower() {
@@ -70,6 +88,8 @@ public class ZIPLoad extends ResidentialEnduse {
     }
 
     /**
+     * Set the base real power of the overall load in kW
+     * 
      * @param basePower
      *            the basePower to set
      */
@@ -78,6 +98,9 @@ public class ZIPLoad extends ResidentialEnduse {
     }
 
     /**
+     * Get the Base Power Function
+     * If the base power is a function of another value, it will be here
+     * 
      * @return the basePowerFn
      */
     public String getBasePowerFn() {
@@ -85,6 +108,9 @@ public class ZIPLoad extends ResidentialEnduse {
     }
 
     /**
+     * Set the Base Power Function
+     * If the base power is a function of another value, enter that here
+     * 
      * @param basePowerFn
      *            the basePowerFn to set
      */
@@ -93,6 +119,8 @@ public class ZIPLoad extends ResidentialEnduse {
     }
 
     /**
+     * Get the power factor for constant power portion
+     * 
      * @return the powerPf
      */
     public double getPowerPf() {
@@ -100,6 +128,8 @@ public class ZIPLoad extends ResidentialEnduse {
     }
 
     /**
+     * Set the power factor for constant power portion
+     * 
      * @param powerPf
      *            the powerPf to set
      */
@@ -108,6 +138,8 @@ public class ZIPLoad extends ResidentialEnduse {
     }
 
     /**
+     * Get the fraction of the total power that is constant power
+     * 
      * @return the powerFraction
      */
     public double getPowerFraction() {
@@ -115,6 +147,8 @@ public class ZIPLoad extends ResidentialEnduse {
     }
 
     /**
+     * Set the fraction of the total power that is constant power
+     * 
      * @param powerFraction
      *            the powerFraction to set
      */
@@ -123,6 +157,8 @@ public class ZIPLoad extends ResidentialEnduse {
     }
 
     /**
+     * Get the power factor for constant current portion
+     * 
      * @return the currentPf
      */
     public double getCurrentPf() {
@@ -130,6 +166,8 @@ public class ZIPLoad extends ResidentialEnduse {
     }
 
     /**
+     * Set the power factor for constant current portion
+     * 
      * @param currentPf
      *            the currentPf to set
      */
@@ -138,6 +176,8 @@ public class ZIPLoad extends ResidentialEnduse {
     }
 
     /**
+     * Get the fraction of total power that is constant current
+     * 
      * @return the currentFraction
      */
     public double getCurrentFraction() {
@@ -145,6 +185,8 @@ public class ZIPLoad extends ResidentialEnduse {
     }
 
     /**
+     * Set the fraction of total power that is constant current
+     * 
      * @param currentFraction
      *            the currentFraction to set
      */
@@ -153,6 +195,8 @@ public class ZIPLoad extends ResidentialEnduse {
     }
 
     /**
+     * Get the power factor for constant impedance portion
+     * 
      * @return the impedancePf
      */
     public double getImpedancePf() {
@@ -160,6 +204,8 @@ public class ZIPLoad extends ResidentialEnduse {
     }
 
     /**
+     * Set the power factor for constant impedance portion
+     * 
      * @param impedancePf
      *            the impedancePf to set
      */
@@ -168,6 +214,8 @@ public class ZIPLoad extends ResidentialEnduse {
     }
 
     /**
+     * Get the fraction of total power that is constant impedance
+     * 
      * @return the impedanceFraction
      */
     public double getImpedanceFraction() {
@@ -175,6 +223,8 @@ public class ZIPLoad extends ResidentialEnduse {
     }
 
     /**
+     * Set the fraction of total power that is constant impedance
+     * 
      * @param impedanceFraction
      *            the impedanceFraction to set
      */
