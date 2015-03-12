@@ -4,6 +4,7 @@
 package gov.pnnl.prosser.api.gld.module;
 
 import gov.pnnl.prosser.api.gld.GldUtils;
+import gov.pnnl.prosser.api.gld.enums.ImplicitEnduses;
 
 import java.util.Objects;
 
@@ -14,20 +15,32 @@ import java.util.Objects;
  */
 public class Residential extends Module {
 
-    private final String implicitEnduses;
+    /**
+     * list of implicit enduses that are active in houses
+     */
+    // FIXME Deal with residential enduses enum flags properly (they use bit mapping)
+    private final ImplicitEnduses implicitEnduses;
 
+    /**
+     * Default constructor
+     */
     public Residential() {
         this.implicitEnduses = null;
     }
 
-    public Residential(final String implicitEnduses) {
+    /**
+     * Specific constructor
+     * @param implicitEnduses list of implicit enduses that are active in houses
+     */
+    public Residential(final ImplicitEnduses implicitEnduses) {
         this.implicitEnduses = implicitEnduses;
     }
 
     /**
+     * Get the list of implicit enduses that are active in houses
      * @return the implicitEnduses
      */
-    public String getImplicitEnduses() {
+    public ImplicitEnduses getImplicitEnduses() {
         return implicitEnduses;
     }
 

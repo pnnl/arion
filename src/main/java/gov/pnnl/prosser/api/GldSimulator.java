@@ -4,6 +4,7 @@
 package gov.pnnl.prosser.api;
 
 import gov.pnnl.prosser.api.gld.AbstractGldObject;
+import gov.pnnl.prosser.api.gld.enums.ImplicitEnduses;
 import gov.pnnl.prosser.api.gld.enums.SolverMethod;
 import gov.pnnl.prosser.api.gld.lib.GldClock;
 import gov.pnnl.prosser.api.gld.lib.LineSpacing;
@@ -182,9 +183,9 @@ public class GldSimulator {
      * Add the residential module to this simulator
      *
      * @param implicitEnduses
-     *            the residential enduses string, can be null
+     *            the list of implicit enduses that are active in houses, can be null
      */
-    public void residentialModule(final String implicitEnduses) {
+    public void residentialModule(final ImplicitEnduses implicitEnduses) {
         this.modules.add(new Residential(implicitEnduses));
     }
 

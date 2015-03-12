@@ -93,7 +93,7 @@ public class ExperimentFncsTest extends Experiment {
         sim.tapeModule();
         sim.commModule();
         sim.climateModule();
-        sim.residentialModule("NONE");
+        sim.residentialModule(ImplicitEnduses.NONE);
         sim.powerflowModule(SolverMethod.FBS, 100L);
 
         // Add a player class def to allow references to value from player objects

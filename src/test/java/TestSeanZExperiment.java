@@ -32,7 +32,7 @@ public class TestSeanZExperiment extends Experiment {
         sim.climateModule();
         sim.tapeModule();
         sim.powerflowModule(SolverMethod.FBS, null);
-        sim.residentialModule("NONE");
+        sim.residentialModule(ImplicitEnduses.NONE);
 
         sim.addSetting("savefile", "testSean.xml");
         sim.addSetting("profiler", "1");
