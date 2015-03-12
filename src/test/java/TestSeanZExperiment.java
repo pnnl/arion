@@ -15,10 +15,14 @@ import java.time.*;
  * @author nord229
  *
  */
-public class TestSeanZExperiment {
+public class TestSeanZExperiment extends Experiment {
 
-    public static void main(final String[] args) {
-        final GldSimulator sim = new GldSimulator("TestForSeanZ");
+    /**
+     * Generate the experiment
+     */
+    @Override
+    public void generate() {
+        final GldSimulator sim = this.gldSimulator("TestForSeanZ");
 
         final GldClock clock = sim.clock();
         clock.setTimezone("PST+8PDT");
@@ -174,6 +178,5 @@ public class TestSeanZExperiment {
         recorder.setFile("test_outputs.csv");
         recorder.setProperty("air_temperature");
         recorder.setParent(house);
-
     }
 }
