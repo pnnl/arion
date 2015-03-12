@@ -22,45 +22,48 @@ import java.util.Random;
  * @author nord229
  *
  */
-public class ExperimentFncsTest {
+public class ExperimentFncsTest extends Experiment {
 
     private static final Random rand = new Random(13);
 
-
-    public static void main(final String[] args) throws IOException {
-        final Path outPath = Paths.get(args[0]).toRealPath();
+    /**
+     * Generate the experiment
+     */
+    @Override
+    public void generate() {
         final int numHouses = 6;
         final int numHousesPerChannel = 3;
         final int numChannels = (numHouses % numHousesPerChannel) == 0 ? (numHouses / numHousesPerChannel) + 1 : (numHouses / numHousesPerChannel) + 2;
         System.out.println("Number of channels: " + numChannels); // TODO debugging
         final String controllerNIPrefix = "F1_C_NI";
-        
+
         // Set parameters for Ns3Network and build backend network
         // TODO create constructNs3Sim(...) method for this
-        final Ns3Simulator ns3Simulator = new Ns3Simulator();
+        final Ns3Simulator ns3Simulator = this.ns3Simulator();
         ns3Simulator.setup(numChannels);
-        
+
         final List<Channel> channels = ns3Simulator.getChannels();
         // TODO Add numHousesPerChannel param and use instead of hard-coded "20" to get channelID
-        final GldSimulator gldSim = constructGldSim(numHouses, controllerNIPrefix, channels);
-        GldSimulatorWriter.writeGldSimulator(outPath.resolve("prosser.glm"), gldSim);
-        
+        final GldSimulator gldSim = this.gldSimulator("fncs_GLD_1node_Feeder_1");
+        populateGldSim(gldSim, numHouses, controllerNIPrefix, channels);
+
         // Connect Controllers and Auctions to backbone network
         ns3Simulator.buildFrontend();
-        Ns3SimulatorWriter.writeNs3Simulator(outPath.resolve("ns3.cc"), ns3Simulator);
 
-        System.out.println("Written!");
         // TODO FNCS Integration
     }
 
     /**
      * The gld simulator for this experiment
-     * @param controllerNIPrefix Prefix to network controllers in Houses and will be enclosed in the auction object
-     * @param channels the network channels to use - channel 0 will be used for the auction, and then channels other than 0 will have up to 20 controllers on it
+     * 
+     * @param controllerNIPrefix
+     *            Prefix to network controllers in Houses and will be enclosed in the auction object
+     * @param channels
+     *            the network channels to use - channel 0 will be used for the auction, and then channels other than 0 will have up to 20 controllers on it
      *
      * @return
      */
-    private static GldSimulator constructGldSim(final int numHouses, final String controllerNIPrefix, final List<Channel> channels) {
+    private static void populateGldSim(final GldSimulator sim, final int numHouses, final String controllerNIPrefix, final List<Channel> channels) {
         // final boolean useMarket = true;
         final String marketName = "Market1";
         final int marketPeriod = 300;
@@ -68,9 +71,6 @@ public class ExperimentFncsTest {
         final String marketStdev = "current_price_stdev_24h";
         // final double percentPenetration = 1;
         // final double sliderSetting = 1;
-
-        // Construct the simulator
-        final GldSimulator sim = new GldSimulator("fncs_GLD_1node_Feeder_1");
 
         // Setup the clock
         final GldClock clock = sim.clock();
@@ -286,8 +286,6 @@ public class ExperimentFncsTest {
             int channelId = ((i - 1) / 20) + 1;
             generateHouse(sim, i, meter, tripLineConf, auction, phase, controllerNIPrefix, channels.get(channelId));
         }
-
-        return sim;
     }
 
     /**
@@ -568,4 +566,5 @@ public class ExperimentFncsTest {
         load.setImpedancePf(0.970);
         load.setHeatFraction(0.94);
     }
+
 }

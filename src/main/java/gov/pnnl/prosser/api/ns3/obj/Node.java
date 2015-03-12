@@ -6,8 +6,6 @@ package gov.pnnl.prosser.api.ns3.obj;
 import gov.pnnl.prosser.api.AbstractNs3Object;
 import gov.pnnl.prosser.api.gld.obj.AuctionObject;
 import gov.pnnl.prosser.api.gld.obj.Controller;
-import gov.pnnl.prosser.api.gld.obj.ControllerNetworkInterface;
-import gov.pnnl.prosser.api.gld.obj.MarketNetworkInterface;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,16 +29,6 @@ public class Node extends AbstractNs3Object {
 	 * A list of the network devices installed on this Node
 	 */
 	private List<NetDevice> devices;
-	/**
-	 * The ControllerNetworkInterface installed on this Node (if present)
-	 * The CNI indicates this Node is connected to (and represents) a GLD House object
-	 */
-	private ControllerNetworkInterface controllerNetworkInterface;
-	/**
-	 * The MarketNetworkInterface installed on this Node (if present)
-	 * The MNI indicates this Node is attached to a GLD Market
-	 */
-	private MarketNetworkInterface marketNetworkInterface;
 	
 	private Controller controller;
 	private AuctionObject auction;
@@ -51,8 +39,6 @@ public class Node extends AbstractNs3Object {
 	public Node() {
 		this.applications = new ArrayList<Application>();
 		this.devices = new ArrayList<NetDevice>();
-		this.controllerNetworkInterface = null;
-		this.marketNetworkInterface = null;
 	}
 	
 	/**
@@ -63,8 +49,6 @@ public class Node extends AbstractNs3Object {
 		this.setName(name);
 		this.applications = new ArrayList<Application>();
 		this.devices = new ArrayList<NetDevice>();
-		this.controllerNetworkInterface = null;
-		this.marketNetworkInterface = null;
 	}
 
 	/**
@@ -95,35 +79,6 @@ public class Node extends AbstractNs3Object {
 	 */
 	public List<NetDevice> getDevices() {
 		return devices;
-	}
-
-	/**
-	 * @return the controllerNetworkInterface
-	 */
-	public ControllerNetworkInterface getControllerNetworkInterface() {
-		return controllerNetworkInterface;
-	}
-
-	/**
-	 * @param controllerNetworkInterface the controllerNetworkInterface to set
-	 */
-	public void setControllerNetworkInterface(ControllerNetworkInterface controllerNetworkInterface) {
-		this.controllerNetworkInterface = controllerNetworkInterface;
-	}
-	
-	/**
-	 * @return the marketNetworkInterface attached to this Node
-	 */
-	public MarketNetworkInterface getMarketNetworkInterface() {
-		return marketNetworkInterface;
-	}
-
-	/**
-	 * @param marketNetworkInterface the marketNetworkInterface to attach to this Node
-	 */
-	public void setMarketNetworkInterface(
-			MarketNetworkInterface marketNetworkInterface) {
-		this.marketNetworkInterface = marketNetworkInterface;
 	}
 	
 	/**

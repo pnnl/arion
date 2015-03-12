@@ -61,10 +61,18 @@ public class ExperimentMain {
         final URLClassLoader child = new URLClassLoader(new URL[] { outPath.toUri().toURL() }, ExperimentMain.class.getClassLoader());
 
         final Class<?> compiledClass = Class.forName(name, true, child);
-        final Class<? extends GldSimulator> gldSimulatorClass = compiledClass.asSubclass(GldSimulator.class);
-        final GldSimulator gldSimulator = gldSimulatorClass.getConstructor().newInstance();
+        final Class<? extends Experiment> experimentClass = compiledClass.asSubclass(Experiment.class);
+        final Experiment experiment = experimentClass.getConstructor().newInstance();
+        experiment.generate();
 
-        GldSimulatorWriter.writeGldSimulator(outPath.resolve("prosser.out"), gldSimulator);
+        for (final GldSimulator sim : experiment.getGldSimulators()) {
+            GldSimulatorWriter.writeGldSimulator(outPath.resolve(sim.getName() + ".glm"), sim);
+        }
+
+        for (final Ns3Simulator sim : experiment.getNs3Simulators()) {
+            Ns3SimulatorWriter.writeNs3Simulator(outPath.resolve("ns3.cc"), sim);
+        }
+        // TODO FNCS simulator writer
         System.out.println("Written!");
     }
 }
