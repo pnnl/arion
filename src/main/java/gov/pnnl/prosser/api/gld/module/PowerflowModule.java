@@ -31,9 +31,12 @@ public class PowerflowModule extends Module {
     }
 
     /**
-     * Specific constructor 
-     * @param solverMethod powerflow solver methodology
-     * @param nrIterationLimit Newton-Raphson iteration limit (per GridLAB-D iteration)
+     * Specific constructor
+     * 
+     * @param solverMethod
+     *            powerflow solver methodology
+     * @param nrIterationLimit
+     *            Newton-Raphson iteration limit (per GridLAB-D iteration)
      */
     public PowerflowModule(final SolverMethod solverMethod, final Long nrIterationLimit) {
         this.solverMethod = solverMethod;
@@ -42,6 +45,7 @@ public class PowerflowModule extends Module {
 
     /**
      * Get the powerflow solver methodology
+     * 
      * @return the solverMethod
      */
     public SolverMethod getSolverMethod() {
@@ -50,6 +54,7 @@ public class PowerflowModule extends Module {
 
     /**
      * Get the Newton-Raphson iteration limit (per GridLAB-D iteration)
+     * 
      * @return the nrIterationLimit
      */
     public Long getNrIterationLimit() {

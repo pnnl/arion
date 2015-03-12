@@ -13,9 +13,14 @@ import gov.pnnl.prosser.api.gld.GldUtils;
  */
 public abstract class ResidentialEnduse extends AbstractGldObject {
 
+    /**
+     * time skew applied to schedule operations involving this object
+     */
     private Long scheduleSkew;
 
     /**
+     * Get the time skew applied to schedule operations involving this object
+     * 
      * @return the scheduleSkew
      */
     public Long getScheduleSkew() {
@@ -23,6 +28,8 @@ public abstract class ResidentialEnduse extends AbstractGldObject {
     }
 
     /**
+     * Set the time skew applied to schedule operations involving this object
+     * 
      * @param scheduleSkew
      *            the scheduleSkew to set
      */

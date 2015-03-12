@@ -10,7 +10,7 @@ package gov.pnnl.prosser.api.gld.module;
  *
  */
 public class Market extends Module {
-    
+
     /**
      * {@inheritDoc}
      */

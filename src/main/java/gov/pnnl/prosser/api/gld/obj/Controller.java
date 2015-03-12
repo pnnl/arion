@@ -11,8 +11,9 @@ import gov.pnnl.prosser.api.gld.enums.ControlMode;
 import gov.pnnl.prosser.api.gld.enums.UseOverride;
 
 /**
+ * Market Controller embedded in Houses
+ * 
  * @author nord229
- *
  */
 public class Controller extends AbstractGldObject implements NetworkCapable {
 

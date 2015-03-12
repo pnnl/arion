@@ -7,14 +7,21 @@ import gov.pnnl.prosser.api.gld.AbstractGldObject;
 import gov.pnnl.prosser.api.gld.GldUtils;
 
 /**
+ * GridLabD Climate CSV Reader
+ * 
  * @author nord229
  *
  */
 public class CsvReader extends AbstractGldObject {
 
+    /**
+     * the csv filename
+     */
     private String filename;
 
     /**
+     * Get the csv filename
+     * 
      * @return the filename
      */
     public String getFilename() {
@@ -22,6 +29,8 @@ public class CsvReader extends AbstractGldObject {
     }
 
     /**
+     * Set the csv filename
+     * 
      * @param filename
      *            the filename to set
      */

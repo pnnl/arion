@@ -15,11 +15,19 @@ import java.util.Objects;
  */
 public class ClimateObject extends AbstractGldObject {
 
+    /**
+     * the TMY file name
+     */
     private String tmyFile;
 
+    /**
+     * the file reader to use when loading data, can be null
+     */
     private CsvReader reader;
 
     /**
+     * Get the TMY file name
+     * 
      * @return the tmyFile
      */
     public String getTmyFile() {
@@ -27,6 +35,8 @@ public class ClimateObject extends AbstractGldObject {
     }
 
     /**
+     * Set the TMY file name
+     * 
      * @param tmyFile
      *            the tmyFile to set
      */
@@ -35,6 +45,8 @@ public class ClimateObject extends AbstractGldObject {
     }
 
     /**
+     * Get the file reader to use when loading data, can be null
+     * 
      * @return the reader
      */
     public CsvReader getReader() {
@@ -42,6 +54,8 @@ public class ClimateObject extends AbstractGldObject {
     }
 
     /**
+     * Set the file reader to use when loading data, can be null
+     * 
      * @param reader
      *            the reader to set
      */

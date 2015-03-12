@@ -7,18 +7,30 @@ import gov.pnnl.prosser.api.gld.AbstractGldObject;
 import gov.pnnl.prosser.api.gld.GldUtils;
 
 /**
+ * Tape Player
+ * 
  * @author nord229
- *
  */
 public class PlayerObject extends AbstractGldObject {
 
+    /**
+     * the target (parent) that is written to
+     */
     private String property;
 
+    /**
+     * the source of the data
+     */
     private String file;
 
+    /**
+     * number of times the tape is to be repeated
+     */
     private Integer loop;
 
     /**
+     * Get the target (parent) that is written to
+     * 
      * @return the property
      */
     public String getProperty() {
@@ -26,6 +38,8 @@ public class PlayerObject extends AbstractGldObject {
     }
 
     /**
+     * Set the target (parent) that is written to
+     * 
      * @param property
      *            the property to set
      */
@@ -34,6 +48,8 @@ public class PlayerObject extends AbstractGldObject {
     }
 
     /**
+     * Get the source of the data
+     * 
      * @return the file
      */
     public String getFile() {
@@ -41,6 +57,8 @@ public class PlayerObject extends AbstractGldObject {
     }
 
     /**
+     * Set the source of the data
+     * 
      * @param file
      *            the file to set
      */
@@ -49,6 +67,8 @@ public class PlayerObject extends AbstractGldObject {
     }
 
     /**
+     * Get the number of times the tape is to be repeated
+     * 
      * @return the loop
      */
     public Integer getLoop() {
@@ -56,6 +76,8 @@ public class PlayerObject extends AbstractGldObject {
     }
 
     /**
+     * Set the number of times the tape is to be repeated
+     * 
      * @param loop
      *            the loop to set
      */

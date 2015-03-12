@@ -12,9 +12,14 @@ import gov.pnnl.prosser.api.gld.GldUtils;
  */
 public class TriplexMeter extends TriplexNode {
 
+    /**
+     * the parent node this meter is attached to
+     */
     private Node parent;
 
     /**
+     * Get the parent node this meter is attached to
+     * 
      * @return the parent
      */
     public Node getParent() {
@@ -22,6 +27,8 @@ public class TriplexMeter extends TriplexNode {
     }
 
     /**
+     * Set the parent node this meter is attached to
+     * 
      * @param parent
      *            the parent to set
      */

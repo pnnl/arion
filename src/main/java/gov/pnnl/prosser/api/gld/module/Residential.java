@@ -30,7 +30,9 @@ public class Residential extends Module {
 
     /**
      * Specific constructor
-     * @param implicitEnduses list of implicit enduses that are active in houses
+     * 
+     * @param implicitEnduses
+     *            list of implicit enduses that are active in houses
      */
     public Residential(final ImplicitEnduses implicitEnduses) {
         this.implicitEnduses = implicitEnduses;
@@ -38,6 +40,7 @@ public class Residential extends Module {
 
     /**
      * Get the list of implicit enduses that are active in houses
+     * 
      * @return the implicitEnduses
      */
     public ImplicitEnduses getImplicitEnduses() {

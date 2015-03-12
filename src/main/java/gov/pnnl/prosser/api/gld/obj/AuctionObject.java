@@ -10,8 +10,9 @@ import gov.pnnl.prosser.api.gld.enums.CurveOutput;
 import gov.pnnl.prosser.api.gld.enums.SpecialMode;
 
 /**
+ * The auction object implements the basic auction
+ * 
  * @author nord229
- *
  */
 public class AuctionObject extends AbstractGldObject implements NetworkCapable {
 

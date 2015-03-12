@@ -24,6 +24,7 @@ public abstract class LinkObject extends PowerflowObject {
 
     /**
      * Get the from node - source node
+     * 
      * @return the from
      */
     public Node getFrom() {
@@ -32,6 +33,7 @@ public abstract class LinkObject extends PowerflowObject {
 
     /**
      * Set the Get the from node - source node
+     * 
      * @param from
      *            the from to set
      */
@@ -41,6 +43,7 @@ public abstract class LinkObject extends PowerflowObject {
 
     /**
      * Get the to node - load node
+     * 
      * @return the to
      */
     public Node getTo() {
@@ -49,6 +52,7 @@ public abstract class LinkObject extends PowerflowObject {
 
     /**
      * Set the to node - load node
+     * 
      * @param to
      *            the to to set
      */

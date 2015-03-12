@@ -6,8 +6,9 @@ package gov.pnnl.prosser.api.gld.obj;
 import gov.pnnl.prosser.api.gld.GldUtils;
 
 /**
+ * Load objects represent static loads and export both voltages and current
+ * 
  * @author nord229
- *
  */
 public class Load extends Node {
 

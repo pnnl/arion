@@ -3,9 +3,9 @@
  */
 package gov.pnnl.prosser.api.gld.obj;
 
-
 /**
- * Player specific class declaration 
+ * Player specific class declaration
+ * 
  * @author nord229
  *
  */

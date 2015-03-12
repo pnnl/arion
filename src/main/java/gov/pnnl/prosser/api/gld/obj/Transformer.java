@@ -14,11 +14,13 @@ import gov.pnnl.prosser.api.gld.lib.TransformerConfiguration;
 public class Transformer extends LinkObject {
 
     /**
-     * Configuration library used for transformer setup
+     * Configuration used for transformer setup
      */
     private TransformerConfiguration configuration;
 
     /**
+     * Get the Configuration used for transformer setup
+     * 
      * @return the configuration
      */
     public TransformerConfiguration getConfiguration() {
@@ -26,6 +28,8 @@ public class Transformer extends LinkObject {
     }
 
     /**
+     * Set the Configuration used for transformer setup
+     * 
      * @param configuration
      *            the configuration to set
      */

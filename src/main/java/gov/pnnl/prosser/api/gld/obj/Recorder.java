@@ -9,23 +9,40 @@ import gov.pnnl.prosser.api.gld.GldUtils;
 import java.util.Objects;
 
 /**
- * GridLabD Recorder Object
+ * Tape recorder
  *
  * @author nord229
  */
 public class Recorder extends AbstractGldObject {
 
+    /**
+     * the sampling interval to use (0 means every pass, -1 means only transients)
+     */
     private Long interval;
 
+    /**
+     * the file to use when recording values
+     */
     private String file;
 
+    /**
+     * the properties to record from the parent
+     */
     private String property;
 
+    /**
+     * the target (parent) that is read from
+     */
     private AbstractGldObject parent;
 
+    /**
+     * the maximum length limit for the number of samples taken
+     */
     private Integer limit;
 
     /**
+     * Get the sampling interval to use (0 means every pass, -1 means only transients)
+     * 
      * @return the interval
      */
     public Long getInterval() {
@@ -33,6 +50,8 @@ public class Recorder extends AbstractGldObject {
     }
 
     /**
+     * Set the sampling interval to use (0 means every pass, -1 means only transients)
+     * 
      * @param interval
      *            the interval to set
      */
@@ -41,6 +60,8 @@ public class Recorder extends AbstractGldObject {
     }
 
     /**
+     * Get the file to use when recording values
+     * 
      * @return the file
      */
     public String getFile() {
@@ -48,6 +69,8 @@ public class Recorder extends AbstractGldObject {
     }
 
     /**
+     * Set the file to use when recording values
+     * 
      * @param file
      *            the file to set
      */
@@ -56,6 +79,8 @@ public class Recorder extends AbstractGldObject {
     }
 
     /**
+     * Get the properties to record from the parent
+     * 
      * @return the property
      */
     public String getProperty() {
@@ -63,6 +88,8 @@ public class Recorder extends AbstractGldObject {
     }
 
     /**
+     * Set the properties to record from the parent
+     * 
      * @param property
      *            the property to set
      */
@@ -71,6 +98,8 @@ public class Recorder extends AbstractGldObject {
     }
 
     /**
+     * Get the target (parent) that is read from
+     * 
      * @return the parent
      */
     public AbstractGldObject getParent() {
@@ -78,6 +107,8 @@ public class Recorder extends AbstractGldObject {
     }
 
     /**
+     * Set the target (parent) that is read from
+     * 
      * @param parent
      *            the parent to set
      */
@@ -86,6 +117,8 @@ public class Recorder extends AbstractGldObject {
     }
 
     /**
+     * Get the maximum length limit for the number of samples taken
+     * 
      * @return the limit
      */
     public Integer getLimit() {
@@ -93,6 +126,8 @@ public class Recorder extends AbstractGldObject {
     }
 
     /**
+     * Set the maximum length limit for the number of samples taken
+     * 
      * @param limit
      *            the limit to set
      */
