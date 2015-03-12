@@ -48,7 +48,7 @@ public class Pointer<T extends AbstractNs3Object> extends AbstractNs3Object {
 	 * @param obj the AbstractNs3Object to wrap in a pointer
 	 */
 	public void encapsulate(AbstractNs3Object obj) {
-		appendPrintObj("Ptr<" + obj.getClass().getSimpleName() + "> " 
+		appendPrintObj("\nPtr<" + obj.getClass().getSimpleName() + "> " 
 					+ this.getName() + "(" + obj.getName() + ");\n");
 	}
 	
@@ -65,7 +65,7 @@ public class Pointer<T extends AbstractNs3Object> extends AbstractNs3Object {
 	public void createObject(T obj) {
 		this.object = obj;
 		this.object.setPointerFlag(true);
-		appendPrintObj("Ptr<" + obj.getClass().getSimpleName() + "> " 
+		appendPrintObj("\nPtr<" + obj.getClass().getSimpleName() + "> " 
 					+ this.getName() + " = CreateObject<" + obj.getClass().getSimpleName() + ">();\n");
 	}
 	

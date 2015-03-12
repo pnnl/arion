@@ -325,8 +325,13 @@ public class Ns3Network {
 			
 			Channel channel = getChannel(i);
 			
+			int ipThird = (i == 1) ? (i % 254) : (i % 254 + 1);
+			// Sets IP address base to use for devices in this NetDeviceContainer
+			String ipFirstTwo = (i / 64832 + 192) + "." + (i / 254 + 1) + ".";
+			String ipBase = ipFirstTwo + ipThird + ".0";
+			
 			// Set the base address and subnet mask for the IPv4 addresses
-			ipv4AddrHelper.setBase("192.168." + i + ".0", "255.255.255.0");
+			ipv4AddrHelper.setBase(ipBase, "255.255.255.0");
 			
 			List<Controller> controllers = channel.getControllers();
 			// TODO structure methods in build() so that backbone network & channels are created first
@@ -1103,10 +1108,11 @@ public class Ns3Network {
 		
 		// Creates a channel for the Auctions & add it to list of channels
 		// TODO allow user to select channel type
+		// FIXME p2p channels can only have 2 devices on them; for 2+ auctions, need reference to backbonerouter
 		PointToPointChannel auctionChannel = new PointToPointChannel("p2pAuctionChannel");
 		auctionChannel.setAttribute("DataRate", dataRate);
 		auctionChannel.setAttribute("Delay", delay);
-		auctionChannel.setAddressBase(this.getAddrBase() + "10.0"); // TODO implement user-settable Auction addrBase
+		auctionChannel.setAddressBase("1.1.1.0"); // TODO implement user-settable Auction addrBase
 		addChannel(auctionChannel);
 		
 		// Creates main backbone router
@@ -1137,8 +1143,10 @@ public class Ns3Network {
 		
 		for (int i = 0; i < numChannels - 1; i++) {
 			
+			int ipThird = ((2 * i) % 254 + 1);
 			// Sets IP address base to use for devices in this NetDeviceContainer
-			String ipBase = this.getAddrBase() + 2*i + ".0";
+			String ipFirstTwo = (i / 65014 + 10) + "." + (i / 254 + 1) + ".";
+			String ipBase = ipFirstTwo + ipThird + ".0";
 			
 			// Create the CSMA Channel & add it to list of channels
 			CsmaChannel channel = new CsmaChannel("csmaChannel_backbone_" + i);
@@ -1173,7 +1181,9 @@ public class Ns3Network {
 			// Install p2p devices on ap node and backbone router & connect via p2p channel
 			p2pHelper.install(apNodePtr, backboneRouterPtr, p2pDevices);
 			
-			ipBase = this.getAddrBase() + (2*i + 1) + ".0";
+			ipThird = ((2 * i) % 254 + 2);
+			
+			ipBase = ipFirstTwo + ipThird + ".0";
 			
 			addresses.setBase(ipBase, "255.255.255.0");
 			addresses.assign(p2pDevices);

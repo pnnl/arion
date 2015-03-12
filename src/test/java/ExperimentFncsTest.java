@@ -12,7 +12,6 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Random;
@@ -30,22 +29,25 @@ public class ExperimentFncsTest {
 
     public static void main(final String[] args) throws IOException {
         final Path outPath = Paths.get(args[0]).toRealPath();
-        final int numHouses = 60;
-        final int numChannels = (numHouses % 20) == 0 ? (numHouses / 20) + 1 : (numHouses / 20) + 2;
-        System.out.println(numChannels); // TODO debugging
+        final int numHouses = 6;
+        final int numHousesPerChannel = 3;
+        final int numChannels = (numHouses % numHousesPerChannel) == 0 ? (numHouses / numHousesPerChannel) + 1 : (numHouses / numHousesPerChannel) + 2;
+        System.out.println("Number of channels: " + numChannels); // TODO debugging
         final String controllerNIPrefix = "F1_C_NI";
         
         // Set parameters for Ns3Network and build backend network
+        // TODO create constructNs3Sim(...) method for this
         final Ns3Simulator ns3Simulator = new Ns3Simulator();
         ns3Simulator.setup(numChannels);
         
         final List<Channel> channels = ns3Simulator.getChannels();
+        // TODO Add numHousesPerChannel param and use instead of hard-coded "20" to get channelID
         final GldSimulator gldSim = constructGldSim(numHouses, controllerNIPrefix, channels);
         GldSimulatorWriter.writeGldSimulator(outPath.resolve("prosser.glm"), gldSim);
         
         // Connect Controllers and Auctions to backbone network
         ns3Simulator.buildFrontend();
-        Ns3SimulatorWriter.writeNs3Simulator(outPath.resolve("edited_ns3.cc"), ns3Simulator);
+        Ns3SimulatorWriter.writeNs3Simulator(outPath.resolve("ns3.cc"), ns3Simulator);
 
         System.out.println("Written!");
         // TODO FNCS Integration

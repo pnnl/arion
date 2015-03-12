@@ -28,6 +28,9 @@ public class Channel extends AbstractNs3Object {
 	 */
 	private String addressBase;
 	
+	/**
+	 * The String-String Map of channel attributes (DataRate, Delay, etc.)
+	 */
 	private Map<String, String> attributes;
 	
 	/**
@@ -35,6 +38,9 @@ public class Channel extends AbstractNs3Object {
 	 */
 	private Ns3Simulator owner;
 	
+	/**
+	 * The Pointer encapsulation of this Channel
+	 */
 	private Pointer<Channel> pointer;
 	
 	/**
@@ -141,11 +147,9 @@ public class Channel extends AbstractNs3Object {
 	/**
 	 * @param pointer the Ptr<Channel> to attach to this Channel
 	 */
-	// TODO how can I check this assignment?
+	@SuppressWarnings("unchecked")
 	public void setPointer(Pointer<? extends Channel> pointer) {
-		if (pointer instanceof Pointer<?>) {
-			this.pointer = (Pointer<Channel>) pointer;
-		}
+		this.pointer = (Pointer<Channel>) pointer;
 	}
 
 }
