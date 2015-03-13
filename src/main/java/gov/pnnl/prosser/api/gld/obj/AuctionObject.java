@@ -31,35 +31,80 @@ public class AuctionObject extends AbstractGldObject implements NetworkCapable {
      */
     private Double priceCap;
 
+    /**
+     * transaction log file
+     */
     private String transactionLogFile;
 
+    /**
+     * curve log file
+     */
     private String curveLogFile;
 
+    /**
+     * output mode for curve log
+     */
     private CurveOutput curveLogInfo;
 
+    /**
+     * attached player for the Auction
+     */
     private PlayerObject player;
 
+    /**
+     * auction special mode
+     */
     private SpecialMode specialMode;
 
+    /**
+     * attached recorder for the Auction
+     */
     private Recorder recorder;
 
+    /**
+     * initial price
+     */
     private Double initPrice;
 
+    /**
+     * initial standard deviation
+     */
     private Double initStdev;
 
+    /**
+     * should use the future mean price
+     */
     private Boolean useFutureMeanPrice;
 
+    /**
+     * warmup time
+     */
     private Integer warmup;
 
+    /**
+     * market network interface average price property
+     */
     private String networkAveragePriceProperty;
 
+    /**
+     * market network interface standard deviation price property
+     */
     private String networkStdevPriceProperty;
 
+    /**
+     * market network interface adjust price property
+     */
     private String networkAdjustPriceProperty;
-    
+
+    /**
+     * controller prefix for FNCS
+     * only controllers with this prefix will talk with this auction
+     */
     private String fncsControllerPrefix;
 
     /**
+     * Get the unit of quantity
+     * 
      * @return the unit
      */
     public String getUnit() {
@@ -67,6 +112,8 @@ public class AuctionObject extends AbstractGldObject implements NetworkCapable {
     }
 
     /**
+     * Set the unit of quantity
+     * 
      * @param unit
      *            the unit to set
      */
@@ -75,6 +122,8 @@ public class AuctionObject extends AbstractGldObject implements NetworkCapable {
     }
 
     /**
+     * Get the time period of auction closing (s)
+     * 
      * @return the period
      */
     public Integer getPeriod() {
@@ -82,6 +131,8 @@ public class AuctionObject extends AbstractGldObject implements NetworkCapable {
     }
 
     /**
+     * Set the time period of auction closing (s)
+     * 
      * @param period
      *            the period to set
      */
@@ -90,6 +141,8 @@ public class AuctionObject extends AbstractGldObject implements NetworkCapable {
     }
 
     /**
+     * Get the maximum price allowed
+     * 
      * @return the priceCap
      */
     public Double getPriceCap() {
@@ -97,6 +150,8 @@ public class AuctionObject extends AbstractGldObject implements NetworkCapable {
     }
 
     /**
+     * Set the maximum price allowed
+     * 
      * @param priceCap
      *            the priceCap to set
      */
@@ -105,6 +160,8 @@ public class AuctionObject extends AbstractGldObject implements NetworkCapable {
     }
 
     /**
+     * Get the transaction log file
+     * 
      * @return the transactionLogFile
      */
     public String getTransactionLogFile() {
@@ -112,6 +169,8 @@ public class AuctionObject extends AbstractGldObject implements NetworkCapable {
     }
 
     /**
+     * Set the transaction log file
+     * 
      * @param transactionLogFile
      *            the transactionLogFile to set
      */
@@ -120,6 +179,8 @@ public class AuctionObject extends AbstractGldObject implements NetworkCapable {
     }
 
     /**
+     * Get the curve log file
+     * 
      * @return the curveLogFile
      */
     public String getCurveLogFile() {
@@ -127,6 +188,8 @@ public class AuctionObject extends AbstractGldObject implements NetworkCapable {
     }
 
     /**
+     * Set the curve log file
+     * 
      * @param curveLogFile
      *            the curveLogFile to set
      */
@@ -135,6 +198,8 @@ public class AuctionObject extends AbstractGldObject implements NetworkCapable {
     }
 
     /**
+     * Get the output mode for curve log
+     * 
      * @return the curveLogInfo
      */
     public CurveOutput getCurveLogInfo() {
@@ -142,6 +207,8 @@ public class AuctionObject extends AbstractGldObject implements NetworkCapable {
     }
 
     /**
+     * Set the output mode for curve log
+     * 
      * @param curveLogInfo
      *            the curveLogInfo to set
      */
@@ -150,6 +217,8 @@ public class AuctionObject extends AbstractGldObject implements NetworkCapable {
     }
 
     /**
+     * Get the attached player for the Auction
+     * 
      * @return the player
      */
     public PlayerObject getPlayer() {
@@ -157,6 +226,8 @@ public class AuctionObject extends AbstractGldObject implements NetworkCapable {
     }
 
     /**
+     * Set the attached player for the Auction
+     * 
      * @param player
      *            the player to set
      */
@@ -165,6 +236,8 @@ public class AuctionObject extends AbstractGldObject implements NetworkCapable {
     }
 
     /**
+     * Get the auction special mode
+     * 
      * @return the specialMode
      */
     public SpecialMode getSpecialMode() {
@@ -172,6 +245,8 @@ public class AuctionObject extends AbstractGldObject implements NetworkCapable {
     }
 
     /**
+     * Set the auction special mode
+     * 
      * @param specialMode
      *            the specialMode to set
      */
@@ -180,6 +255,8 @@ public class AuctionObject extends AbstractGldObject implements NetworkCapable {
     }
 
     /**
+     * Get the attached recorder for the Auction
+     * 
      * @return the recorder
      */
     public Recorder getRecorder() {
@@ -187,6 +264,8 @@ public class AuctionObject extends AbstractGldObject implements NetworkCapable {
     }
 
     /**
+     * Set the attached recorder for the Auction
+     * 
      * @param recorder
      *            the recorder to set
      */
@@ -195,6 +274,8 @@ public class AuctionObject extends AbstractGldObject implements NetworkCapable {
     }
 
     /**
+     * Get the initial price
+     * 
      * @return the initPrice
      */
     public Double getInitPrice() {
@@ -202,6 +283,8 @@ public class AuctionObject extends AbstractGldObject implements NetworkCapable {
     }
 
     /**
+     * Set the initial price
+     * 
      * @param initPrice
      *            the initPrice to set
      */
@@ -210,6 +293,8 @@ public class AuctionObject extends AbstractGldObject implements NetworkCapable {
     }
 
     /**
+     * Get the initial standard deviation
+     * 
      * @return the initStdev
      */
     public Double getInitStdev() {
@@ -217,6 +302,8 @@ public class AuctionObject extends AbstractGldObject implements NetworkCapable {
     }
 
     /**
+     * Set the initial standard deviation
+     * 
      * @param initStdev
      *            the initStdev to set
      */
@@ -225,6 +312,8 @@ public class AuctionObject extends AbstractGldObject implements NetworkCapable {
     }
 
     /**
+     * Get if should use the future mean price
+     * 
      * @return the useFutureMeanPrice
      */
     public Boolean getUseFutureMeanPrice() {
@@ -232,6 +321,8 @@ public class AuctionObject extends AbstractGldObject implements NetworkCapable {
     }
 
     /**
+     * Set if should use the future mean price
+     * 
      * @param useFutureMeanPrice
      *            the useFutureMeanPrice to set
      */
@@ -240,6 +331,8 @@ public class AuctionObject extends AbstractGldObject implements NetworkCapable {
     }
 
     /**
+     * Get the warmup time
+     * 
      * @return the warmup
      */
     public Integer getWarmup() {
@@ -247,6 +340,8 @@ public class AuctionObject extends AbstractGldObject implements NetworkCapable {
     }
 
     /**
+     * Set the warmup time
+     * 
      * @param warmup
      *            the warmup to set
      */
@@ -255,6 +350,8 @@ public class AuctionObject extends AbstractGldObject implements NetworkCapable {
     }
 
     /**
+     * Get the market network interface average price property
+     * 
      * @return the networkAveragePriceProperty
      */
     public String getNetworkAveragePriceProperty() {
@@ -262,6 +359,8 @@ public class AuctionObject extends AbstractGldObject implements NetworkCapable {
     }
 
     /**
+     * Set the market network interface average price property
+     * 
      * @param networkAveragePriceProperty
      *            the networkAveragePriceProperty to set
      */
@@ -270,6 +369,8 @@ public class AuctionObject extends AbstractGldObject implements NetworkCapable {
     }
 
     /**
+     * Get the market network interface standard deviation price property
+     * 
      * @return the networkStdevPriceProperty
      */
     public String getNetworkStdevPriceProperty() {
@@ -277,6 +378,8 @@ public class AuctionObject extends AbstractGldObject implements NetworkCapable {
     }
 
     /**
+     * Set the market network interface standard deviation price property
+     * 
      * @param networkStdevPriceProperty
      *            the networkStdevPriceProperty to set
      */
@@ -285,6 +388,8 @@ public class AuctionObject extends AbstractGldObject implements NetworkCapable {
     }
 
     /**
+     * Get the market network interface adjust price property
+     * 
      * @return the networkAdjustPriceProperty
      */
     public String getNetworkAdjustPriceProperty() {
@@ -292,6 +397,8 @@ public class AuctionObject extends AbstractGldObject implements NetworkCapable {
     }
 
     /**
+     * Set the market network interface adjust price property
+     * 
      * @param networkAdjustPriceProperty
      *            the networkAdjustPriceProperty to set
      */
@@ -300,6 +407,9 @@ public class AuctionObject extends AbstractGldObject implements NetworkCapable {
     }
 
     /**
+     * Get the controller prefix for FNCS
+     * only controllers with this prefix will talk with this auction
+     * 
      * @return the fncsControllerPrefix
      */
     public String getFncsControllerPrefix() {
@@ -307,12 +417,19 @@ public class AuctionObject extends AbstractGldObject implements NetworkCapable {
     }
 
     /**
-     * @param fncsControllerPrefix the fncsControllerPrefix to set
+     * Set the controller prefix for FNCS
+     * only controllers with this prefix will talk with this auction
+     * 
+     * @param fncsControllerPrefix
+     *            the fncsControllerPrefix to set
      */
     public void setFncsControllerPrefix(String fncsControllerPrefix) {
         this.fncsControllerPrefix = fncsControllerPrefix;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String getNetworkInterfaceName() {
         return this.getName() + "NI";

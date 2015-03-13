@@ -17,57 +17,135 @@ import gov.pnnl.prosser.api.gld.enums.UseOverride;
  */
 public class Controller extends AbstractGldObject implements NetworkCapable {
 
+    /**
+     * use override
+     */
     private UseOverride useOverride;
 
+    /**
+     * override property
+     */
     private String override;
 
+    /**
+     * connected auction
+     */
     private AuctionObject auction;
 
+    /**
+     * time skew applied to schedule operations involving this object
+     */
     private Long scheduleSkew;
 
+    /**
+     * bid mode
+     */
     private BidMode bidMode;
 
+    /**
+     * proxy delay
+     */
     private Integer proxyDelay;
 
+    /**
+     * the control mode to use for determining controller action
+     */
     private ControlMode controlMode;
 
+    /**
+     * the base setpoint to base control off of
+     */
     private Double baseSetpoint;
 
+    /**
+     * the base setpoint to base control off of function
+     * if the base setpoint is a function of another property set that here
+     */
     private String baseSetpointFn;
 
+    /**
+     * the controlled property (e.g., heating setpoint)
+     */
     private String setpoint;
 
+    /**
+     * the observed property (e.g., air temperature)
+     */
     private String target;
 
+    /**
+     * deadband
+     */
     private String deadband;
 
+    /**
+     * should use predictive bidding
+     */
     private Boolean usePredictiveBidding;
 
+    /**
+     * average target
+     */
     private String averageTarget;
 
+    /**
+     * standard deviation target
+     */
     private String standardDeviationTarget;
 
+    /**
+     * interval of time between market clearings (s)
+     */
     private Double period;
 
+    /**
+     * the controlled load when on
+     */
     private String demand;
 
+    /**
+     * the setpoint limit on the high side
+     */
     private Double rangeHigh;
 
+    /**
+     * the setpoint limit on the low side
+     */
     private Double rangeLow;
 
+    /**
+     * the comfort response above the setpoint (degF)
+     */
     private Double rampHigh;
 
+    /**
+     * the comfort response below the setpoint (degF)
+     */
     private Double rampLow;
 
+    /**
+     * the uncontrolled load (if any)
+     */
     private String total;
 
+    /**
+     * the current controlled load
+     */
     private String load;
 
+    /**
+     * the state property of the controlled load
+     */
     private String state;
-    
+
+    /**
+     * controller network interface name
+     */
     private String networkInterfaceName;
 
     /**
+     * Get if using override
+     * 
      * @return the useOverride
      */
     public UseOverride getUseOverride() {
@@ -75,6 +153,8 @@ public class Controller extends AbstractGldObject implements NetworkCapable {
     }
 
     /**
+     * Set if using override
+     * 
      * @param useOverride
      *            the useOverride to set
      */
@@ -83,6 +163,8 @@ public class Controller extends AbstractGldObject implements NetworkCapable {
     }
 
     /**
+     * Get the override property
+     * 
      * @return the override
      */
     public String getOverride() {
@@ -90,6 +172,8 @@ public class Controller extends AbstractGldObject implements NetworkCapable {
     }
 
     /**
+     * Set the override property
+     * 
      * @param override
      *            the override to set
      */
@@ -98,6 +182,8 @@ public class Controller extends AbstractGldObject implements NetworkCapable {
     }
 
     /**
+     * Get the connected auction
+     * 
      * @return the auction
      */
     public AuctionObject getAuction() {
@@ -105,6 +191,8 @@ public class Controller extends AbstractGldObject implements NetworkCapable {
     }
 
     /**
+     * Set the connected auction
+     * 
      * @param auction
      *            the auction to set
      */
@@ -113,6 +201,8 @@ public class Controller extends AbstractGldObject implements NetworkCapable {
     }
 
     /**
+     * Get the time skew applied to schedule operations involving this object
+     * 
      * @return the scheduleSkew
      */
     public Long getScheduleSkew() {
@@ -120,6 +210,8 @@ public class Controller extends AbstractGldObject implements NetworkCapable {
     }
 
     /**
+     * Set the time skew applied to schedule operations involving this object
+     * 
      * @param scheduleSkew
      *            the scheduleSkew to set
      */
@@ -128,6 +220,8 @@ public class Controller extends AbstractGldObject implements NetworkCapable {
     }
 
     /**
+     * Get the bid mode
+     * 
      * @return the bidMode
      */
     public BidMode getBidMode() {
@@ -135,6 +229,8 @@ public class Controller extends AbstractGldObject implements NetworkCapable {
     }
 
     /**
+     * Set the bid mode
+     * 
      * @param bidMode
      *            the bidMode to set
      */
@@ -143,6 +239,8 @@ public class Controller extends AbstractGldObject implements NetworkCapable {
     }
 
     /**
+     * Get the proxy delay
+     * 
      * @return the proxyDelay
      */
     public Integer getProxyDelay() {
@@ -150,6 +248,8 @@ public class Controller extends AbstractGldObject implements NetworkCapable {
     }
 
     /**
+     * Set the proxy delay
+     * 
      * @param proxyDelay
      *            the proxyDelay to set
      */
@@ -158,6 +258,8 @@ public class Controller extends AbstractGldObject implements NetworkCapable {
     }
 
     /**
+     * Get the control mode to use for determining controller action
+     * 
      * @return the controlMode
      */
     public ControlMode getControlMode() {
@@ -165,6 +267,8 @@ public class Controller extends AbstractGldObject implements NetworkCapable {
     }
 
     /**
+     * Set the control mode to use for determining controller action
+     * 
      * @param controlMode
      *            the controlMode to set
      */
@@ -173,6 +277,8 @@ public class Controller extends AbstractGldObject implements NetworkCapable {
     }
 
     /**
+     * Get the base setpoint to base control off of
+     * 
      * @return the baseSetpoint
      */
     public Double getBaseSetpoint() {
@@ -180,6 +286,8 @@ public class Controller extends AbstractGldObject implements NetworkCapable {
     }
 
     /**
+     * Set the base setpoint to base control off of
+     * 
      * @param baseSetpoint
      *            the baseSetpoint to set
      */
@@ -188,6 +296,9 @@ public class Controller extends AbstractGldObject implements NetworkCapable {
     }
 
     /**
+     * Get the base setpoint to base control off of function
+     * if the base setpoint is a function of another property set that here
+     * 
      * @return the baseSetpointFn
      */
     public String getBaseSetpointFn() {
@@ -195,6 +306,9 @@ public class Controller extends AbstractGldObject implements NetworkCapable {
     }
 
     /**
+     * Set the base setpoint to base control off of function
+     * if the base setpoint is a function of another property set that here
+     * 
      * @param baseSetpointFn
      *            the baseSetpointFn to set
      */
@@ -203,6 +317,8 @@ public class Controller extends AbstractGldObject implements NetworkCapable {
     }
 
     /**
+     * Get the controlled property (e.g., heating setpoint)
+     * 
      * @return the setpoint
      */
     public String getSetpoint() {
@@ -210,6 +326,8 @@ public class Controller extends AbstractGldObject implements NetworkCapable {
     }
 
     /**
+     * Set the controlled property (e.g., heating setpoint)
+     * 
      * @param setpoint
      *            the setpoint to set
      */
@@ -218,6 +336,8 @@ public class Controller extends AbstractGldObject implements NetworkCapable {
     }
 
     /**
+     * Get the observed property (e.g., air temperature)
+     * 
      * @return the target
      */
     public String getTarget() {
@@ -225,6 +345,8 @@ public class Controller extends AbstractGldObject implements NetworkCapable {
     }
 
     /**
+     * Set the observed property (e.g., air temperature)
+     * 
      * @param target
      *            the target to set
      */
@@ -233,6 +355,8 @@ public class Controller extends AbstractGldObject implements NetworkCapable {
     }
 
     /**
+     * Get the deadband
+     * 
      * @return the deadband
      */
     public String getDeadband() {
@@ -240,6 +364,8 @@ public class Controller extends AbstractGldObject implements NetworkCapable {
     }
 
     /**
+     * Set the deadband
+     * 
      * @param deadband
      *            the deadband to set
      */
@@ -248,6 +374,8 @@ public class Controller extends AbstractGldObject implements NetworkCapable {
     }
 
     /**
+     * Get if should use predictive bidding
+     * 
      * @return the usePredictiveBidding
      */
     public Boolean getUsePredictiveBidding() {
@@ -255,6 +383,8 @@ public class Controller extends AbstractGldObject implements NetworkCapable {
     }
 
     /**
+     * Set if should use predictive bidding
+     * 
      * @param usePredictiveBidding
      *            the usePredictiveBidding to set
      */
@@ -263,6 +393,8 @@ public class Controller extends AbstractGldObject implements NetworkCapable {
     }
 
     /**
+     * Get the average target
+     * 
      * @return the averageTarget
      */
     public String getAverageTarget() {
@@ -270,6 +402,8 @@ public class Controller extends AbstractGldObject implements NetworkCapable {
     }
 
     /**
+     * Set the average target
+     * 
      * @param averageTarget
      *            the averageTarget to set
      */
@@ -278,6 +412,8 @@ public class Controller extends AbstractGldObject implements NetworkCapable {
     }
 
     /**
+     * Get the standard deviation target
+     * 
      * @return the standardDeviationTarget
      */
     public String getStandardDeviationTarget() {
@@ -285,6 +421,8 @@ public class Controller extends AbstractGldObject implements NetworkCapable {
     }
 
     /**
+     * Set the standard deviation target
+     * 
      * @param standardDeviationTarget
      *            the standardDeviationTarget to set
      */
@@ -293,6 +431,8 @@ public class Controller extends AbstractGldObject implements NetworkCapable {
     }
 
     /**
+     * Get the interval of time between market clearings (s)
+     * 
      * @return the period
      */
     public Double getPeriod() {
@@ -300,6 +440,8 @@ public class Controller extends AbstractGldObject implements NetworkCapable {
     }
 
     /**
+     * Set the interval of time between market clearings (s)
+     * 
      * @param period
      *            the period to set
      */
@@ -308,6 +450,8 @@ public class Controller extends AbstractGldObject implements NetworkCapable {
     }
 
     /**
+     * Get the the controlled load when on
+     * 
      * @return the demand
      */
     public String getDemand() {
@@ -315,6 +459,8 @@ public class Controller extends AbstractGldObject implements NetworkCapable {
     }
 
     /**
+     * Set the the controlled load when on
+     * 
      * @param demand
      *            the demand to set
      */
@@ -323,6 +469,8 @@ public class Controller extends AbstractGldObject implements NetworkCapable {
     }
 
     /**
+     * Get the setpoint limit on the high side
+     * 
      * @return the rangeHigh
      */
     public Double getRangeHigh() {
@@ -330,6 +478,8 @@ public class Controller extends AbstractGldObject implements NetworkCapable {
     }
 
     /**
+     * Set the setpoint limit on the high side
+     * 
      * @param rangeHigh
      *            the rangeHigh to set
      */
@@ -338,6 +488,8 @@ public class Controller extends AbstractGldObject implements NetworkCapable {
     }
 
     /**
+     * Get the setpoint limit on the low side
+     * 
      * @return the rangeLow
      */
     public Double getRangeLow() {
@@ -345,6 +497,8 @@ public class Controller extends AbstractGldObject implements NetworkCapable {
     }
 
     /**
+     * Set the setpoint limit on the low side
+     * 
      * @param rangeLow
      *            the rangeLow to set
      */
@@ -353,6 +507,8 @@ public class Controller extends AbstractGldObject implements NetworkCapable {
     }
 
     /**
+     * Get the comfort response above the setpoint (degF)
+     * 
      * @return the rampHigh
      */
     public Double getRampHigh() {
@@ -360,6 +516,8 @@ public class Controller extends AbstractGldObject implements NetworkCapable {
     }
 
     /**
+     * Set the comfort response above the setpoint (degF)
+     * 
      * @param rampHigh
      *            the rampHigh to set
      */
@@ -368,6 +526,8 @@ public class Controller extends AbstractGldObject implements NetworkCapable {
     }
 
     /**
+     * Get the comfort response below the setpoint (degF)
+     * 
      * @return the rampLow
      */
     public Double getRampLow() {
@@ -375,6 +535,8 @@ public class Controller extends AbstractGldObject implements NetworkCapable {
     }
 
     /**
+     * Set the comfort response below the setpoint (degF)
+     * 
      * @param rampLow
      *            the rampLow to set
      */
@@ -383,6 +545,8 @@ public class Controller extends AbstractGldObject implements NetworkCapable {
     }
 
     /**
+     * Get the uncontrolled load (if any)
+     * 
      * @return the total
      */
     public String getTotal() {
@@ -390,6 +554,8 @@ public class Controller extends AbstractGldObject implements NetworkCapable {
     }
 
     /**
+     * Set the uncontrolled load (if any)
+     * 
      * @param total
      *            the total to set
      */
@@ -398,6 +564,8 @@ public class Controller extends AbstractGldObject implements NetworkCapable {
     }
 
     /**
+     * Get the current controlled load
+     * 
      * @return the load
      */
     public String getLoad() {
@@ -405,6 +573,8 @@ public class Controller extends AbstractGldObject implements NetworkCapable {
     }
 
     /**
+     * Set the current controlled load
+     * 
      * @param load
      *            the load to set
      */
@@ -413,6 +583,8 @@ public class Controller extends AbstractGldObject implements NetworkCapable {
     }
 
     /**
+     * Get the state property of the controlled load
+     * 
      * @return the state
      */
     public String getState() {
@@ -420,6 +592,8 @@ public class Controller extends AbstractGldObject implements NetworkCapable {
     }
 
     /**
+     * Set the state property of the controlled load
+     * 
      * @param state
      *            the state to set
      */
@@ -427,11 +601,22 @@ public class Controller extends AbstractGldObject implements NetworkCapable {
         this.state = state;
     }
 
+    /**
+     * {@inheritDoc}
+     * 
+     * Get the controller network interface name
+     */
     @Override
     public String getNetworkInterfaceName() {
         return this.networkInterfaceName;
     }
-    
+
+    /**
+     * Set the controller network interface name
+     * 
+     * @param networkInterfaceName
+     *            the name to set
+     */
     public void setNetworkInterfaceName(final String networkInterfaceName) {
         this.networkInterfaceName = networkInterfaceName;
     }

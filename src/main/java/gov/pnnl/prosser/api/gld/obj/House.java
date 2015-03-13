@@ -20,51 +20,120 @@ import gov.pnnl.prosser.api.gld.enums.MotorModel;
  */
 public class House extends ResidentialEnduse {
 
+    /**
+     * parent node
+     */
     private Node parent;
 
+    /**
+     * roof R-value (degF.sf.h/Btu)
+     */
     private Double Rroof;
 
+    /**
+     * wall R-value (degF.sf.h/Btu)
+     */
     private Double Rwall;
 
+    /**
+     * floor R-value (degF.sf.h/Btu)
+     */
     private Double Rfloor;
 
+    /**
+     * door R-value (degF.sf.h/Btu)
+     */
     private Double Rdoors;
 
+    /**
+     * window R-value (degF.sf.h/Btu)
+     */
     private Double Rwindows;
 
+    /**
+     * number of air-changes per hour
+     */
     private Double airchangePerHour;
 
+    /**
+     * power factor of hvac (unit)
+     */
     private Double hvacPowerFactor;
 
+    /**
+     * cooling system type
+     */
     private CoolingSystemType coolingSystemType;
 
+    /**
+     * heating system type
+     */
     private HeatingSystemType heatingSystemType;
 
+    /**
+     * fan type
+     */
     private FanType fanType;
 
+    /**
+     * determines the amount of current the HVAC circuit breaker can handle (A)
+     */
     private Double hvacBreakerRating;
 
+    /**
+     * total thermal mass per floor area (Btu/degF.sf)
+     */
     private Double totalThermalMassPerFloorArea;
 
+    /**
+     * motor efficiency
+     */
     private MotorEfficiency motorEfficiency;
 
+    /**
+     * motor model
+     */
     private MotorModel motorModel;
 
+    /**
+     * system cooling performance coefficient (Btu/kWh)
+     */
     private Double coolingCop;
 
+    /**
+     * home conditioned floor area (sf)
+     */
     private Double floorArea;
 
+    /**
+     * ratio of door area to wall area
+     */
     private Double numberOfDoors;
 
+    /**
+     * thermostat heating setpoint (degF)
+     */
     private Double heatingSetpoint;
 
+    /**
+     * thermostat heating setpoint (degF) function
+     * if the heating setpoint is a function of another property set that here
+     */
     private String heatingSetpointFn;
 
+    /**
+     * FNCS controller
+     */
     private Controller controller;
 
+    /**
+     * the loads on the house (lights, etc.)
+     */
     private final List<ZIPLoad> loads = new ArrayList<>();
 
     /**
+     * Get the parent node
+     * 
      * @return the parent
      */
     public Node getParent() {
@@ -72,6 +141,8 @@ public class House extends ResidentialEnduse {
     }
 
     /**
+     * Set the parent node
+     * 
      * @param parent
      *            the parent to set
      */
@@ -80,6 +151,8 @@ public class House extends ResidentialEnduse {
     }
 
     /**
+     * Get the roof R-value (degF.sf.h/Btu)
+     * 
      * @return the rroof
      */
     public Double getRroof() {
@@ -87,6 +160,8 @@ public class House extends ResidentialEnduse {
     }
 
     /**
+     * Set the roof R-value (degF.sf.h/Btu)
+     * 
      * @param rroof
      *            the rroof to set
      */
@@ -95,6 +170,8 @@ public class House extends ResidentialEnduse {
     }
 
     /**
+     * Get the wall R-value (degF.sf.h/Btu)
+     * 
      * @return the rwall
      */
     public Double getRwall() {
@@ -102,6 +179,8 @@ public class House extends ResidentialEnduse {
     }
 
     /**
+     * Set the wall R-value (degF.sf.h/Btu)
+     * 
      * @param rwall
      *            the rwall to set
      */
@@ -110,6 +189,8 @@ public class House extends ResidentialEnduse {
     }
 
     /**
+     * Get the floor R-value (degF.sf.h/Btu)
+     * 
      * @return the rfloor
      */
     public Double getRfloor() {
@@ -117,6 +198,8 @@ public class House extends ResidentialEnduse {
     }
 
     /**
+     * Set the floor R-value (degF.sf.h/Btu)
+     * 
      * @param rfloor
      *            the rfloor to set
      */
@@ -125,6 +208,8 @@ public class House extends ResidentialEnduse {
     }
 
     /**
+     * Get the door R-value (degF.sf.h/Btu)
+     * 
      * @return the rdoors
      */
     public Double getRdoors() {
@@ -132,6 +217,8 @@ public class House extends ResidentialEnduse {
     }
 
     /**
+     * Set the door R-value (degF.sf.h/Btu)
+     * 
      * @param rdoors
      *            the rdoors to set
      */
@@ -140,6 +227,8 @@ public class House extends ResidentialEnduse {
     }
 
     /**
+     * Get the window R-value (degF.sf.h/Btu)
+     * 
      * @return the rwindows
      */
     public Double getRwindows() {
@@ -147,6 +236,8 @@ public class House extends ResidentialEnduse {
     }
 
     /**
+     * Set the window R-value (degF.sf.h/Btu)
+     * 
      * @param rwindows
      *            the rwindows to set
      */
@@ -155,6 +246,8 @@ public class House extends ResidentialEnduse {
     }
 
     /**
+     * Get the number of air-changes per hour
+     * 
      * @return the airchangePerHour
      */
     public Double getAirchangePerHour() {
@@ -162,6 +255,8 @@ public class House extends ResidentialEnduse {
     }
 
     /**
+     * Set the number of air-changes per hour
+     * 
      * @param airchangePerHour
      *            the airchangePerHour to set
      */
@@ -170,6 +265,8 @@ public class House extends ResidentialEnduse {
     }
 
     /**
+     * Get the power factor of hvac (unit)
+     * 
      * @return the hvacPowerFactor
      */
     public Double getHvacPowerFactor() {
@@ -177,6 +274,8 @@ public class House extends ResidentialEnduse {
     }
 
     /**
+     * Set the power factor of hvac (unit)
+     * 
      * @param hvacPowerFactor
      *            the hvacPowerFactor to set
      */
@@ -185,6 +284,8 @@ public class House extends ResidentialEnduse {
     }
 
     /**
+     * Get the cooling system type
+     * 
      * @return the coolingSystemType
      */
     public CoolingSystemType getCoolingSystemType() {
@@ -192,6 +293,8 @@ public class House extends ResidentialEnduse {
     }
 
     /**
+     * Set the cooling system type
+     * 
      * @param coolingSystemType
      *            the coolingSystemType to set
      */
@@ -200,6 +303,8 @@ public class House extends ResidentialEnduse {
     }
 
     /**
+     * Get the heating system type
+     * 
      * @return the heatingSystemType
      */
     public HeatingSystemType getHeatingSystemType() {
@@ -207,6 +312,8 @@ public class House extends ResidentialEnduse {
     }
 
     /**
+     * Set the heating system type
+     * 
      * @param heatingSystemType
      *            the heatingSystemType to set
      */
@@ -215,6 +322,8 @@ public class House extends ResidentialEnduse {
     }
 
     /**
+     * Get the fan type
+     * 
      * @return the fanType
      */
     public FanType getFanType() {
@@ -222,6 +331,8 @@ public class House extends ResidentialEnduse {
     }
 
     /**
+     * Set the fan type
+     * 
      * @param fanType
      *            the fanType to set
      */
@@ -230,6 +341,8 @@ public class House extends ResidentialEnduse {
     }
 
     /**
+     * Get the amount of current the HVAC circuit breaker can handle (A)
+     * 
      * @return the hvacBreakerRating
      */
     public Double getHvacBreakerRating() {
@@ -237,6 +350,8 @@ public class House extends ResidentialEnduse {
     }
 
     /**
+     * Set the amount of current the HVAC circuit breaker can handle (A)
+     * 
      * @param hvacBreakerRating
      *            the hvacBreakerRating to set
      */
@@ -245,6 +360,8 @@ public class House extends ResidentialEnduse {
     }
 
     /**
+     * Get the total thermal mass per floor area (Btu/degF.sf)
+     * 
      * @return the totalThermalMassPerFloorArea
      */
     public Double getTotalThermalMassPerFloorArea() {
@@ -252,6 +369,8 @@ public class House extends ResidentialEnduse {
     }
 
     /**
+     * Set the total thermal mass per floor area (Btu/degF.sf)
+     * 
      * @param totalThermalMassPerFloorArea
      *            the totalThermalMassPerFloorArea to set
      */
@@ -260,6 +379,8 @@ public class House extends ResidentialEnduse {
     }
 
     /**
+     * Get the motor efficiency
+     * 
      * @return the motorEfficiency
      */
     public MotorEfficiency getMotorEfficiency() {
@@ -267,6 +388,8 @@ public class House extends ResidentialEnduse {
     }
 
     /**
+     * Set the motor efficiency
+     * 
      * @param motorEfficiency
      *            the motorEfficiency to set
      */
@@ -275,6 +398,8 @@ public class House extends ResidentialEnduse {
     }
 
     /**
+     * Get the motor model
+     * 
      * @return the motorModel
      */
     public MotorModel getMotorModel() {
@@ -282,6 +407,8 @@ public class House extends ResidentialEnduse {
     }
 
     /**
+     * Set the motor model
+     * 
      * @param motorModel
      *            the motorModel to set
      */
@@ -290,6 +417,8 @@ public class House extends ResidentialEnduse {
     }
 
     /**
+     * Get the system cooling performance coefficient (Btu/kWh)
+     * 
      * @return the coolingCop
      */
     public Double getCoolingCop() {
@@ -297,6 +426,8 @@ public class House extends ResidentialEnduse {
     }
 
     /**
+     * Set the system cooling performance coefficient (Btu/kWh)
+     * 
      * @param coolingCop
      *            the coolingCop to set
      */
@@ -305,6 +436,8 @@ public class House extends ResidentialEnduse {
     }
 
     /**
+     * Get the home conditioned floor area (sf)
+     * 
      * @return the floorArea
      */
     public Double getFloorArea() {
@@ -312,6 +445,8 @@ public class House extends ResidentialEnduse {
     }
 
     /**
+     * Set the home conditioned floor area (sf)
+     * 
      * @param floorArea
      *            the floorArea to set
      */
@@ -320,6 +455,8 @@ public class House extends ResidentialEnduse {
     }
 
     /**
+     * Get the ratio of door area to wall area
+     * 
      * @return the numberOfDoors
      */
     public Double getNumberOfDoors() {
@@ -327,6 +464,8 @@ public class House extends ResidentialEnduse {
     }
 
     /**
+     * Set the ratio of door area to wall area
+     * 
      * @param numberOfDoors
      *            the numberOfDoors to set
      */
@@ -335,6 +474,8 @@ public class House extends ResidentialEnduse {
     }
 
     /**
+     * Get the thermostat heating setpoint (degF)
+     * 
      * @return the heatingSetpoint
      */
     public Double getHeatingSetpoint() {
@@ -342,6 +483,8 @@ public class House extends ResidentialEnduse {
     }
 
     /**
+     * Set the thermostat heating setpoint (degF)
+     * 
      * @param heatingSetpoint
      *            the heatingSetpoint to set
      */
@@ -350,6 +493,9 @@ public class House extends ResidentialEnduse {
     }
 
     /**
+     * Get the thermostat heating setpoint (degF) function
+     * if the heating setpoint is a function of another property it will be set here
+     * 
      * @return the heatingSetpointFn
      */
     public String getHeatingSetpointFn() {
@@ -357,6 +503,9 @@ public class House extends ResidentialEnduse {
     }
 
     /**
+     * Set the thermostat heating setpoint (degF) function
+     * if the heating setpoint is a function of another property set that here
+     * 
      * @param heatingSetpointFn
      *            the heatingSetpointFn to set
      */
@@ -365,6 +514,8 @@ public class House extends ResidentialEnduse {
     }
 
     /**
+     * Get the FNCS controller
+     * 
      * @return the controller
      */
     public Controller getController() {
@@ -372,6 +523,8 @@ public class House extends ResidentialEnduse {
     }
 
     /**
+     * Set the FNCS controller
+     * 
      * @param controller
      *            the controller to set
      */
