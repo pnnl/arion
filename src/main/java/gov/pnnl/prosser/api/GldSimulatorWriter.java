@@ -35,6 +35,7 @@ public class GldSimulatorWriter {
      * @param gldSimulator
      *            the simulator to write
      * @throws IOException
+     *             when we can't write to file
      */
     public static void writeGldSimulator(final Path path, final GldSimulator gldSimulator) throws IOException {
         final Map<String, String> properties = gldSimulator.getSettings();

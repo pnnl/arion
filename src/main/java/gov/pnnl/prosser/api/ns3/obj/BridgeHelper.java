@@ -39,7 +39,7 @@ public class BridgeHelper extends AbstractNs3Object {
 
 	/**
 	 * 
-	 * @param node the Node on which to install the Bridge net device
+	 * @param sourceNodes the Node on which to install the Bridge net device
 	 * @param sourceDevices the container of net devices to add as Bridge ports
 	 * @param destinationContainer the NetDeviceContainer to hold the Node and
 	 * 			installed Bridge device

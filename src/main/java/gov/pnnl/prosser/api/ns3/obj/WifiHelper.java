@@ -38,7 +38,7 @@ public class WifiHelper extends NetworkHelper {
 	 * 
 	 * @param phy the physical WiFi helper
 	 * @param mac the MAC address WiFi helper
-	 * @param wifiStaNodes the NodeContainer containing the Nodes on which to install
+	 * @param sourceNodes the NodeContainer containing the Nodes on which to install
 	 * 			the WiFi devices
 	 * @param destinationContainer the NetDeviceContainer which will hold the installed 
 	 * 			WiFi devices
@@ -53,7 +53,7 @@ public class WifiHelper extends NetworkHelper {
 	 * 
 	 * @param phy the physical WiFi helper
 	 * @param mac the MAC address WiFi helper
-	 * @param wifiStaNodes the NodeContainer containing the Nodes on which to install
+	 * @param sourceNodes the NodeContainer containing the Nodes on which to install
 	 * 			the WiFi devices
 	 * @param index the index of the Node in sourceNodes to install onto the destinationContainer
 	 * @param destinationContainer the NetDeviceContainer which will hold the installed 

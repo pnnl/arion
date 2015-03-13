@@ -55,7 +55,7 @@ public class NodeContainer extends AbstractNs3Object {
 	}
 
 	/**
-	 * @param node the Pointer<Node> to add to this NodeContainer
+	 * @param node the Pointer&lt;Node&gt; to add to this NodeContainer
 	 */
 	public void addNode(Pointer<Node> node) {
 		appendPrintObj(this.getName() + ".Add(" + node.getName() + ");\n");		
@@ -94,7 +94,7 @@ public class NodeContainer extends AbstractNs3Object {
 	
 	/**
 	 * 
-	 * @param sourceNodes the NodeContainer to append to this NodeContainer
+	 * @param sourceDevs the NodeContainer to append to this NodeContainer
 	 */
 	public void addNetDeviceContainerNoPrint(NetDeviceContainer sourceDevs) {
 		for (int i = 0; i < sourceDevs.getNumDevices(); i++) {
@@ -111,7 +111,7 @@ public class NodeContainer extends AbstractNs3Object {
 	
 	/**
 	 * @param index
-	 * @param backboneRouterPtr the Pointer<Node> to add the node at index to
+	 * @param backboneRouterPtr the Pointer&lt;Node&gt; to add the node at index to
 	 */
 	public void getNode(int index, Pointer<Node> backboneRouterPtr) {
 		appendPrintObj(backboneRouterPtr.getName() + " = " + this.getName() + ".Get(" + index + ");\n");

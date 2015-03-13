@@ -33,14 +33,14 @@ public class PointToPointChannel extends Channel {
 	}
 	
 	/**
-	 * @return nodeA Pointer<Node>
+	 * @return nodeA Pointer&lt;Node&gt;
 	 */
 	public Pointer<Node> getNodeA() {
 		return nodeA;
 	}
 	
 	/**
-	 * @param node the Pointer<Node> to set nodeA to
+	 * @param node the Pointer&lt;Node&gt; to set nodeA to
 	 */
 	public void setNodeA(Pointer<Node> node) {
 		nodeA = node;
@@ -48,14 +48,14 @@ public class PointToPointChannel extends Channel {
 	}
 
 	/**
-	 * @return nodeB Pointer<Node>
+	 * @return nodeB Pointer&lt;Node&gt;
 	 */
 	public Pointer<Node> getNodeB() {
 		return nodeB;
 	}
 
 	/**
-	 * @param node the Pointer<Node> to set nodeB to
+	 * @param node the Pointer&lt;Node&gt; to set nodeB to
 	 */
 	public void setNodeB(Pointer<Node> node) {
 		nodeB = node;

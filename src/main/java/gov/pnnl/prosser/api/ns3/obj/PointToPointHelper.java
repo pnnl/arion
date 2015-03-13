@@ -76,8 +76,8 @@ public class PointToPointHelper extends NetworkHelper {
 
 	/**
 	 * Creates a PointToPointNetDevice on each Node and connects them with a p2p channel
-	 * @param node1 Pointer<Node>
-	 * @param node2 Pointer<Node>
+	 * @param node1 Pointer&lt;Node&gt;
+	 * @param node2 Pointer&lt;Node&gt;
 	 * @param destination the NetDeviceContainer to hold the created p2pNetDevices
 	 */
 	public void install(Pointer<Node> node1, Pointer<Node> node2, 

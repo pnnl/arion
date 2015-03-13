@@ -10,7 +10,7 @@ package gov.pnnl.prosser.api.ns3.obj;
 public class UdpEchoServerHelper extends UdpEchoHelper {
 	
 	/**
-	 * Constructs new UdpEchoServerHelper & sets printObj to c++ appropriate constructor
+	 * Constructs new UdpEchoServerHelper &amp; sets printObj to c++ appropriate constructor
 	 * @param name
 	 */
 	public UdpEchoServerHelper(String name) {

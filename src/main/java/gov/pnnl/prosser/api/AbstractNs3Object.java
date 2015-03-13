@@ -31,7 +31,7 @@ public abstract class AbstractNs3Object {
 
 	/** 
 	 * Append characteristics of this object to given Stringbuilder
-	 * @param StringBuilder
+	 * @param sb
 	 */
 	public void writeNs3Properties(StringBuilder sb) {
 		sb.append(getPrintObj());

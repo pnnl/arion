@@ -126,6 +126,8 @@ public class GldSimulator {
     /**
      * Get the includes definitions for this simulator
      * Includes are extra GLM files that contribute to this simulator
+     * 
+     * @return the includes
      */
     public List<String> getIncludes() {
         return this.includes;

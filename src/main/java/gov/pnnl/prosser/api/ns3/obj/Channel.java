@@ -131,21 +131,21 @@ public class Channel extends AbstractNs3Object {
 	}
 
 	/**
-	 * @param auctions the auction to add to this Channel
+	 * @param auction the auction to add to this Channel
 	 */
 	public void addAuction(AuctionObject auction) {
 		this.auctions.add(auction);
 	}
 	
 	/**
-	 * @return the Ptr<Channel> attached to this Channel
+	 * @return the Ptr&lt;Channel&gt; attached to this Channel
 	 */
 	public Pointer<Channel> getPointer() {
 		return pointer;
 	}
 	
 	/**
-	 * @param pointer the Ptr<Channel> to attach to this Channel
+	 * @param pointer the Ptr&lt;Channel&gt; to attach to this Channel
 	 */
 	@SuppressWarnings("unchecked")
 	public void setPointer(Pointer<? extends Channel> pointer) {

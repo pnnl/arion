@@ -14,6 +14,7 @@ public interface GldSerializable {
      * Write the string representation of this object to a StringBuilder
      * 
      * @param sb
+     *            StringBuilder to use when writing
      */
     public void writeGldString(StringBuilder sb);
 }

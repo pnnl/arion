@@ -22,6 +22,8 @@ public abstract class Experiment {
 
     /**
      * Get the GLD Simulators
+     * 
+     * @return the simulators
      */
     public List<GldSimulator> getGldSimulators() {
         return this.gldSimulators;
@@ -29,6 +31,8 @@ public abstract class Experiment {
 
     /**
      * Get the NS-3 Simulators
+     * 
+     * @return the simulators
      */
     public List<Ns3Simulator> getNs3Simulators() {
         return this.ns3Simulators;
@@ -36,6 +40,8 @@ public abstract class Experiment {
 
     /**
      * Get the FNCS Simulators
+     * 
+     * @return the simulator
      */
     public FncsSimulator getFncsSimulator() {
         return this.fncsSimulator;

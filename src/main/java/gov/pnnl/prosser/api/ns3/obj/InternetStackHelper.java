@@ -27,7 +27,7 @@ public class InternetStackHelper extends AbstractNs3Object {
 	}
 
 	/**
-	 * @param node the Pointer<Node> to install the IP stack on
+	 * @param node the Pointer&lt;Node&gt; to install the IP stack on
 	 */
 	public void install(Pointer<Node> node) {
 		appendPrintObj(this.getName() + ".Install(" + node.getName() + ");\n");
