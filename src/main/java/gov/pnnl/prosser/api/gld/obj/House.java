@@ -603,7 +603,9 @@ public class House extends ResidentialEnduse {
         } else {
             GldUtils.writeProperty(sb, "heating_setpoint", this.heatingSetpoint);
         }
-        controller.writeGldString(sb);
+        if (controller != null) {
+            controller.writeGldString(sb);
+        }
         // Handle special case since we need a semicolon here
         sb.insert(sb.length() - 1, ';');
         for (final ZIPLoad load : loads) {
