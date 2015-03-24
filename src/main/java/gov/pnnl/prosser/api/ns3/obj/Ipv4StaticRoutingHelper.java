@@ -6,12 +6,16 @@ package gov.pnnl.prosser.api.ns3.obj;
 import gov.pnnl.prosser.api.AbstractNs3Object;
 
 /**
+ * This class is used to help setup IPV4 static routing
+ * 
  * @author happ546
  *
  */
 public class Ipv4StaticRoutingHelper extends AbstractNs3Object {
 
 	/**
+	 * Creates a new Ipv4StaticRoutingHelper with the given name
+	 * 
 	 * @param name
 	 */
 	public Ipv4StaticRoutingHelper(String name) {
@@ -19,11 +23,7 @@ public class Ipv4StaticRoutingHelper extends AbstractNs3Object {
 	}
 
 	/**
-	 * Add a default route to the static routing table.
-	 * This method tells the routing system what to do in the case 
-	 * where a specific route to a destination is not found. 
-	 * The system forwards packets to the specified node in the hope 
-	 * that it knows better how to route the packet.
+	 * Adds a default route to the static routing table
 	 * 
 	 * @param addr the Ipv4Address to use
 	 * @param interfaceIndex 

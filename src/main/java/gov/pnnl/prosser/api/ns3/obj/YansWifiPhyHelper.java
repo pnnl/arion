@@ -6,6 +6,10 @@ package gov.pnnl.prosser.api.ns3.obj;
 import gov.pnnl.prosser.api.AbstractNs3Object;
 
 /**
+ * The YansWifiPhyHelper (Yet Another Network Simulator; see http://cutebugs.net/files/wns2-yans.pdf) 
+ * is a helper class to simplify the setup of YansWifiPhy physical layer implementations of the 
+ * Wi-Fi 802.11a physical layer.
+ * 
  * @author happ546
  *
  */

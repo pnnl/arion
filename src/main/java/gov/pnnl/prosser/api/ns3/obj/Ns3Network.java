@@ -72,7 +72,7 @@ public class Ns3Network {
 	
 	/**
 	 * 
-	 * @param backboneType the NetworkType to set for the Backbone infrastructure
+	 * @param type the NetworkType to set for the Backbone infrastructure
 	 */
 	public void setBackboneType(NetworkType backboneType) {
 		this.backboneType = backboneType;
@@ -87,7 +87,7 @@ public class Ns3Network {
 	
 	/**
 	 * 
-	 * @param auctionType the NetworkType to set for the Auction market
+	 * @param type the NetworkType to set for the Auction market
 	 */
 	//TODO: Not sure this type of information should be stored here; Need convincing to allow simulator specific variables in NS3 objects
 	public void setAuctionType(NetworkType auctionType) {
@@ -390,8 +390,6 @@ public class Ns3Network {
 					
 					Controller controller = controllers.get(j);
 					
-					node.setController(controller);
-					
 					// Wrap node in a Pointer
 					p2pNodePtr.encapsulate(node);
 
@@ -467,9 +465,7 @@ public class Ns3Network {
 			Node node = new Node("auctionNode_" + i);
 			Pointer<Node> nodePtr = new Pointer<Node>("auctionNodePtr_" + i);
 			nodePtr.createObject(node);
-			
-		    node.setAuction(auction);
-		    
+					    
 		    // Adds the nodePtr to auctionNodes for IP stack install
 		    auctionNodes.addNode(nodePtr);
 		    
@@ -562,82 +558,9 @@ public class Ns3Network {
 	}
 	
 	/**
-	 * 
-	 * @param stack
-	 * @param addresses
-	 * @param baseNodes
-	 * @param gldNodes a NodeContainer of GLD market and baseNodes to 
-	 * 			pass to FNCSApplicationHelper.SetApps(...)
-	 * @param names a StringVector<String> of all ControllerNetworkInterface names
-	 * @param marketToControllerMap a StringMap<String, String> from MarketNetworkInterface 
-	 * 			name to NetworkControllerInterface name
-	 */
-	private void setupMarket(InternetStackHelper stack, Ipv4AddressHelper addresses, 
-								NodeContainer[] baseNodes, NodeContainer gldNodes, 
-								Vector<String> names,
-								StringMap<String, String> marketToControllerMap) {
-		
-		this.addModule(new PointToPoint()); // To use PointToPoint network type
-		
-		int numAuctions = this.getAuctions().size();
-		//int numConts = numNodes/20 + 1; // Number of NodeContainers to create
-		int numConts = baseNodes.length;
-		
-		NodeContainer auctionCon = new NodeContainer("marketCon");
-		auctionCon.create(numAuctions);
-		
-		// Installs an IP protocol stack on the Nodes in the Market NodeContainer
-		stack.install(auctionCon);
-		
-		// Add GLD market Nodes to container of GLD Nodes
-		gldNodes.addNodeContainer(auctionCon);
-		
-		// Creates a point to point channel to connect the Market and network nodes
-		PointToPointHelper p2pHelper = new PointToPointHelper("p2pHelper");
-		p2pHelper.setDeviceAttribute("DataRate", "4Mbps");
-		p2pHelper.setChannelAttribute("Delay", "2ms");
-		
-		for (int i = 0; i < numAuctions; i++) {
-			
-			// Select ith AuctionObject
-			AuctionObject auction = this.getAuctions().get(i);
-			// Set ith Node's MarketNI equal to mni
-			auctionCon.getNodeNoPrint(i).setAuction(auction);
-			
-			for (int j = 0; j < numConts; j++) {
-				
-				NodeContainer tempCont = baseNodes[j];
-				
-				String addr = "11." + j + "." + i + ".0";
-				
-				NetDeviceContainer marketToNetwork = new NetDeviceContainer("marketToNetwork_" + j);
-				
-				NodeContainer p2pInstall = new NodeContainer("p2pInstall_" + j);
-				p2pInstall.addNode(auctionCon, i);
-				p2pInstall.addNode(tempCont, 0);
-				
-				p2pHelper.install(p2pInstall, marketToNetwork);
-				
-				addresses.setBase(addr, "255.255.255.0");
-				addresses.assign(marketToNetwork);
-				
-				// Add a ControllerNetworkInterface to each Node in baseNodes[j]
-				for (int k = 0; k < tempCont.getNumNodes(); k++) {
-					Controller controller = this.getControllers().get(k);
-					Node temp = tempCont.getNodeNoPrint(k);
-					temp.setController(controller);
-					// Add baseNodes to container of GLD Nodes
-					gldNodes.addNode(temp);
-					// Add controller prefix name to names vector
-					names.pushBack(controller);
-					marketToControllerMap.put(this.getAuctions().get(i).getNetworkInterfaceName(), controller.getNetworkInterfaceName());
-				}
-			}
-		}
-		
-	}
-	
-	/**
+	 * @param numApNodes equal to number of MarketNetworkInterfaces in the mni List
+	 * @param numStaNodes total number of station nodes to create; 
+	 * 			equal to number of ControllerNetworkInterfaces (GLD houses) in the cni List
 	 * @param latency
 	 * @return objects a List of all AbstractNs3Objects created for this WiFi network
 	 */
@@ -719,7 +642,6 @@ public class Ns3Network {
 		MobilityHelper mobility = new MobilityHelper("mobilityHelper");
 
 		
-		// TODO look at whiteboard and set up WiFi ap nodes w/ p2p device & separate p2p router
 		// TODO figure out how to implement own wifihelper.install method to be able to get specific channels out of wifi
 		
 		for (int i = 1; i < numChannels; i++) {
@@ -844,7 +766,6 @@ public class Ns3Network {
 		
 	    // Installs market on 1st (0th) node of nodeCont
 	    Node firstNode = nodeCont.getNodeNoPrint(0);
-	    firstNode.setAuction(auction);
 	    gldNodes.addNodeContainer(nodeCont);
 	    names.pushBack(auction);
 		
@@ -853,8 +774,6 @@ public class Ns3Network {
 			addNode(nodeCont.getNodeNoPrint(i));
 			// Gets the Controller at the index i offset by the current auctionIndex multiplied by the number of nodes in nodeCont
 	    	Controller tempCont = this.getControllers().get(auctionIndex*nodeContSize + i);
-	    	// Assigns the Controller at index i offset by the index of the Auction times the # of Nodes per Auction
-	    	nodeCont.getNodeNoPrint(i).setController(tempCont);
 	    	// Adds the name of the Controller to the Names StringVector
 	    	names.pushBack(tempCont);
 	    	// Adds this Node to the NodeContainer of all GLD Nodes
@@ -884,39 +803,6 @@ public class Ns3Network {
 		fncsAps.appendPrintObj("Simulator::Run();\n");
 		fncsAps.appendPrintObj("Simulator::Destroy();\n");
 		fncsAps.appendPrintObj("return 0;\n");
-	}
-	
-	/**
-	 * 
-	 * @param backboneHelper
-	 * @param backboneNodes
-	 * @param backboneDevices
-	 * @param index used for naming to prevent name conflicts when called in a loop
-	 */
-	private void createBackbone(NetworkHelper backboneHelper, NodeContainer backboneNodes,
-			NetDeviceContainer backboneDevices, int index) {
-		
-		if (this.backboneType.name().equalsIgnoreCase("csma")) {
-			backboneHelper = new CsmaHelper("csmaHelper_" + index);
-			((CsmaHelper) backboneHelper).install(backboneNodes, backboneDevices);
-			
-		} else if (this.backboneType.name().equalsIgnoreCase("lte")) {
-			backboneHelper = new LteHelper("lteHelper_" + index);
-			((LteHelper) backboneHelper).installUeDevice(backboneNodes, backboneDevices);
-			NodeContainer enbNodes = new NodeContainer("enbNodes_" + index);
-			
-			// TODO finish LTE backbone; ask if we need this (LTE backbone?)
-			
-		} else if (this.backboneType.name().equalsIgnoreCase("p2p")) {
-			backboneHelper = new PointToPointHelper("pointopointHelper_" + index);
-			((PointToPointHelper) backboneHelper).install(backboneNodes, backboneDevices);
-
-		} else {
-			backboneHelper = new WifiHelper("wifiHelper_" + index);
-			
-			// TODO finish WiFi backbone; ask if we need this (WiFi backbone?)
-			// If so, need to pass WifiPhyHelper
-		}
 	}
 
 	/**
@@ -1229,10 +1115,7 @@ public class Ns3Network {
 		setupFncsApplicationHelper(marketToControllerMap);
 		
 		return ns3Objects;
-		
-		// TODO reduce objects added to names and allNodes to bare min.
-		
-		
 	}
+	
 	
 }

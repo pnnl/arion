@@ -7,6 +7,8 @@ import gov.pnnl.prosser.api.AbstractNs3Object;
 import gov.pnnl.prosser.api.ns3.enums.NetworkType;
 
 /**
+ * A base class for the specific network helpers (Wi-Fi, LTE, CSMA, etc.)
+ * 
  * @author happ546
  *
  */
@@ -39,7 +41,5 @@ public class NetworkHelper extends AbstractNs3Object {
 		}
 
 	}
-	
-	
 	
 }

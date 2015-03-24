@@ -7,12 +7,15 @@ import gov.pnnl.prosser.api.AbstractNs3Object;
 import gov.pnnl.prosser.api.ns3.enums.Qci;
 
 /**
+ * This class is used in the setup of LTE wireless networks.
+ * 
  * @author happ546
  *
  */
 public class EpsBearer extends AbstractNs3Object {
 	
 	/**
+	 * Creates a new EpsBearer with the given name
 	 * @param name
 	 */
 	public EpsBearer(String name) {

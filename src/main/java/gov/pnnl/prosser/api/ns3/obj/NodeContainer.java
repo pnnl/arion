@@ -9,6 +9,10 @@ import gov.pnnl.prosser.api.c.obj.Pointer;
 import java.util.ArrayList;
 
 /**
+ * This class provides a structure to efficiently hold Nodes in 
+ * and make it easier to configure NetDevices on multiple Nodes 
+ * simultaneously.
+ * 
  * @author happ546
  *
  */
@@ -114,10 +118,12 @@ public class NodeContainer extends AbstractNs3Object {
 	 * @param backboneRouterPtr the Pointer&lt;Node&gt; to add the node at index to
 	 */
 	public void getNode(int index, Pointer<Node> backboneRouterPtr) {
-		appendPrintObj(backboneRouterPtr.getName() + " = " + this.getName() + ".Get(" + index + ");\n");
+		appendPrintObj(backboneRouterPtr.getName() + " = " + this.getName() 
+						+ ".Get(" + index + ");\n");
 	}
 
 	/**
+	 * Returns the Node at the given index without outputting any text to the C++ output file
 	 * 
 	 * @param index the integer index of the Node to retrieve from the NodeContainer
 	 * @return the Node at the given index or null if there is no node at that index

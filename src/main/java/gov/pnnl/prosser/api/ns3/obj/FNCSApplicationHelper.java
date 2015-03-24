@@ -8,6 +8,9 @@ import gov.pnnl.prosser.api.c.obj.StringMap;
 import gov.pnnl.prosser.api.c.obj.Vector;
 
 /**
+ * This class is used to connect the ns-3 simulator to the FNCS instance to allow 
+ * communication among the various simulators in the Prosser experiment.
+ * 
  * @author happ546
  *
  */
@@ -21,17 +24,19 @@ public class FNCSApplicationHelper extends AbstractNs3Object {
 	}
 
 	/**
-	 * @param names ListName a list 
+	 * @param namesListName a list 
 	 * @param gldNodes
 	 * @param marketToControllerMapName a Map from the MarketNetworkInterface name String 
 	 * 			to the ControllerNetworkInterface name String
 	 * @param destContainer the ApplicationContainer to hold the generated application
 	 */
 	public void setApps(Vector<String> names, NodeContainer gldNodes, 
-						StringMap<String, String> marketToControllerMapName, ApplicationContainer destContainer) {
+						StringMap<String, String> marketToControllerMapName, 
+						ApplicationContainer destContainer) {
 		appendPrintObj(destContainer.getName() + " = " + this.getName() 
 						+ ".SetApps(" + names.getName() + ", " 
-						+ gldNodes.getName() + ", " + marketToControllerMapName.getName() + ");\n");
+						+ gldNodes.getName() + ", " 
+						+ marketToControllerMapName.getName() + ");\n");
 	}
 	
 }

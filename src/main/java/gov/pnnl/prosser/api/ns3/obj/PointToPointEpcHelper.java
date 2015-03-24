@@ -6,6 +6,9 @@ package gov.pnnl.prosser.api.ns3.obj;
 import gov.pnnl.prosser.api.c.obj.Pointer;
 
 /**
+ * The PointToPointEpcHelper is a specialized helper to facilitate easier setup 
+ * of LTE networks with EPC (Evolved Packet Core; allows IP-type functionality).
+ * 
  * @author happ546
  *
  */
@@ -17,7 +20,7 @@ public class PointToPointEpcHelper extends NetworkHelper {
 	 */
 	public void assignUeIpv4Address(NetDeviceContainer ueDevices, 
 									Ipv4InterfaceContainer destination) {
-		// Set the dereferencer operator appropriately for pointer encapsulation or not
+		// Sets the dereferencer operator appropriately for pointer encapsulation or not
 		String deref = this.isPointer() ? "->" : ".";
 		appendPrintObj(destination.getName() + " = " + this.getName() + deref + 
 						"AssignUeIpv4Address(" + ueDevices.getName() + ");\n");
@@ -28,7 +31,7 @@ public class PointToPointEpcHelper extends NetworkHelper {
 	 * and puts it into the given Pointer Node
 	 */
 	public void getPgwNode(Pointer<Node> node) {
-		// Set the dereferencer operator appropriately for pointer encapsulation or not
+		// Sets the dereferencer operator appropriately for pointer encapsulation or not
 		String deref = this.isPointer() ? "->" : ".";
 		appendPrintObj(node.getName() + " = " + this.getName() + deref + "GetPgwNode();\n");
 	}
@@ -37,7 +40,7 @@ public class PointToPointEpcHelper extends NetworkHelper {
 	 * @return the Ipv4Address of the default gateway
 	 */
 	public Ipv4Address getUeDefaultGatewayAddress() {
-		// Set the dereferencer operator appropriately for pointer encapsulation or not
+		// Sets the dereferencer operator appropriately for pointer encapsulation or not
 		String deref = this.isPointer() ? "->" : ".";
 		appendPrintObj(this.getName() + deref + "GetUeDefaultGatewayAddress();\n");
 		return new Ipv4Address(null);

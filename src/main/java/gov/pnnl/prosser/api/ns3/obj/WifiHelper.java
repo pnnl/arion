@@ -4,14 +4,16 @@
 package gov.pnnl.prosser.api.ns3.obj;
 
 /**
+ * The WifiHelper is a helper class to simplify the setup of Wi-Fi networks.
+ * 
  * @author happ546
  *
  */
 public class WifiHelper extends NetworkHelper {
-	
-	private String remoteStationManager;
-	
+		
 	/**
+	 * Creates a new WifiHelper with the given name
+	 * 
 	 * @param name
 	 */
 	public WifiHelper(String name) {
@@ -30,8 +32,8 @@ public class WifiHelper extends NetworkHelper {
 	 * @param remoteStationManager
 	 */
 	public void setRemoteStationManager(String remoteStationManager) {
-		this.remoteStationManager = remoteStationManager;
-		appendPrintObj(this.getName() + "SetRemoteStationManager(\"" + this.remoteStationManager + "\");\n");
+		appendPrintObj(this.getName() + "SetRemoteStationManager(\"" 
+				+ remoteStationManager + "\");\n");
 	}
 
 	/**
@@ -46,7 +48,8 @@ public class WifiHelper extends NetworkHelper {
 	public void install(YansWifiPhyHelper phy, NqosWifiMacHelper mac,
 			NodeContainer sourceNodes, NetDeviceContainer destinationContainer) {
 		appendPrintObj(destinationContainer.getName() + " = " + this.getName() + 
-				".Install(" + phy.getName() + ", " + mac.getName() + ", " + sourceNodes.getName() + ");\n");
+				".Install(" + phy.getName() + ", " + mac.getName() + ", " 
+				+ sourceNodes.getName() + ");\n");
 	}
 
 	/**
@@ -62,7 +65,8 @@ public class WifiHelper extends NetworkHelper {
 	public void install(YansWifiPhyHelper phy, NqosWifiMacHelper mac, 
 			NodeContainer sourceNodes, int index, NetDeviceContainer destinationContainer) {
 		appendPrintObj(destinationContainer.getName() + " = " + this.getName() + 
-				".Install(" + phy.getName() + ", " + mac.getName() + ", " + sourceNodes.getName() + ".Get(" + index + "));\n");
+				".Install(" + phy.getName() + ", " + mac.getName() + ", " 
+				+ sourceNodes.getName() + ".Get(" + index + "));\n");
 	}
 	
 }

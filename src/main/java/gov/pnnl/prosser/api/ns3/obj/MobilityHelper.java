@@ -6,12 +6,16 @@ package gov.pnnl.prosser.api.ns3.obj;
 import gov.pnnl.prosser.api.AbstractNs3Object;
 
 /**
+ * This class is used by wireless networks (Wi-Fi, LTE).
+ * 
  * @author happ546
  *
  */
 public class MobilityHelper extends AbstractNs3Object {
 
 	/**
+	 * Creates a new MobilityHelper with the given name
+	 * 
 	 * @param name
 	 */
 	public MobilityHelper(String name) {

@@ -7,26 +7,36 @@ import gov.pnnl.prosser.api.AbstractNs3Object;
 import gov.pnnl.prosser.api.c.obj.Pointer;
 
 /**
+ * This class is used to setup the FNCS simulator for the Prosser
+ * experiment.
+ * 
  * @author happ546
  *
  */
 public class FncsSimulator extends AbstractNs3Object {
 	
 	/**
+	 * Creates a new FncsSimulator with the given name
 	 * @param name
 	 */
 	public FncsSimulator(String name) {
 		this.setName(name);
 	}
-
+	
+	/**
+	 * Sets the name of this FncsSimulator and outputs the appropriate 
+	 * ns-3 C++ initialization code
+	 * @param name
+	 */
 	@Override
 	public void setName(String name) {
 		super.setNameString(name);
-		appendPrintObj(this.getClass().getSimpleName() + " *" + this.getName() + " = new FncsSimulator();\n");
+		appendPrintObj(this.getClass().getSimpleName() + " *" 
+						+ this.getName() + " = new FncsSimulator();\n");
 	}
 	
 	/**
-	 * @param ptr the Pointer to a FncsSimulator
+	 * @param ptr the Pointer<FncsSimulator> of the attached FncsSimulator
 	 */
 	public void setImplementation(Pointer<FncsSimulator> ptr) {
 		appendPrintObj("Simulator::SetImplementation(" + ptr.getName() + ");\n");

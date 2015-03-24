@@ -6,12 +6,16 @@ package gov.pnnl.prosser.api.ns3.obj;
 import gov.pnnl.prosser.api.AbstractNs3Object;
 
 /**
+ * This class is used to help assign unique IP addresses to IP Net Devices
+ * 
  * @author happ546
  *
  */
 public class Ipv4AddressHelper extends AbstractNs3Object {
 	
 	/**
+	 * Creates a new Ipv4AddressHelper with the given name
+	 * 
 	 * @param name
 	 */
 	public Ipv4AddressHelper(String name) {
@@ -20,8 +24,8 @@ public class Ipv4AddressHelper extends AbstractNs3Object {
 
 	/**
 	 * 
-	 * @param ipBase the IPv4 address base for DHCP address assignment to begin at
-	 * @param mask the subnet mask used for the IP addresses set by this Ipv4AddressHelper
+	 * @param ipBase the IPv4 address base for DHCP address assignment
+	 * @param mask the subnet mask used for DHCP address assignment
 	 */
 	public void setBase(String ipBase, String mask) {
 		appendPrintObj(this.getName() + ".SetBase(\"" + ipBase + 
@@ -39,9 +43,11 @@ public class Ipv4AddressHelper extends AbstractNs3Object {
 	/**
 	 * 
 	 * @param devices the net devices to assign IP addresses to
-	 * @param destinationInterface the Ipv4InterfaceContainer to hold the IPv4 net devices
+	 * @param destinationInterface the Ipv4InterfaceContainer to 
+	 * 			hold the IPv4 net devices
 	 */
-	public void assign(NetDeviceContainer devices, Ipv4InterfaceContainer destinationInterface) {
+	public void assign(NetDeviceContainer devices, 
+			Ipv4InterfaceContainer destinationInterface) {
 		appendPrintObj(destinationInterface.getName() + " = " + this.getName() + 
 						".Assign(" + devices.getName() + ");\n");
 	}

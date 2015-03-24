@@ -50,6 +50,11 @@ public class Vector<T> extends AbstractNs3Object {
 				obj.getName() + "\");\n");
 	}
 	
+	/**
+	 * Pushes each Node in nc into the Vector
+	 * 
+	 * @param nc the NodeContainer
+	 */
 	public void pushBack(NodeContainer nc) {
 		for (int i = 0; i < nc.getNumNodes(); i++) {
 			this.pushBack(nc.getNodeNoPrint(i));

@@ -6,12 +6,17 @@ package gov.pnnl.prosser.api.ns3.obj;
 import gov.pnnl.prosser.api.AbstractNs3Object;
 
 /**
+ * This class is used to help setup the routing tables for IP networking.
+ * Used by InternetStackHelper.
+ * 
  * @author happ546
  *
  */
 public class Ipv4ListRoutingHelper extends AbstractNs3Object {
 	
 	/**
+	 * Creates a new Ipv4ListRoutingHelper with the given name
+	 * 
 	 * @param name
 	 */
 	public Ipv4ListRoutingHelper(String name) {

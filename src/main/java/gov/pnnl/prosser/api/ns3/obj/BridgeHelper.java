@@ -9,6 +9,9 @@ import java.util.Map;
 import gov.pnnl.prosser.api.AbstractNs3Object;
 
 /**
+ * The BridgeHelper is a helper class to simplify the setup of network bridges, 
+ * devices that connect one network device type to another (e.g. CSMA to point-to-point).
+ * 
  * @author happ546
  *
  */
@@ -17,8 +20,8 @@ public class BridgeHelper extends AbstractNs3Object {
 	private Map<String, String> deviceAttributes;
 
 	/**
-	 * Create a new BridgeHelper to create a connection between two communication devices 
-	 * on a single Node
+	 * Creates a named BridgeHelper
+	 * 
 	 * @param name
 	 */
 	public BridgeHelper(String name) {
@@ -27,6 +30,7 @@ public class BridgeHelper extends AbstractNs3Object {
 	}
 	
 	/**
+	 * Installs a Bridge device on each of the Nodes in sourceNodes
 	 * 
 	 * @param sourceNodes the NodeContainer holding the Nodes to install this Bridge device on
 	 * @param destinationContainer the NetDeviceContainer to add the Nodes from sourceNodes to
@@ -38,6 +42,8 @@ public class BridgeHelper extends AbstractNs3Object {
 	
 
 	/**
+	 * Installs a Bridge device on each of the Nodes in sourceNodes using 
+	 * the sourceDevices as Bridge ports
 	 * 
 	 * @param sourceNodes the Node on which to install the Bridge net device
 	 * @param sourceDevices the container of net devices to add as Bridge ports
@@ -52,7 +58,8 @@ public class BridgeHelper extends AbstractNs3Object {
 	}
 	
 	/**
-	 * Set attributes for this Bridge device
+	 * Sets attributes for this Bridge device
+	 * 
 	 * @param attr the attribute to set the value to
 	 * @param value
 	 */

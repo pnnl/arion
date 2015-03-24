@@ -79,8 +79,8 @@ public class Channel extends AbstractNs3Object {
 	}
 	
 	/**
-	 * @param key
-	 * @return the attribute value of the given key
+	 * @param String key
+	 * @return the attribute value String of the given key
 	 */
 	public String getAttribute(String key) {
 		return this.attributes.get(key);
@@ -124,28 +124,28 @@ public class Channel extends AbstractNs3Object {
 	}
 
 	/**
-	 * @return the auctions
+	 * @return the List of AuctionObjects connected to this Channel
 	 */
 	public List<AuctionObject> getAuctions() {
 		return auctions;
 	}
 
 	/**
-	 * @param auction the auction to add to this Channel
+	 * @param auctions the AuctionObject to add to this Channel
 	 */
 	public void addAuction(AuctionObject auction) {
 		this.auctions.add(auction);
 	}
 	
 	/**
-	 * @return the Ptr&lt;Channel&gt; attached to this Channel
+	 * @return the Pointer<Channel> attached to this Channel
 	 */
 	public Pointer<Channel> getPointer() {
 		return pointer;
 	}
 	
 	/**
-	 * @param pointer the Ptr&lt;Channel&gt; to attach to this Channel
+	 * @param pointer the Pointer<Channel> to attach to this Channel
 	 */
 	@SuppressWarnings("unchecked")
 	public void setPointer(Pointer<? extends Channel> pointer) {

@@ -9,6 +9,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
+ * This class is used to help setup CSMA net devices and networks.
+ * 
  * @author happ546
  *
  */
@@ -28,7 +30,7 @@ public class CsmaHelper extends NetworkHelper {
 	}
 	
 	/**
-	 * @param nodePtr
+	 * @param nodePtr the Pointer<Node>
 	 * @param channel the CsmaChannel
 	 * @param destinationContainer
 	 */
@@ -39,8 +41,8 @@ public class CsmaHelper extends NetworkHelper {
 	}
 
 	/**
-	 * @param sourceNodes the NodeContainer to install the CSMA devices on
-	 * @param channel the Pointer&lt;CsmaChannel&gt; to connect the CSMA devices to
+	 * @param nodes the NodeContainer to install the CSMA devices on
+	 * @param channel the Pointer<CsmaChannel> to connect the CSMA devices to
 	 * @param destinationContainer the NetDeviceContainer to add the Nodes from sourceNodes to
 	 */
 	public void install(NodeContainer sourceNodes,

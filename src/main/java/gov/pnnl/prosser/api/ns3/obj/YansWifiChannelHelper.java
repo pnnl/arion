@@ -6,12 +6,17 @@ package gov.pnnl.prosser.api.ns3.obj;
 import gov.pnnl.prosser.api.AbstractNs3Object;
 
 /**
+ * The YansWifiChannelHelper (Yet Another Network Simulator; see http://cutebugs.net/files/wns2-yans.pdf)
+ * is a helper class that simplifies the setup of YansWifiChannels.
+ * 
  * @author happ546
  *
  */
 public class YansWifiChannelHelper extends AbstractNs3Object {
 	
 	/**
+	 * Creates a named YansWifiChannelHelper
+	 * 
 	 * @param name
 	 */
 	public YansWifiChannelHelper(String name) {

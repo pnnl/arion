@@ -14,6 +14,8 @@ public class Pointer<T extends AbstractNs3Object> extends AbstractNs3Object {
 	private T object;
 	
 	/**
+	 * Create a new Pointer with the given name
+	 * 
 	 * @param name
 	 */
 	public Pointer(String name) {
@@ -21,6 +23,9 @@ public class Pointer<T extends AbstractNs3Object> extends AbstractNs3Object {
 	}
 	
 	/**
+	 * Create a new Pointer with the given name and encapsulate the given object
+	 * with it
+	 * 
 	 * @param name
 	 * @param obj
 	 */
@@ -29,6 +34,9 @@ public class Pointer<T extends AbstractNs3Object> extends AbstractNs3Object {
 		this.setType(obj);
 	}
 
+	/**
+	 * Sets the name of this Pointer without printing any output
+	 */
 	@Override
 	public void setName(String name) {
 		super.setNameString(name);
@@ -36,6 +44,7 @@ public class Pointer<T extends AbstractNs3Object> extends AbstractNs3Object {
 	
 	/**
 	 * Equivalent to this.pointer = obj;
+	 * 
 	 * @param obj the AbstractNs3Object to set as this pointer
 	 */
 	public void assign(AbstractNs3Object obj) {
@@ -48,7 +57,7 @@ public class Pointer<T extends AbstractNs3Object> extends AbstractNs3Object {
 	 * @param obj the AbstractNs3Object to wrap in a pointer
 	 */
 	public void encapsulate(AbstractNs3Object obj) {
-		appendPrintObj("\nPtr<" + obj.getClass().getSimpleName() + "> " 
+		appendPrintObj("\n\tPtr<" + obj.getClass().getSimpleName() + "> " 
 					+ this.getName() + "(" + obj.getName() + ");\n");
 	}
 	
@@ -56,16 +65,18 @@ public class Pointer<T extends AbstractNs3Object> extends AbstractNs3Object {
 	 * @param obj the AbstractNs3Object to set this Pointer type to
 	 */
 	public void setType(AbstractNs3Object obj) {
-		appendPrintObj("Ptr<" + obj.getClass().getSimpleName() + "> " + this.getName() + ";\n");
+		appendPrintObj("\n\tPtr<" + obj.getClass().getSimpleName() + "> " + this.getName() + ";\n");
 	}
 	
 	/**
+	 * Creates an object of the type of the given object
+	 * 
 	 * @param obj
 	 */
 	public void createObject(T obj) {
 		this.object = obj;
 		this.object.setPointerFlag(true);
-		appendPrintObj("\nPtr<" + obj.getClass().getSimpleName() + "> " 
+		appendPrintObj("\n\tPtr<" + obj.getClass().getSimpleName() + "> " 
 					+ this.getName() + " = CreateObject<" + obj.getClass().getSimpleName() + ">();\n");
 	}
 	

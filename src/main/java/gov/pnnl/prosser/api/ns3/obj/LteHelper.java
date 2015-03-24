@@ -8,13 +8,15 @@ import gov.pnnl.prosser.api.c.obj.Pointer;
 /**
  * The LteHelper class simplifies setting up an LTE network, handling 
  * the creation and attribute-setting of the wireless channel and connecting 
- * the UE (user equipment) end-point devices to the ENB backbone.
+ * the UE (User Equipment) end-point devices to the ENB (Evolved Node B) 
+ * cellular towers.
  * @author happ546
  *
  */
 public class LteHelper extends NetworkHelper {
 
 	/**
+	 * Creates a new LteHelper with the given name
 	 * @param name
 	 */
 	public LteHelper(String name) {
@@ -64,8 +66,8 @@ public class LteHelper extends NetworkHelper {
 
 	/**
 	 * Attaches the UE (user equipment) nodes to the eNB (base station) nodes
-	 * @param ueDevices the NetDeviceContainer of UE nodes
-	 * @param enbDevices the NetDeviceContainer of eNB nodes
+	 * @param ueNodes the NetDeviceContainer of UE nodes
+	 * @param enbNodes the NetDeviceContainer of eNB nodes
 	 */
 	public void attach(NetDeviceContainer ueDevices, 
 				NetDeviceContainer enbDevices, int index) {
@@ -76,7 +78,6 @@ public class LteHelper extends NetworkHelper {
 	/**
 	 * Adds the given EpsBearer to the given NetDeviceContainer of LTE devices
 	 * For use with LTE only networks (i.e. no EPC nor IP protocols)
-	 * 
 	 * @param ueDevices the NetDeviceContainer of LTE devices
 	 * @param bearer the EpsBearer to attach to ueDevices
 	 */

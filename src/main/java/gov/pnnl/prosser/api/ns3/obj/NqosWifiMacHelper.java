@@ -6,6 +6,9 @@ package gov.pnnl.prosser.api.ns3.obj;
 import gov.pnnl.prosser.api.AbstractNs3Object;
 
 /**
+ * The NqosWifiMacHelper (No Quality-of-Service) is a helper class to simplify 
+ * the setup of NQoS Wi-Fi MAC layers in Wi-Fi networks.
+ * 
  * @author happ546
  *
  */
