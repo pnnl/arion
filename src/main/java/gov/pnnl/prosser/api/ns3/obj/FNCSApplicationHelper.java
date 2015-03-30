@@ -24,7 +24,7 @@ public class FNCSApplicationHelper extends AbstractNs3Object {
 	}
 
 	/**
-	 * @param namesListName a list 
+	 * @param names ListName a list 
 	 * @param gldNodes
 	 * @param marketToControllerMapName a Map from the MarketNetworkInterface name String 
 	 * 			to the ControllerNetworkInterface name String

@@ -18,7 +18,7 @@ public class Node extends AbstractNs3Object {
 	
 	/**
 	 * Creates a nameless Node
-	 * Used in Ns3Network for Pointer<Node>
+	 * Used in Ns3Network for Pointer&lt;Node&gt;
 	 */
 	public Node() {}
 	

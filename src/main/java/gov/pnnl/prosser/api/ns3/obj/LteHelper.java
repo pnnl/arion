@@ -66,8 +66,8 @@ public class LteHelper extends NetworkHelper {
 
 	/**
 	 * Attaches the UE (user equipment) nodes to the eNB (base station) nodes
-	 * @param ueNodes the NetDeviceContainer of UE nodes
-	 * @param enbNodes the NetDeviceContainer of eNB nodes
+	 * @param ueDevices the NetDeviceContainer of UE nodes
+	 * @param enbDevices the NetDeviceContainer of eNB nodes
 	 */
 	public void attach(NetDeviceContainer ueDevices, 
 				NetDeviceContainer enbDevices, int index) {

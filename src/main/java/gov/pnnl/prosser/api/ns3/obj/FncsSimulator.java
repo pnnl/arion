@@ -36,7 +36,7 @@ public class FncsSimulator extends AbstractNs3Object {
 	}
 	
 	/**
-	 * @param ptr the Pointer<FncsSimulator> of the attached FncsSimulator
+	 * @param ptr the Pointer&lt;FncsSimulator&gt; of the attached FncsSimulator
 	 */
 	public void setImplementation(Pointer<FncsSimulator> ptr) {
 		appendPrintObj("Simulator::SetImplementation(" + ptr.getName() + ");\n");

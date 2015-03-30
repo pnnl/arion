@@ -72,7 +72,7 @@ public class Ns3Network {
 	
 	/**
 	 * 
-	 * @param type the NetworkType to set for the Backbone infrastructure
+	 * @param backboneType the NetworkType to set for the Backbone infrastructure
 	 */
 	public void setBackboneType(NetworkType backboneType) {
 		this.backboneType = backboneType;
@@ -87,7 +87,7 @@ public class Ns3Network {
 	
 	/**
 	 * 
-	 * @param type the NetworkType to set for the Auction market
+	 * @param auctionType the NetworkType to set for the Auction market
 	 */
 	//TODO: Not sure this type of information should be stored here; Need convincing to allow simulator specific variables in NS3 objects
 	public void setAuctionType(NetworkType auctionType) {
@@ -558,9 +558,6 @@ public class Ns3Network {
 	}
 	
 	/**
-	 * @param numApNodes equal to number of MarketNetworkInterfaces in the mni List
-	 * @param numStaNodes total number of station nodes to create; 
-	 * 			equal to number of ControllerNetworkInterfaces (GLD houses) in the cni List
 	 * @param latency
 	 * @return objects a List of all AbstractNs3Objects created for this WiFi network
 	 */
