@@ -533,8 +533,8 @@ public class AdaptedAEPFncsTest {
         setGenericHouseInfo(house, "Residential1", hvacPowerFactor);
         setFloorarea(house, smallhome_floorarea_1, smallhome_floorarea_2, scaleFloor);
         final double initTemp = 68 + 4*rand.nextDouble();
-        house.setAirTemperature(initTemp);
-        house.setMassTemperature(initTemp);
+//        house.setAirTemperature(initTemp);
+//        house.setMassTemperature(initTemp);
     }
     
     private static void setGenericHouseInfo(final House house, final String houseTag, final double hvacPowerFactor) {
