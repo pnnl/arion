@@ -23,7 +23,7 @@ public abstract class GldUtils {
         complexFormat = new DecimalFormat("0.000#");
         complexFormat.setMaximumFractionDigits(10);
         doubleFormat = new DecimalFormat("0.#");
-        doubleFormat.setMaximumFractionDigits(10);
+        doubleFormat.setMaximumFractionDigits(3);
     }
 
     public static void writeSetting(final StringBuilder sb, final String key, final String value) {

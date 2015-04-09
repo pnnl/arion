@@ -139,6 +139,11 @@ public class Controller extends AbstractGldObject implements NetworkCapable {
     private String state;
 
     /**
+     * the slider setting
+     */
+    private Double sliderSetting;
+
+    /**
      * controller network interface name
      */
     private String networkInterfaceName;
@@ -602,6 +607,25 @@ public class Controller extends AbstractGldObject implements NetworkCapable {
     }
 
     /**
+     * Get the slider setting
+     * 
+     * @return the sliderSetting
+     */
+    public Double getSliderSetting() {
+        return sliderSetting;
+    }
+
+    /**
+     * Set the slider setting
+     * 
+     * @param sliderSetting
+     *            the sliderSetting to set
+     */
+    public void setSliderSetting(Double sliderSetting) {
+        this.sliderSetting = sliderSetting;
+    }
+
+    /**
      * {@inheritDoc}
      * 
      * Get the controller network interface name
@@ -668,6 +692,7 @@ public class Controller extends AbstractGldObject implements NetworkCapable {
         GldUtils.writeProperty(sb, "total", total);
         GldUtils.writeProperty(sb, "load", load);
         GldUtils.writeProperty(sb, "state", state);
+        GldUtils.writeProperty(sb, "slider_setting", sliderSetting);
     }
 
 }

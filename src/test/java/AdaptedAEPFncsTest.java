@@ -6,16 +6,11 @@ import gov.pnnl.prosser.api.*;
 import gov.pnnl.prosser.api.gld.enums.*;
 import gov.pnnl.prosser.api.gld.lib.*;
 import gov.pnnl.prosser.api.gld.obj.*;
-import gov.pnnl.prosser.api.ns3.obj.Channel;
+import gov.pnnl.prosser.api.ns3.obj.*;
 
-import java.io.IOException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.EnumSet;
-import java.util.List;
-import java.util.Random;
+import java.time.*;
+import java.util.*;
+import java.util.stream.*;
 
 /**
  * First FNCS experiment
@@ -23,7 +18,7 @@ import java.util.Random;
  * @author nord229
  *
  */
-public class AdaptedAEPFncsTest {
+public class AdaptedAEPFncsTest extends Experiment {
 
     private static final Random rand = new Random(13);
 
@@ -73,45 +68,53 @@ public class AdaptedAEPFncsTest {
     private static final double tankUA_1 = 2.0;
     private static final double tankUA_2 = 0.2;
 
-    public static void main(final String[] args) throws IOException {
-        final Path outPath = Paths.get(args[0]).toRealPath();
-        final int numHouses = 1;
-        final int numChannels = (numHouses / 20) + 2;
-        final String controllerNIPrefix = "F1_C_NI";
-        
-        
-        final List<Channel> channels = new ArrayList<>();
-        final GldSimulator gldSim = constructGldSim(numHouses, controllerNIPrefix, channels);
-        GldSimulatorWriter.writeGldSimulator(outPath.resolve("prosser.glm"), gldSim);
-        // TODO: No passing of information between simulators here; not maintainable approach; force objects to create simulator relationships
-        // For this test there will be one object in each list but in general there could be multiple
-        final List<AuctionObject> auctions = new ArrayList<>();
-        final List<Controller> controllers = new ArrayList<>();
-        gldSim.getObjects().forEach((o) -> {
-            if (o instanceof AuctionObject) {
-                auctions.add((AuctionObject) o);
-            } else if (o instanceof House) {
-                controllers.add(((House) o).getController());
-            }
-        });
+    private static final double z = 0;
+    private static final double i = 0;
+    private static final double p = 1;
+    private static final double systemPf = 0.97;
+    private static final double heatFraction = 0.8;
+    private static final double hvacPf = 0.97;
+    private static final double scaleFloor = 1;
+    private static final double sigmaTstat = 2;
 
-        final Ns3Simulator ns3Simulator = new Ns3Simulator();
-        // ns3Simulator.setAuctions(auctions);
-        // ns3Simulator.setControllers(controllers);
-        // ns3Simulator.setGldNodePrefix(controllerPrefix);
-        Ns3SimulatorWriter.writeNs3Simulator(outPath.resolve("ns3.cc"), ns3Simulator);
-        System.out.println("Written!");
+    /**
+     * Generate the experiment
+     */
+    @Override
+    public void generate() {
+        final int numHouses = 300;
+        final int numHousesPerChannel = 20;
+        final int numChannels = (numHouses % numHousesPerChannel) == 0 ? (numHouses / numHousesPerChannel) + 1 : (numHouses / numHousesPerChannel) + 2;
+        System.out.println("Number of channels: " + numChannels); // TODO debugging
+        final String controllerNIPrefix = "F1_C_NI";
+
+        // Set parameters for Ns3Network and build backend network
+        // TODO create constructNs3Sim(...) method for this
+        final Ns3Simulator ns3Simulator = this.ns3Simulator();
+        ns3Simulator.setup(numChannels);
+
+        final List<Channel> channels = ns3Simulator.getChannels();
+        // TODO Add numHousesPerChannel param and use instead of hard-coded "20" to get channelID
+        final GldSimulator gldSim = this.gldSimulator("fncs_GLD_1node_Feeder_1");
+        populateGldSim(gldSim, numHouses, controllerNIPrefix, channels);
+
+        // Connect Controllers and Auctions to backbone network
+        ns3Simulator.buildFrontend();
+
         // TODO FNCS Integration
     }
 
     /**
      * The gld simulator for this experiment
-     * @param controllerNIPrefix Prefix to network controllers in Houses and will be enclosed in the auction object
-     * @param channels the network channels to use - channel 0 will be used for the auction, and then channels other than 0 will have up to 20 controllers on it
+     * 
+     * @param controllerNIPrefix
+     *            Prefix to network controllers in Houses and will be enclosed in the auction object
+     * @param channels
+     *            the network channels to use - channel 0 will be used for the auction, and then channels other than 0 will have up to 20 controllers on it
      *
      * @return
      */
-    private static GldSimulator constructGldSim(final int numHouses, final String controllerNIPrefix, final List<Channel> channels) {
+    private static void populateGldSim(final GldSimulator sim, final int numHouses, final String controllerNIPrefix, final List<Channel> channels) {
         // final boolean useMarket = true;
         final String marketName = "Market1";
         final int marketPeriod = 300;
@@ -119,9 +122,6 @@ public class AdaptedAEPFncsTest {
         final String marketStdev = "current_price_stdev_24h";
         // final double percentPenetration = 1;
         // final double sliderSetting = 1;
-
-        // Construct the simulator
-        final GldSimulator sim = new GldSimulator("fncs_GLD_1node_Feeder_1");
 
         // Setup the clock
         final GldClock clock = sim.clock();
@@ -320,7 +320,9 @@ public class AdaptedAEPFncsTest {
         centerTapTransformerC.setConfiguration(defaultTransformerC);
 
         // TODO: Move generate house and other convienence methods to a library
-        for (int i = 1; i < numHouses; i++) {
+        Integer[] trackHouseArray = new Integer[] { 13, 28, 47, 58, 77, 100, 226, 246, 253, 278 };
+        final Set<Integer> houseSet = Arrays.stream(trackHouseArray).collect(Collectors.toSet());
+        for (int i = 1; i <= numHouses; i++) {
             TriplexMeter meter;
             PhaseCode phase;
             if (i <= numHouses / 3) {
@@ -333,12 +335,14 @@ public class AdaptedAEPFncsTest {
                 meter = tripMeterC;
                 phase = PhaseCode.C;
             }
+            // distributes houses to channels, 20 per channel (1-n)
             int channelId = ((i - 1) / 20) + 1;
-            // TODO only put 20 houses on each channel 1-n
-            generateHouse(sim, i, meter, tripLineConf, auction, phase, controllerNIPrefix, channels.get(channelId));
+            if (houseSet.contains(i)) {
+                generateHouse(sim, i, meter, tripLineConf, auction, phase, controllerNIPrefix, channels.get(channelId), true);
+            } else {
+                generateHouse(sim, i, meter, tripLineConf, auction, phase, controllerNIPrefix, channels.get(channelId), false);
+            }
         }
-
-        return sim;
     }
 
     /**
@@ -371,7 +375,8 @@ public class AdaptedAEPFncsTest {
      *            the Auction to connect the controller to
      */
     private static void generateHouse(final GldSimulator sim, final int id, final TriplexMeter tripMeterA,
-            final TriplexLineConfiguration tripLineConf, final AuctionObject auction, final PhaseCode phase, final String controllerNIPrefix, final Channel channel) {
+            final TriplexLineConfiguration tripLineConf, final AuctionObject auction, final PhaseCode phase,
+            final String controllerNIPrefix, final Channel channel, final boolean track) {
         final EnumSet<PhaseCode> phases;
         switch (phase) {
             case A:
@@ -410,62 +415,250 @@ public class AdaptedAEPFncsTest {
         tripMeterRt.setGroupId("F1_rt_meter");
         tripMeterRt.setParent(tripMeterFlatrate);
 
-        final double typeRand = rand.nextDouble();
-        int houseType;
-        if (typeRand <= 0.3) {
-            houseType = 1;
-        } else if (typeRand > 0.3 && typeRand <= 0.58) {
-            houseType = 2;
-        } else if (typeRand > 0.58 && typeRand <= 0.75) {
-            houseType = 3;
-        } else if (typeRand > 0.75 && typeRand <= 0.86) {
-            houseType = 4;
-        } else if (typeRand > 0.86 && typeRand <= 0.96) {
-            houseType = 5;
-        } else { // typeRand > 0.96
-            houseType = 5;
+        long scheduleSkew = Math.round(1200 * rand.nextGaussian());
+        if (scheduleSkew > 3600) {
+            scheduleSkew = 3600;
+        } else if (scheduleSkew < -3600) {
+            scheduleSkew = -3600;
         }
-        //dryer_flag_perc  = rand();
-        //dishwasher_flag_perc = rand();
-        //freezer_flag_perc = rand();
-        double houseLoad = 1;
-        double houseVA = 1;
-
-        final long scheduleSkew = -685L;
-
-        // Create the house
         final House house = sim.house("F1_house_" + phase.name() + id);
         house.setParent(tripMeterRt);
         house.setScheduleSkew(scheduleSkew);
-        house.setRroof(33.69);
-        house.setRwall(17.71);
-        house.setRfloor(17.02);
-        house.setRdoors(5.0);
-        house.setRwindows(1.81);
-        house.setAirchangePerHour(0.80);
-        house.setHvacPowerFactor(0.97);
-        house.setCoolingSystemType(CoolingSystemType.ELECTRIC);
+
+        double[] applianceScalar = new double[] { 2, 1, 1, 1, 1, 1, 1, 1 };
+        final double typeRand = rand.nextDouble();
+        final HouseType houseType;
+        if (typeRand <= 0.3) {
+            houseType = HouseType.RESIDENTIAL1;
+        } else if (typeRand > 0.3 && typeRand <= 0.58) {
+            houseType = HouseType.RESIDENTIAL2;
+        } else if (typeRand > 0.58 && typeRand <= 0.75) {
+            houseType = HouseType.RESIDENTIAL3;
+        } else if (typeRand > 0.75 && typeRand <= 0.86) {
+            houseType = HouseType.RESIDENTIAL4;
+        } else if (typeRand > 0.86 && typeRand <= 0.96) {
+            houseType = HouseType.RESIDENTIAL5;
+        } else { // typeRand > 0.96
+            houseType = HouseType.RESIDENTIAL5;
+        }
+        setHouseInfo(house, houseType);
+
+        final Controller controller = house.controller("F1_controller_" + phase.name() + id);
+        controller.setAuction(auction);
+        controller.setScheduleSkew(scheduleSkew);
+        controller.setNetworkInterfaceName(controllerNIPrefix + id);
+        channel.addController(controller);
+        setupController(house, controller);
+        setupLoads(house, houseType, applianceScalar);
+
+        if (track) {
+            final Recorder recorder = house.recorder();
+            recorder.setProperty("cooling_setpoint,air_temperature");
+            recorder.setLimit(100000000);
+            recorder.setInterval(300L);
+            recorder.setFile("F1_house" + id + "_details.csv");
+        }
+    }
+
+    private enum HouseType {
+        RESIDENTIAL1,
+        RESIDENTIAL2,
+        RESIDENTIAL3,
+        RESIDENTIAL4,
+        RESIDENTIAL5,
+        RESIDENTIAL6;
+    }
+
+    private static void setHouseInfo(final House house, final HouseType houseType) {
+        switch (houseType) {
+            case RESIDENTIAL1:
+                setupResidential1(house);
+                break;
+            case RESIDENTIAL2:
+                setupResidential2(house);
+                break;
+            case RESIDENTIAL3:
+                setupResidential3(house);
+                break;
+            case RESIDENTIAL4:
+                setupResidential4(house);
+                break;
+            case RESIDENTIAL5:
+                setupResidential5(house);
+                break;
+            // case RESIDENTIAL6:
+            // setupResidential6(house);
+            // break;
+            default:
+                throw new RuntimeException("Unable to handle house type " + houseType);
+        }
+        final CoolingSystemType cType = CoolingSystemType.ELECTRIC;
+        house.setHvacPowerFactor(hvacPf);
+        house.setCoolingSystemType(cType);
         house.setHeatingSystemType(HeatingSystemType.GAS);
         house.setFanType(FanType.ONE_SPEED);
         house.setHvacBreakerRating(200.0);
-        house.setTotalThermalMassPerFloorArea(3.01);
-        house.setMotorEfficiency(MotorEfficiency.AVERAGE);
-        house.setMotorModel(MotorModel.BASIC);
-        house.setCoolingCop(3.90);
-        house.setFloorArea(1040.0);
-        house.setNumberOfDoors(2.0);
-        house.setHeatingSetpointFn("heating7*1.017+2.41");
+        house.setTotalThermalMassPerFloorArea(rand.nextDouble() * 2 + 3);
+        final double a;
+        final double b;
+        if (houseType == HouseType.RESIDENTIAL5) {
+            a = 2.0;
+            b = 3.5;
+        } else if (houseType == HouseType.RESIDENTIAL1 || houseType == HouseType.RESIDENTIAL3) {
+            a = 2.6;
+            b = 3.8;
+        } else {
+            a = 3.4;
+            b = 4.2;
+        }
 
-        // Create the controller
-        final Controller controller = house.controller("F1_controller_" + phase.name() + id);
+        final double tempRandNum = a + (b - a) * rand.nextDouble();
+
+        if (cType == CoolingSystemType.ELECTRIC) {
+            house.setMotorEfficiency(MotorEfficiency.AVERAGE);
+            house.setMotorModel(MotorModel.BASIC);
+            house.setCoolingCop(tempRandNum);
+        }
+
+        final double initTemp = 68 + 4 * rand.nextDouble();
+        house.setAirTemperature(initTemp);
+        house.setMassTemperature(initTemp);
+    }
+
+    private static void setupResidential1(final House house) {
+        // % OLD/SMALL
+        // tankvol_1=45;
+        // tankvol_2=5;
+        // heatcap_1=4500;
+        // heatcap_2=500;
+        // wh_type1 = 'old';
+        // wh_type2 = 'small';
+        // wh_elec = wh_perc_elec_pre;
+        // load_scalar = 1;
+        setRroof(house, 19, 4);
+        setRwall(house, 11, 3);
+        setRfloor(house, 11, 1);
+        house.setRdoors(3.0);
+        setRwindows(house, 1.25, 0.5);
+        setAirchange(house, 1, 0.2);
+        setFloorarea(house, smallhome_floorarea_1, smallhome_floorarea_2, scaleFloor);
+    }
+
+    private static void setupResidential2(final House house) {
+        // % NEW/SMALL
+        // tankvol_1=45;
+        // tankvol_2=5;
+        // heatcap_1=4500;
+        // heatcap_2=500;
+        // wh_type1 = 'new';
+        // wh_type2 = 'small';
+        // wh_elec = wh_perc_elec_post;
+        // load_scalar = 0.95;
+        setRroof(house, 30, 5);
+        setRwall(house, 19, 3);
+        setRfloor(house, 15, 3);
+        house.setRdoors(5.0);
+        setRwindows(house, 1.75, 0.5);
+        setAirchange(house, 1, 0.2);
+        setFloorarea(house, smallhome_floorarea_1, smallhome_floorarea_2, scaleFloor);
+    }
+
+    private static void setupResidential3(final House house) {
+        // % OLD/LARGE
+        // tankvol_1=55;
+        // tankvol_2=5;
+        // heatcap_1=4500;
+        // heatcap_2=500;
+        // wh_type1 = 'old';
+        // wh_type2 = 'large';
+        // wh_elec = wh_perc_elec_pre;
+        // load_scalar = 0.85;
+        setRroof(house, 19, 4);
+        setRwall(house, 11, 3);
+        setRfloor(house, 11, 1);
+        house.setRdoors(3.0);
+        setRwindows(house, 1.25, 0.5);
+        setAirchange(house, 1, 0.2);
+        setFloorarea(house, largehome_floorarea_1, largehome_floorarea_2, scaleFloor);
+    }
+
+    private static void setupResidential4(final House house) {
+        // % NEW/LARGE
+        // tankvol_1=55;
+        // tankvol_2=5;
+        // heatcap_1=4500;
+        // heatcap_2=500;
+        // wh_type1 = 'new';
+        // wh_type2 = 'large';
+        // wh_elec = wh_perc_elec_post;
+        // load_scalar = 0.8;
+        setRroof(house, 30, 5);
+        setRwall(house, 19, 3);
+        setRfloor(house, 15, 3);
+        house.setRdoors(5.0);
+        setRwindows(house, 1.75, 0.5);
+        setAirchange(house, 1, 0.2);
+        setFloorarea(house, largehome_floorarea_1 - 200, largehome_floorarea_2, scaleFloor);
+    }
+
+    private static void setupResidential5(final House house) {
+        // % Mobile homes
+        // tankvol_1=35;
+        // tankvol_2=5;
+        // heatcap_1=3500;
+        // heatcap_2=500;
+        // wh_type1 = 'old';
+        // wh_type2 = 'small';
+        // wh_elec = wh_perc_elec_post;
+        // load_scalar = 0.7;
+        setRroof(house, 14, 4);
+        setRwall(house, 6, 2);
+        setRfloor(house, 5, 1);
+        house.setRdoors(3.0);
+        setRwindows(house, 1.25, 0.5);
+        setAirchange(house, 1.4, 0.2);
+        setFloorarea(house, mobilehome_floorarea_1, 150, scaleFloor);
+    }
+
+    private static void setupController(final House house, final Controller controller) {
+        // we need +1 to skip zeros
+        int scheduleCool = rand.nextInt(8) + 1;
+        double coolOffset = (cooloffset_1 - cooloffset_2) + 2 * cooloffset_2 * rand.nextDouble();
+        double coolTemp = (cool_1 - cool_2) + 2 * cool_2 * rand.nextDouble();
+
+        // we need +1 to skip zeros
+        int scheduleHeat = rand.nextInt(8) + 1;
+        double heatOffset = heatoffset_1 + heatoffset_2 * rand.nextDouble();
+        double heatTemp = (cool_1 - cool_2) + 2 * cool_2 * rand.nextDouble();
+
+        house.setCoolingSetpointFn(String.format("cooling%d*%1.3f+%2.2f", scheduleCool, coolTemp, coolOffset));
+        house.setHeatingSetpointFn(String.format("heating%d*%1.3f+%2.2f", scheduleHeat, heatTemp, heatOffset));
+
+        // long bidDelay = 30 + Math.round((90 - 30) * rand.nextDouble());
+        double marketTest = rand.nextDouble();
+        double coolSlider;
+        if (marketTest <= 0.17) {
+            coolSlider = 0.0;
+        } else if (marketTest <= 0.27) {
+            coolSlider = 0.2;
+        } else if (marketTest <= 0.62) {
+            coolSlider = 0.4;
+        } else if (marketTest <= 0.87) {
+            coolSlider = 0.6;
+        } else if (marketTest <= 0.97) {
+            coolSlider = 0.8;
+        } else { // marketTest <= 1.0
+            coolSlider = 1.0;
+        }
+        marketTest = marketTest / 100;
+
         controller.setUseOverride(UseOverride.ON);
         controller.setOverride("override");
-        controller.setAuction(auction);
-        controller.setScheduleSkew(scheduleSkew);
         controller.setBidMode(BidMode.PROXY);
         controller.setProxyDelay(10);
         controller.setControlMode(ControlMode.RAMP);
-        controller.setBaseSetpointFn("cooling8*0.977+3.56");
+        // controller.setBidDelay(bidDelay);
+        controller.setBaseSetpointFn(String.format("cooling%d*%1.3f+%2.2f", scheduleCool, coolTemp, coolOffset));
         controller.setSetpoint("cooling_setpoint");
         controller.setTarget("air_temperature");
         controller.setDeadband("thermostat_deadband");
@@ -474,276 +667,88 @@ public class AdaptedAEPFncsTest {
         controller.setStandardDeviationTarget("current_price_stdev_24h");
         controller.setPeriod(300.0);
         controller.setDemand("last_cooling_load");
-        controller.setRangeHigh(4.000);
-        controller.setRangeLow(-2.000);
-        controller.setRampHigh(2.600);
-        controller.setRampLow(2.600);
+        if (sigmaTstat > 0) {
+            double slider = coolSlider;
+            double crh = 10 - 10 * (1 - slider);
+            double crl = -5 + 5 * (1 - slider);
+            double crh2 = sigmaTstat + (1 - slider) * (3 - sigmaTstat);
+            double crl2 = sigmaTstat + (1 - slider) * (3 - sigmaTstat);
+            controller.setRangeHigh(crh);
+            controller.setRangeLow(crl);
+            controller.setRampHigh(crh2);
+            controller.setRampLow(crl2);
+        } else {
+            controller.setSliderSetting(coolSlider);
+            controller.setRangeHigh(5.0);
+            controller.setRangeLow(-3.0);
+        }
         controller.setTotal("total_load");
         controller.setLoad("hvac_load");
         controller.setState("power_state");
-        controller.setNetworkInterfaceName(controllerNIPrefix + id);
-        channel.addController(controller);
 
-        // Generate the loads on the house
-        generateLightsLoad(house, scheduleSkew);
-        generateClothesWasherLoad(house, scheduleSkew);
-        generateRefrigeratorLoad(house, scheduleSkew);
-        generateDryerLoad(house, scheduleSkew);
-        generateFreezerLoad(house, scheduleSkew);
-        generateRangeLoad(house, scheduleSkew);
-        generateMicrowaveLoad(house, scheduleSkew);
     }
 
-    private static void setupResidential1(final House house, final double scaleFloor, final double hvacPowerFactor) {
-//        % OLD/SMALL
-//        % Distribution of parameters (average +/- range)    
-//    %     cool_none_pre = 0.20;
-//    %     cool_pump_pre = 0.0;
-//    %     cool_electric_pre = 1 - cool_none_pre - cool_pump_pre;
-//        Rroof_1=19;
-//        Rroof_2=4;
-//        Rwall_1=11;
-//        Rwall_2=3;             
-//        Rfloor_1=11;
-//        Rfloor_2=1;
-//        Rdoors=3;
-//        Rwindows_1=1.25;
-//        Rwindows_2=0.5;
-//        airchange_1=1;
-//        airchange_2=0.2;      
-//        floorarea_1=smallhome_floorarea_1;
-//        floorarea_2=smallhome_floorarea_2;     
-//        tankvol_1=45;
-//        tankvol_2=5;
-//        heatcap_1=4500;
-//        heatcap_2=500;       
-//        wh_type1 = 'old';
-//        wh_type2 = 'small';
-//        hp_perc=heat_pump_perc_pre;
-//        g_perc=heat_gas_perc_pre;
-//        c_perc=cool_electric_pre;
-//        wh_elec = wh_perc_elec_pre;
-//        load_scalar = 1;
-        setRroof(house, 19, 4);
-        setRwall(house, 11, 3);
-        setRfloor(house, 11, 1);
-        house.setRdoors(3.0);
-        setRwindows(house, 1.25, 0.5);
-        setAirchange(house, 1, 0.2);
-        setGenericHouseInfo(house, "Residential1", hvacPowerFactor);
-        setFloorarea(house, smallhome_floorarea_1, smallhome_floorarea_2, scaleFloor);
-        final double initTemp = 68 + 4*rand.nextDouble();
-//        house.setAirTemperature(initTemp);
-//        house.setMassTemperature(initTemp);
-    }
-    
-    private static void setGenericHouseInfo(final House house, final String houseTag, final double hvacPowerFactor) {
-        final CoolingSystemType cType = CoolingSystemType.ELECTRIC;
-        house.setHvacPowerFactor(hvacPowerFactor);
-        house.setCoolingSystemType(cType);
-        house.setHeatingSystemType(HeatingSystemType.GAS);
-        house.setFanType(FanType.ONE_SPEED);
-        house.setHvacBreakerRating(200.0);
-        house.setTotalThermalMassPerFloorArea(rand.nextDouble()*2 + 3);
-        final double a;
-        final double b;
-        if(houseTag.equals("Residential5")) {
-            a = 2.0;
-            b = 3.5; 
-        }else if (houseTag.equals("Residential1") || houseTag.equals("Residential3")) {
-            a = 2.6;
-            b = 3.8;
-        }else{
-            a = 3.4;
-            b = 4.2;
+    private static void setupLoads(final House house, final HouseType houseType, double[] applianceScalar) {
+        // Setup the Loads
+        double dryerFlagPerc = rand.nextDouble();
+        double dishwasherFlagPerc = rand.nextDouble();
+        double freezerFlagPerc = rand.nextDouble();
+        boolean dryerPresent = true;
+        boolean freezerPresent = true;
+        boolean dishwasherPresent = true;
+        switch (houseType) {
+            case RESIDENTIAL1:
+            case RESIDENTIAL5:
+            case RESIDENTIAL3:
+                if (dryerFlagPerc > 0.65) {
+                    dryerPresent = false;
+                }
+                break;
+            default:
+                break;
         }
-
-        final double tempRandNum = a + (b-a)*rand.nextDouble();
-
-        if (cType == CoolingSystemType.ELECTRIC) {
-            house.setMotorEfficiency(MotorEfficiency.AVERAGE);
-            house.setMotorModel(MotorModel.BASIC);
-            house.setCoolingCop(tempRandNum);
+        switch (houseType) {
+            case RESIDENTIAL1:
+            case RESIDENTIAL2:
+            case RESIDENTIAL5:
+                if (dishwasherFlagPerc > 0.65) {
+                    dishwasherPresent = false;
+                }
+                freezerPresent = false;
+                break;
+            default:
+                break;
         }
+        switch (houseType) {
+            case RESIDENTIAL3:
+            case RESIDENTIAL4:
+                if (freezerFlagPerc > 0.5) {
+                    freezerPresent = false;
+                }
+                break;
+            default:
+                break;
+        }
+        if (houseType == HouseType.RESIDENTIAL1) {
+            dishwasherPresent = false;
+        }
+        long scheduleSkew = house.getScheduleSkew();
+        generateLightsLoad(house, scheduleSkew, applianceScalar[0]);
+        generateClothesWasherLoad(house, scheduleSkew, applianceScalar[1]);
+        generateRefrigeratorLoad(house, scheduleSkew, applianceScalar[2]);
+        if (dryerPresent) {
+            generateDryerLoad(house, scheduleSkew, applianceScalar[3]);
+        }
+        if (freezerPresent) {
+            generateFreezerLoad(house, scheduleSkew, applianceScalar[4]);
+        }
+        if (dishwasherPresent) {
+            generateDishwasherLoad(house, scheduleSkew, applianceScalar[5]);
+        }
+        generateRangeLoad(house, scheduleSkew, applianceScalar[6]);
+        generateMicrowaveLoad(house, scheduleSkew, applianceScalar[7]);
+        // TODO Implement water heater
     }
-    
-    private static void setRroof(final House house, final double Rroof1, final double Rroof2) {
-        house.setRroof((Rroof1-Rroof2)+2*Rroof2*rand.nextDouble());
-    }
-    
-    private static void setRwall(final House house, final double Rwall1, final double Rwall2) {
-        house.setRwall((Rwall1-Rwall2)+2*Rwall2*rand.nextDouble());
-    }
-    
-    private static void setRfloor(final House house, final double Rfloor1, final double Rfloor2) {
-        house.setRfloor((Rfloor1-Rfloor2)+2*Rfloor2*rand.nextDouble());
-    }
-    
-    private static void setRwindows(final House house, final double Rwindows1, final double Rwindows2) {
-        house.setRwindows((Rwindows1-Rwindows2)+2*Rwindows2*rand.nextDouble());
-    }
-    
-    private static void setAirchange(final House house, final double airchange1, final double airchange2) {
-        house.setAirchangePerHour((airchange1-airchange2)+2*airchange2*rand.nextDouble());
-    }
-    
-    private static void setFloorarea(final House house, final double floorarea1, final double floorarea2, final double scaleFloor) {
-        house.setFloorArea(scaleFloor * (floorarea1-floorarea2)+2*floorarea2*rand.nextDouble());
-        house.setNumberOfDoors(Math.ceil(house.getFloorArea()/1000));
-    }
-    
-    private static void setTankvol(final House house, final double Rwindows1, final double Rwindows2) {
-        house.setRwindows((Rwindows1-Rwindows2)+2*Rwindows2*rand.nextDouble());
-    }
-    
-    private static void setHeatcap(final House house, final double Rwindows1, final double Rwindows2) {
-        house.setRwindows((Rwindows1-Rwindows2)+2*Rwindows2*rand.nextDouble());
-    }
-    
-    private static void setupResidential2(final House house) {
-//      % NEW/SMALL
-//        % Distribution of parameters (average +/- range)   
-//        Rroof_1=30;
-//        Rroof_2=5;                
-//        Rwall_1=19;
-//        Rwall_2=3;             
-//        Rfloor_1=15;
-//        Rfloor_2=3;              
-//        Rdoors=5;
-//        Rwindows_1=1.75;
-//        Rwindows_2=0.5;      
-//        airchange_1=1;
-//        airchange_2=0.2;      
-//        floorarea_1=smallhome_floorarea_1;
-//        floorarea_2=smallhome_floorarea_2;      
-//        tankvol_1=45;
-//        tankvol_2=5;            
-//        heatcap_1=4500;
-//        heatcap_2=500;
-//        wh_type1 = 'new';
-//        wh_type2 = 'small';
-//        hp_perc=heat_pump_perc_post; 
-//        g_perc=heat_gas_perc_post; 
-//        c_perc=cool_electric_post;
-//        wh_elec = wh_perc_elec_post;
-//        load_scalar = 0.95;
-  }
-    private static void setupResidential3(final House house) {
-//      % OLD/LARGE 
-//        % Distribution of parameters (average +/- range)
-//        Rroof_1=19;
-//        Rroof_2=4;                
-//        Rwall_1=11;
-//        Rwall_2=3;             
-//        Rfloor_1=11;
-//        Rfloor_2=1;              
-//        Rdoors=3;
-//        Rwindows_1=1.25;
-//        Rwindows_2=0.5;      
-//        airchange_1=1;
-//        airchange_2=0.2;      
-//        floorarea_1=largehome_floorarea_1;
-//        floorarea_2=largehome_floorarea_2;  
-//        tankvol_1=55;
-//        tankvol_2=5;            
-//        heatcap_1=4500;
-//        heatcap_2=500;     
-//        wh_type1 = 'old';
-//        wh_type2 = 'large';
-//        hp_perc=heat_pump_perc_pre; 
-//        g_perc=heat_gas_perc_pre; 
-//        c_perc=cool_electric_pre;
-//        wh_elec = wh_perc_elec_pre;
-//        load_scalar = 0.85;
-  }
-    
-    private static void setupResidential4(final House house) {
-//      % NEW/LARGE
-//        % Distribution of parameters (average +/- range)
-//        Rroof_1=30;
-//        Rroof_2=5;                
-//        Rwall_1=19;
-//        Rwall_2=3;             
-//        Rfloor_1=15;
-//        Rfloor_2=3;              
-//        Rdoors=5;
-//        Rwindows_1=1.75;
-//        Rwindows_2=0.5;      
-//        airchange_1=1;
-//        airchange_2=0.2;      
-//        floorarea_1=largehome_floorarea_1-200;
-//        floorarea_2=largehome_floorarea_2;      
-//        tankvol_1=55;
-//        tankvol_2=5;            
-//        heatcap_1=4500;
-//        heatcap_2=500;
-//        wh_type1 = 'new';
-//        wh_type2 = 'large';
-//        % we'll assume there are no 3000 sq ft new homes w/ resistive heat
-//        hp_perc=heat_pump_perc_post; 
-//        g_perc=1-hp_perc; 
-//        c_perc=cool_electric_post;
-//        wh_elec = wh_perc_elec_post;
-//        load_scalar = 0.8;
-  }
-    
-    private static void setupResidential5(final House house) {
-//      % Mobile homes
-//        % Distribution of parameters (average +/- range)        
-//        Rroof_1=14;
-//        Rroof_2=4;                
-//        Rwall_1=6;Rwall_2=2;             
-//        Rfloor_1=5;
-//        Rfloor_2=1;               
-//        Rdoors=3;
-//        Rwindows_1=1.25;
-//        Rwindows_2=0.5;      
-//        airchange_1=1.4;
-//        airchange_2=0.2;      
-//        floorarea_1=mobilehome_floorarea_1;
-//        floorarea_2=150;     
-//        tankvol_1=35;
-//        tankvol_2=5;            
-//        heatcap_1=3500;
-//        heatcap_2=500;   
-//        wh_type1 = 'old';
-//        wh_type2 = 'small';
-//    %     hp_perc=0.0; g_perc=0.90; c_perc=cool_electric_pre;
-//    %     wh_elec = wh_perc_elec_pre;
-//        hp_perc=heat_pump_perc_post; 
-//        g_perc=1-hp_perc; 
-//        c_perc=cool_electric_post;
-//        wh_elec = wh_perc_elec_post;
-//        load_scalar = 0.7;    
-  }
-    
-    private static void setupResidential6(final House house) {
-//      % Distribution of parameters (average +/- range)
-//        Rroof_1=14;
-//        Rroof_2=4;                
-//        Rwall_1=6;
-//        Rwall_2=2;             
-//        Rfloor_1=5;
-//        Rfloor_2=1;               
-//        Rdoors=3;
-//        Rwindows_1=1.25;
-//        Rwindows_2=0.5;      
-//        airchange_1=1.4;
-//        airchange_2=0.2;      
-//        floorarea_1=500;
-//        floorarea_2=200;    
-//        tankvol_1=35;
-//        tankvol_2=5;            
-//        heatcap_1=3500;
-//        heatcap_2=500;
-//        wh_type1 = 'old';
-//        wh_type2 = 'small';
-//        hp_perc=heat_pump_perc_pre; 
-//        g_perc=heat_gas_perc_pre; 
-//        c_perc=cool_electric_pre;
-//        wh_elec = wh_perc_elec_pre;
-//        load_scalar = 0.5;
-  }
 
     /**
      * Generate load on a house for lights
@@ -753,17 +758,30 @@ public class AdaptedAEPFncsTest {
      * @param scheduleSkew
      *            the schedule skew
      */
-    private static void generateLightsLoad(final House house, final long scheduleSkew) {
-        final ZIPLoad load = house.addLoad();
-        load.setScheduleSkew(scheduleSkew);
-        load.setBasePowerFn("LIGHTS*1.8752");
-        load.setPowerFraction(0.600000);
-        load.setImpedanceFraction(0.400000);
-        load.setCurrentFraction(0.000000);
-        load.setPowerPf(-0.780);
-        load.setCurrentPf(0.420);
-        load.setImpedancePf(-0.880);
-        load.setHeatFraction(0.91);
+    private static void generateLightsLoad(final House house, final long scheduleSkew, double scalar) {
+        if (scalar > 0) {
+            final ZIPLoad load = house.addLoad();
+            load.setScheduleSkew(scheduleSkew);
+            boolean cfl = rand.nextBoolean();
+            if (cfl) {
+                load.setPowerFraction(0.6);
+                load.setImpedanceFraction(0.4);
+                load.setCurrentFraction(0.0);
+                load.setPowerPf(-0.78);
+                load.setImpedancePf(-0.88);
+                load.setCurrentPf(0.42);
+            } else {
+                load.setPowerFraction(0.0);
+                load.setImpedanceFraction(1.0);
+                load.setCurrentFraction(0.0);
+                load.setPowerPf(0.0);
+                load.setImpedancePf(1.0);
+                load.setCurrentPf(0.0);
+            }
+
+            setBasePower(load, house, scalar, "LIGHTS");
+            load.setHeatFraction(getHeatFrac(heatFraction));
+        }
     }
 
     /**
@@ -774,17 +792,19 @@ public class AdaptedAEPFncsTest {
      * @param scheduleSkew
      *            the schedule skew
      */
-    private static void generateClothesWasherLoad(final House house, final long scheduleSkew) {
-        final ZIPLoad load = house.addLoad();
-        load.setScheduleSkew(scheduleSkew);
-        load.setBasePowerFn("CLOTHESWASHER*0.4354");
-        load.setPowerFraction(1.000000);
-        load.setImpedanceFraction(0.000000);
-        load.setCurrentFraction(0.000000);
-        load.setPowerPf(0.970);
-        load.setCurrentPf(0.970);
-        load.setImpedancePf(0.970);
-        load.setHeatFraction(0.70);
+    private static void generateClothesWasherLoad(final House house, final long scheduleSkew, double scalar) {
+        if (scalar > 0) {
+            final ZIPLoad load = house.addLoad();
+            load.setScheduleSkew(scheduleSkew);
+            load.setPowerFraction(p);
+            load.setImpedanceFraction(z);
+            load.setCurrentFraction(i);
+            load.setPowerPf(systemPf);
+            load.setImpedancePf(systemPf);
+            load.setCurrentPf(systemPf);
+            setBasePower(load, house, scalar, "CLOTHESWASHER");
+            load.setHeatFraction(getHeatFrac(heatFraction));
+        }
     }
 
     /**
@@ -795,17 +815,19 @@ public class AdaptedAEPFncsTest {
      * @param scheduleSkew
      *            the schedule skew
      */
-    private static void generateRefrigeratorLoad(final House house, final long scheduleSkew) {
-        final ZIPLoad load = house.addLoad();
-        load.setScheduleSkew(scheduleSkew);
-        load.setBasePowerFn("REFRIGERATOR*0.7763");
-        load.setPowerFraction(1.000000);
-        load.setImpedanceFraction(0.000000);
-        load.setCurrentFraction(0.000000);
-        load.setPowerPf(0.970);
-        load.setCurrentPf(0.970);
-        load.setImpedancePf(0.970);
-        load.setHeatFraction(0.86);
+    private static void generateRefrigeratorLoad(final House house, final long scheduleSkew, double scalar) {
+        if (scalar > 0) {
+            final ZIPLoad load = house.addLoad();
+            load.setScheduleSkew(scheduleSkew);
+            load.setPowerFraction(p);
+            load.setImpedanceFraction(z);
+            load.setCurrentFraction(i);
+            load.setPowerPf(systemPf);
+            load.setImpedancePf(systemPf);
+            load.setCurrentPf(systemPf);
+            setBasePower(load, house, scalar, "REFRIGERATOR");
+            load.setHeatFraction(getHeatFrac(heatFraction));
+        }
     }
 
     /**
@@ -816,17 +838,19 @@ public class AdaptedAEPFncsTest {
      * @param scheduleSkew
      *            the schedule skew
      */
-    private static void generateDryerLoad(final House house, final long scheduleSkew) {
-        final ZIPLoad load = house.addLoad();
-        load.setScheduleSkew(scheduleSkew);
-        load.setBasePowerFn("DRYER*1.0019");
-        load.setPowerFraction(0.100000);
-        load.setImpedanceFraction(0.800000);
-        load.setCurrentFraction(0.100000);
-        load.setPowerPf(0.900);
-        load.setCurrentPf(0.900);
-        load.setImpedancePf(1.000);
-        load.setHeatFraction(0.77);
+    private static void generateDryerLoad(final House house, final long scheduleSkew, double scalar) {
+        if (scalar > 0) {
+            final ZIPLoad load = house.addLoad();
+            load.setScheduleSkew(scheduleSkew);
+            load.setPowerFraction(0.1);
+            load.setImpedanceFraction(0.8);
+            load.setCurrentFraction(0.1);
+            load.setPowerPf(0.9);
+            load.setImpedancePf(1.0);
+            load.setCurrentPf(0.9);
+            setBasePower(load, house, scalar, "DRYER");
+            load.setHeatFraction(getHeatFrac(heatFraction));
+        }
     }
 
     /**
@@ -837,17 +861,42 @@ public class AdaptedAEPFncsTest {
      * @param scheduleSkew
      *            the schedule skew
      */
-    private static void generateFreezerLoad(final House house, final long scheduleSkew) {
-        final ZIPLoad load = house.addLoad();
-        load.setScheduleSkew(scheduleSkew);
-        load.setBasePowerFn("FREEZER*0.9110");
-        load.setPowerFraction(1.000000);
-        load.setImpedanceFraction(0.000000);
-        load.setCurrentFraction(0.000000);
-        load.setPowerPf(0.970);
-        load.setCurrentPf(0.970);
-        load.setImpedancePf(0.970);
-        load.setHeatFraction(0.80);
+    private static void generateFreezerLoad(final House house, final long scheduleSkew, double scalar) {
+        if (scalar > 0) {
+            final ZIPLoad load = house.addLoad();
+            load.setScheduleSkew(scheduleSkew);
+            load.setPowerFraction(p);
+            load.setImpedanceFraction(z);
+            load.setCurrentFraction(i);
+            load.setPowerPf(systemPf);
+            load.setImpedancePf(systemPf);
+            load.setCurrentPf(systemPf);
+            setBasePower(load, house, scalar, "FREEZER");
+            load.setHeatFraction(getHeatFrac(heatFraction));
+        }
+    }
+
+    /**
+     * Generate load on a house for dishwasher
+     *
+     * @param house
+     *            the house reference
+     * @param scheduleSkew
+     *            the schedule skew
+     */
+    private static void generateDishwasherLoad(final House house, final long scheduleSkew, double scalar) {
+        if (scalar > 0) {
+            final ZIPLoad load = house.addLoad();
+            load.setScheduleSkew(scheduleSkew);
+            load.setPowerFraction(p);
+            load.setImpedanceFraction(z);
+            load.setCurrentFraction(i);
+            load.setPowerPf(systemPf);
+            load.setImpedancePf(systemPf);
+            load.setCurrentPf(systemPf);
+            setBasePower(load, house, scalar, "DISHWASHER");
+            load.setHeatFraction(getHeatFrac(heatFraction));
+        }
     }
 
     /**
@@ -858,17 +907,19 @@ public class AdaptedAEPFncsTest {
      * @param scheduleSkew
      *            the schedule skew
      */
-    private static void generateRangeLoad(final House house, final long scheduleSkew) {
-        final ZIPLoad load = house.addLoad();
-        load.setScheduleSkew(scheduleSkew);
-        load.setBasePowerFn("RANGE*1.0590");
-        load.setPowerFraction(0.000000);
-        load.setImpedanceFraction(1.000000);
-        load.setCurrentFraction(0.000000);
-        load.setPowerPf(0.000);
-        load.setCurrentPf(0.000);
-        load.setImpedancePf(1.000);
-        load.setHeatFraction(0.86);
+    private static void generateRangeLoad(final House house, final long scheduleSkew, double scalar) {
+        if (scalar > 0) {
+            final ZIPLoad load = house.addLoad();
+            load.setScheduleSkew(scheduleSkew);
+            load.setPowerFraction(0.0);
+            load.setImpedanceFraction(1.0);
+            load.setCurrentFraction(0.0);
+            load.setPowerPf(0.0);
+            load.setImpedancePf(1.0);
+            load.setCurrentPf(0.0);
+            setBasePower(load, house, scalar, "RANGE");
+            load.setHeatFraction(getHeatFrac(heatFraction));
+        }
     }
 
     /**
@@ -879,16 +930,52 @@ public class AdaptedAEPFncsTest {
      * @param scheduleSkew
      *            the schedule skew
      */
-    private static void generateMicrowaveLoad(final House house, final long scheduleSkew) {
-        final ZIPLoad load = house.addLoad();
-        load.setScheduleSkew(scheduleSkew);
-        load.setBasePowerFn("MICROWAVE*0.6381");
-        load.setPowerFraction(1.000000);
-        load.setImpedanceFraction(0.000000);
-        load.setCurrentFraction(0.000000);
-        load.setPowerPf(0.970);
-        load.setCurrentPf(0.970);
-        load.setImpedancePf(0.970);
-        load.setHeatFraction(0.94);
+    private static void generateMicrowaveLoad(final House house, final long scheduleSkew, double scalar) {
+        if (scalar > 0) {
+            final ZIPLoad load = house.addLoad();
+            load.setScheduleSkew(scheduleSkew);
+            load.setPowerFraction(p);
+            load.setImpedanceFraction(z);
+            load.setCurrentFraction(i);
+            load.setPowerPf(systemPf);
+            load.setImpedancePf(systemPf);
+            load.setCurrentPf(systemPf);
+            setBasePower(load, house, scalar, "MICROWAVE");
+            load.setHeatFraction(getHeatFrac(heatFraction));
+        }
+    }
+
+    private static void setRroof(final House house, final double Rroof1, final double Rroof2) {
+        house.setRroof((Rroof1 - Rroof2) + 2 * Rroof2 * rand.nextDouble());
+    }
+
+    private static void setRwall(final House house, final double Rwall1, final double Rwall2) {
+        house.setRwall((Rwall1 - Rwall2) + 2 * Rwall2 * rand.nextDouble());
+    }
+
+    private static void setRfloor(final House house, final double Rfloor1, final double Rfloor2) {
+        house.setRfloor((Rfloor1 - Rfloor2) + 2 * Rfloor2 * rand.nextDouble());
+    }
+
+    private static void setRwindows(final House house, final double Rwindows1, final double Rwindows2) {
+        house.setRwindows((Rwindows1 - Rwindows2) + 2 * Rwindows2 * rand.nextDouble());
+    }
+
+    private static void setAirchange(final House house, final double airchange1, final double airchange2) {
+        house.setAirchangePerHour((airchange1 - airchange2) + 2 * airchange2 * rand.nextDouble());
+    }
+
+    private static void setFloorarea(final House house, final double floorarea1, final double floorarea2, final double scaleFloor) {
+        house.setFloorArea(scaleFloor * (floorarea1 - floorarea2) + 2 * floorarea2 * rand.nextDouble());
+        house.setNumberOfDoors(Math.ceil(house.getFloorArea() / 1000));
+    }
+
+    private static void setBasePower(final ZIPLoad load, final House house, double scalar, String name) {
+        double basePower = (324.9 / 8907 * Math.pow(house.getFloorArea(), 0.442)) * scalar * ((basepwr_1 - basepwr_2) + 2 * basepwr_2 * rand.nextDouble());
+        load.setBasePowerFn(String.format("%s*%.4f", name, basePower));
+    }
+
+    private static double getHeatFrac(double heatFractionScalar) {
+        return heatFractionScalar - (0.2) * heatFractionScalar + 2 * (0.2) * heatFractionScalar * rand.nextDouble();
     }
 }

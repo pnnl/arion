@@ -6,15 +6,10 @@ import gov.pnnl.prosser.api.*;
 import gov.pnnl.prosser.api.gld.enums.*;
 import gov.pnnl.prosser.api.gld.lib.*;
 import gov.pnnl.prosser.api.gld.obj.*;
-import gov.pnnl.prosser.api.ns3.obj.Channel;
+import gov.pnnl.prosser.api.ns3.obj.*;
 
-import java.io.IOException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.time.LocalDateTime;
-import java.util.EnumSet;
-import java.util.List;
-import java.util.Random;
+import java.time.*;
+import java.util.*;
 
 /**
  * First FNCS experiment
@@ -24,7 +19,6 @@ import java.util.Random;
  */
 public class ExperimentFncsTest extends Experiment {
 
-    private static final Random rand = new Random(13);
 
     /**
      * Generate the experiment

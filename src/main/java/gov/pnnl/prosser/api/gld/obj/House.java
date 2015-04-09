@@ -122,9 +122,35 @@ public class House extends ResidentialEnduse {
     private String heatingSetpointFn;
 
     /**
+     * thermostat cooling setpoint (degF)
+     */
+    private Double coolingSetpoint;
+
+    /**
+     * thermostat cooling setpoint (degF) function
+     * if the cooling setpoint is a function of another property set that here
+     */
+    private String coolingSetpointFn;
+
+    /**
+     * indoor air temperature (degF)
+     */
+    private Double airTemperature;
+
+    /**
+     * interior mass temperature (degF)
+     */
+    private Double massTemperature;
+
+    /**
      * FNCS controller
      */
     private Controller controller;
+
+    /**
+     * Recorder to record properties of this house and output to file
+     */
+    private Recorder recorder;
 
     /**
      * the loads on the house (lights, etc.)
@@ -514,6 +540,84 @@ public class House extends ResidentialEnduse {
     }
 
     /**
+     * Get the thermostat cooling setpoint (degF)
+     * 
+     * @return the coolingSetpoint
+     */
+    public Double getCoolingSetpoint() {
+        return coolingSetpoint;
+    }
+
+    /**
+     * Set the thermostat cooling setpoint (degF)
+     * 
+     * @param coolingSetpoint
+     *            the coolingSetpoint to set
+     */
+    public void setCoolingSetpoint(Double coolingSetpoint) {
+        this.coolingSetpoint = coolingSetpoint;
+    }
+
+    /**
+     * Get the thermostat cooling setpoint (degF) function
+     * if the cooling setpoint is a function of another property it will be set here
+     * 
+     * @return the coolingSetpointFn
+     */
+    public String getCoolingSetpointFn() {
+        return coolingSetpointFn;
+    }
+
+    /**
+     * Set the thermostat cooling setpoint (degF) function
+     * if the cooling setpoint is a function of another property set it here
+     * 
+     * @param coolingSetpointFn
+     *            the coolingSetpointFn to set
+     */
+    public void setCoolingSetpointFn(String coolingSetpointFn) {
+        this.coolingSetpointFn = coolingSetpointFn;
+    }
+
+    /**
+     * Get the indoor air temperature (degF)
+     * 
+     * @return the airTemperature
+     */
+    public Double getAirTemperature() {
+        return airTemperature;
+    }
+
+    /**
+     * Set the indoor air temperature (degF)
+     * 
+     * @param airTemperature
+     *            the airTemperature to set
+     */
+    public void setAirTemperature(Double airTemperature) {
+        this.airTemperature = airTemperature;
+    }
+
+    /**
+     * Get the interior mass temperature (degF)
+     * 
+     * @return the massTemperature
+     */
+    public Double getMassTemperature() {
+        return massTemperature;
+    }
+
+    /**
+     * Set the interior mass temperature (degF)
+     * 
+     * @param massTemperature
+     *            the massTemperature to set
+     */
+    public void setMassTemperature(Double massTemperature) {
+        this.massTemperature = massTemperature;
+    }
+
+    /**
      * Get the FNCS controller
      * 
      * @return the controller
@@ -530,6 +634,25 @@ public class House extends ResidentialEnduse {
      */
     public void setController(final Controller controller) {
         this.controller = controller;
+    }
+
+    /**
+     * Get the Recorder
+     * 
+     * @return the recorder
+     */
+    public Recorder getRecorder() {
+        return recorder;
+    }
+
+    /**
+     * Set the Recorder
+     * 
+     * @param recorder
+     *            the recorder to set
+     */
+    public void setRecorder(Recorder recorder) {
+        this.recorder = recorder;
     }
 
     /**
@@ -564,6 +687,16 @@ public class House extends ResidentialEnduse {
         this.controller = new Controller();
         controller.setName(name);
         return controller;
+    }
+
+    /**
+     * Create and set the recorder on this house
+     * 
+     * @return the recorder
+     */
+    public Recorder recorder() {
+        this.recorder = new Recorder();
+        return recorder;
     }
 
     /**
@@ -603,8 +736,16 @@ public class House extends ResidentialEnduse {
         } else {
             GldUtils.writeProperty(sb, "heating_setpoint", this.heatingSetpoint);
         }
+        if (coolingSetpointFn != null) {
+            GldUtils.writeProperty(sb, "cooling_setpoint", this.coolingSetpointFn);
+        } else {
+            GldUtils.writeProperty(sb, "cooling_setpoint", this.coolingSetpoint);
+        }
         if (controller != null) {
             controller.writeGldString(sb);
+        }
+        if (recorder != null) {
+            recorder.writeGldString(sb);
         }
         // Handle special case since we need a semicolon here
         sb.insert(sb.length() - 1, ';');
