@@ -22,5 +22,8 @@
 		<file>
 			<source>src/test/java/ExperimentFncsTest.java</source>
 		</file>
+		<file>
+			<source>src/test/java/AdaptedAEPFncsTest.java</source>
+		</file>
 	</files>
 </assembly>
