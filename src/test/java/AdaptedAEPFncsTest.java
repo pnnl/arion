@@ -385,6 +385,7 @@ public class AdaptedAEPFncsTest extends Experiment {
     private static void generateHouse(final GldSimulator sim, final int id, final TriplexMeter tripMeterA,
             final TriplexLineConfiguration tripLineConf, final AuctionObject auction, final PhaseCode phase,
             final String controllerNIPrefix, final Channel channel, final boolean track) {
+        // Select the phases for our meters
         final EnumSet<PhaseCode> phases;
         switch (phase) {
             case A:
@@ -423,17 +424,21 @@ public class AdaptedAEPFncsTest extends Experiment {
         tripMeterRt.setGroupId("F1_rt_meter");
         tripMeterRt.setParent(tripMeterFlatrate);
 
+        // Randomize the schedule skew
         long scheduleSkew = Math.round(1200 * rand.nextGaussian());
         if (scheduleSkew > 3600) {
             scheduleSkew = 3600;
         } else if (scheduleSkew < -3600) {
             scheduleSkew = -3600;
         }
+        
+        // Create the base house
         final House house = sim.house("F1_house_" + phase.name() + id);
         house.setParent(tripMeterRt);
         house.setScheduleSkew(scheduleSkew);
 
         final double[] applianceScalar = new double[] { 2, 1, 1, 1, 1, 1, 1, 1 };
+        // Determine the type of house
         final double typeRand = rand.nextDouble();
         final HouseType houseType;
         if (typeRand <= 0.3) {
@@ -450,16 +455,20 @@ public class AdaptedAEPFncsTest extends Experiment {
             houseType = HouseType.RESIDENTIAL5;
         }
         // RESIDENTIAL6 = Apartments are special cases and not covered in the original script (code was commented out)
+        // Setup base house details
         setHouseInfo(house, houseType);
 
+        // Create the base controller
         final Controller controller = house.controller("F1_controller_" + phase.name() + id);
         controller.setAuction(auction);
         controller.setScheduleSkew(scheduleSkew);
         controller.setNetworkInterfaceName(controllerNIPrefix + id);
         channel.addController(controller);
+        // Setup the controller and loads
         setupController(house, controller);
         setupLoads(house, houseType, applianceScalar);
 
+        // If we want to track this item, add a recorder
         if (track) {
             final Recorder recorder = house.recorder();
             recorder.setProperty("cooling_setpoint,air_temperature");
@@ -497,6 +506,7 @@ public class AdaptedAEPFncsTest extends Experiment {
     }
 
     private static void setHouseInfo(final House house, final HouseType houseType) {
+        // Setup the specific values
         switch (houseType) {
             case RESIDENTIAL1:
                 setupResidential1(house);
@@ -519,6 +529,7 @@ public class AdaptedAEPFncsTest extends Experiment {
             default:
                 throw new RuntimeException("Unable to handle house type " + houseType);
         }
+        // Setup the common values
         house.setHeatingSystemType(HeatingSystemType.GAS);
         house.setFanType(FanType.ONE_SPEED);
         house.setCoolingSystemType(CoolingSystemType.ELECTRIC);
@@ -549,8 +560,11 @@ public class AdaptedAEPFncsTest extends Experiment {
         house.setMassTemperature(initTemp);
     }
 
+    /**
+     * Setup the house for Old/Small
+     * @param house the house to setup
+     */
     private static void setupResidential1(final House house) {
-        // % OLD/SMALL
         // tankvol_1=45;
         // tankvol_2=5;
         // heatcap_1=4500;
@@ -568,8 +582,11 @@ public class AdaptedAEPFncsTest extends Experiment {
         setFloorarea(house, smallhome_floorarea_1, smallhome_floorarea_2, scaleFloor);
     }
 
+    /**
+     * Setup the house for New/Small
+     * @param house the house to setup
+     */
     private static void setupResidential2(final House house) {
-        // % NEW/SMALL
         // tankvol_1=45;
         // tankvol_2=5;
         // heatcap_1=4500;
@@ -587,8 +604,11 @@ public class AdaptedAEPFncsTest extends Experiment {
         setFloorarea(house, smallhome_floorarea_1, smallhome_floorarea_2, scaleFloor);
     }
 
+    /**
+     * Setup the house for Old/Large
+     * @param house the house to setup
+     */
     private static void setupResidential3(final House house) {
-        // % OLD/LARGE
         // tankvol_1=55;
         // tankvol_2=5;
         // heatcap_1=4500;
@@ -606,8 +626,11 @@ public class AdaptedAEPFncsTest extends Experiment {
         setFloorarea(house, largehome_floorarea_1, largehome_floorarea_2, scaleFloor);
     }
 
+    /**
+     * Setup the house for New/Large
+     * @param house the house to setup
+     */
     private static void setupResidential4(final House house) {
-        // % NEW/LARGE
         // tankvol_1=55;
         // tankvol_2=5;
         // heatcap_1=4500;
@@ -625,8 +648,11 @@ public class AdaptedAEPFncsTest extends Experiment {
         setFloorarea(house, largehome_floorarea_1 - 200, largehome_floorarea_2, scaleFloor);
     }
 
+    /**
+     * Setup the house for Mobile Homes
+     * @param house the house to setup
+     */
     private static void setupResidential5(final House house) {
-        // % Mobile homes
         // tankvol_1=35;
         // tankvol_2=5;
         // heatcap_1=3500;
@@ -681,8 +707,10 @@ public class AdaptedAEPFncsTest extends Experiment {
         controller.setBidMode(BidMode.PROXY);
         controller.setProxyDelay(10);
         controller.setControlMode(ControlMode.RAMP);
+        
         // FIXME Bid delay does not apper in our output files?
         // controller.setBidDelay(bidDelay);
+        
         controller.setBaseSetpointFn(String.format("cooling%d*%1.3f+%2.2f", scheduleCool, coolTemp, coolOffset));
         controller.setSetpoint("cooling_setpoint");
         controller.setTarget("air_temperature");
