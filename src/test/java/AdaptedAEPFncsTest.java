@@ -53,18 +53,25 @@ public class AdaptedAEPFncsTest extends Experiment {
     // % Parameter distributions (same for all) (average +/- range)
     private static final double wtrdem_1 = 1.0;
     private static final double wtrdem_2 = 0.2;
+
     private static final double cool_1 = 1;
     private static final double cool_2 = 0.05;
+
     private static final double tankset_1 = 125;
     private static final double tankset_2 = 5;
+
     private static final double thermdb_1 = 2.0;
     private static final double thermdb_2 = 0.2;
+
     private static final double cooloffset_1 = 4;
     private static final double cooloffset_2 = 2;
+
     private static final double heatoffset_1 = 0;
     private static final double heatoffset_2 = 3;
+
     private static final double basepwr_1 = 1;
     private static final double basepwr_2 = 0.5;
+
     private static final double tankUA_1 = 2.0;
     private static final double tankUA_2 = 0.2;
 
@@ -76,6 +83,10 @@ public class AdaptedAEPFncsTest extends Experiment {
     private static final double hvacPf = 0.97;
     private static final double scaleFloor = 1;
     private static final double sigmaTstat = 2;
+
+    private static final String marketMean = "current_price_mean_24h";
+    private static final String marketStdev = "current_price_stdev_24h";
+    private static final int marketPeriod = 300;
 
     /**
      * Generate the experiment
@@ -106,7 +117,7 @@ public class AdaptedAEPFncsTest extends Experiment {
 
     /**
      * The gld simulator for this experiment
-     * 
+     *
      * @param controllerNIPrefix
      *            Prefix to network controllers in Houses and will be enclosed in the auction object
      * @param channels
@@ -117,9 +128,6 @@ public class AdaptedAEPFncsTest extends Experiment {
     private static void populateGldSim(final GldSimulator sim, final int numHouses, final String controllerNIPrefix, final List<Channel> channels) {
         // final boolean useMarket = true;
         final String marketName = "Market1";
-        final int marketPeriod = 300;
-        final String marketMean = "current_price_mean_24h";
-        final String marketStdev = "current_price_stdev_24h";
         // final double percentPenetration = 1;
         // final double sliderSetting = 1;
 
@@ -320,7 +328,7 @@ public class AdaptedAEPFncsTest extends Experiment {
         centerTapTransformerC.setConfiguration(defaultTransformerC);
 
         // TODO: Move generate house and other convienence methods to a library
-        Integer[] trackHouseArray = new Integer[] { 13, 28, 47, 58, 77, 100, 226, 246, 253, 278 };
+        final Integer[] trackHouseArray = new Integer[] { 13, 28, 47, 58, 77, 100, 226, 246, 253, 278 };
         final Set<Integer> houseSet = Arrays.stream(trackHouseArray).collect(Collectors.toSet());
         for (int i = 1; i <= numHouses; i++) {
             TriplexMeter meter;
@@ -336,7 +344,7 @@ public class AdaptedAEPFncsTest extends Experiment {
                 phase = PhaseCode.C;
             }
             // distributes houses to channels, 20 per channel (1-n)
-            int channelId = ((i - 1) / 20) + 1;
+            final int channelId = ((i - 1) / 20) + 1;
             if (houseSet.contains(i)) {
                 generateHouse(sim, i, meter, tripLineConf, auction, phase, controllerNIPrefix, channels.get(channelId), true);
             } else {
@@ -425,7 +433,7 @@ public class AdaptedAEPFncsTest extends Experiment {
         house.setParent(tripMeterRt);
         house.setScheduleSkew(scheduleSkew);
 
-        double[] applianceScalar = new double[] { 2, 1, 1, 1, 1, 1, 1, 1 };
+        final double[] applianceScalar = new double[] { 2, 1, 1, 1, 1, 1, 1, 1 };
         final double typeRand = rand.nextDouble();
         final HouseType houseType;
         if (typeRand <= 0.3) {
@@ -441,6 +449,7 @@ public class AdaptedAEPFncsTest extends Experiment {
         } else { // typeRand > 0.96
             houseType = HouseType.RESIDENTIAL5;
         }
+        // RESIDENTIAL6 = Apartments are special cases and not covered in the original script (code was commented out)
         setHouseInfo(house, houseType);
 
         final Controller controller = house.controller("F1_controller_" + phase.name() + id);
@@ -461,11 +470,29 @@ public class AdaptedAEPFncsTest extends Experiment {
     }
 
     private enum HouseType {
+        /**
+         * Old/Small
+         */
         RESIDENTIAL1,
+        /**
+         * New/Small
+         */
         RESIDENTIAL2,
+        /**
+         * Old/Large
+         */
         RESIDENTIAL3,
+        /**
+         * New/Large
+         */
         RESIDENTIAL4,
+        /**
+         * Mobile Homes
+         */
         RESIDENTIAL5,
+        /**
+         * Apartments
+         */
         RESIDENTIAL6;
     }
 
@@ -486,17 +513,16 @@ public class AdaptedAEPFncsTest extends Experiment {
             case RESIDENTIAL5:
                 setupResidential5(house);
                 break;
-            // case RESIDENTIAL6:
-            // setupResidential6(house);
-            // break;
+                // case RESIDENTIAL6:
+                // setupResidential6(house);
+                // break;
             default:
                 throw new RuntimeException("Unable to handle house type " + houseType);
         }
-        final CoolingSystemType cType = CoolingSystemType.ELECTRIC;
-        house.setHvacPowerFactor(hvacPf);
-        house.setCoolingSystemType(cType);
         house.setHeatingSystemType(HeatingSystemType.GAS);
         house.setFanType(FanType.ONE_SPEED);
+        house.setCoolingSystemType(CoolingSystemType.ELECTRIC);
+        house.setHvacPowerFactor(hvacPf);
         house.setHvacBreakerRating(200.0);
         house.setTotalThermalMassPerFloorArea(rand.nextDouble() * 2 + 3);
         final double a;
@@ -512,13 +538,11 @@ public class AdaptedAEPFncsTest extends Experiment {
             b = 4.2;
         }
 
-        final double tempRandNum = a + (b - a) * rand.nextDouble();
+        final double coolingCopVal = a + (b - a) * rand.nextDouble();
 
-        if (cType == CoolingSystemType.ELECTRIC) {
-            house.setMotorEfficiency(MotorEfficiency.AVERAGE);
-            house.setMotorModel(MotorModel.BASIC);
-            house.setCoolingCop(tempRandNum);
-        }
+        house.setMotorEfficiency(MotorEfficiency.AVERAGE);
+        house.setMotorModel(MotorModel.BASIC);
+        house.setCoolingCop(coolingCopVal);
 
         final double initTemp = 68 + 4 * rand.nextDouble();
         house.setAirTemperature(initTemp);
@@ -622,20 +646,20 @@ public class AdaptedAEPFncsTest extends Experiment {
 
     private static void setupController(final House house, final Controller controller) {
         // we need +1 to skip zeros
-        int scheduleCool = rand.nextInt(8) + 1;
-        double coolOffset = (cooloffset_1 - cooloffset_2) + 2 * cooloffset_2 * rand.nextDouble();
-        double coolTemp = (cool_1 - cool_2) + 2 * cool_2 * rand.nextDouble();
+        final int scheduleCool = rand.nextInt(8) + 1;
+        final double coolOffset = (cooloffset_1 - cooloffset_2) + 2 * cooloffset_2 * rand.nextDouble();
+        final double coolTemp = (cool_1 - cool_2) + 2 * cool_2 * rand.nextDouble();
 
         // we need +1 to skip zeros
-        int scheduleHeat = rand.nextInt(8) + 1;
-        double heatOffset = heatoffset_1 + heatoffset_2 * rand.nextDouble();
-        double heatTemp = (cool_1 - cool_2) + 2 * cool_2 * rand.nextDouble();
+        final int scheduleHeat = rand.nextInt(8) + 1;
+        final double heatOffset = heatoffset_1 + heatoffset_2 * rand.nextDouble();
+        final double heatTemp = (cool_1 - cool_2) + 2 * cool_2 * rand.nextDouble();
 
         house.setCoolingSetpointFn(String.format("cooling%d*%1.3f+%2.2f", scheduleCool, coolTemp, coolOffset));
         house.setHeatingSetpointFn(String.format("heating%d*%1.3f+%2.2f", scheduleHeat, heatTemp, heatOffset));
 
         // long bidDelay = 30 + Math.round((90 - 30) * rand.nextDouble());
-        double marketTest = rand.nextDouble();
+        final double marketTest = rand.nextDouble();
         double coolSlider;
         if (marketTest <= 0.17) {
             coolSlider = 0.0;
@@ -650,29 +674,30 @@ public class AdaptedAEPFncsTest extends Experiment {
         } else { // marketTest <= 1.0
             coolSlider = 1.0;
         }
-        marketTest = marketTest / 100;
+        // marketTest = marketTest / 100;
 
         controller.setUseOverride(UseOverride.ON);
         controller.setOverride("override");
         controller.setBidMode(BidMode.PROXY);
         controller.setProxyDelay(10);
         controller.setControlMode(ControlMode.RAMP);
+        // FIXME Bid delay does not apper in our output files?
         // controller.setBidDelay(bidDelay);
         controller.setBaseSetpointFn(String.format("cooling%d*%1.3f+%2.2f", scheduleCool, coolTemp, coolOffset));
         controller.setSetpoint("cooling_setpoint");
         controller.setTarget("air_temperature");
         controller.setDeadband("thermostat_deadband");
         controller.setUsePredictiveBidding(true);
-        controller.setAverageTarget("current_price_mean_24h");
-        controller.setStandardDeviationTarget("current_price_stdev_24h");
-        controller.setPeriod(300.0);
+        controller.setAverageTarget(marketMean);
+        controller.setStandardDeviationTarget(marketStdev);
+        controller.setPeriod((double) marketPeriod);
         controller.setDemand("last_cooling_load");
         if (sigmaTstat > 0) {
-            double slider = coolSlider;
-            double crh = 10 - 10 * (1 - slider);
-            double crl = -5 + 5 * (1 - slider);
-            double crh2 = sigmaTstat + (1 - slider) * (3 - sigmaTstat);
-            double crl2 = sigmaTstat + (1 - slider) * (3 - sigmaTstat);
+            final double slider = coolSlider;
+            final double crh = 10 - 10 * (1 - slider);
+            final double crl = -5 + 5 * (1 - slider);
+            final double crh2 = sigmaTstat + (1 - slider) * (3 - sigmaTstat);
+            final double crl2 = sigmaTstat + (1 - slider) * (3 - sigmaTstat);
             controller.setRangeHigh(crh);
             controller.setRangeLow(crl);
             controller.setRampHigh(crh2);
@@ -688,18 +713,18 @@ public class AdaptedAEPFncsTest extends Experiment {
 
     }
 
-    private static void setupLoads(final House house, final HouseType houseType, double[] applianceScalar) {
+    private static void setupLoads(final House house, final HouseType houseType, final double[] applianceScalar) {
         // Setup the Loads
-        double dryerFlagPerc = rand.nextDouble();
-        double dishwasherFlagPerc = rand.nextDouble();
-        double freezerFlagPerc = rand.nextDouble();
+        final double dryerFlagPerc = rand.nextDouble();
+        final double dishwasherFlagPerc = rand.nextDouble();
+        final double freezerFlagPerc = rand.nextDouble();
         boolean dryerPresent = true;
         boolean freezerPresent = true;
         boolean dishwasherPresent = true;
         switch (houseType) {
             case RESIDENTIAL1:
-            case RESIDENTIAL5:
             case RESIDENTIAL3:
+            case RESIDENTIAL5:
                 if (dryerFlagPerc > 0.65) {
                     dryerPresent = false;
                 }
@@ -712,6 +737,7 @@ public class AdaptedAEPFncsTest extends Experiment {
             case RESIDENTIAL2:
             case RESIDENTIAL5:
                 if (dishwasherFlagPerc > 0.65) {
+                    // FIXME in the script this sets dryer present instead of dishwasher present
                     dishwasherPresent = false;
                 }
                 freezerPresent = false;
@@ -732,22 +758,22 @@ public class AdaptedAEPFncsTest extends Experiment {
         if (houseType == HouseType.RESIDENTIAL1) {
             dishwasherPresent = false;
         }
-        long scheduleSkew = house.getScheduleSkew();
-        generateLightsLoad(house, scheduleSkew, applianceScalar[0]);
-        generateClothesWasherLoad(house, scheduleSkew, applianceScalar[1]);
-        generateRefrigeratorLoad(house, scheduleSkew, applianceScalar[2]);
+        // FIXME there is a crazy if statement in the matlab code that doesn't make sense
+        generateLightsLoad(house, applianceScalar[0]);
+        generateClothesWasherLoad(house, applianceScalar[1]);
+        generateRefrigeratorLoad(house, applianceScalar[2]);
         if (dryerPresent) {
-            generateDryerLoad(house, scheduleSkew, applianceScalar[3]);
+            generateDryerLoad(house, applianceScalar[3]);
         }
         if (freezerPresent) {
-            generateFreezerLoad(house, scheduleSkew, applianceScalar[4]);
+            generateFreezerLoad(house, applianceScalar[4]);
         }
         if (dishwasherPresent) {
-            generateDishwasherLoad(house, scheduleSkew, applianceScalar[5]);
+            generateDishwasherLoad(house, applianceScalar[5]);
         }
-        generateRangeLoad(house, scheduleSkew, applianceScalar[6]);
-        generateMicrowaveLoad(house, scheduleSkew, applianceScalar[7]);
-        // TODO Implement water heater
+        generateRangeLoad(house, applianceScalar[6]);
+        generateMicrowaveLoad(house, applianceScalar[7]);
+        // FIXME Water heater exists in script but not in our glm demo files?
     }
 
     /**
@@ -758,11 +784,11 @@ public class AdaptedAEPFncsTest extends Experiment {
      * @param scheduleSkew
      *            the schedule skew
      */
-    private static void generateLightsLoad(final House house, final long scheduleSkew, double scalar) {
+    private static void generateLightsLoad(final House house, final double scalar) {
         if (scalar > 0) {
             final ZIPLoad load = house.addLoad();
-            load.setScheduleSkew(scheduleSkew);
-            boolean cfl = rand.nextBoolean();
+            load.setScheduleSkew(house.getScheduleSkew());
+            final boolean cfl = rand.nextBoolean();
             if (cfl) {
                 load.setPowerFraction(0.6);
                 load.setImpedanceFraction(0.4);
@@ -792,10 +818,10 @@ public class AdaptedAEPFncsTest extends Experiment {
      * @param scheduleSkew
      *            the schedule skew
      */
-    private static void generateClothesWasherLoad(final House house, final long scheduleSkew, double scalar) {
+    private static void generateClothesWasherLoad(final House house, final double scalar) {
         if (scalar > 0) {
             final ZIPLoad load = house.addLoad();
-            load.setScheduleSkew(scheduleSkew);
+            load.setScheduleSkew(house.getScheduleSkew());
             load.setPowerFraction(p);
             load.setImpedanceFraction(z);
             load.setCurrentFraction(i);
@@ -815,10 +841,10 @@ public class AdaptedAEPFncsTest extends Experiment {
      * @param scheduleSkew
      *            the schedule skew
      */
-    private static void generateRefrigeratorLoad(final House house, final long scheduleSkew, double scalar) {
+    private static void generateRefrigeratorLoad(final House house, final double scalar) {
         if (scalar > 0) {
             final ZIPLoad load = house.addLoad();
-            load.setScheduleSkew(scheduleSkew);
+            load.setScheduleSkew(house.getScheduleSkew());
             load.setPowerFraction(p);
             load.setImpedanceFraction(z);
             load.setCurrentFraction(i);
@@ -838,10 +864,10 @@ public class AdaptedAEPFncsTest extends Experiment {
      * @param scheduleSkew
      *            the schedule skew
      */
-    private static void generateDryerLoad(final House house, final long scheduleSkew, double scalar) {
+    private static void generateDryerLoad(final House house, final double scalar) {
         if (scalar > 0) {
             final ZIPLoad load = house.addLoad();
-            load.setScheduleSkew(scheduleSkew);
+            load.setScheduleSkew(house.getScheduleSkew());
             load.setPowerFraction(0.1);
             load.setImpedanceFraction(0.8);
             load.setCurrentFraction(0.1);
@@ -861,10 +887,10 @@ public class AdaptedAEPFncsTest extends Experiment {
      * @param scheduleSkew
      *            the schedule skew
      */
-    private static void generateFreezerLoad(final House house, final long scheduleSkew, double scalar) {
+    private static void generateFreezerLoad(final House house, final double scalar) {
         if (scalar > 0) {
             final ZIPLoad load = house.addLoad();
-            load.setScheduleSkew(scheduleSkew);
+            load.setScheduleSkew(house.getScheduleSkew());
             load.setPowerFraction(p);
             load.setImpedanceFraction(z);
             load.setCurrentFraction(i);
@@ -884,10 +910,10 @@ public class AdaptedAEPFncsTest extends Experiment {
      * @param scheduleSkew
      *            the schedule skew
      */
-    private static void generateDishwasherLoad(final House house, final long scheduleSkew, double scalar) {
+    private static void generateDishwasherLoad(final House house, final double scalar) {
         if (scalar > 0) {
             final ZIPLoad load = house.addLoad();
-            load.setScheduleSkew(scheduleSkew);
+            load.setScheduleSkew(house.getScheduleSkew());
             load.setPowerFraction(p);
             load.setImpedanceFraction(z);
             load.setCurrentFraction(i);
@@ -907,10 +933,11 @@ public class AdaptedAEPFncsTest extends Experiment {
      * @param scheduleSkew
      *            the schedule skew
      */
-    private static void generateRangeLoad(final House house, final long scheduleSkew, double scalar) {
+    private static void generateRangeLoad(final House house, final double scalar) {
+        // FIXME in the script they reset the scalar for Range on certain types of residential based on string compare
         if (scalar > 0) {
             final ZIPLoad load = house.addLoad();
-            load.setScheduleSkew(scheduleSkew);
+            load.setScheduleSkew(house.getScheduleSkew());
             load.setPowerFraction(0.0);
             load.setImpedanceFraction(1.0);
             load.setCurrentFraction(0.0);
@@ -930,10 +957,10 @@ public class AdaptedAEPFncsTest extends Experiment {
      * @param scheduleSkew
      *            the schedule skew
      */
-    private static void generateMicrowaveLoad(final House house, final long scheduleSkew, double scalar) {
+    private static void generateMicrowaveLoad(final House house, final double scalar) {
         if (scalar > 0) {
             final ZIPLoad load = house.addLoad();
-            load.setScheduleSkew(scheduleSkew);
+            load.setScheduleSkew(house.getScheduleSkew());
             load.setPowerFraction(p);
             load.setImpedanceFraction(z);
             load.setCurrentFraction(i);
@@ -970,12 +997,12 @@ public class AdaptedAEPFncsTest extends Experiment {
         house.setNumberOfDoors(Math.ceil(house.getFloorArea() / 1000));
     }
 
-    private static void setBasePower(final ZIPLoad load, final House house, double scalar, String name) {
-        double basePower = (324.9 / 8907 * Math.pow(house.getFloorArea(), 0.442)) * scalar * ((basepwr_1 - basepwr_2) + 2 * basepwr_2 * rand.nextDouble());
+    private static void setBasePower(final ZIPLoad load, final House house, final double scalar, final String name) {
+        final double basePower = (324.9 / 8907 * Math.pow(house.getFloorArea(), 0.442)) * scalar * ((basepwr_1 - basepwr_2) + 2 * basepwr_2 * rand.nextDouble());
         load.setBasePowerFn(String.format("%s*%.4f", name, basePower));
     }
 
-    private static double getHeatFrac(double heatFractionScalar) {
+    private static double getHeatFrac(final double heatFractionScalar) {
         return heatFractionScalar - (0.2) * heatFractionScalar + 2 * (0.2) * heatFractionScalar * rand.nextDouble();
     }
 }
