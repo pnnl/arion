@@ -69,27 +69,28 @@ public abstract class GldHouseUtils {
      * Generate a house to attach to the grid
      *
      * @param sim
-     *            Gld simulator reference
+     *            the GldSimulator reference to use when creating all the objects
      * @param id
-     *            The id of this house
-     * @param tripMeterA
-     *            The meter to connect to
+     *            used when naming houses to keep them visible to FNCS
+     * @param meter
+     *            the base meter to use when connecting the house
      * @param tripLineConf
-     *            The line configuration to use
+     *            the configuration to use on the lines connecting the house and other meters
      * @param auction
-     *            the Auction to connect the controller to
+     *            the configured auction object from GLD
      * @param phase
-     *            The Phase to use when setting up this house
+     *            the base phase to use, supports A, B, or C and will be converted to AS, BS, or CS respectively
      * @param controllerNIPrefix
-     *            The controller network interface prefix
+     *            the prefix to use when naming the controller network interface in GLD to support FNCS
      * @param channel
-     *            the network channel to attach the controller in the generated house to
+     *            the channel to use when connecting this controller network interface
      * @param track
-     *            track this house with a recorder
+     *            track this house's properties with a recorder
      * @param rand
-     *            the random number generator for this house
+     *            Random number generator object, normally you would create one of these when you start to configure Prosser
+     *            and re-use it to produce repeatable randomness when you control the seed
      */
-    public static void generateHouse(final GldSimulator sim, final int id, final TriplexMeter tripMeterA,
+    public static void generateHouse(final GldSimulator sim, final int id, final TriplexMeter meter,
             final TriplexLineConfiguration tripLineConf, final AuctionObject auction, final PhaseCode phase,
             final String controllerNIPrefix, final Channel channel, final boolean track, final Random rand) {
         // Select the phases for our meters
@@ -116,7 +117,7 @@ public abstract class GldHouseUtils {
 
         // Create the line from the transformer
         final TriplexLine tripLine = sim.triplexLine(null);
-        tripLine.setFrom(tripMeterA);
+        tripLine.setFrom(meter);
         tripLine.setTo(tripMeterFlatrate);
         tripLine.setGroupId("F1_Triplex_Line");
         tripLine.setPhases(phases);
