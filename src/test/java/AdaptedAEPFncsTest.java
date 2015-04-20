@@ -3,6 +3,7 @@
  */
 
 import gov.pnnl.prosser.api.*;
+import gov.pnnl.prosser.api.gld.*;
 import gov.pnnl.prosser.api.gld.enums.*;
 import gov.pnnl.prosser.api.gld.lib.*;
 import gov.pnnl.prosser.api.gld.obj.*;
@@ -463,6 +464,9 @@ public class AdaptedAEPFncsTest extends Experiment {
         controller.setAuction(auction);
         controller.setScheduleSkew(scheduleSkew);
         controller.setNetworkInterfaceName(controllerNIPrefix + id);
+        controller.setAverageTarget(auction.getNetworkAveragePriceProperty());
+        controller.setStandardDeviationTarget(auction.getNetworkStdevPriceProperty());
+        controller.setPeriod((double) auction.getPeriod());
         channel.addController(controller);
         // Setup the controller and loads
         setupController(house, controller);
@@ -476,33 +480,6 @@ public class AdaptedAEPFncsTest extends Experiment {
             recorder.setInterval(300L);
             recorder.setFile("F1_house" + id + "_details.csv");
         }
-    }
-
-    private enum HouseType {
-        /**
-         * Old/Small
-         */
-        RESIDENTIAL1,
-        /**
-         * New/Small
-         */
-        RESIDENTIAL2,
-        /**
-         * Old/Large
-         */
-        RESIDENTIAL3,
-        /**
-         * New/Large
-         */
-        RESIDENTIAL4,
-        /**
-         * Mobile Homes
-         */
-        RESIDENTIAL5,
-        /**
-         * Apartments
-         */
-        RESIDENTIAL6;
     }
 
     private static void setHouseInfo(final House house, final HouseType houseType) {
@@ -716,9 +693,7 @@ public class AdaptedAEPFncsTest extends Experiment {
         controller.setTarget("air_temperature");
         controller.setDeadband("thermostat_deadband");
         controller.setUsePredictiveBidding(true);
-        controller.setAverageTarget(marketMean);
-        controller.setStandardDeviationTarget(marketStdev);
-        controller.setPeriod((double) marketPeriod);
+        
         controller.setDemand("last_cooling_load");
         if (sigmaTstat > 0) {
             final double slider = coolSlider;
