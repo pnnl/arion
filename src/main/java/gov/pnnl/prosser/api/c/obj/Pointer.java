@@ -7,6 +7,7 @@ import gov.pnnl.prosser.api.AbstractNs3Object;
 
 /**
  * @author happ546
+ * @param <T> 
  *
  */
 public class Pointer<T extends AbstractNs3Object> extends AbstractNs3Object {

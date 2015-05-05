@@ -4,7 +4,6 @@
 package gov.pnnl.prosser.api.ns3.obj;
 
 import gov.pnnl.prosser.api.AbstractNs3Object;
-import gov.pnnl.prosser.api.c.obj.Pointer;
 
 /**
  * This class is used to help configure Net Devices to use Internet Protocols.
@@ -27,15 +26,35 @@ public class InternetStackHelper extends AbstractNs3Object {
 	public InternetStackHelper(String name) {
 		this.setName(name);
 	}
-
+	
+	
 	/**
+	 * @param node
+	 */
+	public void install(Node node) {
+		
+		// Get time to avoid name conflicts in output ns-3 file
+		long currentTime = System.currentTimeMillis();
+		
+		String nodeName = "nodePtr_" + currentTime;
+		
+		// Creates smart pointer for node
+		String nodePointer = "Ptr<Node> " + nodeName + " = " + node.getName() + ";\n";
+		
+		appendPrintObj(nodePointer);
+		appendPrintObj(this.getName() + ".Install(" + nodeName + ");\n");
+
+	}
+
+/*	*//**
 	 * Installs an IP stack on the Net Devices attached to the given Node
 	 * 
 	 * @param node the Pointer&lt;Node&gt;
-	 */
+	 *//*
 	public void install(Pointer<Node> node) {
 		appendPrintObj(this.getName() + ".Install(" + node.getName() + ");\n");
 	}
+*/
 
 	/**
 	 * Installs an IP stack on the Net Devices attached to the Nodes in nodes

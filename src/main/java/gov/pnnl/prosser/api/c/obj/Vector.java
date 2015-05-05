@@ -46,8 +46,7 @@ public class Vector<T> extends AbstractNs3Object {
 	 * 			this Vector
 	 */
 	public void pushBack(AbstractNs3Object obj) {
-		appendPrintObj(this.getName() + ".push_back(\"" + 
-				obj.getName() + "\");\n");
+		this.pushBack(obj.getName());
 	}
 	
 	/**
@@ -59,6 +58,14 @@ public class Vector<T> extends AbstractNs3Object {
 		for (int i = 0; i < nc.getNumNodes(); i++) {
 			this.pushBack(nc.getNodeNoPrint(i));
 		}
+	}
+	
+	/**
+	 * @param name
+	 */
+	public void pushBack(String name) {
+		appendPrintObj(this.getName() + ".push_back(\"" +
+				name + "\");\n");
 	}
 	
 }

@@ -3,8 +3,6 @@
  */
 package gov.pnnl.prosser.api.ns3.obj;
 
-import gov.pnnl.prosser.api.c.obj.Pointer;
-
 import java.util.HashMap;
 import java.util.Map;
 
@@ -14,7 +12,7 @@ import java.util.Map;
  * @author happ546
  *
  */
-public class PointToPointHelper extends NetworkHelper {
+public class PointToPointHelper extends PcapHelperForDevice {
 	private Map<String, String> channelAttributes;
 	private Map<String, String> deviceAttributes;
 	
@@ -27,6 +25,46 @@ public class PointToPointHelper extends NetworkHelper {
 		this.setName(name);
 		this.channelAttributes = new HashMap<String, String>();
 		this.deviceAttributes = new HashMap<String, String>();
+	}
+	
+
+//	/**
+//	 * Creates a PointToPointNetDevice on each Node and connects them with a p2p channel
+//	 * 
+//	 * @param node1 Pointer&lt;Node&gt;
+//	 * @param node2 Pointer&lt;Node&gt;
+//	 * @param destination the NetDeviceContainer to hold the created p2pNetDevices
+//	 */
+//	public void install(Pointer<Node> node1, Pointer<Node> node2, 
+//			NetDeviceContainer destination) {
+//		appendPrintObj(destination.getName() + " = " + this.getName() 
+//				+ ".Install(" + node1.getName() + ", " + node2.getName() + ");\n");
+//	}
+
+	/**
+	 * @param nodeA 
+	 * @param nodeB 
+	 * @param p2pDevices
+	 */
+	public void install(Node nodeA, Node nodeB,
+			NetDeviceContainer p2pDevices) {
+		
+		// Get time to avoid name conflicts in output ns-3 file
+		long currentTime = System.currentTimeMillis();
+		
+		String nodeNameA = "nodePointerA_" + currentTime;
+		String nodeNameB = "nodePointerB_" + currentTime;
+		
+		// Create ns-3 smart pointers for endpoint Nodes
+		String nodePointerA = "Ptr<Node> " + nodeNameA + 
+				" = " + nodeA.getName() +";\n\n";
+		String nodePointerB = "Ptr<Node> " + nodeNameB + 
+				" = " + nodeB.getName() +";\n\n";
+		
+		appendPrintObj(nodePointerA);
+		appendPrintObj(nodePointerB);
+		appendPrintObj(p2pDevices.getName() + " = " + this.getName() 
+				+ ".Install(" + nodeNameA+ ", " + nodeNameB + ");\n");		
 	}
 
 	/**
@@ -78,19 +116,6 @@ public class PointToPointHelper extends NetworkHelper {
 		deviceAttributes.put(attr, "" + value);
 		appendPrintObj(this.getName() + ".SetDeviceAttribute(\"" + attr 
 				+ "\", UintegerValue(" + value + "));\n");
-	}
-
-	/**
-	 * Creates a PointToPointNetDevice on each Node and connects them with a p2p channel
-	 * 
-	 * @param node1 Pointer&lt;Node&gt;
-	 * @param node2 Pointer&lt;Node&gt;
-	 * @param destination the NetDeviceContainer to hold the created p2pNetDevices
-	 */
-	public void install(Pointer<Node> node1, Pointer<Node> node2, 
-			NetDeviceContainer destination) {
-		appendPrintObj(destination.getName() + " = " + this.getName() 
-				+ ".Install(" + node1.getName() + ", " + node2.getName() + ");\n");
 	}
 
 }

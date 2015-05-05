@@ -3,8 +3,6 @@
  */
 package gov.pnnl.prosser.api.ns3.obj;
 
-import gov.pnnl.prosser.api.c.obj.Pointer;
-
 /**
  * 
  * 
@@ -16,7 +14,7 @@ public class PointToPointChannel extends Channel {
 	/**
 	 * Nodes this Channel connects
 	 */
-	private Pointer<Node> nodeA, nodeB;
+	private Node nodeA, nodeB;
 	
 	/**
 	 * Creates a nameless PointToPointChannel
@@ -37,16 +35,16 @@ public class PointToPointChannel extends Channel {
 	/**
 	 * Returns one of the end point Nodes of this PointToPointChannel
 	 * 
-	 * @return nodeA Pointer&lt;Node&gt;
+	 * @return nodeA
 	 */
-	public Pointer<Node> getNodeA() {
+	public Node getNodeA() {
 		return nodeA;
 	}
 	
 	/**
-	 * @param node the Pointer&lt;Node&gt; to set nodeA to
+	 * @param node one of the endpoint Nodes for this p2p channel
 	 */
-	public void setNodeA(Pointer<Node> node) {
+	public void setNodeA(Node node) {
 		nodeA = node;
 		nodeA.setNameString(node.getName());
 	}
@@ -54,16 +52,16 @@ public class PointToPointChannel extends Channel {
 	/**
 	 * Returns one of the end point Nodes of this PointToPointChannel
 	 * 
-	 * @return nodeB Pointer&lt;Node&gt;
+	 * @return nodeB
 	 */
-	public Pointer<Node> getNodeB() {
+	public Node getNodeB() {
 		return nodeB;
 	}
 
 	/**
-	 * @param node the Pointer&lt;Node&gt; to set nodeB to
+	 * @param node one of the endpoint Nodes for this p2p channel
 	 */
-	public void setNodeB(Pointer<Node> node) {
+	public void setNodeB(Node node) {
 		nodeB = node;
 		nodeB.setNameString(node.getName());
 	}
@@ -71,8 +69,15 @@ public class PointToPointChannel extends Channel {
 	/**
 	 * @param device the PointToPointNetDevice to connect to this PointToPointChannel
 	 */
-	public void attach(Pointer<PointToPointNetDevice> device) {
-		appendPrintObj(this.getName() + ".Attach(" + device.getName() + ");\n");
+	public void attach(PointToPointNetDevice device) {
+		
+		// Get time to avoid name conflicts in output ns-3 file
+		long currentTime = System.currentTimeMillis();
+		
+		String pointer = "Ptr<PointToPointNetDevice> pointToPointNetDevicePointer_" 
+				+ currentTime + " = " + device.getName() + ";\n";
+		
+		appendPrintObj(this.getName() + ".Attach(" + pointer + ");\n");
 	}
 
 }

@@ -310,10 +310,27 @@ public class Ns3Network {
 	}
 	
 	/**
+	 * @return the names
+	 */
+	public Vector<String> getNames() {
+		return names;
+	}
+
+	/**
+	 * @param names the names to set
+	 */
+	public void addName(String name) {
+		this.names.pushBack(name);
+	}
+
+	/**
 	 * Connect the Controllers to the appropriate Channels
 	 * TODO first channel is for Auction; any beyond that have up to 20 controllers on them
 	 */
 	public void connectControllerChannels() {
+		
+		// TODO debugging
+		String vectors = "std::vector<NetDeviceContainer> csmaDeviceVector;\n";
 		
 		int numChannels = this.channels.size();
 		
@@ -325,10 +342,12 @@ public class Ns3Network {
 			
 			Channel channel = getChannel(i);
 			
-			int ipThird = (i == 1) ? (i % 254) : (i % 254 + 1);
-			// Sets IP address base to use for devices in this NetDeviceContainer
-			String ipFirstTwo = (i / 64832 + 192) + "." + (i / 254 + 1) + ".";
-			String ipBase = ipFirstTwo + ipThird + ".0";
+//			int ipThird = (i == 1) ? (i % 254) : (i % 254 + 1);
+//			// Sets IP address base to use for devices in this NetDeviceContainer
+//			String ipFirstTwo = (i / 64832 + 192) + "." + (i / 254 + 1) + ".";
+//			String ipBase = ipFirstTwo + ipThird + ".0";
+			
+			String ipBase = channel.getAddressBase();
 			
 			// Set the base address and subnet mask for the IPv4 addresses
 			ipv4AddrHelper.setBase(ipBase, "255.255.255.0");
@@ -338,8 +357,8 @@ public class Ns3Network {
 			// 	then given back to me after GLD stuff adds controllers to the channels
 			
 			if (channel.getClass().getSimpleName().equalsIgnoreCase("csmachannel")) {
-				Pointer<CsmaChannel> chanPtr  = new Pointer<CsmaChannel>("chanPtr_" + i, new CsmaChannel());
-				chanPtr.assign(channel.getPointer());
+//				Pointer<CsmaChannel> chanPtr  = new Pointer<CsmaChannel>("chanPtr_" + i, new CsmaChannel());
+//				chanPtr.assign(channel.getPointer());
 				
 				CsmaHelper csmaHelper = new CsmaHelper("csmaHelper_" + i);
 				NodeContainer csmaNodes = new NodeContainer("csmaNodes_" + i);
@@ -357,6 +376,8 @@ public class Ns3Network {
 
 					// Add Node to NodeContainer for IP stuff later
 					csmaNodes.addNode(csmaNodePtr);
+					
+
 
 				}
 
@@ -364,12 +385,21 @@ public class Ns3Network {
 				nodes.addNodeContainer(csmaNodes);
 								
 				// Install CSMA protocol stack on csmaNodes & connect to ith Channel
-				csmaHelper.install(csmaNodes, chanPtr, csmaDevices);
+				csmaHelper.install(csmaNodes, (CsmaChannel) channel, csmaDevices);
+				
+				// TODO debugging
+				if (i == 1) {
+					csmaHelper.enablePcapAll("csmaControllerDevice");
+				}
 								
 				// Sets up IP routing tables, installs IP stack on nodes, and assigns IP addresses
 				//setupIp(ipv4AddrHelper, csmaNodes, csmaDevices);
 				iStackHelper.install(csmaNodes);
 				ipv4AddrHelper.assign(csmaDevices);
+				
+				// TODO debugging					
+			    //String stuff = "\tcsmaDeviceVector.push_back(csmaDevices_" + i + ");\n";
+			    //csmaHelper.appendPrintObj(stuff);
 				
 			} else if (channel.getClass().getSimpleName().equalsIgnoreCase("pointtopointchannel")) {
 				Pointer<PointToPointChannel> chanPtr  = new Pointer<PointToPointChannel>("chanPtr_" + i);
@@ -441,6 +471,42 @@ public class Ns3Network {
 			}
 		}
 		
+//		 TODO debugging
+		
+/*		AbstractNs3Object ns3 = ns3Objects.get(0);
+		
+		String stuff = "\n   Address dest;\n" +
+		  "   std::string protocol;\n" +
+		 "   if (false)\n" +
+		  "   {\n" +
+		 "    dest = InetSocketAddress(staInterfaceVector.at(0).GetAddress(1), 1025);\n" +
+		  "    protocol = \"ns3::UdpSocketFactory\";\n" +
+		  "   }\n" +
+		 "   else\n" +
+		  "   {\n" +
+		   "   PacketSocketAddress tmp;\n" +
+		   "   tmp.SetSingleDevice (staDeviceVector[0].Get(0)->GetIfIndex ());\n" +
+		   "   tmp.SetPhysicalAddress (staDeviceVector[0].Get(0)->GetAddress ());\n" +
+		   "   tmp.SetProtocol (0x807);\n" +
+		   "   dest = tmp;\n" +
+		   "   protocol = \"ns3::PacketSocketFactory\";\n" +
+		   "   }\n" + 
+
+		  "   OnOffHelper onoff = OnOffHelper (protocol, dest);\n" +
+		  "   onoff.SetConstantRate (DataRate (\"500kb/s\"));\n" +
+		  "   ApplicationContainer apps = onoff.Install (csmaNodeVector[0].Get (0));\n" +
+		  "   apps.Start (Seconds (0.5));\n" +
+		  "   apps.Stop (Seconds (3.0));\n" +
+		  "   wifiPhy.EnablePcap (\"wifi-wired-bridging\", csmaDeviceVector[0]);\n" +
+
+		  "   if (true)\n" +
+		    "   {\n" +
+		      "   AsciiTraceHelper ascii;\n" +
+		      "   MobilityHelper::EnableAsciiAll (ascii.CreateFileStream (\"wifi-wired-bridging.mob\"));\n" +
+		    "   }\n";
+		
+		ns3.appendPrintObj(stuff + "\n");*/
+		
 	}
 	
 	/**
@@ -463,14 +529,14 @@ public class Ns3Network {
 			AuctionObject auction = auctions.get(i);
 			
 			Node node = new Node("auctionNode_" + i);
-			Pointer<Node> nodePtr = new Pointer<Node>("auctionNodePtr_" + i);
-			nodePtr.createObject(node);
+//			Pointer<Node> nodePtr = new Pointer<Node>("auctionNodePtr_" + i);
+//			nodePtr.createObject(node);
 					    
-		    // Adds the nodePtr to auctionNodes for IP stack install
-		    auctionNodes.addNode(nodePtr);
+		    // Adds node to auctionNodes for IP stack install
+		    auctionNodes.addNode(node);
 		    
 		    // Adds node to global list of nodes
-		    nodes.addNode(nodePtr);
+		    nodes.addNode(node);
 		    
 			// IP setup
 			Ipv4AddressHelper addresses = new Ipv4AddressHelper("auctionAddresses");
@@ -479,14 +545,17 @@ public class Ns3Network {
 		    if (auctionChannel.getClass().getSimpleName().equalsIgnoreCase("csmachannel")) {
 		    	
 		    	// Wraps auctionChannel in a CsmaChannel Pointer
-		    	Pointer<CsmaChannel> csmaChannelPtr = new Pointer<CsmaChannel>("csmaChannelPtr_" + i);
-		    	csmaChannelPtr.encapsulate(auctionChannel);
+//		    	Pointer<CsmaChannel> csmaChannelPtr = new Pointer<CsmaChannel>("csmaChannelPtr_" + i);
+//		    	csmaChannelPtr.encapsulate(auctionChannel);
 		    	
 		    	// Installs CSMA stack and channel on Node
 		    	CsmaHelper csmaHelper = new CsmaHelper("csmaHelper_" + i);
 		    	NetDeviceContainer csmaDevices = new NetDeviceContainer("csmaDevices_" + i);
-		    	csmaHelper.install(nodePtr, csmaChannelPtr, csmaDevices);
+		    	csmaHelper.install(node, (CsmaChannel) auctionChannel, csmaDevices);
 		    	auctionDevices.addDevices(csmaDevices);
+		    	
+				// TODO pcap tracing
+				csmaHelper.enablePcapAll("csmaChannelDevices");
 
 		    } else if (auctionChannel.getClass().getSimpleName().equalsIgnoreCase("pointtopointchannel")) {
 		    	
@@ -498,15 +567,18 @@ public class Ns3Network {
 		    	p2pHelper.setChannelAttribute("Delay", auctionChannel.getAttribute("Delay"));
 		    	NetDeviceContainer p2pDevices = new NetDeviceContainer("p2pDevices_" + i);
 		    	
-		    	// Adds the nodePtr as second node for p2p auctionChannel
-		    	((PointToPointChannel) auctionChannel).setNodeB(nodePtr);
+		    	// Adds the node as second node for p2p auctionChannel
+		    	((PointToPointChannel) auctionChannel).setNodeB(node);
 		    	
 		    	// Adds the p2p channel's other node to auctionNodes for IP stack install
-		    	//auctionNodes.addNode(((PointToPointChannel) auctionChannel).getNodeA());
+		    	auctionNodes.addNode(((PointToPointChannel) auctionChannel).getNodeA());
 		    			    	
 		    	p2pHelper.install(((PointToPointChannel) auctionChannel).getNodeA(), ((PointToPointChannel) auctionChannel).getNodeB(), p2pDevices);
 		    	
 		    	auctionDevices.addDevices(p2pDevices);
+		    	
+				// TODO pcap tracing
+		    	p2pHelper.enablePcapAll("p2pChannelDevices");
 		    	
 		    } else if (auctionChannel.getClass().getSimpleName().equalsIgnoreCase("yanswifichannel")) {
 		    	// TODO WiFi auction
@@ -523,6 +595,7 @@ public class Ns3Network {
 			// Maps the Auction NetworkInterfaceName to the GldNodePrefix
 			marketToControllerMap.put(auction.getNetworkInterfaceName(), auction.getFncsControllerPrefix());
 		}
+		
 		
 		return marketToControllerMap;
 	}
@@ -963,8 +1036,9 @@ public class Ns3Network {
 	/**
 	 * @param dataRate
 	 * @param delay
+	 * @param pcapOutput
 	 */
-	public void createCsma(String dataRate, String delay) {
+	public void createCsma(String dataRate, String delay, boolean pcapOutput) {
 		
 		this.addModule(new Core());
 		this.addModule(new Applications());
@@ -995,32 +1069,35 @@ public class Ns3Network {
 		addChannel(auctionChannel);
 		
 		// Creates main backbone router
-		NodeContainer backboneRouter = new NodeContainer("backboneRouter");
-		backboneRouter.create(1);
+		Node backboneRouter = new Node("backboneRouter");
+		
 		// Stores backboneRouter in Pointer for p2pHelper.install
-		Pointer<Node> backboneRouterPtr = new Pointer<Node>("backboneRouterPtr", new Node());
-		backboneRouter.getNode(0, backboneRouterPtr);
+//		Pointer<Node> backboneRouterPtr = new Pointer<Node>("backboneRouterPtr", new Node());
+//		backboneRouter.getNode(0, backboneRouterPtr);
 		
 		// Install IP stack on backboneRouterPtr
-		iStackHelper.install(backboneRouterPtr);
+		iStackHelper.install(backboneRouter);
 		
 		// Adds the backbone router node to p2p auction channel
-		auctionChannel.setNodeA(backboneRouterPtr);
+		auctionChannel.setNodeA(backboneRouter);
 		
 		// Creates access point routers
-		NodeContainer apNodes = new NodeContainer("apNodes_backbone");
-		apNodes.create(numChannels - 1);
+//		NodeContainer apNodes = new NodeContainer("apNodes_backbone");
+//		apNodes.create(numChannels - 1);
 		
 		// Adds backbone nodes to global NodeContainer for FNCSApplicationHelper
-		nodes.addNodeContainer(backboneRouter);
-		nodes.addNodeContainer(apNodes);
+		nodes.addNode(backboneRouter);
+		//nodes.addNodeContainer(apNodes);
 		
 		// Adds node names to global Vector of names for FNCSApplicationHelper
-		names.pushBack(backboneRouterPtr);
-		names.pushBack(apNodes);
+		names.pushBack(backboneRouter);
+		//names.pushBack(apNodes);
 
 		
 		for (int i = 0; i < numChannels - 1; i++) {
+			
+			Node apNode = new Node("apNode_" + i);
+			names.pushBack(apNode);
 			
 			int ipThird = ((2 * i) % 254 + 1);
 			// Sets IP address base to use for devices in this NetDeviceContainer
@@ -1032,25 +1109,25 @@ public class Ns3Network {
 			channel.setAttribute("DataRate", dataRate);
 			channel.setAttribute("Delay", delay);
 			// Add IP address base to Channel for use later in Market/Controller integration
-			channel.setAddressBase(ipBase); // TODO check that this works later
+			channel.setAddressBase(ipBase); // TODO check if this works later
 			addChannel(channel);
 			
 			// Wrap channel in pointer for CsmaHelper.Install
-			Pointer<CsmaChannel> channelPtr = new Pointer<CsmaChannel>("csmaChannelPtr_backbone_" + i);
-			channelPtr.createObject(channel);
+//			Pointer<CsmaChannel> channelPtr = new Pointer<CsmaChannel>("csmaChannelPtr_backbone_" + i);
+//			channelPtr.createObject(channel);
 			
 			// Attach this Pointer<CsmaChannel> to Channel
-			channel.setPointer(channelPtr);
+//			channel.setPointer(channelPtr);
 					
-			Pointer<Node> apNodePtr = new Pointer<Node>("csmaNode_backbone_" + i, new Node());
-			apNodes.getNode(i, apNodePtr);
+//			Pointer<Node> apNodePtr = new Pointer<Node>("csmaNode_backbone_" + i, new Node());
+//			apNodes.getNode(i, apNodePtr);
 			
 			NetDeviceContainer csmaDevices = new NetDeviceContainer("csmaDevices_backbone_" + i);
 			
 			// Installs the CSMA protocols on the devices using the given channel
-			csmaHelper.install(apNodePtr, channelPtr, csmaDevices);
+			csmaHelper.install(apNode, (CsmaChannel) channel, csmaDevices);
 			// Installs the IP stack protocols on the CSMA nodes
-			iStackHelper.install(apNodePtr);
+			iStackHelper.install(apNode);
 			
 			addresses.setBase(ipBase, "255.255.255.0"); // IPbase, mask
 			addresses.assign(csmaDevices);
@@ -1058,7 +1135,7 @@ public class Ns3Network {
 			NetDeviceContainer p2pDevices = new NetDeviceContainer("p2pDevices_backbone_" + i);
 			
 			// Install p2p devices on ap node and backbone router & connect via p2p channel
-			p2pHelper.install(apNodePtr, backboneRouterPtr, p2pDevices);
+			p2pHelper.install(apNode, backboneRouter, p2pDevices);
 			
 			ipThird = ((2 * i) % 254 + 2);
 			
@@ -1067,7 +1144,17 @@ public class Ns3Network {
 			addresses.setBase(ipBase, "255.255.255.0");
 			addresses.assign(p2pDevices);
 			
+//			// Enable PCAP log output if pcapOutput is true
+//			if (pcapOutput) {
+//				csmaHelper.enablePcapSingleDevice("csmaBackboneRouterPcap_" + i, csmaDevices, 0);
+//				
+//				p2pHelper.enablePcapSingleDevice("p2pBackboneRouterPcap_" + i, p2pDevices, i);
+//			}
+			
 		}
+		
+		csmaHelper.enablePcapAll("csmaBackboneRouter");
+		p2pHelper.enablePcapAll("p2pBackboneRouter");
 		
 	}
 
@@ -1091,9 +1178,12 @@ public class Ns3Network {
 		// Instantiates global Vector names for use in FNCSApplicationHelper.setApps(...)
 		names = new Vector<String>("allNames", String.class);
 		
+		// TODO get user input for this
+		boolean pcapOutput = true;
+		
 		// Creates backbone network
 		// TODO build appropriate network(s) type
-		createCsma(this.getBackboneDataRate(), this.getBackboneDelay());
+		createCsma(this.getBackboneDataRate(), this.getBackboneDelay(), pcapOutput);
 		
 		return ns3Objects;
 	}

@@ -3,6 +3,7 @@
  */
 package gov.pnnl.prosser.api;
 
+import gov.pnnl.prosser.api.c.obj.Pointer;
 import gov.pnnl.prosser.api.gld.AbstractGldObject;
 import gov.pnnl.prosser.api.gld.obj.AuctionObject;
 import gov.pnnl.prosser.api.gld.obj.Controller;
@@ -11,6 +12,11 @@ import gov.pnnl.prosser.api.ns3.module.Module;
 import gov.pnnl.prosser.api.ns3.module.Namespace;
 import gov.pnnl.prosser.api.ns3.obj.Channel;
 import gov.pnnl.prosser.api.ns3.obj.CsmaChannel;
+import gov.pnnl.prosser.api.ns3.obj.CsmaHelper;
+import gov.pnnl.prosser.api.ns3.obj.InternetStackHelper;
+import gov.pnnl.prosser.api.ns3.obj.Ipv4AddressHelper;
+import gov.pnnl.prosser.api.ns3.obj.NetDeviceContainer;
+import gov.pnnl.prosser.api.ns3.obj.Node;
 import gov.pnnl.prosser.api.ns3.obj.Ns3Network;
 import gov.pnnl.prosser.api.ns3.obj.PointToPointChannel;
 import gov.pnnl.prosser.api.ns3.obj.YansWifiChannel;
@@ -26,7 +32,6 @@ import java.util.List;
 public class Ns3Simulator {
 	
 	private Ns3Network network;
-	private List<Module> modules;
 	private List<Namespace> namespaces;
 	private List<AbstractNs3Object> ns3Objects;
 	
@@ -34,7 +39,7 @@ public class Ns3Simulator {
 	 * Create a new Ns3Simulator
 	 */
 	public Ns3Simulator() {
-		this.modules = new ArrayList<>();
+		new ArrayList<>();
 		this.namespaces = new ArrayList<>();
 		this.ns3Objects = new ArrayList<>();
 	}
@@ -43,35 +48,38 @@ public class Ns3Simulator {
 	/**
 	 * Initializes the modules, namespaces, and objects used in this network based on 
 	 * the user specified parameters TODO supply user params
+	 * @param numChannels
+	 * @param addressBase
+	 * @param addressMask 
+	 * @param backboneDataRate 
+	 * @param backboneDelay 
+	 * @param stopTime 
 	 */
-	public void setup(final int numChannels) {
+	public void setup(final int numChannels, final String addressBase, 
+						final String addressMask, final String backboneDataRate, 
+						final String backboneDelay, final double stopTime) {
 		
-		// User inputs basic params (Network type, addr base & mask, # of nodes [or infer from gldList?])
 		network = new Ns3Network();
 		
 		namespaces.add(new Namespace("ns3"));
 		namespaces.add(new Namespace("std"));
 		
-		network.setAddrBase("10.1."); // First 2 values of IPV4 address to use as base in IP addr distribution
-		network.setAddrMask("255.255.255.0");
 		network.setNumChannels(numChannels);
+
+		network.setAddrBase(addressBase); // First 2 values of IPV4 address to use as base in IP addr distribution
+		network.setAddrMask(addressMask);
 		
-//		network.setBackboneType(NetworkType.CSMA);
-//		network.setAuctionType(NetworkType.WIFI);
-		network.setBackboneType(NetworkType.CSMA);
-		network.setAuctionType(NetworkType.LTE);
+		network.setBackboneDataRate(backboneDataRate);
+		network.setBackboneDelay(backboneDelay);
 		
-		network.setBackboneDataRate("10Gbps");
-		network.setBackboneDelay("1ms");
-		
-		//TODO stop time from user
-		network.setStopTime(10.0);
+		network.setStopTime(stopTime);
 		
 		network.buildBackbone();
 	}
 	
     /**
      * Gets the Modules used in this simulation
+     * @return the list of Modules
      */
 	public List<Module> getModules() {
 		return network.getModules();
@@ -79,6 +87,7 @@ public class Ns3Simulator {
 	
     /**
      * Gets the Namespaces used in this simulation
+     * @return the list of Namespaces
      */
 	public List<Namespace> getNamespaces() {
 		return this.namespaces;
@@ -86,6 +95,7 @@ public class Ns3Simulator {
 	
     /**
      * Gets the ns-3 objects used in this simulation
+     * @return the list of AbstractNs3Objects
      */
 	public List<AbstractNs3Object> getObjects() {		
 		return ns3Objects;
@@ -149,6 +159,79 @@ public class Ns3Simulator {
 	 */
 	public void buildFrontend() {
 		this.ns3Objects = network.buildFrontend();
+	}
+	
+
+	// TODO discuss if these are right approach to making ns-3 part less wizardy
+	
+	
+	/**
+	 * @param name
+	 * @return a new Pointer<Node>
+	 */
+	public Pointer<Node> nodePtr(String name) {
+		return new Pointer<Node>(name, new Node());
+	}
+
+
+	/**
+	 * @param name
+	 * @return a new CsmaHelper
+	 */
+	public CsmaHelper csmaHelper(String name) {
+		return new CsmaHelper(name);
+	}
+
+
+	/**
+	 * @param name
+	 * @return a new Pointer<CsmaChannel>
+	 */
+	public Pointer<CsmaChannel> csmaChannelPointer(String name) {
+		return new Pointer<CsmaChannel>(name, new CsmaChannel());
+	}
+
+
+	/**
+	 * @param name
+	 * @return a new InternetStackHelper
+	 */
+	public InternetStackHelper internetStackHelper(String name) {
+		return new InternetStackHelper(name);
+	}
+
+
+	/**
+	 * @param name
+	 * @return a new NetDeviceContainer
+	 */
+	public NetDeviceContainer netDeviceContainer(String name) {
+		return new NetDeviceContainer(name);
+	}
+
+
+	/**
+	 * @param name
+	 * @return a new Ipv4AddressHelper
+	 */
+	public Ipv4AddressHelper ipv4AddressHelper(String name) {
+		return new Ipv4AddressHelper(name);
+	}
+
+
+	/**
+	 * @param name
+	 * @return a new CsmaChannel
+	 */
+	public CsmaChannel csmaChannel(String name) {
+		return new CsmaChannel(name);
+	}
+	
+	/**
+	 * @param name
+	 */
+	public void addName(String name) {
+		this.network.addName(name);
 	}
 
 }
