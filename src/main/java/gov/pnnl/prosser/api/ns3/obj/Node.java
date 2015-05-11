@@ -16,11 +16,13 @@ import gov.pnnl.prosser.api.AbstractNs3Object;
  */
 public class Node extends AbstractNs3Object {
 	
+	
 	/**
 	 * Creates a nameless Node
 	 * Used in Ns3Network for Pointer&lt;Node&gt;
 	 */
-	public Node() {}
+	public Node() {
+	}
 	
 	/**
 	 * Creates a new, empty named Node

@@ -13,6 +13,7 @@ import gov.pnnl.prosser.api.Ns3Simulator;
 import gov.pnnl.prosser.api.c.obj.Pointer;
 import gov.pnnl.prosser.api.gld.obj.AuctionObject;
 import gov.pnnl.prosser.api.gld.obj.Controller;
+import gov.pnnl.prosser.api.ns3.enums.NetworkType;
 
 /**
  * The base class for the ns-3 channels; the connection between 
@@ -54,6 +55,8 @@ public class Channel extends AbstractNs3Object {
 	 */
 	private List<AuctionObject> auctions;
 	
+	private NetworkType type;
+
 	
 	/**
 	 * Creates a new Channel
@@ -93,6 +96,8 @@ public class Channel extends AbstractNs3Object {
 	 */
 	public void setAttribute(String attribute, String value) {
 		this.attributes.put(attribute, value);
+		appendPrintObj(this.getName() + ".SetAttribute(\"" + 
+				attribute + "\", StringValue(\"" + value + "\"));\n");
 	}
 
 	/**
@@ -137,6 +142,20 @@ public class Channel extends AbstractNs3Object {
 		this.auctions.add(auction);
 	}
 	
+	/**
+	 * @return the type
+	 */
+	public NetworkType getType() {
+		return type;
+	}
+	
+	/**
+	 * @param type the type to set
+	 */
+	public void setType(NetworkType type) {
+		this.type = type;
+	}
+
 	/**
 	 * @return the Pointer&lt;Channel&gt; attached to this Channel
 	 */

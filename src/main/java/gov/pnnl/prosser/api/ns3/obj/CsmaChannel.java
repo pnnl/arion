@@ -4,6 +4,7 @@
 package gov.pnnl.prosser.api.ns3.obj;
 
 import gov.pnnl.prosser.api.c.obj.Pointer;
+import gov.pnnl.prosser.api.ns3.enums.NetworkType;
 
 /**
  * This class represents a CSMA channel connecting CsmaNetDevices.
@@ -12,12 +13,13 @@ import gov.pnnl.prosser.api.c.obj.Pointer;
  *
  */
 public class CsmaChannel extends Channel {
-
+	
 	/**
 	 * Creates a nameless CsmaChannel
 	 */
 	public CsmaChannel() {
 		super();
+		this.setType(NetworkType.CSMA);
 	}
 
 	/**
@@ -25,7 +27,7 @@ public class CsmaChannel extends Channel {
 	 * @param name
 	 */
 	public CsmaChannel(String name) {
-		super();
+		this();
 		this.setName(name);
 	}
 

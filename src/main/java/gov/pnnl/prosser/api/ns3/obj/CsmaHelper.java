@@ -49,7 +49,7 @@ public class CsmaHelper extends PcapHelperForDevice {
 			NetDeviceContainer destinationContainer) {
 		
 		// Get time to avoid name conflicts in output ns-3 file
-		long currentTime = System.currentTimeMillis();
+		long currentTime = (System.nanoTime() /100) % 10;
 		
 		String nodeName = "nodePointer_" + currentTime;
 		String channelName = "channelPointer_" + currentTime;

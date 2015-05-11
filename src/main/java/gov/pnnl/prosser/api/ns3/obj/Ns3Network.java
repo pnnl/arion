@@ -285,21 +285,11 @@ public class Ns3Network {
 	}
 	
 	/**
-	 * @param obj the AbstractProsserObject to add to this Ns3Network
-	 */
-	// TODO use only this or addChannel method, once ns3.add(...) is coded out
-	public void addGldObject(AbstractGldObject obj) {
-		this.gldObjects.add(obj);
-	}
-	
-	/**
 	 * @param chan the Channel to add to this Ns3Network
 	 */
-	// TODO see above todo
 	public void addChannel(Channel chan) {
 		this.channels.add(chan);
 	}
-	
 	
 	/**
 	 * @param i
@@ -317,7 +307,7 @@ public class Ns3Network {
 	}
 
 	/**
-	 * @param names the names to set
+	 * @param name the name to add to the vector (list) of names for FNCSApplication
 	 */
 	public void addName(String name) {
 		this.names.pushBack(name);
@@ -804,7 +794,7 @@ public class Ns3Network {
 	/**
 	 * Creates the FNCS simulator for ns-3 to use
 	 */
-	private void setupFncsSimulator() {
+	public void setupFncsSimulator() {
 		// Setup FNCS simulator
 		FncsSimulator fncsSim = new FncsSimulator("fncsSim");
 		
@@ -817,6 +807,19 @@ public class Ns3Network {
 		// Add modules required for all simulations
 		this.addModule(new Core());
 		this.addModule(new Applications());
+		this.addModule(new Mobility());
+		this.addModule(new Wifi());
+		this.addModule(new Network());
+		this.addModule(new Csma());
+		this.addModule(new Internet());
+		this.addModule(new Bridge());
+		this.addModule(new PointToPoint());
+		
+		// TODO more appropriate place for these?
+		// Instantiates global Vector names for use in FNCSApplicationHelper.setApps(...)
+		names = new Vector<String>("allNames", String.class);
+		// Instantiates global NoodeContainer nodes for "" ""
+		nodes = new NodeContainer("nodes");
 		
 	}
 
@@ -857,9 +860,17 @@ public class Ns3Network {
 	 * Sets up a FNCSApplicationHelper and ApplicationContainer for the FNCS simulator and 
 	 * starts the ns-3 simulator
 	 */
-	private void setupFncsApplicationHelper(StringMap<String, String> marketToControllerMap) {
+	public void setupFncsApplicationHelper() {
 		this.addModule(new Fncs());
 		this.addModule(new FncsApplication());
+		
+		Channel channel = channels.get(0);
+		AuctionObject auction = channel.getAuctions().get(0);
+		
+		// A map<string, string> mapping AuctionObject name to a Controller name
+		StringMap<String, String> marketToControllerMap = new StringMap<String, String>("marketToControllerMap");
+		// Maps the Auction NetworkInterfaceName to the GldNodePrefix
+		marketToControllerMap.put(auction.getNetworkInterfaceName(), auction.getFncsControllerPrefix());
 		
 		FNCSApplicationHelper fncsHelper = new FNCSApplicationHelper("fncsHelper");
 		
@@ -1026,9 +1037,6 @@ public class Ns3Network {
 			marketToControllerMap.put(this.getAuctions().get(i).getNetworkInterfaceName(), this.getGldNodePrefix());
 		}
 		
-		// Sets up the FNCS and ns-3 simulators, runs them, and cleans up
-		setupFncsApplicationHelper(marketToControllerMap);
-		
 		return ns3Objects;
 
 	}
@@ -1175,8 +1183,8 @@ public class Ns3Network {
 		// Sets up iStackHelper with static and nix vector routing
 		setupInternetStackAndRouting();
 		
-		// Instantiates global Vector names for use in FNCSApplicationHelper.setApps(...)
-		names = new Vector<String>("allNames", String.class);
+/*		// Instantiates global Vector names for use in FNCSApplicationHelper.setApps(...)
+		names = new Vector<String>("allNames", String.class);*/
 		
 		// TODO get user input for this
 		boolean pcapOutput = true;
@@ -1199,7 +1207,7 @@ public class Ns3Network {
 		StringMap<String, String> marketToControllerMap = connectAuctionChannels();
 		
 		// Sets up the FNCS and ns-3 simulators, runs them, and cleans up
-		setupFncsApplicationHelper(marketToControllerMap);
+		setupFncsApplicationHelper();
 		
 		return ns3Objects;
 	}

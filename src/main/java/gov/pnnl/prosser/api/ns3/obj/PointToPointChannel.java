@@ -3,6 +3,8 @@
  */
 package gov.pnnl.prosser.api.ns3.obj;
 
+import gov.pnnl.prosser.api.ns3.enums.NetworkType;
+
 /**
  * 
  * 
@@ -22,6 +24,7 @@ public class PointToPointChannel extends Channel {
 	public PointToPointChannel() {
 		nodeA = null;
 		nodeB = null;
+		this.setType(NetworkType.P2P);
 	}
 	
 	/**

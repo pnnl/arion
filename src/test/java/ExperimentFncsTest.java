@@ -6,7 +6,9 @@ import gov.pnnl.prosser.api.*;
 import gov.pnnl.prosser.api.gld.enums.*;
 import gov.pnnl.prosser.api.gld.lib.*;
 import gov.pnnl.prosser.api.gld.obj.*;
+import gov.pnnl.prosser.api.ns3.enums.NetworkType;
 import gov.pnnl.prosser.api.ns3.obj.*;
+import gov.pnnl.prosser.api.ns3.obj.Node; // Must import explicitly to avoid conflict with GLD/Java Node classes
 
 import java.time.*;
 import java.util.*;
@@ -19,35 +21,90 @@ import java.util.*;
  */
 public class ExperimentFncsTest extends Experiment {
 
+    private static final Random rand = new Random(13);
 
     /**
      * Generate the experiment
      */
     @Override
     public void generate() {
-        final int numHouses = 6;
-        final int numHousesPerChannel = 3;
+        final int numHouses = 1;
+        final int numHousesPerChannel = 1;
         final int numChannels = (numHouses % numHousesPerChannel) == 0 ? (numHouses / numHousesPerChannel) + 1 : (numHouses / numHousesPerChannel) + 2;
         System.out.println("Number of channels: " + numChannels); // TODO debugging
         final String controllerNIPrefix = "F1_C_NI";
 
         // Set parameters for Ns3Network and build backend network
-        // TODO create constructNs3Sim(...) method for this
         final Ns3Simulator ns3Simulator = this.ns3Simulator();
-        ns3Simulator.setup(numChannels);
+        //populateNs3Sim(ns3Simulator, numChannels);
+        populateNs3Sim(ns3Simulator, numHouses);
 
         final List<Channel> channels = ns3Simulator.getChannels();
         // TODO Add numHousesPerChannel param and use instead of hard-coded "20" to get channelID
         final GldSimulator gldSim = this.gldSimulator("fncs_GLD_1node_Feeder_1");
         populateGldSim(gldSim, numHouses, controllerNIPrefix, channels);
+        
+		
+		ns3Simulator.setupFncsApplicationHelper();
 
         // Connect Controllers and Auctions to backbone network
-        ns3Simulator.buildFrontend();
+        //ns3Simulator.buildFrontend();
 
         // TODO FNCS Integration
+		
     }
 
     /**
+     * @param sim
+     * 			the Ns3Simulator
+     * @param numChannels
+     * 			the number of Channels to create in this network
+     */
+    private void populateNs3Sim(final Ns3Simulator sim, final int numChannels) {
+    	
+    	final String addressBase = "10.0.1.0";
+		final String addressMask = "255.255.255.0";
+		final String backboneDataRate = "10Gbps";
+		final String backboneDelay = "1ms";
+		final double stopTime = 10.0;
+		
+		// Sets parameters for ns-3 network & builds backbone network
+		sim.setup(numChannels, addressBase, addressMask, backboneDataRate, backboneDelay, stopTime);
+		
+		// Create auction channel & router
+		PointToPointChannel auctionChannel = new PointToPointChannel("auctionChannel");
+		auctionChannel.setAttribute("DataRate", "1Gbps");
+		sim.addChannel(auctionChannel);
+		
+		Router auctionRouter = new Router("auctionRouter");
+		auctionRouter.setChannel(auctionChannel);
+		
+		// Create backbone CSMA channel (connect Houses)
+		CsmaChannel csmaBackboneChannel = new CsmaChannel("csmaBackboneChannel");
+		csmaBackboneChannel.setAttribute("DataRate", backboneDataRate);
+		
+		// Create house channels
+		for (int i = 0; i < numChannels; i++) {
+			
+			CsmaChannel csmaHouseChannel = new CsmaChannel("csmaHouseChannel_" + i);
+			csmaHouseChannel.setAttribute("DataRate", "100Mbps");
+			// Add the house channel to simulator list of channels
+			sim.addChannel(csmaHouseChannel);
+			
+			Router csmaRouter = new Router("csmaHouseRouter_" + i);
+			
+			// Connect router to house channel
+			csmaRouter.setChannel(csmaHouseChannel);
+			
+			// Connect router to backbone channel
+			csmaRouter.setChannel(csmaBackboneChannel);
+			
+		}
+		
+		
+	}
+
+	/**
      * The gld simulator for this experiment
      * 
      * @param controllerNIPrefix

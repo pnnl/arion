@@ -39,7 +39,7 @@ public class Ns3Simulator {
 	 * Create a new Ns3Simulator
 	 */
 	public Ns3Simulator() {
-		new ArrayList<>();
+		this.network = null;
 		this.namespaces = new ArrayList<>();
 		this.ns3Objects = new ArrayList<>();
 	}
@@ -47,7 +47,7 @@ public class Ns3Simulator {
 	
 	/**
 	 * Initializes the modules, namespaces, and objects used in this network based on 
-	 * the user specified parameters TODO supply user params
+	 * the user specified parameters
 	 * @param numChannels
 	 * @param addressBase
 	 * @param addressMask 
@@ -74,7 +74,16 @@ public class Ns3Simulator {
 		
 		network.setStopTime(stopTime);
 		
-		network.buildBackbone();
+		network.setupFncsSimulator();
+		
+		//network.buildBackbone();
+	}
+	
+	/**
+	 * Creates the FncsApplicationHelper used to connect the GLD and ns-3 simulators
+	 */
+	public void setupFncsApplicationHelper() {
+		network.setupFncsApplicationHelper();
 	}
 	
     /**
@@ -232,6 +241,34 @@ public class Ns3Simulator {
 	 */
 	public void addName(String name) {
 		this.network.addName(name);
+	}
+
+
+	/**
+	 * @param type the NetworkType of the router to create
+	 * @return router a new router of the specified type
+	 */
+	public Node createRouter(NetworkType type) {
+		
+		String netType = type.toString();
+		long time = System.currentTimeMillis() % 1000;
+		
+		Node router = new Node("router_" + netType + "_" + time);
+		
+		InternetStackHelper stackHelper = new InternetStackHelper("internetStackHelper_" + time);		
+		stackHelper.install(router);
+		
+		return router;
+		
+	}
+
+	/**
+	 * Add this Channel to the network
+	 * @param channel
+	 */
+	public void addChannel(Channel channel) {
+		this.network.addChannel(channel);
+		this.ns3Objects.add(channel);
 	}
 
 }
