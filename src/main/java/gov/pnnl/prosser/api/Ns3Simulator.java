@@ -176,7 +176,7 @@ public class Ns3Simulator {
 	
 	/**
 	 * @param name
-	 * @return a new Pointer<Node>
+	 * @return a new Pointer&lt;Node&gt;
 	 */
 	public Pointer<Node> nodePtr(String name) {
 		return new Pointer<Node>(name, new Node());
@@ -194,7 +194,7 @@ public class Ns3Simulator {
 
 	/**
 	 * @param name
-	 * @return a new Pointer<CsmaChannel>
+	 * @return a new Pointer&lt;CsmaChannel&gt;
 	 */
 	public Pointer<CsmaChannel> csmaChannelPointer(String name) {
 		return new Pointer<CsmaChannel>(name, new CsmaChannel());
