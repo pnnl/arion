@@ -67,7 +67,7 @@ public class ExperimentMain {
         experiment.generate();
 
         for (final GldSimulator sim : experiment.getGldSimulators()) {
-            GldSimulatorWriter.writeGldSimulator(outPath.resolve(sim.getName() + ".glm"), sim);
+            GldSimulatorWriter.writeGldSimulator(outPath, sim);
         }
 
         Ns3SimulatorWriter.writeNs3Simulator(outPath.resolve("ns3.cc"), experiment.getNs3Simulator());

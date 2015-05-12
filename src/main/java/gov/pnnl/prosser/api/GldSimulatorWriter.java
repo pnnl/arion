@@ -40,6 +40,7 @@ public class GldSimulatorWriter {
      *             when we can't write to file
      */
     public static void writeGldSimulator(final Path path, final GldSimulator gldSimulator) throws IOException {
+        Files.createDirectories(path);
         final Map<String, String> properties = gldSimulator.getSettings();
         final Set<Path> includes = new HashSet<>(gldSimulator.getIncludes());
         final GldClock clock = Objects.requireNonNull(gldSimulator.getClock(), "GLD clock must be non null");
@@ -84,7 +85,7 @@ public class GldSimulatorWriter {
                 }
             });
         }
-        try (final BufferedWriter writer = Files.newBufferedWriter(path, StandardCharsets.UTF_8)) {
+        try (final BufferedWriter writer = Files.newBufferedWriter(path.resolve(gldSimulator.getName() + ".glm"), StandardCharsets.UTF_8)) {
             writer.write(sb.toString());
         }
     }

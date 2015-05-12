@@ -62,7 +62,7 @@ public class GldSimulator {
 
     private GldClock clock;
 
-    private final Map<Class<? extends Module>, Module> modules = new TreeMap<>();
+    private final Map<Class<? extends Module>, Module> modules = new TreeMap<>((c1, c2)-> c1.getName().compareTo(c2.getName()));
 
     private final Map<String, String> settings = new TreeMap<>();
 

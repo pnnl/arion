@@ -3,9 +3,13 @@
  */
 package gov.pnnl.prosser.api.gld.obj;
 
+import java.io.IOException;
+import java.nio.file.Path;
+
 import gov.pnnl.prosser.api.GldSimulator;
 import gov.pnnl.prosser.api.NetworkCapable;
 import gov.pnnl.prosser.api.gld.AbstractGldObject;
+import gov.pnnl.prosser.api.gld.GldSerializable;
 import gov.pnnl.prosser.api.gld.enums.CurveOutput;
 import gov.pnnl.prosser.api.gld.enums.SpecialMode;
 
@@ -459,6 +463,11 @@ public class AuctionObject extends AbstractGldObject implements NetworkCapable {
         writeProperty(sb, "init_stdev", initStdev);
         writeProperty(sb, "use_future_mean_price", useFutureMeanPrice);
         writeProperty(sb, "warmup", warmup);
+    }
+
+    @Override
+    public void writeExternalFiles(Path path) throws IOException {
+        this.player.writeExternalFiles(path);
     }
 
     /**

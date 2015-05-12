@@ -226,12 +226,12 @@ public class AdaptedAEPFncsTest extends Experiment {
 
         // Create Player for the Phase C load on the substation
         final PlayerObject phaseCLoad = sim.playerObject("phase_C_load");
-        phaseCLoad.setFile(Paths.get("res/phase_B.player"));
+        phaseCLoad.setFile(Paths.get("res/phase_C.player"));
         phaseCLoad.setLoop(1);
 
         // Specify the climate information
         final ClimateObject climate = sim.climateObject("Columbus OH");
-        climate.setTmyFile(Paths.get("ColumbusWeather2009_2a.csv"));
+        climate.setTmyFile(Paths.get("res/ColumbusWeather2009_2a.csv"));
         climate.addCsvReader("CSVREADER");
 
         // Create the FNCS auction
