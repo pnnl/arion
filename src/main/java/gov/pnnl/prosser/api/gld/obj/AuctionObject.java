@@ -3,9 +3,9 @@
  */
 package gov.pnnl.prosser.api.gld.obj;
 
+import gov.pnnl.prosser.api.GldSimulator;
 import gov.pnnl.prosser.api.NetworkCapable;
 import gov.pnnl.prosser.api.gld.AbstractGldObject;
-import gov.pnnl.prosser.api.gld.GldUtils;
 import gov.pnnl.prosser.api.gld.enums.CurveOutput;
 import gov.pnnl.prosser.api.gld.enums.SpecialMode;
 
@@ -101,6 +101,12 @@ public class AuctionObject extends AbstractGldObject implements NetworkCapable {
      * only controllers with this prefix will talk with this auction
      */
     private String fncsControllerPrefix;
+
+    public AuctionObject(final GldSimulator simulator) {
+        super(simulator);
+        simulator.ensureMarketModule();
+        simulator.ensureCommModule();
+    }
 
     /**
      * Get the unit of quantity
@@ -226,16 +232,6 @@ public class AuctionObject extends AbstractGldObject implements NetworkCapable {
     }
 
     /**
-     * Set the attached player for the Auction
-     * 
-     * @param player
-     *            the player to set
-     */
-    public void setPlayer(final PlayerObject player) {
-        this.player = player;
-    }
-
-    /**
      * Get the auction special mode
      * 
      * @return the specialMode
@@ -261,16 +257,6 @@ public class AuctionObject extends AbstractGldObject implements NetworkCapable {
      */
     public Recorder getRecorder() {
         return recorder;
-    }
-
-    /**
-     * Set the attached recorder for the Auction
-     * 
-     * @param recorder
-     *            the recorder to set
-     */
-    public void setRecorder(final Recorder recorder) {
-        this.recorder = recorder;
     }
 
     /**
@@ -448,31 +434,31 @@ public class AuctionObject extends AbstractGldObject implements NetworkCapable {
      */
     @Override
     protected void writeGldProperties(final StringBuilder sb) {
-        GldUtils.writeProperty(sb, "unit", unit);
-        GldUtils.writeProperty(sb, "period", period);
-        GldUtils.writeProperty(sb, "price_cap", priceCap);
-        GldUtils.writeProperty(sb, "transaction_log_file", transactionLogFile);
-        GldUtils.writeProperty(sb, "curve_log_file", curveLogFile);
-        GldUtils.writeProperty(sb, "curve_log_info", curveLogInfo);
+        writeProperty(sb, "unit", unit);
+        writeProperty(sb, "period", period);
+        writeProperty(sb, "price_cap", priceCap);
+        writeProperty(sb, "transaction_log_file", transactionLogFile);
+        writeProperty(sb, "curve_log_file", curveLogFile);
+        writeProperty(sb, "curve_log_info", curveLogInfo);
 
         // Market Network Interface
         sb.append("    object market_network_interface {\n    ");
-        GldUtils.writeProperty(sb, "name", getNetworkInterfaceName());
+        writeProperty(sb, "name", getNetworkInterfaceName());
         sb.append("    ");
-        GldUtils.writeProperty(sb, "average_price_prop", networkAveragePriceProperty);
+        writeProperty(sb, "average_price_prop", networkAveragePriceProperty);
         sb.append("    ");
-        GldUtils.writeProperty(sb, "stdev_price_prop", networkStdevPriceProperty);
+        writeProperty(sb, "stdev_price_prop", networkStdevPriceProperty);
         sb.append("    ");
-        GldUtils.writeProperty(sb, "adjust_price_prop", networkAdjustPriceProperty);
+        writeProperty(sb, "adjust_price_prop", networkAdjustPriceProperty);
         sb.append("    };\n");
 
         // FIXME INSERT PLAYER
-        GldUtils.writeProperty(sb, "special_mode", specialMode);
+        writeProperty(sb, "special_mode", specialMode);
         // FIXME INSERT RECORDER
-        GldUtils.writeProperty(sb, "init_price", initPrice);
-        GldUtils.writeProperty(sb, "init_stdev", initStdev);
-        GldUtils.writeProperty(sb, "use_future_mean_price", useFutureMeanPrice);
-        GldUtils.writeProperty(sb, "warmup", warmup);
+        writeProperty(sb, "init_price", initPrice);
+        writeProperty(sb, "init_stdev", initStdev);
+        writeProperty(sb, "use_future_mean_price", useFutureMeanPrice);
+        writeProperty(sb, "warmup", warmup);
     }
 
     /**
@@ -481,7 +467,7 @@ public class AuctionObject extends AbstractGldObject implements NetworkCapable {
      * @return the player object
      */
     public PlayerObject player() {
-        this.player = new PlayerObject();
+        this.player = new PlayerObject(this.simulator);
         return player;
     }
 
@@ -491,7 +477,7 @@ public class AuctionObject extends AbstractGldObject implements NetworkCapable {
      * @return the recorder
      */
     public Recorder recorder() {
-        this.recorder = new Recorder();
+        this.recorder = new Recorder(this.simulator);
         return recorder;
     }
 

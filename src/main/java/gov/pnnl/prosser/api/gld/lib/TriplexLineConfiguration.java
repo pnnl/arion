@@ -3,7 +3,7 @@
  */
 package gov.pnnl.prosser.api.gld.lib;
 
-import gov.pnnl.prosser.api.gld.GldUtils;
+import gov.pnnl.prosser.api.GldSimulator;
 
 /**
  * Triplex Line Configuration
@@ -36,6 +36,10 @@ public class TriplexLineConfiguration extends LineConfiguration<TriplexLineCondu
      * total diameter of cable in inches
      */
     private double diameter;
+
+    public TriplexLineConfiguration(final GldSimulator simulator) {
+        super(simulator);
+    }
 
     /**
      * Get the Conductor for Phase 1
@@ -145,11 +149,11 @@ public class TriplexLineConfiguration extends LineConfiguration<TriplexLineCondu
      */
     @Override
     protected void writeGldProperties(final StringBuilder sb) {
-        GldUtils.writeProperty(sb, "conductor_1", this.phase1Conductor);
-        GldUtils.writeProperty(sb, "conductor_2", this.phase2Conductor);
-        GldUtils.writeProperty(sb, "conductor_N", this.phaseNConductor);
-        GldUtils.writeProperty(sb, "insulation_thickness", this.insulationThickness);
-        GldUtils.writeProperty(sb, "diameter", this.diameter);
+        writeProperty(sb, "conductor_1", this.phase1Conductor);
+        writeProperty(sb, "conductor_2", this.phase2Conductor);
+        writeProperty(sb, "conductor_N", this.phaseNConductor);
+        writeProperty(sb, "insulation_thickness", this.insulationThickness);
+        writeProperty(sb, "diameter", this.diameter);
     }
 
 }

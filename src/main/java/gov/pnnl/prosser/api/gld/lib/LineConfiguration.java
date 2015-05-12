@@ -3,6 +3,8 @@
  */
 package gov.pnnl.prosser.api.gld.lib;
 
+import gov.pnnl.prosser.api.GldSimulator;
+
 /**
  * General Line Configuration
  *
@@ -10,4 +12,7 @@ package gov.pnnl.prosser.api.gld.lib;
  */
 public abstract class LineConfiguration<C extends Conductor> extends PowerflowLibrary {
 
+    public LineConfiguration(final GldSimulator simulator) {
+        super(simulator);
+    }
 }

@@ -31,7 +31,7 @@ import java.util.Random;
  * 
  * @author nord229
  */
-public abstract class GldHouseUtils {
+public abstract class GldSimulatorUtils {
 
     // %% Unchanging? parameters
     // %house parameters extracting them here

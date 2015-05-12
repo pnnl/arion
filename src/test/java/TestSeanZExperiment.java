@@ -7,6 +7,7 @@ import gov.pnnl.prosser.api.gld.enums.*;
 import gov.pnnl.prosser.api.gld.lib.*;
 import gov.pnnl.prosser.api.gld.obj.*;
 
+import java.nio.file.*;
 import java.time.*;
 
 /**
@@ -29,10 +30,11 @@ public class TestSeanZExperiment extends Experiment {
         clock.setStartTime(LocalDateTime.of(2000, 1, 1, 0, 0, 0));
         clock.setStopTime(LocalDateTime.of(2000, 2, 1, 0, 0, 0));
 
-        sim.climateModule();
-        sim.tapeModule();
+        // Modules are added by default
+        // sim.climateModule();
+        // sim.tapeModule();
         sim.powerflowModule(SolverMethod.FBS, null);
-        sim.residentialModule(ImplicitEnduses.NONE);
+        // sim.residentialModule(ImplicitEnduses.NONE);
 
         sim.addSetting("savefile", "testSean.xml");
         sim.addSetting("profiler", "1");
@@ -40,7 +42,7 @@ public class TestSeanZExperiment extends Experiment {
         final double oneMileInFeet = 5280;
 
         final ClimateObject climate = sim.climateObject("MyClimate");
-        climate.setTmyFile("WA-Yakima.tmy2");
+        climate.setTmyFile(Paths.get("res/WA-Yakima.tmy2"));
 
         final OverheadLineConductor phaseConductor = sim.overheadLineConductor("phase_conductor");
         phaseConductor.setGeometricMeanRadius(0.0313);
@@ -102,11 +104,10 @@ public class TestSeanZExperiment extends Experiment {
         node3.setPhases(PhaseCode.ABCN);
         node3.setNominalVoltage(2400.0);
 
-        final Transformer transformer1 = sim.transformer(null);
+        final Transformer transformer1 = sim.transformer(null, transformerConfig1);
         transformer1.setPhases(PhaseCode.ABCN);
         transformer1.setFrom(node2);
         transformer1.setTo(node3);
-        transformer1.setConfiguration(transformerConfig1);
 
         final Node node4 = sim.node("node4");
         node4.setPhases(PhaseCode.ABCN);
@@ -132,11 +133,10 @@ public class TestSeanZExperiment extends Experiment {
         tripNode1.setPhases(PhaseCode.AS);
         tripNode1.setNominalVoltage(120.0);
 
-        final Transformer transformer2 = sim.transformer("distribution_transformer");
+        final Transformer transformer2 = sim.transformer("distribution_transformer", transformerConfig2);
         transformer2.setPhases(PhaseCode.AS);
         transformer2.setFrom(node4);
         transformer2.setTo(tripNode1);
-        transformer2.setConfiguration(transformerConfig2);
 
         final TriplexLineConductor tripConductor1 = sim.triplexLineConductor("trip_conductor1");
         tripConductor1.setResistance(0.97);

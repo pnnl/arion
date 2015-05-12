@@ -3,6 +3,7 @@
  */
 package gov.pnnl.prosser.api.gld.obj;
 
+import gov.pnnl.prosser.api.GldSimulator;
 import gov.pnnl.prosser.api.gld.lib.LineConfiguration;
 import gov.pnnl.prosser.api.gld.lib.OverheadLineConductor;
 
@@ -12,6 +13,10 @@ import gov.pnnl.prosser.api.gld.lib.OverheadLineConductor;
  * @author nord229
  */
 public class OverheadLine extends Line<OverheadLineConductor, LineConfiguration<OverheadLineConductor>> {
+
+    public OverheadLine(final GldSimulator simulator) {
+        super(simulator);
+    }
 
     /**
      * {@inheritDoc}

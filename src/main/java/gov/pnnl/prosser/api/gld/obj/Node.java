@@ -3,7 +3,7 @@
  */
 package gov.pnnl.prosser.api.gld.obj;
 
-import gov.pnnl.prosser.api.gld.GldUtils;
+import gov.pnnl.prosser.api.GldSimulator;
 import gov.pnnl.prosser.api.gld.enums.BusType;
 
 import org.apache.commons.math3.complex.Complex;
@@ -34,6 +34,10 @@ public class Node extends PowerflowObject {
      * type of bus used in this node
      */
     private BusType busType;
+
+    public Node(final GldSimulator simulator) {
+        super(simulator);
+    }
 
     /**
      * Get the bus voltage, Phase A to ground
@@ -161,10 +165,10 @@ public class Node extends PowerflowObject {
     @Override
     protected void writeGldProperties(final StringBuilder sb) {
         super.writeGldProperties(sb);
-        GldUtils.writeProperty(sb, "voltage_A", this.voltageA);
-        GldUtils.writeProperty(sb, "voltage_B", this.voltageB);
-        GldUtils.writeProperty(sb, "voltage_C", this.voltageC);
-        GldUtils.writeProperty(sb, "bustype", this.busType);
+        writeProperty(sb, "voltage_A", this.voltageA);
+        writeProperty(sb, "voltage_B", this.voltageB);
+        writeProperty(sb, "voltage_C", this.voltageC);
+        writeProperty(sb, "bustype", this.busType);
     }
 
 }

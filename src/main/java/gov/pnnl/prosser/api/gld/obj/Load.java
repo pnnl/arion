@@ -3,7 +3,7 @@
  */
 package gov.pnnl.prosser.api.gld.obj;
 
-import gov.pnnl.prosser.api.gld.GldUtils;
+import gov.pnnl.prosser.api.GldSimulator;
 
 /**
  * Load objects represent static loads and export both voltages and current
@@ -31,6 +31,10 @@ public class Load extends Node {
      * constant power load on phase C, real only, specified as W
      */
     private String phaseCConstantReal;
+
+    public Load(final GldSimulator simulator) {
+        super(simulator);
+    }
 
     /**
      * Get the parent node to apply this load to
@@ -122,10 +126,10 @@ public class Load extends Node {
     @Override
     protected void writeGldProperties(final StringBuilder sb) {
         super.writeGldProperties(sb);
-        GldUtils.writeProperty(sb, "parent", this.parent);
-        GldUtils.writeProperty(sb, "constant_power_A_real", this.phaseAConstantReal);
-        GldUtils.writeProperty(sb, "constant_power_B_real", this.phaseBConstantReal);
-        GldUtils.writeProperty(sb, "constant_power_C_real", this.phaseCConstantReal);
+        writeProperty(sb, "parent", this.parent);
+        writeProperty(sb, "constant_power_A_real", this.phaseAConstantReal);
+        writeProperty(sb, "constant_power_B_real", this.phaseBConstantReal);
+        writeProperty(sb, "constant_power_C_real", this.phaseCConstantReal);
     }
 
 }

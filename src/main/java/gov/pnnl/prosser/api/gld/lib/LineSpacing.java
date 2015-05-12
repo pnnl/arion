@@ -3,7 +3,7 @@
  */
 package gov.pnnl.prosser.api.gld.lib;
 
-import gov.pnnl.prosser.api.gld.GldUtils;
+import gov.pnnl.prosser.api.GldSimulator;
 
 /**
  * Generic Line Spacing
@@ -41,6 +41,10 @@ public class LineSpacing extends PowerflowLibrary {
      * distance between cables A and Neutral in feet
      */
     private double distanceCToN;
+
+    public LineSpacing(final GldSimulator simulator) {
+        super(simulator);
+    }
 
     /**
      * Get the distance between cables A and B in feet
@@ -169,12 +173,12 @@ public class LineSpacing extends PowerflowLibrary {
      */
     @Override
     protected void writeGldProperties(final StringBuilder sb) {
-        GldUtils.writeProperty(sb, "distance_AB", this.distanceAToB);
-        GldUtils.writeProperty(sb, "distance_BC", this.distanceBToC);
-        GldUtils.writeProperty(sb, "distance_AC", this.distanceAToC);
-        GldUtils.writeProperty(sb, "distance_AN", this.distanceAToN);
-        GldUtils.writeProperty(sb, "distance_BN", this.distanceBToN);
-        GldUtils.writeProperty(sb, "distance_CN", this.distanceCToN);
+        writeProperty(sb, "distance_AB", this.distanceAToB);
+        writeProperty(sb, "distance_BC", this.distanceBToC);
+        writeProperty(sb, "distance_AC", this.distanceAToC);
+        writeProperty(sb, "distance_AN", this.distanceAToN);
+        writeProperty(sb, "distance_BN", this.distanceBToN);
+        writeProperty(sb, "distance_CN", this.distanceCToN);
     }
 
 }

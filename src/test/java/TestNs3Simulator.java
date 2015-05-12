@@ -3,10 +3,8 @@
  */
 
 import gov.pnnl.prosser.api.AbstractNs3Object;
-import gov.pnnl.prosser.api.Ns3Simulator;
 import gov.pnnl.prosser.api.ns3.module.Module;
 import gov.pnnl.prosser.api.ns3.module.Namespace;
-import gov.pnnl.prosser.api.ns3.obj.Node;
 import gov.pnnl.prosser.api.ns3.obj.Ns3Network;
 import java.util.ArrayList;
 import java.util.List;

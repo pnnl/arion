@@ -3,7 +3,7 @@
  */
 package gov.pnnl.prosser.api.gld.lib;
 
-import gov.pnnl.prosser.api.gld.GldUtils;
+import gov.pnnl.prosser.api.GldSimulator;
 import gov.pnnl.prosser.api.gld.enums.ConnectionType;
 import gov.pnnl.prosser.api.gld.enums.InstallationType;
 
@@ -66,22 +66,8 @@ public class TransformerConfiguration extends PowerflowLibrary {
      */
     private Complex shuntImpedance;
 
-    public TransformerConfiguration() {
-    }
-
-    public TransformerConfiguration(final TransformerConfiguration config) {
-        this.setName(config.getName());
-        this.setGroupId(config.getGroupId());
-        this.connectionType = config.connectionType;
-        this.installationType = config.installationType;
-        this.primaryVoltage = config.primaryVoltage;
-        this.secondaryVoltage = config.secondaryVoltage;
-        this.powerRating = config.powerRating;
-        this.phaseARating = config.phaseARating;
-        this.phaseBRating = config.phaseBRating;
-        this.phaseCRating = config.phaseCRating;
-        this.impedance = config.impedance;
-        this.shuntImpedance = config.shuntImpedance;
+    public TransformerConfiguration(final GldSimulator simulator) {
+        super(simulator);
     }
 
     /**
@@ -311,18 +297,18 @@ public class TransformerConfiguration extends PowerflowLibrary {
      */
     @Override
     protected void writeGldProperties(final StringBuilder sb) {
-        GldUtils.writeProperty(sb, "connect_type", this.connectionType);
-        GldUtils.writeProperty(sb, "install_type", this.installationType);
-        GldUtils.writeProperty(sb, "power_rating", this.powerRating);
-        GldUtils.writeProperty(sb, "powerA_rating", this.phaseARating, "kVA");
-        GldUtils.writeProperty(sb, "powerB_rating", this.phaseBRating);
-        GldUtils.writeProperty(sb, "powerC_rating", this.phaseCRating);
-        GldUtils.writeProperty(sb, "primary_voltage", this.primaryVoltage);
-        GldUtils.writeProperty(sb, "secondary_voltage", this.secondaryVoltage);
+        writeProperty(sb, "connect_type", this.connectionType);
+        writeProperty(sb, "install_type", this.installationType);
+        writeProperty(sb, "power_rating", this.powerRating);
+        writeProperty(sb, "powerA_rating", this.phaseARating, "kVA");
+        writeProperty(sb, "powerB_rating", this.phaseBRating);
+        writeProperty(sb, "powerC_rating", this.phaseCRating);
+        writeProperty(sb, "primary_voltage", this.primaryVoltage);
+        writeProperty(sb, "secondary_voltage", this.secondaryVoltage);
         // GLDUtils.writeProperty(sb, "resistance", this.impedance.getReal());
         // GLDUtils.writeProperty(sb, "reactance", this.impedance.getImaginary());
-        GldUtils.writeProperty(sb, "impedance", this.impedance);
-        GldUtils.writeProperty(sb, "shunt_impedance", this.shuntImpedance);
+        writeProperty(sb, "impedance", this.impedance);
+        writeProperty(sb, "shunt_impedance", this.shuntImpedance);
     }
 
 }

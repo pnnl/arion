@@ -3,7 +3,7 @@
  */
 package gov.pnnl.prosser.api.gld.obj;
 
-import gov.pnnl.prosser.api.gld.GldUtils;
+import gov.pnnl.prosser.api.GldSimulator;
 
 /**
  * Generic Link Object
@@ -21,6 +21,10 @@ public abstract class LinkObject extends PowerflowObject {
      * to_node - load node
      */
     private Node to;
+
+    public LinkObject(final GldSimulator simulator) {
+        super(simulator);
+    }
 
     /**
      * Get the from node - source node
@@ -66,8 +70,8 @@ public abstract class LinkObject extends PowerflowObject {
     @Override
     protected void writeGldProperties(final StringBuilder sb) {
         super.writeGldProperties(sb);
-        GldUtils.writeProperty(sb, "from", this.from);
-        GldUtils.writeProperty(sb, "to", this.to);
+        writeProperty(sb, "from", this.from);
+        writeProperty(sb, "to", this.to);
     }
 
 }

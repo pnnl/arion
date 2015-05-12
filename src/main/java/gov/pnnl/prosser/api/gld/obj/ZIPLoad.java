@@ -3,7 +3,7 @@
  */
 package gov.pnnl.prosser.api.gld.obj;
 
-import gov.pnnl.prosser.api.gld.GldUtils;
+import gov.pnnl.prosser.api.GldSimulator;
 
 /**
  * ZipLoad Object
@@ -58,6 +58,10 @@ public class ZIPLoad extends ResidentialEnduse {
      * the fraction of total power that is constant impedance
      */
     private double impedanceFraction;
+
+    public ZIPLoad(final GldSimulator simulator) {
+        super(simulator);
+    }
 
     /**
      * Get the Fraction of ZIPload that is transferred as heat
@@ -246,18 +250,18 @@ public class ZIPLoad extends ResidentialEnduse {
     @Override
     protected void writeGldProperties(final StringBuilder sb) {
         super.writeGldProperties(sb);
-        GldUtils.writeProperty(sb, "heat_fraction", this.heatFraction);
+        writeProperty(sb, "heat_fraction", this.heatFraction);
         if (basePowerFn != null) {
-            GldUtils.writeProperty(sb, "base_power", this.basePowerFn);
+            writeProperty(sb, "base_power", this.basePowerFn);
         } else {
-            GldUtils.writeProperty(sb, "base_power", this.basePower, "kW");
+            writeProperty(sb, "base_power", this.basePower, "kW");
         }
-        GldUtils.writeProperty(sb, "power_pf", this.powerPf);
-        GldUtils.writeProperty(sb, "power_fraction", this.powerFraction);
-        GldUtils.writeProperty(sb, "current_pf", this.currentPf);
-        GldUtils.writeProperty(sb, "current_fraction", this.currentFraction);
-        GldUtils.writeProperty(sb, "impedance_pf", this.impedancePf);
-        GldUtils.writeProperty(sb, "impedance_fraction", this.impedanceFraction);
+        writeProperty(sb, "power_pf", this.powerPf);
+        writeProperty(sb, "power_fraction", this.powerFraction);
+        writeProperty(sb, "current_pf", this.currentPf);
+        writeProperty(sb, "current_fraction", this.currentFraction);
+        writeProperty(sb, "impedance_pf", this.impedancePf);
+        writeProperty(sb, "impedance_fraction", this.impedanceFraction);
     }
 
 }

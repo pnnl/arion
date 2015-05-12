@@ -16,7 +16,7 @@ public abstract class Experiment {
 
     private final List<GldSimulator> gldSimulators = new ArrayList<>();
 
-    private final List<Ns3Simulator> ns3Simulators = new ArrayList<>();
+    private Ns3Simulator ns3Simulator = null;
 
     private FncsSimulator fncsSimulator = null;
 
@@ -34,8 +34,8 @@ public abstract class Experiment {
      * 
      * @return the simulators
      */
-    public List<Ns3Simulator> getNs3Simulators() {
-        return this.ns3Simulators;
+    public Ns3Simulator getNs3Simulator() {
+        return this.ns3Simulator;
     }
 
     /**
@@ -66,9 +66,8 @@ public abstract class Experiment {
      * @return the simulator
      */
     public Ns3Simulator ns3Simulator() {
-        final Ns3Simulator sim = new Ns3Simulator();
-        this.ns3Simulators.add(sim);
-        return sim;
+        this.ns3Simulator = new Ns3Simulator();
+        return this.ns3Simulator;
     }
 
     /**
@@ -78,7 +77,9 @@ public abstract class Experiment {
      * @return the simulator
      */
     public FncsSimulator fncsSimulator() {
-        this.fncsSimulator = new FncsSimulator();
+        if(this.fncsSimulator == null) {
+            this.fncsSimulator = new FncsSimulator();
+        }
         return this.fncsSimulator;
     }
 

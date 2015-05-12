@@ -3,7 +3,6 @@
  */
 package gov.pnnl.prosser.api.gld.module;
 
-import gov.pnnl.prosser.api.gld.GldUtils;
 import gov.pnnl.prosser.api.gld.enums.SolverMethod;
 
 import java.util.Objects;
@@ -103,8 +102,8 @@ public class PowerflowModule extends Module {
      */
     @Override
     protected void writeGLDProperties(final StringBuilder sb) {
-        GldUtils.writeProperty(sb, "solver_method", this.solverMethod);
-        GldUtils.writeProperty(sb, "NR_iteration_limit", this.nrIterationLimit);
+        writeProperty(sb, "solver_method", this.solverMethod);
+        writeProperty(sb, "NR_iteration_limit", this.nrIterationLimit);
     }
 
 }

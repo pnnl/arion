@@ -3,8 +3,13 @@
  */
 package gov.pnnl.prosser.api.gld.obj;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+
+import gov.pnnl.prosser.api.GldSimulator;
 import gov.pnnl.prosser.api.gld.AbstractGldObject;
-import gov.pnnl.prosser.api.gld.GldUtils;
+import gov.pnnl.prosser.api.gld.GldSerializable;
 
 /**
  * Tape Player
@@ -21,12 +26,17 @@ public class PlayerObject extends AbstractGldObject {
     /**
      * the source of the data
      */
-    private String file;
+    private Path file;
 
     /**
      * number of times the tape is to be repeated
      */
     private Integer loop;
+
+    public PlayerObject(final GldSimulator simulator) {
+        super(simulator);
+        simulator.ensureTapeModule();
+    }
 
     /**
      * Get the target (parent) that is written to
@@ -52,7 +62,7 @@ public class PlayerObject extends AbstractGldObject {
      * 
      * @return the file
      */
-    public String getFile() {
+    public Path getFile() {
         return file;
     }
 
@@ -62,7 +72,7 @@ public class PlayerObject extends AbstractGldObject {
      * @param file
      *            the file to set
      */
-    public void setFile(final String file) {
+    public void setFile(final Path file) {
         this.file = file;
     }
 
@@ -98,9 +108,16 @@ public class PlayerObject extends AbstractGldObject {
      */
     @Override
     protected void writeGldProperties(final StringBuilder sb) {
-        GldUtils.writeProperty(sb, "property", property);
-        GldUtils.writeProperty(sb, "file", file);
-        GldUtils.writeProperty(sb, "loop", loop);
+        writeProperty(sb, "property", property);
+        writeProperty(sb, "file", file.getFileName().toString());
+        writeProperty(sb, "loop", loop);
+    }
+
+    @Override
+    public void writeExternalFiles(Path path) throws IOException {
+        if(file != null) {
+            Files.copy(file, path.resolve(file.getFileName()));
+        }
     }
 
 }

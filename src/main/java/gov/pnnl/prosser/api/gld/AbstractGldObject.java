@@ -5,7 +5,10 @@ package gov.pnnl.prosser.api.gld;
 
 import gov.pnnl.prosser.api.GldSimulator;
 
+import java.text.DecimalFormat;
 import java.util.Objects;
+
+import org.apache.commons.math3.complex.Complex;
 
 /**
  * Object to encompass shared properties for all GridLabD objects
@@ -13,6 +16,17 @@ import java.util.Objects;
  * @author nord229
  */
 public abstract class AbstractGldObject implements GldSerializable {
+    
+    public static final DecimalFormat complexFormat;
+
+    public static final DecimalFormat doubleFormat;
+
+    static {
+        complexFormat = new DecimalFormat("0.000#");
+        complexFormat.setMaximumFractionDigits(10);
+        doubleFormat = new DecimalFormat("0.#");
+        doubleFormat.setMaximumFractionDigits(3);
+    }
 
     /**
      * Object name for referencing in files
@@ -28,7 +42,11 @@ public abstract class AbstractGldObject implements GldSerializable {
     /**
      * Simulator reference
      */
-    private GldSimulator simulator;
+    protected final GldSimulator simulator;
+    
+    public AbstractGldObject(final GldSimulator simulator) {
+    	this.simulator = simulator;
+    }
 
     /**
      * Get the object name for referencing in files
@@ -68,25 +86,6 @@ public abstract class AbstractGldObject implements GldSerializable {
         this.groupId = groupId;
     }
 
-    /**
-     * Get the Simulator reference
-     * 
-     * @return the simulator
-     */
-    public GldSimulator getSimulator() {
-        return simulator;
-    }
-
-    /**
-     * Set the Simulator reference
-     * 
-     * @param simulator
-     *            the simulator to set
-     */
-    public void setSimulator(final GldSimulator simulator) {
-        this.simulator = simulator;
-    }
-
     @Override
     public int hashCode() {
         return Objects.hash(this.name, this.groupId);
@@ -118,8 +117,8 @@ public abstract class AbstractGldObject implements GldSerializable {
     @Override
     public void writeGldString(final StringBuilder sb) {
         sb.append("object ").append(getGldObjectType()).append(" {\n");
-        GldUtils.writeProperty(sb, "name", this.name);
-        GldUtils.writeProperty(sb, "groupid", this.groupId);
+        writeProperty(sb, "name", this.name);
+        writeProperty(sb, "groupid", this.groupId);
         this.writeGldProperties(sb);
         sb.append("}\n");
     }
@@ -131,5 +130,45 @@ public abstract class AbstractGldObject implements GldSerializable {
      *            the string builder to use
      */
     protected abstract void writeGldProperties(final StringBuilder sb);
+    
+    
+
+    protected void writeProperty(final StringBuilder sb, final String propName, final Double propValue) {
+        writeProperty(sb, propName, propValue, null);
+    }
+
+    protected void writeProperty(final StringBuilder sb, final String propName, final Complex propValue) {
+        writeProperty(sb, propName, propValue, null);
+    }
+
+    protected void writeProperty(final StringBuilder sb, final String propName, final Double propValue, final String propUnits) {
+        if (propValue == null) {
+            return;
+        }
+        writePropName(sb, propName);
+
+        sb.append(doubleFormat.format(propValue));
+
+        writePropUnitsAndTrailer(sb, propUnits);
+    }
+
+    protected void writeProperty(final StringBuilder sb, final String propName, final Complex propValue, final String propUnits) {
+        if (propValue == null) {
+            return;
+        }
+        writePropName(sb, propName);
+
+        if (propValue.getReal() >= 0) {
+            sb.append('+');
+        }
+        sb.append(complexFormat.format(propValue.getReal()));
+        if (propValue.getImaginary() >= 0) {
+            sb.append('+');
+        }
+        sb.append(complexFormat.format(propValue.getImaginary()));
+        sb.append('j');
+
+        writePropUnitsAndTrailer(sb, propUnits);
+    }
 
 }

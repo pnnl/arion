@@ -3,8 +3,8 @@
  */
 package gov.pnnl.prosser.api.gld.obj;
 
+import gov.pnnl.prosser.api.GldSimulator;
 import gov.pnnl.prosser.api.gld.AbstractGldObject;
-import gov.pnnl.prosser.api.gld.GldUtils;
 import gov.pnnl.prosser.api.gld.enums.PhaseCode;
 
 import java.util.EnumSet;
@@ -26,6 +26,11 @@ public abstract class PowerflowObject extends AbstractGldObject {
      * Phases this object is using
      */
     private EnumSet<PhaseCode> phases;
+
+    public PowerflowObject(final GldSimulator simulator) {
+        super(simulator);
+        simulator.ensurePowerflowModule();
+    }
 
     /**
      * Get the Nominal Voltage
@@ -116,7 +121,7 @@ public abstract class PowerflowObject extends AbstractGldObject {
             phaseBuilder.append("S");
         }
 
-        GldUtils.writeProperty(sb, "phases", phaseBuilder.toString());
-        GldUtils.writeProperty(sb, "nominal_voltage", this.nominalVoltage);
+        writeProperty(sb, "phases", phaseBuilder.toString());
+        writeProperty(sb, "nominal_voltage", this.nominalVoltage);
     }
 }

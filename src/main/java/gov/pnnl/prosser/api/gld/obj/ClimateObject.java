@@ -3,9 +3,13 @@
  */
 package gov.pnnl.prosser.api.gld.obj;
 
+import gov.pnnl.prosser.api.GldSimulator;
 import gov.pnnl.prosser.api.gld.AbstractGldObject;
-import gov.pnnl.prosser.api.gld.GldUtils;
+import gov.pnnl.prosser.api.gld.GldSerializable;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Objects;
 
 /**
@@ -18,19 +22,24 @@ public class ClimateObject extends AbstractGldObject {
     /**
      * the TMY file name
      */
-    private String tmyFile;
+    private Path tmyFile;
 
     /**
      * the file reader to use when loading data, can be null
      */
     private CsvReader reader;
 
+    public ClimateObject(final GldSimulator simulator) {
+        super(simulator);
+        simulator.ensureClimateModule();
+    }
+
     /**
      * Get the TMY file name
      * 
      * @return the tmyFile
      */
-    public String getTmyFile() {
+    public Path getTmyFile() {
         return tmyFile;
     }
 
@@ -40,7 +49,7 @@ public class ClimateObject extends AbstractGldObject {
      * @param tmyFile
      *            the tmyFile to set
      */
-    public void setTmyFile(final String tmyFile) {
+    public void setTmyFile(final Path tmyFile) {
         this.tmyFile = tmyFile;
     }
 
@@ -71,8 +80,8 @@ public class ClimateObject extends AbstractGldObject {
      * @return the csv reader
      */
     public CsvReader addCsvReader(final String name) {
-        this.reader = this.getSimulator().csvReader(name);
-        this.reader.setFilename(this.tmyFile);
+        this.reader = this.simulator.csvReader(name);
+        this.reader.setFilename(this.tmyFile.getFileName().toString());
         return this.reader;
     }
 
@@ -109,8 +118,15 @@ public class ClimateObject extends AbstractGldObject {
      */
     @Override
     protected void writeGldProperties(final StringBuilder sb) {
-        GldUtils.writeProperty(sb, "tmyfile", this.tmyFile);
-        GldUtils.writeProperty(sb, "reader", reader);
+        writeProperty(sb, "tmyfile", this.tmyFile.getFileName().toString());
+        writeProperty(sb, "reader", reader);
+    }
+
+    @Override
+    public void writeExternalFiles(Path path) throws IOException {
+        if(tmyFile != null) {
+            Files.copy(tmyFile, path.resolve(tmyFile.getFileName()));
+        }
     }
 
 }

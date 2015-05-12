@@ -3,7 +3,7 @@
  */
 package gov.pnnl.prosser.api.gld.obj;
 
-import gov.pnnl.prosser.api.gld.GldUtils;
+import gov.pnnl.prosser.api.GldSimulator;
 import gov.pnnl.prosser.api.gld.enums.PhaseCode;
 
 /**
@@ -18,6 +18,10 @@ public class Substation extends Node {
      * the reference phase for the positive sequence voltage
      */
     private PhaseCode referencePhase;
+
+    public Substation(final GldSimulator simulator) {
+        super(simulator);
+    }
 
     /**
      * Get the reference phase for the positive sequence voltage
@@ -52,7 +56,7 @@ public class Substation extends Node {
     @Override
     protected void writeGldProperties(final StringBuilder sb) {
         super.writeGldProperties(sb);
-        GldUtils.writeProperty(sb, "reference_phase", "PHASE_" + this.referencePhase.name());
+        writeProperty(sb, "reference_phase", "PHASE_" + this.referencePhase.name());
     }
 
 }

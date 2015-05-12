@@ -3,15 +3,15 @@
  */
 package gov.pnnl.prosser.api.gld.obj;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import gov.pnnl.prosser.api.gld.GldUtils;
+import gov.pnnl.prosser.api.GldSimulator;
 import gov.pnnl.prosser.api.gld.enums.CoolingSystemType;
 import gov.pnnl.prosser.api.gld.enums.FanType;
 import gov.pnnl.prosser.api.gld.enums.HeatingSystemType;
 import gov.pnnl.prosser.api.gld.enums.MotorEfficiency;
 import gov.pnnl.prosser.api.gld.enums.MotorModel;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * House Object
@@ -156,6 +156,10 @@ public class House extends ResidentialEnduse {
      * the loads on the house (lights, etc.)
      */
     private final List<ZIPLoad> loads = new ArrayList<>();
+
+    public House(final GldSimulator simulator) {
+        super(simulator);
+    }
 
     /**
      * Get the parent node
@@ -646,16 +650,6 @@ public class House extends ResidentialEnduse {
     }
 
     /**
-     * Set the Recorder
-     * 
-     * @param recorder
-     *            the recorder to set
-     */
-    public void setRecorder(Recorder recorder) {
-        this.recorder = recorder;
-    }
-
-    /**
      * Add a ZIPLoad to this House
      * 
      * @param load
@@ -671,7 +665,7 @@ public class House extends ResidentialEnduse {
      * @return the Zip load
      */
     public ZIPLoad addLoad() {
-        final ZIPLoad load = new ZIPLoad();
+        final ZIPLoad load = new ZIPLoad(this.simulator);
         this.loads.add(load);
         return load;
     }
@@ -684,7 +678,7 @@ public class House extends ResidentialEnduse {
      * @return the controller
      */
     public Controller controller(final String name) {
-        this.controller = new Controller();
+        this.controller = new Controller(this.simulator);
         controller.setName(name);
         return controller;
     }
@@ -695,7 +689,7 @@ public class House extends ResidentialEnduse {
      * @return the recorder
      */
     public Recorder recorder() {
-        this.recorder = new Recorder();
+        this.recorder = new Recorder(this.simulator);
         return recorder;
     }
 
@@ -713,33 +707,33 @@ public class House extends ResidentialEnduse {
     @Override
     protected void writeGldProperties(final StringBuilder sb) {
         super.writeGldProperties(sb);
-        GldUtils.writeProperty(sb, "parent", this.parent);
-        GldUtils.writeProperty(sb, "Rroof", this.Rroof);
-        GldUtils.writeProperty(sb, "Rwall", this.Rwall);
-        GldUtils.writeProperty(sb, "Rfloor", this.Rfloor);
-        GldUtils.writeProperty(sb, "Rdoors", this.Rdoors);
-        GldUtils.writeProperty(sb, "Rwindows", this.Rwindows);
-        GldUtils.writeProperty(sb, "airchange_per_hour", this.airchangePerHour);
-        GldUtils.writeProperty(sb, "hvac_power_factor", this.hvacPowerFactor);
-        GldUtils.writeProperty(sb, "cooling_system_type", this.coolingSystemType);
-        GldUtils.writeProperty(sb, "heating_system_type", this.heatingSystemType);
-        GldUtils.writeProperty(sb, "fan_type", this.fanType);
-        GldUtils.writeProperty(sb, "hvac_breaker_rating", this.hvacBreakerRating);
-        GldUtils.writeProperty(sb, "total_thermal_mass_per_floor_area", this.totalThermalMassPerFloorArea);
-        GldUtils.writeProperty(sb, "motor_efficiency", this.motorEfficiency);
-        GldUtils.writeProperty(sb, "motor_model", this.motorModel);
-        GldUtils.writeProperty(sb, "cooling_COP", this.coolingCop);
-        GldUtils.writeProperty(sb, "floor_area", this.floorArea);
-        GldUtils.writeProperty(sb, "number_of_doors", this.numberOfDoors);
+        writeProperty(sb, "parent", this.parent);
+        writeProperty(sb, "Rroof", this.Rroof);
+        writeProperty(sb, "Rwall", this.Rwall);
+        writeProperty(sb, "Rfloor", this.Rfloor);
+        writeProperty(sb, "Rdoors", this.Rdoors);
+        writeProperty(sb, "Rwindows", this.Rwindows);
+        writeProperty(sb, "airchange_per_hour", this.airchangePerHour);
+        writeProperty(sb, "hvac_power_factor", this.hvacPowerFactor);
+        writeProperty(sb, "cooling_system_type", this.coolingSystemType);
+        writeProperty(sb, "heating_system_type", this.heatingSystemType);
+        writeProperty(sb, "fan_type", this.fanType);
+        writeProperty(sb, "hvac_breaker_rating", this.hvacBreakerRating);
+        writeProperty(sb, "total_thermal_mass_per_floor_area", this.totalThermalMassPerFloorArea);
+        writeProperty(sb, "motor_efficiency", this.motorEfficiency);
+        writeProperty(sb, "motor_model", this.motorModel);
+        writeProperty(sb, "cooling_COP", this.coolingCop);
+        writeProperty(sb, "floor_area", this.floorArea);
+        writeProperty(sb, "number_of_doors", this.numberOfDoors);
         if (heatingSetpointFn != null) {
-            GldUtils.writeProperty(sb, "heating_setpoint", this.heatingSetpointFn);
+            writeProperty(sb, "heating_setpoint", this.heatingSetpointFn);
         } else {
-            GldUtils.writeProperty(sb, "heating_setpoint", this.heatingSetpoint);
+            writeProperty(sb, "heating_setpoint", this.heatingSetpoint);
         }
         if (coolingSetpointFn != null) {
-            GldUtils.writeProperty(sb, "cooling_setpoint", this.coolingSetpointFn);
+            writeProperty(sb, "cooling_setpoint", this.coolingSetpointFn);
         } else {
-            GldUtils.writeProperty(sb, "cooling_setpoint", this.coolingSetpoint);
+            writeProperty(sb, "cooling_setpoint", this.coolingSetpoint);
         }
         if (controller != null) {
             controller.writeGldString(sb);

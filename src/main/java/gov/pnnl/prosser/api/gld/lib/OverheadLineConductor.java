@@ -3,7 +3,7 @@
  */
 package gov.pnnl.prosser.api.gld.lib;
 
-import gov.pnnl.prosser.api.gld.GldUtils;
+import gov.pnnl.prosser.api.GldSimulator;
 
 /**
  * Overhead Line Conductor definition
@@ -26,6 +26,10 @@ public class OverheadLineConductor extends Conductor {
      * Diameter of line for capacitance calculations in inches
      */
     private double diameter;
+
+    public OverheadLineConductor(final GldSimulator simulator) {
+        super(simulator);
+    }
 
     /**
      * Get the radius of the conductor in feet
@@ -97,9 +101,9 @@ public class OverheadLineConductor extends Conductor {
      */
     @Override
     protected void writeGldProperties(final StringBuilder sb) {
-        GldUtils.writeProperty(sb, "geometric_mean_radius", this.geometricMeanRadius, "ft");
-        GldUtils.writeProperty(sb, "resistance", this.resistance, "Ohm/mile");
-        GldUtils.writeProperty(sb, "diameter", this.diameter, "in");
+        writeProperty(sb, "geometric_mean_radius", this.geometricMeanRadius, "ft");
+        writeProperty(sb, "resistance", this.resistance, "Ohm/mile");
+        writeProperty(sb, "diameter", this.diameter, "in");
     }
 
 }

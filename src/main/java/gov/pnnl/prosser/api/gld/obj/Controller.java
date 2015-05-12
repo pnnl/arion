@@ -3,9 +3,9 @@
  */
 package gov.pnnl.prosser.api.gld.obj;
 
+import gov.pnnl.prosser.api.GldSimulator;
 import gov.pnnl.prosser.api.NetworkCapable;
 import gov.pnnl.prosser.api.gld.AbstractGldObject;
-import gov.pnnl.prosser.api.gld.GldUtils;
 import gov.pnnl.prosser.api.gld.enums.BidMode;
 import gov.pnnl.prosser.api.gld.enums.ControlMode;
 import gov.pnnl.prosser.api.gld.enums.UseOverride;
@@ -147,6 +147,12 @@ public class Controller extends AbstractGldObject implements NetworkCapable {
      * controller network interface name
      */
     private String networkInterfaceName;
+
+    public Controller(final GldSimulator simulator) {
+        super(simulator);
+        simulator.ensureMarketModule();
+        simulator.ensureCommModule();
+    }
 
     /**
      * Get if using override
@@ -658,41 +664,41 @@ public class Controller extends AbstractGldObject implements NetworkCapable {
      */
     @Override
     protected void writeGldProperties(final StringBuilder sb) {
-        GldUtils.writeProperty(sb, "use_override", useOverride);
-        GldUtils.writeProperty(sb, "override", override);
-        GldUtils.writeProperty(sb, "market", auction);
-        GldUtils.writeProperty(sb, "schedule_skew", scheduleSkew);
-        GldUtils.writeProperty(sb, "bid_mode", bidMode);
-        GldUtils.writeProperty(sb, "proxy_delay", proxyDelay);
+        writeProperty(sb, "use_override", useOverride);
+        writeProperty(sb, "override", override);
+        writeProperty(sb, "market", auction);
+        writeProperty(sb, "schedule_skew", scheduleSkew);
+        writeProperty(sb, "bid_mode", bidMode);
+        writeProperty(sb, "proxy_delay", proxyDelay);
 
         // Controller Network Interface
         sb.append("    object controller_network_interface {\n    ");
-        GldUtils.writeProperty(sb, "name", getNetworkInterfaceName());
+        writeProperty(sb, "name", getNetworkInterfaceName());
         sb.append("    ");
-        GldUtils.writeProperty(sb, "destination", auction.getNetworkInterfaceName());
+        writeProperty(sb, "destination", auction.getNetworkInterfaceName());
         sb.append("    };\n");
 
-        GldUtils.writeProperty(sb, "control_mode", controlMode);
+        writeProperty(sb, "control_mode", controlMode);
         if (baseSetpointFn != null) {
-            GldUtils.writeProperty(sb, "base_setpoint", baseSetpointFn);
+            writeProperty(sb, "base_setpoint", baseSetpointFn);
         } else {
-            GldUtils.writeProperty(sb, "base_setpoint", baseSetpoint);
+            writeProperty(sb, "base_setpoint", baseSetpoint);
         }
-        GldUtils.writeProperty(sb, "setpoint", setpoint);
-        GldUtils.writeProperty(sb, "target", target);
-        GldUtils.writeProperty(sb, "deadband", deadband);
-        GldUtils.writeProperty(sb, "use_predictive_bidding", usePredictiveBidding);
-        GldUtils.writeProperty(sb, "average_target", averageTarget);
-        GldUtils.writeProperty(sb, "period", period);
-        GldUtils.writeProperty(sb, "demand", demand);
-        GldUtils.writeProperty(sb, "range_high", rangeHigh);
-        GldUtils.writeProperty(sb, "range_low", rangeLow);
-        GldUtils.writeProperty(sb, "ramp_high", rampHigh);
-        GldUtils.writeProperty(sb, "ramp_low", rampLow);
-        GldUtils.writeProperty(sb, "total", total);
-        GldUtils.writeProperty(sb, "load", load);
-        GldUtils.writeProperty(sb, "state", state);
-        GldUtils.writeProperty(sb, "slider_setting", sliderSetting);
+        writeProperty(sb, "setpoint", setpoint);
+        writeProperty(sb, "target", target);
+        writeProperty(sb, "deadband", deadband);
+        writeProperty(sb, "use_predictive_bidding", usePredictiveBidding);
+        writeProperty(sb, "average_target", averageTarget);
+        writeProperty(sb, "period", period);
+        writeProperty(sb, "demand", demand);
+        writeProperty(sb, "range_high", rangeHigh);
+        writeProperty(sb, "range_low", rangeLow);
+        writeProperty(sb, "ramp_high", rampHigh);
+        writeProperty(sb, "ramp_low", rampLow);
+        writeProperty(sb, "total", total);
+        writeProperty(sb, "load", load);
+        writeProperty(sb, "state", state);
+        writeProperty(sb, "slider_setting", sliderSetting);
     }
 
 }

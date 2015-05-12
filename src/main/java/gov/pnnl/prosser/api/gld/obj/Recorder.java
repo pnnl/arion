@@ -3,8 +3,8 @@
  */
 package gov.pnnl.prosser.api.gld.obj;
 
+import gov.pnnl.prosser.api.GldSimulator;
 import gov.pnnl.prosser.api.gld.AbstractGldObject;
-import gov.pnnl.prosser.api.gld.GldUtils;
 
 import java.util.Objects;
 
@@ -39,6 +39,11 @@ public class Recorder extends AbstractGldObject {
      * the maximum length limit for the number of samples taken
      */
     private Integer limit;
+
+    public Recorder(final GldSimulator simulator) {
+        super(simulator);
+        simulator.ensureTapeModule();
+    }
 
     /**
      * Get the sampling interval to use (0 means every pass, -1 means only transients)
@@ -172,11 +177,11 @@ public class Recorder extends AbstractGldObject {
      */
     @Override
     protected void writeGldProperties(final StringBuilder sb) {
-        GldUtils.writeProperty(sb, "interval", this.interval, "s");
-        GldUtils.writeProperty(sb, "file", this.file);
-        GldUtils.writeProperty(sb, "property", this.property);
-        GldUtils.writeProperty(sb, "parent", this.parent);
-        GldUtils.writeProperty(sb, "limit", this.limit);
+        writeProperty(sb, "interval", this.interval, "s");
+        writeProperty(sb, "file", this.file);
+        writeProperty(sb, "property", this.property);
+        writeProperty(sb, "parent", this.parent);
+        writeProperty(sb, "limit", this.limit);
     }
 
 }

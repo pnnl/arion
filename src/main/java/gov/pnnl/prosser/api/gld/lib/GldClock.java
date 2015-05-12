@@ -4,7 +4,6 @@
 package gov.pnnl.prosser.api.gld.lib;
 
 import gov.pnnl.prosser.api.gld.GldSerializable;
-import gov.pnnl.prosser.api.gld.GldUtils;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -98,9 +97,9 @@ public class GldClock implements GldSerializable {
     @Override
     public void writeGldString(final StringBuilder sb) {
         sb.append("clock {\n");
-        GldUtils.writeProperty(sb, "timezone", this.timezone);
-        GldUtils.writeProperty(sb, "starttime", "'" + formatter.format(this.startTime) + "'");
-        GldUtils.writeProperty(sb, "stoptime", "'" + formatter.format(this.stopTime) + "'");
+        writeProperty(sb, "timezone", this.timezone);
+        writeProperty(sb, "starttime", "'" + formatter.format(this.startTime) + "'");
+        writeProperty(sb, "stoptime", "'" + formatter.format(this.stopTime) + "'");
         sb.append("}\n");
     }
 

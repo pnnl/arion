@@ -6,10 +6,9 @@ import gov.pnnl.prosser.api.*;
 import gov.pnnl.prosser.api.gld.enums.*;
 import gov.pnnl.prosser.api.gld.lib.*;
 import gov.pnnl.prosser.api.gld.obj.*;
-import gov.pnnl.prosser.api.ns3.enums.NetworkType;
 import gov.pnnl.prosser.api.ns3.obj.*;
-import gov.pnnl.prosser.api.ns3.obj.Node; // Must import explicitly to avoid conflict with GLD/Java Node classes
 
+import java.nio.file.Paths;
 import java.time.*;
 import java.util.*;
 
@@ -137,7 +136,7 @@ public class ExperimentFncsTest extends Experiment {
         // sim.addSetting("minimum_timestep", "1");
 
         // Add includes, extra glm files that help with simulation
-        sim.addIncludes("water_and_setpoint_schedule_v3.glm", "appliance_schedules.glm");
+        sim.addIncludes(Paths.get("res/water_and_setpoint_schedule_v3.glm"), Paths.get("res/appliance_schedules.glm"));
 
         // Setup the modules
         sim.marketModule();
@@ -161,22 +160,22 @@ public class ExperimentFncsTest extends Experiment {
         // Create Player for the Phase A load on the substation
         final PlayerObject phaseALoad = sim.playerObject("phase_A_load");
         // TODO: This should be a path. We may need to create a copy of this file and package as they will not be running on the compiler box
-        phaseALoad.setFile("phase_A.player");
+        phaseALoad.setFile(Paths.get("res/phase_A.player"));
         phaseALoad.setLoop(1);
 
         // Create Player for the Phase B load on the substation
         final PlayerObject phaseBLoad = sim.playerObject("phase_B_load");
-        phaseBLoad.setFile("phase_B.player");
+        phaseBLoad.setFile(Paths.get("res/phase_B.player"));
         phaseBLoad.setLoop(1);
 
         // Create Player for the Phase C load on the substation
         final PlayerObject phaseCLoad = sim.playerObject("phase_C_load");
-        phaseCLoad.setFile("phase_C.player");
+        phaseCLoad.setFile(Paths.get("res/phase_C.player"));
         phaseCLoad.setLoop(1);
 
         // Specify the climate information
         final ClimateObject climate = sim.climateObject("Columbus OH");
-        climate.setTmyFile("ColumbusWeather2009_2a.csv");
+        climate.setTmyFile(Paths.get("res/ColumbusWeather2009_2a.csv"));
         climate.addCsvReader("CSVREADER");
 
         // Create the FNCS auction
@@ -196,7 +195,7 @@ public class ExperimentFncsTest extends Experiment {
         // Add a player to the auction for one of its values
         final PlayerObject player = auction.player();
         player.setProperty("fixed_price");
-        player.setFile("AEP_RT_LMP.player");
+        player.setFile(Paths.get("res/AEP_RT_LMP.player"));
         player.setLoop(1);
 
         auction.setSpecialMode(SpecialMode.BUYERS_ONLY);
@@ -271,12 +270,11 @@ public class ExperimentFncsTest extends Experiment {
         rootMeter.setNominalVoltage(7200.0);
 
         // Create the root transformer
-        final Transformer root = sim.transformer("F1_Transformer1");
+        final Transformer root = sim.transformer("F1_Transformer1", substationConfig);
         root.setPhases(PhaseCode.ABCN);
         root.setGroupId("F1_Network_Trans");
         root.setFrom(substation);
         root.setTo(rootMeter);
-        root.setConfiguration(substationConfig);
 
         // Create load on the meter
         final Load load = sim.load("F1_unresp_load");
@@ -301,23 +299,20 @@ public class ExperimentFncsTest extends Experiment {
         tripMeterC.setNominalVoltage(124.00);
 
         // Create the transformers to feed the house groups
-        final Transformer centerTapTransformerA = sim.transformer("F1_center_tap_transformer_A");
+        final Transformer centerTapTransformerA = sim.transformer("F1_center_tap_transformer_A", defaultTransformerA);
         centerTapTransformerA.setPhases(PhaseCode.AS);
         centerTapTransformerA.setTo(tripMeterA);
         centerTapTransformerA.setFrom(rootMeter);
-        centerTapTransformerA.setConfiguration(defaultTransformerA);
 
-        final Transformer centerTapTransformerB = sim.transformer("F1_center_tap_transformer_B");
+        final Transformer centerTapTransformerB = sim.transformer("F1_center_tap_transformer_B", defaultTransformerB);
         centerTapTransformerB.setPhases(PhaseCode.BS);
         centerTapTransformerB.setTo(tripMeterB);
         centerTapTransformerB.setFrom(rootMeter);
-        centerTapTransformerB.setConfiguration(defaultTransformerB);
 
-        final Transformer centerTapTransformerC = sim.transformer("F1_center_tap_transformer_C");
+        final Transformer centerTapTransformerC = sim.transformer("F1_center_tap_transformer_C", defaultTransformerC);
         centerTapTransformerC.setPhases(PhaseCode.CS);
         centerTapTransformerC.setTo(tripMeterC);
         centerTapTransformerC.setFrom(rootMeter);
-        centerTapTransformerC.setConfiguration(defaultTransformerC);
 
         // TODO: Move generate house and other convienence methods to a library
         for (int i = 1; i <= numHouses; i++) {

@@ -3,8 +3,8 @@
  */
 package gov.pnnl.prosser.api.gld.obj;
 
+import gov.pnnl.prosser.api.GldSimulator;
 import gov.pnnl.prosser.api.gld.AbstractGldObject;
-import gov.pnnl.prosser.api.gld.GldUtils;
 
 /**
  * Marker for Residential Enduse objects
@@ -17,6 +17,11 @@ public abstract class ResidentialEnduse extends AbstractGldObject {
      * time skew applied to schedule operations involving this object
      */
     private Long scheduleSkew;
+
+    public ResidentialEnduse(final GldSimulator simulator) {
+        super(simulator);
+        simulator.ensureResidentialModule();
+    }
 
     /**
      * Get the time skew applied to schedule operations involving this object
@@ -42,7 +47,7 @@ public abstract class ResidentialEnduse extends AbstractGldObject {
      */
     @Override
     protected void writeGldProperties(final StringBuilder sb) {
-        GldUtils.writeProperty(sb, "schedule_skew", this.scheduleSkew);
+        writeProperty(sb, "schedule_skew", this.scheduleSkew);
     }
 
 }

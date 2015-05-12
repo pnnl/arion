@@ -3,8 +3,8 @@
  */
 package gov.pnnl.prosser.api.gld.obj;
 
+import gov.pnnl.prosser.api.GldSimulator;
 import gov.pnnl.prosser.api.gld.AbstractGldObject;
-import gov.pnnl.prosser.api.gld.GldUtils;
 
 /**
  * GridLabD Climate CSV Reader
@@ -18,6 +18,10 @@ public class CsvReader extends AbstractGldObject {
      * the csv filename
      */
     private String filename;
+
+    public CsvReader(final GldSimulator simulator) {
+        super(simulator);
+    }
 
     /**
      * Get the csv filename
@@ -51,7 +55,7 @@ public class CsvReader extends AbstractGldObject {
      */
     @Override
     protected void writeGldProperties(final StringBuilder sb) {
-        GldUtils.writeProperty(sb, "filename", filename);
+        writeProperty(sb, "filename", filename);
     }
 
 }

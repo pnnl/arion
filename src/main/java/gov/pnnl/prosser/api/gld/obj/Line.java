@@ -3,7 +3,7 @@
  */
 package gov.pnnl.prosser.api.gld.obj;
 
-import gov.pnnl.prosser.api.gld.GldUtils;
+import gov.pnnl.prosser.api.GldSimulator;
 import gov.pnnl.prosser.api.gld.lib.Conductor;
 import gov.pnnl.prosser.api.gld.lib.LineConfiguration;
 
@@ -23,6 +23,10 @@ public abstract class Line<C extends Conductor, Q extends LineConfiguration<C>> 
      * Line Configuration
      */
     private Q configuration;
+
+    public Line(final GldSimulator simulator) {
+        super(simulator);
+    }
 
     /**
      * Get the length of line in feet
@@ -68,8 +72,8 @@ public abstract class Line<C extends Conductor, Q extends LineConfiguration<C>> 
     @Override
     protected void writeGldProperties(final StringBuilder sb) {
         super.writeGldProperties(sb);
-        GldUtils.writeProperty(sb, "length", this.length, "ft");
-        GldUtils.writeProperty(sb, "configuration", this.configuration);
+        writeProperty(sb, "length", this.length, "ft");
+        writeProperty(sb, "configuration", this.configuration);
     }
 
 }

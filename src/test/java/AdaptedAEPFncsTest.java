@@ -9,6 +9,7 @@ import gov.pnnl.prosser.api.gld.lib.*;
 import gov.pnnl.prosser.api.gld.obj.*;
 import gov.pnnl.prosser.api.ns3.obj.*;
 
+import java.nio.file.*;
 import java.time.*;
 import java.util.*;
 import java.util.stream.*;
@@ -100,20 +101,71 @@ public class AdaptedAEPFncsTest extends Experiment {
         System.out.println("Number of channels: " + numChannels); // TODO debugging
         final String controllerNIPrefix = "F1_C_NI";
 
-        // Set parameters for Ns3Network and build backend network
-        // TODO create constructNs3Sim(...) method for this
+     // Set parameters for Ns3Network and build backend network
         final Ns3Simulator ns3Simulator = this.ns3Simulator();
-        ns3Simulator.setup(numChannels);
+        //populateNs3Sim(ns3Simulator, numChannels);
+        populateNs3Sim(ns3Simulator, numHouses);
 
         final List<Channel> channels = ns3Simulator.getChannels();
         // TODO Add numHousesPerChannel param and use instead of hard-coded "20" to get channelID
         final GldSimulator gldSim = this.gldSimulator("fncs_GLD_1node_Feeder_1");
         populateGldSim(gldSim, numHouses, controllerNIPrefix, channels);
+        
+        
+        ns3Simulator.setupFncsApplicationHelper();
 
         // Connect Controllers and Auctions to backbone network
-        ns3Simulator.buildFrontend();
+        //ns3Simulator.buildFrontend();
 
         // TODO FNCS Integration
+    }
+    
+    /**
+     * @param sim
+     *          the Ns3Simulator
+     * @param numChannels
+     *          the number of Channels to create in this network
+     */
+    private void populateNs3Sim(final Ns3Simulator sim, final int numChannels) {
+        
+        final String addressBase = "10.0.1.0";
+        final String addressMask = "255.255.255.0";
+        final String backboneDataRate = "10Gbps";
+        final String backboneDelay = "1ms";
+        final double stopTime = 10.0;
+        
+        // Sets parameters for ns-3 network & builds backbone network
+        sim.setup(numChannels, addressBase, addressMask, backboneDataRate, backboneDelay, stopTime);
+        
+        // Create auction channel & router
+        PointToPointChannel auctionChannel = new PointToPointChannel("auctionChannel");
+        auctionChannel.setAttribute("DataRate", "1Gbps");
+        sim.addChannel(auctionChannel);
+        
+        Router auctionRouter = new Router("auctionRouter");
+        auctionRouter.setChannel(auctionChannel);
+        
+        // Create backbone CSMA channel (connect Houses)
+        CsmaChannel csmaBackboneChannel = new CsmaChannel("csmaBackboneChannel");
+        csmaBackboneChannel.setAttribute("DataRate", backboneDataRate);
+        
+        // Create house channels
+        for (int i = 0; i < numChannels; i++) {
+            
+            CsmaChannel csmaHouseChannel = new CsmaChannel("csmaHouseChannel_" + i);
+            csmaHouseChannel.setAttribute("DataRate", "100Mbps");
+            // Add the house channel to simulator list of channels
+            sim.addChannel(csmaHouseChannel);
+            
+            Router csmaRouter = new Router("csmaHouseRouter_" + i);
+            
+            // Connect router to house channel
+            csmaRouter.setChannel(csmaHouseChannel);
+            
+            // Connect router to backbone channel
+            csmaRouter.setChannel(csmaBackboneChannel);
+            
+        }
     }
 
     /**
@@ -146,15 +198,9 @@ public class AdaptedAEPFncsTest extends Experiment {
         // sim.addSetting("minimum_timestep", "1");
 
         // Add includes, extra glm files that help with simulation
-        sim.addIncludes("water_and_setpoint_schedule_v3.glm", "appliance_schedules.glm");
+        sim.addIncludes(Paths.get("res/water_and_setpoint_schedule_v3.glm"), Paths.get("res/appliance_schedules.glm"));
 
-        // Setup the modules
-        sim.marketModule();
-        sim.tapeModule();
-        sim.commModule();
-        sim.climateModule();
-        sim.residentialModule(ImplicitEnduses.NONE);
-        sim.powerflowModule(SolverMethod.FBS, 100L);
+        // Modules are setup by default as we add objects
 
         // Add a player class def to allow references to value from player objects
         final PlayerClass playerClass = sim.playerClass();
@@ -170,22 +216,22 @@ public class AdaptedAEPFncsTest extends Experiment {
         // Create Player for the Phase A load on the substation
         final PlayerObject phaseALoad = sim.playerObject("phase_A_load");
         // TODO: This should be a path. We may need to create a copy of this file and package as they will not be running on the compiler box
-        phaseALoad.setFile("phase_A.player");
+        phaseALoad.setFile(Paths.get("res/phase_A.player"));
         phaseALoad.setLoop(1);
 
         // Create Player for the Phase B load on the substation
         final PlayerObject phaseBLoad = sim.playerObject("phase_B_load");
-        phaseBLoad.setFile("phase_B.player");
+        phaseBLoad.setFile(Paths.get("res/phase_B.player"));
         phaseBLoad.setLoop(1);
 
         // Create Player for the Phase C load on the substation
         final PlayerObject phaseCLoad = sim.playerObject("phase_C_load");
-        phaseCLoad.setFile("phase_C.player");
+        phaseCLoad.setFile(Paths.get("res/phase_B.player"));
         phaseCLoad.setLoop(1);
 
         // Specify the climate information
         final ClimateObject climate = sim.climateObject("Columbus OH");
-        climate.setTmyFile("ColumbusWeather2009_2a.csv");
+        climate.setTmyFile(Paths.get("ColumbusWeather2009_2a.csv"));
         climate.addCsvReader("CSVREADER");
 
         // Create the FNCS auction
@@ -205,7 +251,7 @@ public class AdaptedAEPFncsTest extends Experiment {
         // Add a player to the auction for one of its values
         final PlayerObject player = auction.player();
         player.setProperty("fixed_price");
-        player.setFile("AEP_RT_LMP.player");
+        player.setFile(Paths.get("res/AEP_RT_LMP.player"));
         player.setLoop(1);
 
         auction.setSpecialMode(SpecialMode.BUYERS_ONLY);
@@ -280,12 +326,11 @@ public class AdaptedAEPFncsTest extends Experiment {
         rootMeter.setNominalVoltage(7200.0);
 
         // Create the root transformer
-        final Transformer root = sim.transformer("F1_Transformer1");
+        final Transformer root = sim.transformer("F1_Transformer1", substationConfig);
         root.setPhases(PhaseCode.ABCN);
         root.setGroupId("F1_Network_Trans");
         root.setFrom(substation);
         root.setTo(rootMeter);
-        root.setConfiguration(substationConfig);
 
         // Create load on the meter
         final Load load = sim.load("F1_unresp_load");
@@ -310,23 +355,20 @@ public class AdaptedAEPFncsTest extends Experiment {
         tripMeterC.setNominalVoltage(124.00);
 
         // Create the transformers to feed the house groups
-        final Transformer centerTapTransformerA = sim.transformer("F1_center_tap_transformer_A");
+        final Transformer centerTapTransformerA = sim.transformer("F1_center_tap_transformer_A", defaultTransformerA);
         centerTapTransformerA.setPhases(PhaseCode.AS);
         centerTapTransformerA.setTo(tripMeterA);
         centerTapTransformerA.setFrom(rootMeter);
-        centerTapTransformerA.setConfiguration(defaultTransformerA);
 
-        final Transformer centerTapTransformerB = sim.transformer("F1_center_tap_transformer_B");
+        final Transformer centerTapTransformerB = sim.transformer("F1_center_tap_transformer_B", defaultTransformerB);
         centerTapTransformerB.setPhases(PhaseCode.BS);
         centerTapTransformerB.setTo(tripMeterB);
         centerTapTransformerB.setFrom(rootMeter);
-        centerTapTransformerB.setConfiguration(defaultTransformerB);
 
-        final Transformer centerTapTransformerC = sim.transformer("F1_center_tap_transformer_C");
+        final Transformer centerTapTransformerC = sim.transformer("F1_center_tap_transformer_C", defaultTransformerC);
         centerTapTransformerC.setPhases(PhaseCode.CS);
         centerTapTransformerC.setTo(tripMeterC);
         centerTapTransformerC.setFrom(rootMeter);
-        centerTapTransformerC.setConfiguration(defaultTransformerC);
 
         // TODO: Move generate house and other convienence methods to a library
         final Integer[] trackHouseArray = new Integer[] { 13, 28, 47, 58, 77, 100, 226, 246, 253, 278 };

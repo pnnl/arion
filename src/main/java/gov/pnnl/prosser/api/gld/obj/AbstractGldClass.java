@@ -4,7 +4,6 @@
 package gov.pnnl.prosser.api.gld.obj;
 
 import gov.pnnl.prosser.api.gld.GldSerializable;
-import gov.pnnl.prosser.api.gld.GldUtils;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -62,7 +61,7 @@ public abstract class AbstractGldClass implements GldSerializable {
     public void writeGldString(final StringBuilder sb) {
         sb.append("class ").append(this.getGldClassName()).append(" {\n");
         for (final Map.Entry<String, String> entry : map.entrySet()) {
-            GldUtils.writeProperty(sb, entry.getValue(), entry.getKey());
+            writeProperty(sb, entry.getValue(), entry.getKey());
         }
         sb.append("}\n");
     }

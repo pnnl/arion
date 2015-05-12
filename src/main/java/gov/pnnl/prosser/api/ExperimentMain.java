@@ -70,12 +70,7 @@ public class ExperimentMain {
             GldSimulatorWriter.writeGldSimulator(outPath.resolve(sim.getName() + ".glm"), sim);
         }
 
-        int i = 0;
-        for (final Ns3Simulator sim : experiment.getNs3Simulators()) {
-            // TODO this should be using the name of the simulator?
-            Ns3SimulatorWriter.writeNs3Simulator(outPath.resolve("ns3-" + i + ".cc"), sim);
-            i++;
-        }
+        Ns3SimulatorWriter.writeNs3Simulator(outPath.resolve("ns3.cc"), experiment.getNs3Simulator());
         // TODO FNCS simulator writer
         System.out.println("Written!");
     }

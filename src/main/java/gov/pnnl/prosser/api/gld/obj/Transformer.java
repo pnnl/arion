@@ -3,7 +3,7 @@
  */
 package gov.pnnl.prosser.api.gld.obj;
 
-import gov.pnnl.prosser.api.gld.GldUtils;
+import gov.pnnl.prosser.api.GldSimulator;
 import gov.pnnl.prosser.api.gld.lib.TransformerConfiguration;
 
 /**
@@ -17,6 +17,10 @@ public class Transformer extends LinkObject {
      * Configuration used for transformer setup
      */
     private TransformerConfiguration configuration;
+
+    public Transformer(final GldSimulator simulator) {
+        super(simulator);
+    }
 
     /**
      * Get the Configuration used for transformer setup
@@ -51,7 +55,7 @@ public class Transformer extends LinkObject {
     @Override
     protected void writeGldProperties(final StringBuilder sb) {
         super.writeGldProperties(sb);
-        GldUtils.writeProperty(sb, "configuration", this.configuration);
+        writeProperty(sb, "configuration", this.configuration);
     }
 
 }

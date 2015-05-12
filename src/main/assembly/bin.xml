@@ -6,6 +6,14 @@
 	<formats>
 		<format>zip</format>
 	</formats>
+	<fileSets>
+		<fileSet>
+			<directory>res/</directory>
+			<includes>
+				<include>**/*</include>
+			</includes>
+		</fileSet>
+	</fileSets>
 	<files>
 		<file>
 			<source>target/prosser-api.jar</source>

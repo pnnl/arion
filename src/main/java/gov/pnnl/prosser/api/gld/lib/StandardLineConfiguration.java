@@ -3,7 +3,7 @@
  */
 package gov.pnnl.prosser.api.gld.lib;
 
-import gov.pnnl.prosser.api.gld.GldUtils;
+import gov.pnnl.prosser.api.GldSimulator;
 
 /**
  * Standard Line configuration for Overhead and other lines
@@ -36,6 +36,10 @@ public class StandardLineConfiguration<C extends Conductor> extends LineConfigur
      * Line Spacing for this Line
      */
     private LineSpacing spacing;
+
+    public StandardLineConfiguration(final GldSimulator simulator) {
+        super(simulator);
+    }
 
     /**
      * Get the Conductor for Phase A
@@ -145,11 +149,11 @@ public class StandardLineConfiguration<C extends Conductor> extends LineConfigur
      */
     @Override
     protected void writeGldProperties(final StringBuilder sb) {
-        GldUtils.writeProperty(sb, "conductor_A", this.phaseAConductor);
-        GldUtils.writeProperty(sb, "conductor_B", this.phaseBConductor);
-        GldUtils.writeProperty(sb, "conductor_C", this.phaseCConductor);
-        GldUtils.writeProperty(sb, "conductor_N", this.phaseNConductor);
-        GldUtils.writeProperty(sb, "spacing", this.spacing);
+        writeProperty(sb, "conductor_A", this.phaseAConductor);
+        writeProperty(sb, "conductor_B", this.phaseBConductor);
+        writeProperty(sb, "conductor_C", this.phaseCConductor);
+        writeProperty(sb, "conductor_N", this.phaseNConductor);
+        writeProperty(sb, "spacing", this.spacing);
     }
 
 }
