@@ -3,7 +3,9 @@
  */
 package gov.pnnl.prosser.api;
 
+import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -19,6 +21,8 @@ public abstract class Experiment {
     private Ns3Simulator ns3Simulator = null;
 
     private FncsSimulator fncsSimulator = null;
+
+    private final List<Path> extraExperimentFiles = new ArrayList<>();
 
     /**
      * Get the GLD Simulators
@@ -45,6 +49,15 @@ public abstract class Experiment {
      */
     public FncsSimulator getFncsSimulator() {
         return this.fncsSimulator;
+    }
+
+    /**
+     * Get the Extra Experiment files to be included when the experiment is compiled
+     * 
+     * @return the extra files
+     */
+    public List<Path> getExtraExperimentFiles() {
+        return extraExperimentFiles;
     }
 
     /**
@@ -77,10 +90,20 @@ public abstract class Experiment {
      * @return the simulator
      */
     public FncsSimulator fncsSimulator() {
-        if(this.fncsSimulator == null) {
+        if (this.fncsSimulator == null) {
             this.fncsSimulator = new FncsSimulator();
         }
         return this.fncsSimulator;
+    }
+
+    /**
+     * Add an extra file to be included when the experiment is created
+     * 
+     * @param file
+     *            the file to include
+     */
+    public void addExtraFiles(Path... file) {
+        Arrays.stream(file).forEach((f) -> this.extraExperimentFiles.add(f));
     }
 
     /**

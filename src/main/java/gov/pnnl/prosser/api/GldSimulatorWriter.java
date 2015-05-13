@@ -10,11 +10,13 @@ import gov.pnnl.prosser.api.gld.obj.AbstractGldClass;
 
 
 
+
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
@@ -27,7 +29,7 @@ import java.util.Set;
  *
  * @author nord229
  */
-public class GldSimulatorWriter {
+public abstract class GldSimulatorWriter {
 
     /**
      * Write a GLD Simulator to a file
@@ -57,8 +59,8 @@ public class GldSimulatorWriter {
         includes.forEach((i) -> {
             writeInclude(sb, i.getFileName().toString());
             try {
-                Files.copy(i, path.resolve(i.getFileName()));
-            } catch (Exception e) {
+                Files.copy(i, path.resolve(i.getFileName()), StandardCopyOption.REPLACE_EXISTING);
+            } catch (IOException e) {
                 throw new RuntimeException("Unable to copy includes source to destination", e);
             }
         });

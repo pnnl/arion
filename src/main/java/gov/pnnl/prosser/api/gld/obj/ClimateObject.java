@@ -10,6 +10,7 @@ import gov.pnnl.prosser.api.gld.GldSerializable;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import java.util.Objects;
 
 /**
@@ -125,7 +126,7 @@ public class ClimateObject extends AbstractGldObject {
     @Override
     public void writeExternalFiles(Path path) throws IOException {
         if(tmyFile != null) {
-            Files.copy(tmyFile, path.resolve(tmyFile.getFileName()));
+            Files.copy(tmyFile, path.resolve(tmyFile.getFileName()), StandardCopyOption.REPLACE_EXISTING);
         }
     }
 

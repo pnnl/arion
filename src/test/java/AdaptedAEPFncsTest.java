@@ -3,6 +3,7 @@
  */
 
 import gov.pnnl.prosser.api.*;
+import gov.pnnl.prosser.api.FncsSimulator;
 import gov.pnnl.prosser.api.gld.*;
 import gov.pnnl.prosser.api.gld.enums.*;
 import gov.pnnl.prosser.api.gld.lib.*;
@@ -12,7 +13,6 @@ import gov.pnnl.prosser.api.ns3.obj.*;
 import java.nio.file.*;
 import java.time.*;
 import java.util.*;
-import java.util.stream.*;
 
 /**
  * First FNCS experiment
@@ -22,26 +22,101 @@ import java.util.stream.*;
  */
 public class AdaptedAEPFncsTest extends Experiment {
 
+    private static final int numHouses = 100;
+
+    /**
+     * Generate the experiment
+     */
+    @Override
+    public void experiment() {
+        final int numHousesPerChannel = 1;
+        final int numChannels = (numHouses % numHousesPerChannel) == 0 ? (numHouses / numHousesPerChannel) + 1 : (numHouses / numHousesPerChannel) + 2;
+        System.out.println("Number of channels: " + numChannels); // TODO debugging
+        final String controllerNIPrefix = "F1_C_NI";
+
+        // Set parameters for Ns3Network and build backend network
+        final Ns3Simulator ns3Simulator = this.ns3Simulator();
+        // populateNs3Sim(ns3Simulator, numChannels);
+        populateNs3Sim(ns3Simulator, numHouses);
+
+        final List<Channel> channels = ns3Simulator.getChannels();
+
+        final GldSimulator gldSim = this.gldSimulator("fncs_GLD_1node_Feeder_1");
+        final AuctionObject auction = createMarket(gldSim);
+        auction.setFncsControllerPrefix(controllerNIPrefix);
+        channels.get(0).addAuction(auction);
+        createTriplex(gldSim);
+        for (int i = 0; i < numHouses; i++) {
+            final House house = createHouse(gldSim, i, auction, controllerNIPrefix);
+
+            // createRouter();
+            channels.get(i + 1).addController(house.getController());
+        }
+
+        ns3Simulator.setupFncsApplicationHelper();
+
+        // Connect Controllers and Auctions to backbone network
+        // ns3Simulator.buildFrontend();
+
+        // Extra GLD files
+        this.addExtraFiles(Paths.get("res/tzinfo.txt"), Paths.get("res/unitfile.txt"));
+        // TODO FNCS Integration
+        final FncsSimulator fncsSim = this.fncsSimulator();
+        fncsSim.setBroker("localhost");
+    }
+
+    /**
+     * @param sim
+     *            the Ns3Simulator
+     * @param numChannels
+     *            the number of Channels to create in this network
+     */
+    private void populateNs3Sim(final Ns3Simulator sim, final int numChannels) {
+
+        final String addressBase = "10.0.1.0";
+        final String addressMask = "255.255.255.0";
+        final String backboneDataRate = "10Gbps";
+        final String backboneDelay = "1ms";
+        final double stopTime = 10.0;
+
+        // Sets parameters for ns-3 network & builds backbone network
+        sim.setup(numChannels, addressBase, addressMask, backboneDataRate, backboneDelay, stopTime);
+
+        // Create auction channel & router
+        PointToPointChannel auctionChannel = new PointToPointChannel("auctionChannel");
+        auctionChannel.setAttribute("DataRate", "1Gbps");
+        sim.addChannel(auctionChannel);
+
+        Router auctionRouter = new Router("auctionRouter");
+        auctionRouter.setChannel(auctionChannel);
+
+        // Create backbone CSMA channel (connect Houses)
+        CsmaChannel csmaBackboneChannel = new CsmaChannel("csmaBackboneChannel");
+        csmaBackboneChannel.setAttribute("DataRate", backboneDataRate);
+
+        // Create house channels
+        for (int i = 0; i < numChannels; i++) {
+
+            CsmaChannel csmaHouseChannel = new CsmaChannel("csmaHouseChannel_" + i);
+            csmaHouseChannel.setAttribute("DataRate", "100Mbps");
+            // Add the house channel to simulator list of channels
+            sim.addChannel(csmaHouseChannel);
+
+            Router csmaRouter = new Router("csmaHouseRouter_" + i);
+
+            // Connect router to house channel
+            csmaRouter.setChannel(csmaHouseChannel);
+
+            // Connect router to backbone channel
+            csmaRouter.setChannel(csmaBackboneChannel);
+
+        }
+    }
+
     private static final Random rand = new Random(13);
 
     // %% Unchanging? parameters
     // % most of these values were obtained from survey data
-    private static final double heat_gas_perc_pre = 0.85;
-    private static final double heat_pump_perc_pre = 0.15;
-
-    private static final double heat_gas_perc_post = 0.70;
-    private static final double heat_pump_perc_post = 0.30;
-
-    private static final double cool_none_pre = 0.0;
-    private static final double cool_pump_pre = 0.0;
-    private static final double cool_electric_pre = 1 - cool_none_pre - cool_pump_pre;
-
-    private static final double cool_none_post = 0.0;
-    private static final double cool_pump_post = 0.0;
-    private static final double cool_electric_post = 1 - cool_none_post - cool_pump_post;
-
-    private static final double wh_perc_elec_pre = 0;
-    private static final double wh_perc_elec_post = 0;
 
     // %house parameters extracting them here
     private static final double smallhome_floorarea_1 = 1100;
@@ -53,17 +128,8 @@ public class AdaptedAEPFncsTest extends Experiment {
     private static final double mobilehome_floorarea_1 = 750;
 
     // % Parameter distributions (same for all) (average +/- range)
-    private static final double wtrdem_1 = 1.0;
-    private static final double wtrdem_2 = 0.2;
-
     private static final double cool_1 = 1;
     private static final double cool_2 = 0.05;
-
-    private static final double tankset_1 = 125;
-    private static final double tankset_2 = 5;
-
-    private static final double thermdb_1 = 2.0;
-    private static final double thermdb_2 = 0.2;
 
     private static final double cooloffset_1 = 4;
     private static final double cooloffset_2 = 2;
@@ -73,9 +139,6 @@ public class AdaptedAEPFncsTest extends Experiment {
 
     private static final double basepwr_1 = 1;
     private static final double basepwr_2 = 0.5;
-
-    private static final double tankUA_1 = 2.0;
-    private static final double tankUA_2 = 0.2;
 
     private static final double z = 0;
     private static final double i = 0;
@@ -90,95 +153,12 @@ public class AdaptedAEPFncsTest extends Experiment {
     private static final String marketStdev = "current_price_stdev_24h";
     private static final int marketPeriod = 300;
 
-    /**
-     * Generate the experiment
-     */
-    @Override
-    public void experiment() {
-        final int numHouses = 300;
-        final int numHousesPerChannel = 20;
-        final int numChannels = (numHouses % numHousesPerChannel) == 0 ? (numHouses / numHousesPerChannel) + 1 : (numHouses / numHousesPerChannel) + 2;
-        System.out.println("Number of channels: " + numChannels); // TODO debugging
-        final String controllerNIPrefix = "F1_C_NI";
+    private TriplexMeter tripMeterA;
+    private TriplexMeter tripMeterB;
+    private TriplexMeter tripMeterC;
+    private TriplexLineConfiguration tripLineConf;
 
-     // Set parameters for Ns3Network and build backend network
-        final Ns3Simulator ns3Simulator = this.ns3Simulator();
-        //populateNs3Sim(ns3Simulator, numChannels);
-        populateNs3Sim(ns3Simulator, numHouses);
-
-        final List<Channel> channels = ns3Simulator.getChannels();
-        // TODO Add numHousesPerChannel param and use instead of hard-coded "20" to get channelID
-        final GldSimulator gldSim = this.gldSimulator("fncs_GLD_1node_Feeder_1");
-        populateGldSim(gldSim, numHouses, controllerNIPrefix, channels);
-        
-        
-        ns3Simulator.setupFncsApplicationHelper();
-
-        // Connect Controllers and Auctions to backbone network
-        //ns3Simulator.buildFrontend();
-
-        // TODO FNCS Integration
-    }
-    
-    /**
-     * @param sim
-     *          the Ns3Simulator
-     * @param numChannels
-     *          the number of Channels to create in this network
-     */
-    private void populateNs3Sim(final Ns3Simulator sim, final int numChannels) {
-        
-        final String addressBase = "10.0.1.0";
-        final String addressMask = "255.255.255.0";
-        final String backboneDataRate = "10Gbps";
-        final String backboneDelay = "1ms";
-        final double stopTime = 10.0;
-        
-        // Sets parameters for ns-3 network & builds backbone network
-        sim.setup(numChannels, addressBase, addressMask, backboneDataRate, backboneDelay, stopTime);
-        
-        // Create auction channel & router
-        PointToPointChannel auctionChannel = new PointToPointChannel("auctionChannel");
-        auctionChannel.setAttribute("DataRate", "1Gbps");
-        sim.addChannel(auctionChannel);
-        
-        Router auctionRouter = new Router("auctionRouter");
-        auctionRouter.setChannel(auctionChannel);
-        
-        // Create backbone CSMA channel (connect Houses)
-        CsmaChannel csmaBackboneChannel = new CsmaChannel("csmaBackboneChannel");
-        csmaBackboneChannel.setAttribute("DataRate", backboneDataRate);
-        
-        // Create house channels
-        for (int i = 0; i < numChannels; i++) {
-            
-            CsmaChannel csmaHouseChannel = new CsmaChannel("csmaHouseChannel_" + i);
-            csmaHouseChannel.setAttribute("DataRate", "100Mbps");
-            // Add the house channel to simulator list of channels
-            sim.addChannel(csmaHouseChannel);
-            
-            Router csmaRouter = new Router("csmaHouseRouter_" + i);
-            
-            // Connect router to house channel
-            csmaRouter.setChannel(csmaHouseChannel);
-            
-            // Connect router to backbone channel
-            csmaRouter.setChannel(csmaBackboneChannel);
-            
-        }
-    }
-
-    /**
-     * The gld simulator for this experiment
-     *
-     * @param controllerNIPrefix
-     *            Prefix to network controllers in Houses and will be enclosed in the auction object
-     * @param channels
-     *            the network channels to use - channel 0 will be used for the auction, and then channels other than 0 will have up to 20 controllers on it
-     *
-     * @return
-     */
-    private static void populateGldSim(final GldSimulator sim, final int numHouses, final String controllerNIPrefix, final List<Channel> channels) {
+    private AuctionObject createMarket(final GldSimulator sim) {
         // final boolean useMarket = true;
         final String marketName = "Market1";
         // final double percentPenetration = 1;
@@ -213,21 +193,6 @@ public class AdaptedAEPFncsTest extends Experiment {
         auctionClass.addField(marketMean, "double");
         auctionClass.addField(marketStdev, "double");
 
-        // Create Player for the Phase A load on the substation
-        final PlayerObject phaseALoad = sim.playerObject("phase_A_load");
-        phaseALoad.setFile(Paths.get("res/phase_A.player"));
-        phaseALoad.setLoop(1);
-
-        // Create Player for the Phase B load on the substation
-        final PlayerObject phaseBLoad = sim.playerObject("phase_B_load");
-        phaseBLoad.setFile(Paths.get("res/phase_B.player"));
-        phaseBLoad.setLoop(1);
-
-        // Create Player for the Phase C load on the substation
-        final PlayerObject phaseCLoad = sim.playerObject("phase_C_load");
-        phaseCLoad.setFile(Paths.get("res/phase_C.player"));
-        phaseCLoad.setLoop(1);
-
         // Specify the climate information
         final ClimateObject climate = sim.climateObject("Columbus OH");
         climate.setTmyFile(Paths.get("res/ColumbusWeather2009_2a.csv"));
@@ -244,8 +209,6 @@ public class AdaptedAEPFncsTest extends Experiment {
         auction.setNetworkAveragePriceProperty(marketMean);
         auction.setNetworkStdevPriceProperty(marketStdev);
         auction.setNetworkAdjustPriceProperty("adjust_price");
-        auction.setFncsControllerPrefix(controllerNIPrefix);
-        channels.get(0).addAuction(auction);
 
         // Add a player to the auction for one of its values
         final PlayerObject player = auction.player();
@@ -269,6 +232,24 @@ public class AdaptedAEPFncsTest extends Experiment {
         auction.setInitStdev(0.02);
         auction.setUseFutureMeanPrice(false);
         auction.setWarmup(0);
+        return auction;
+    }
+
+    private void createTriplex(final GldSimulator sim) {
+        // Create Player for the Phase A load on the substation
+        final PlayerObject phaseALoad = sim.playerObject("phase_A_load");
+        phaseALoad.setFile(Paths.get("res/phase_A.player"));
+        phaseALoad.setLoop(1);
+
+        // Create Player for the Phase B load on the substation
+        final PlayerObject phaseBLoad = sim.playerObject("phase_B_load");
+        phaseBLoad.setFile(Paths.get("res/phase_B.player"));
+        phaseBLoad.setLoop(1);
+
+        // Create Player for the Phase C load on the substation
+        final PlayerObject phaseCLoad = sim.playerObject("phase_C_load");
+        phaseCLoad.setFile(Paths.get("res/phase_C.player"));
+        phaseCLoad.setLoop(1);
 
         // Create a transformer configuration for the substation
         final TransformerConfiguration substationConfig = sim.transformerConfiguration("substation_config");
@@ -301,7 +282,7 @@ public class AdaptedAEPFncsTest extends Experiment {
         tripLineCond1AA.setGeometricMeanRadius(0.0111);
 
         // Create the triplex line configuration used everywhere
-        final TriplexLineConfiguration tripLineConf = sim.triplexLineConfiguration("TLCFG");
+        tripLineConf = sim.triplexLineConfiguration("TLCFG");
         tripLineConf.setPhase1Conductor(tripLineCond1AA);
         tripLineConf.setPhase2Conductor(tripLineCond1AA);
         tripLineConf.setPhaseNConductor(tripLineCond1AA);
@@ -341,15 +322,15 @@ public class AdaptedAEPFncsTest extends Experiment {
         load.setPhaseCConstantReal("phase_C_load.value*0.1");
 
         // Create the seperated phase meters for the house groups
-        final TriplexMeter tripMeterA = sim.triplexMeter("F1_triplex_node_A");
+        tripMeterA = sim.triplexMeter("F1_triplex_node_A");
         tripMeterA.setPhases(PhaseCode.AS);
         tripMeterA.setNominalVoltage(124.00);
 
-        final TriplexMeter tripMeterB = sim.triplexMeter("F1_triplex_node_B");
+        tripMeterB = sim.triplexMeter("F1_triplex_node_B");
         tripMeterB.setPhases(PhaseCode.BS);
         tripMeterB.setNominalVoltage(124.00);
 
-        final TriplexMeter tripMeterC = sim.triplexMeter("F1_triplex_node_C");
+        tripMeterC = sim.triplexMeter("F1_triplex_node_C");
         tripMeterC.setPhases(PhaseCode.CS);
         tripMeterC.setNominalVoltage(124.00);
 
@@ -368,31 +349,6 @@ public class AdaptedAEPFncsTest extends Experiment {
         centerTapTransformerC.setPhases(PhaseCode.CS);
         centerTapTransformerC.setTo(tripMeterC);
         centerTapTransformerC.setFrom(rootMeter);
-
-        // TODO: Move generate house and other convienence methods to a library
-        final Integer[] trackHouseArray = new Integer[] { 13, 28, 47, 58, 77, 100, 226, 246, 253, 278 };
-        final Set<Integer> houseSet = Arrays.stream(trackHouseArray).collect(Collectors.toSet());
-        for (int i = 1; i <= numHouses; i++) {
-            TriplexMeter meter;
-            PhaseCode phase;
-            if (i <= numHouses / 3) {
-                meter = tripMeterA;
-                phase = PhaseCode.A;
-            } else if (i <= (numHouses * 2) / 3) {
-                meter = tripMeterB;
-                phase = PhaseCode.B;
-            } else {
-                meter = tripMeterC;
-                phase = PhaseCode.C;
-            }
-            // distributes houses to channels, 20 per channel (1-n)
-            final int channelId = ((i - 1) / 20) + 1;
-            if (houseSet.contains(i)) {
-                generateHouse(sim, i, meter, tripLineConf, auction, phase, controllerNIPrefix, channels.get(channelId), true);
-            } else {
-                generateHouse(sim, i, meter, tripLineConf, auction, phase, controllerNIPrefix, channels.get(channelId), false);
-            }
-        }
     }
 
     /**
@@ -424,24 +380,32 @@ public class AdaptedAEPFncsTest extends Experiment {
      * @param auction
      *            the Auction to connect the controller to
      */
-    private static void generateHouse(final GldSimulator sim, final int id, final TriplexMeter tripMeterA,
-            final TriplexLineConfiguration tripLineConf, final AuctionObject auction, final PhaseCode phase,
-            final String controllerNIPrefix, final Channel channel, final boolean track) {
+    private House createHouse(final GldSimulator sim, final int id, final AuctionObject auction, final String controllerNIPrefix) {
         // Select the phases for our meters
+        final int r = rand.nextInt(3);
+        final PhaseCode phase;
         final EnumSet<PhaseCode> phases;
-        switch (phase) {
-            case A:
+        final TriplexMeter meter;
+        switch (r) {
+            case 0:
+                phase = PhaseCode.A;
                 phases = PhaseCode.AS;
+                meter = tripMeterA;
                 break;
-            case B:
+            case 1:
+                phase = PhaseCode.B;
                 phases = PhaseCode.BS;
+                meter = tripMeterB;
                 break;
-            case C:
+            case 2:
+                phase = PhaseCode.C;
                 phases = PhaseCode.CS;
+                meter = tripMeterC;
                 break;
             default:
-                throw new RuntimeException("Phase code unsupported " + phase);
+                throw new RuntimeException("Invalid random number");
         }
+
         // Create the flatrate meter
         // TODO what is a flatrate meter?
         final TriplexMeter tripMeterFlatrate = sim.triplexMeter("F1_tpm_flatrate_" + phase.name() + id);
@@ -451,7 +415,7 @@ public class AdaptedAEPFncsTest extends Experiment {
 
         // Create the line from the transformer
         final TriplexLine tripLine = sim.triplexLine(null);
-        tripLine.setFrom(tripMeterA);
+        tripLine.setFrom(meter);
         tripLine.setTo(tripMeterFlatrate);
         tripLine.setGroupId("F1_Triplex_Line");
         tripLine.setPhases(phases);
@@ -473,7 +437,7 @@ public class AdaptedAEPFncsTest extends Experiment {
         } else if (scheduleSkew < -3600) {
             scheduleSkew = -3600;
         }
-        
+
         // Create the base house
         final House house = sim.house("F1_house_" + phase.name() + id);
         house.setParent(tripMeterRt);
@@ -508,19 +472,19 @@ public class AdaptedAEPFncsTest extends Experiment {
         controller.setAverageTarget(auction.getNetworkAveragePriceProperty());
         controller.setStandardDeviationTarget(auction.getNetworkStdevPriceProperty());
         controller.setPeriod((double) auction.getPeriod());
-        channel.addController(controller);
         // Setup the controller and loads
         setupController(house, controller);
         setupLoads(house, houseType, applianceScalar);
 
         // If we want to track this item, add a recorder
-        if (track) {
-            final Recorder recorder = house.recorder();
-            recorder.setProperty("cooling_setpoint,air_temperature");
-            recorder.setLimit(100000000);
-            recorder.setInterval(300L);
-            recorder.setFile("F1_house" + id + "_details.csv");
-        }
+        // if (track) {
+        // final Recorder recorder = house.recorder();
+        // recorder.setProperty("cooling_setpoint,air_temperature");
+        // recorder.setLimit(100000000);
+        // recorder.setInterval(300L);
+        // recorder.setFile("F1_house" + id + "_details.csv");
+        // }
+        return house;
     }
 
     private static void setHouseInfo(final House house, final HouseType houseType) {
@@ -541,9 +505,9 @@ public class AdaptedAEPFncsTest extends Experiment {
             case RESIDENTIAL5:
                 setupResidential5(house);
                 break;
-                // case RESIDENTIAL6:
-                // setupResidential6(house);
-                // break;
+            // case RESIDENTIAL6:
+            // setupResidential6(house);
+            // break;
             default:
                 throw new RuntimeException("Unable to handle house type " + houseType);
         }
@@ -580,7 +544,9 @@ public class AdaptedAEPFncsTest extends Experiment {
 
     /**
      * Setup the house for Old/Small
-     * @param house the house to setup
+     * 
+     * @param house
+     *            the house to setup
      */
     private static void setupResidential1(final House house) {
         // tankvol_1=45;
@@ -602,7 +568,9 @@ public class AdaptedAEPFncsTest extends Experiment {
 
     /**
      * Setup the house for New/Small
-     * @param house the house to setup
+     * 
+     * @param house
+     *            the house to setup
      */
     private static void setupResidential2(final House house) {
         // tankvol_1=45;
@@ -624,7 +592,9 @@ public class AdaptedAEPFncsTest extends Experiment {
 
     /**
      * Setup the house for Old/Large
-     * @param house the house to setup
+     * 
+     * @param house
+     *            the house to setup
      */
     private static void setupResidential3(final House house) {
         // tankvol_1=55;
@@ -646,7 +616,9 @@ public class AdaptedAEPFncsTest extends Experiment {
 
     /**
      * Setup the house for New/Large
-     * @param house the house to setup
+     * 
+     * @param house
+     *            the house to setup
      */
     private static void setupResidential4(final House house) {
         // tankvol_1=55;
@@ -668,7 +640,9 @@ public class AdaptedAEPFncsTest extends Experiment {
 
     /**
      * Setup the house for Mobile Homes
-     * @param house the house to setup
+     * 
+     * @param house
+     *            the house to setup
      */
     private static void setupResidential5(final House house) {
         // tankvol_1=35;
@@ -725,16 +699,16 @@ public class AdaptedAEPFncsTest extends Experiment {
         controller.setBidMode(BidMode.PROXY);
         controller.setProxyDelay(10);
         controller.setControlMode(ControlMode.RAMP);
-        
+
         // FIXME Bid delay does not apper in our output files?
         // controller.setBidDelay(bidDelay);
-        
+
         controller.setBaseSetpointFn(String.format("cooling%d*%1.3f+%2.2f", scheduleCool, coolTemp, coolOffset));
         controller.setSetpoint("cooling_setpoint");
         controller.setTarget("air_temperature");
         controller.setDeadband("thermostat_deadband");
         controller.setUsePredictiveBidding(true);
-        
+
         controller.setDemand("last_cooling_load");
         if (sigmaTstat > 0) {
             final double slider = coolSlider;

@@ -3,6 +3,7 @@
  */
 
 import gov.pnnl.prosser.api.*;
+import gov.pnnl.prosser.api.FncsSimulator;
 import gov.pnnl.prosser.api.gld.enums.*;
 import gov.pnnl.prosser.api.gld.lib.*;
 import gov.pnnl.prosser.api.gld.obj.*;
@@ -50,7 +51,8 @@ public class ExperimentFncsTest extends Experiment {
         //ns3Simulator.buildFrontend();
 
         // TODO FNCS Integration
-		
+		final FncsSimulator fncsSim = this.fncsSimulator();
+        fncsSim.setBroker("localhost");
     }
 
     /**

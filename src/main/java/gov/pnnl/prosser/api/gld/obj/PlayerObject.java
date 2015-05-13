@@ -6,6 +6,7 @@ package gov.pnnl.prosser.api.gld.obj;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 
 import gov.pnnl.prosser.api.GldSimulator;
 import gov.pnnl.prosser.api.gld.AbstractGldObject;
@@ -116,7 +117,7 @@ public class PlayerObject extends AbstractGldObject {
     @Override
     public void writeExternalFiles(Path path) throws IOException {
         if(file != null) {
-            Files.copy(file, path.resolve(file.getFileName()));
+            Files.copy(file, path.resolve(file.getFileName()), StandardCopyOption.REPLACE_EXISTING);
         }
     }
 

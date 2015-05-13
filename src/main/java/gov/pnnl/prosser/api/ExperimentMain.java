@@ -3,11 +3,13 @@
  */
 package gov.pnnl.prosser.api;
 
+import java.io.IOException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 
 import javax.tools.JavaCompiler;
 import javax.tools.ToolProvider;
@@ -21,7 +23,7 @@ import org.apache.commons.io.FilenameUtils;
  * 
  * @author nord229
  */
-public class ExperimentMain {
+public abstract class ExperimentMain {
 
     /**
      * Main method, takes two args, a java file and a output directory
@@ -71,6 +73,16 @@ public class ExperimentMain {
         }
 
         Ns3SimulatorWriter.writeNs3Simulator(outPath.resolve("ns3.cc"), experiment.getNs3Simulator());
+        experiment.getExtraExperimentFiles().forEach((f) -> {
+            try {
+                Files.copy(f, outPath.resolve(f.getFileName()), StandardCopyOption.REPLACE_EXISTING);
+            } catch (IOException e) {
+                throw new RuntimeException("Unable to copy extra files", e);
+            }
+        });
+        if (experiment.getFncsSimulator() != null) {
+            FncsSimulatorWriter.writeSimulator(outPath, experiment.getFncsSimulator(), experiment.getGldSimulators().size());
+        }
         // TODO FNCS simulator writer
         System.out.println("Written!");
     }

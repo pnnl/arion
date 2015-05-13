@@ -4,11 +4,31 @@
 package gov.pnnl.prosser.api;
 
 /**
- * Stub for FNCS Simulator configurations - NOT IMPLEMENTED
+ * FNCS Simulator configuration
  * 
  * @author nord229
- *
  */
 public class FncsSimulator {
+
+    private String broker = "localhost";
+
+    /**
+     * Get the broker to connect to
+     * 
+     * @return the broker
+     */
+    public String getBroker() {
+        return broker;
+    }
+
+    /**
+     * Set the broker to connect to
+     * 
+     * @param broker
+     *            the broker to set
+     */
+    public void setBroker(String broker) {
+        this.broker = broker;
+    }
 
 }
