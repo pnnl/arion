@@ -86,6 +86,6 @@ public abstract class Experiment {
     /**
      * Put your generation code here for generating an experiment
      */
-    public abstract void generate();
+    public abstract void experiment();
 
 }

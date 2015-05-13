@@ -26,7 +26,7 @@ public class ExperimentFncsTest extends Experiment {
      * Generate the experiment
      */
     @Override
-    public void generate() {
+    public void experiment() {
         final int numHouses = 1;
         final int numHousesPerChannel = 1;
         final int numChannels = (numHouses % numHousesPerChannel) == 0 ? (numHouses / numHousesPerChannel) + 1 : (numHouses / numHousesPerChannel) + 2;

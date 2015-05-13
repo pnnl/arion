@@ -22,7 +22,7 @@ public class TestSeanZExperiment extends Experiment {
      * Generate the experiment
      */
     @Override
-    public void generate() {
+    public void experiment() {
         final GldSimulator sim = this.gldSimulator("TestForSeanZ");
 
         final GldClock clock = sim.clock();

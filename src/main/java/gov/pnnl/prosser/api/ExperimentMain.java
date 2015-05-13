@@ -64,7 +64,7 @@ public class ExperimentMain {
         final Class<?> compiledClass = Class.forName(name, true, child);
         final Class<? extends Experiment> experimentClass = compiledClass.asSubclass(Experiment.class);
         final Experiment experiment = experimentClass.getConstructor().newInstance();
-        experiment.generate();
+        experiment.experiment();
 
         for (final GldSimulator sim : experiment.getGldSimulators()) {
             GldSimulatorWriter.writeGldSimulator(outPath, sim);

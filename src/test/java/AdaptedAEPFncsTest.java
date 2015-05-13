@@ -94,7 +94,7 @@ public class AdaptedAEPFncsTest extends Experiment {
      * Generate the experiment
      */
     @Override
-    public void generate() {
+    public void experiment() {
         final int numHouses = 300;
         final int numHousesPerChannel = 20;
         final int numChannels = (numHouses % numHousesPerChannel) == 0 ? (numHouses / numHousesPerChannel) + 1 : (numHouses / numHousesPerChannel) + 2;
@@ -215,7 +215,6 @@ public class AdaptedAEPFncsTest extends Experiment {
 
         // Create Player for the Phase A load on the substation
         final PlayerObject phaseALoad = sim.playerObject("phase_A_load");
-        // TODO: This should be a path. We may need to create a copy of this file and package as they will not be running on the compiler box
         phaseALoad.setFile(Paths.get("res/phase_A.player"));
         phaseALoad.setLoop(1);
 
