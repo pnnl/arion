@@ -48,23 +48,15 @@ public class CsmaHelper extends PcapHelperForDevice {
 	public void install(Node node, CsmaChannel channel, 
 			NetDeviceContainer destinationContainer) {
 		
-		// Get time to avoid name conflicts in output ns-3 file
-		long currentTime = (System.nanoTime() /100) % 10;
-		
-		String nodeName = "nodePointer_" + currentTime;
-		String channelName = "channelPointer_" + currentTime;
-		
-		// Create ns-3 smart pointers for Node and CsmaChannel
-		String nodePointer = "Ptr<Node> " + nodeName + 
-				"(" + node.getName() +");\n\n";
-		String channelPointer = "Ptr<CsmaChannel> " + channelName + 
-				"(" + channel.getName() + ");\n\n";
+		// Creates ns-3 smart pointers for Node and CsmaChannel
+		String nodePointer = node.getAsPointer();
+		String channelPointer = channel.getAsPointer();
 		
 		appendPrintObj(nodePointer);
 		appendPrintObj(channelPointer);
 		appendPrintObj(destinationContainer.getName() + 
 				" = " + this.getName() + ".Install(" + 
-				nodeName + ", " + channelName + ");\n");
+				node.getName() + ", " + channel.getName() + ");\n");
 	}
 	
 	/**
@@ -75,19 +67,13 @@ public class CsmaHelper extends PcapHelperForDevice {
 	public void install(NodeContainer nodes, CsmaChannel channel, 
 			NetDeviceContainer destinationContainer) {
 		
-		// Get time to avoid name conflicts in output ns-3 file
-		long currentTime = System.currentTimeMillis();
-		
-		String channelName = "channelPointer_" + currentTime;
-		
-		// Create ns-3 smart pointer for CsmaChannel
-		String channelPointer = "Ptr<CsmaChannel> " + channelName + 
-				" = " + channel.getName() + ";\n";
+		// Creates ns-3 smart pointer for CsmaChannel
+		String channelPointer = channel.getAsPointer();
 		
 		appendPrintObj(channelPointer);
 		appendPrintObj(destinationContainer.getName() + 
 				" = " + this.getName() + ".Install(" + 
-				nodes.getName() + ", " + channelName + ");\n");
+				nodes.getName() + ", " + channel.getName() + ");\n");
 	}
 
 /*	*//**

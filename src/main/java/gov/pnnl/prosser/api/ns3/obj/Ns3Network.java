@@ -295,7 +295,7 @@ public class Ns3Network {
 	 * @param i
 	 * @return the Channel at index i
 	 */
-	public Channel getChannel(int i) {
+	private Channel getChannel(int i) {
 		return this.channels.get(i);
 	}
 	

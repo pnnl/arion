@@ -31,7 +31,7 @@ public class Router extends AbstractNs3Object {
 		
 		// REVIEW Assuming all routers will use IP
 		// Install IP stack on Router
-		InternetStackHelper stackHelper = new InternetStackHelper(getName() + "internetStackHelper");
+		InternetStackHelper stackHelper = new InternetStackHelper(getName() + "_internetStackHelper");
 		stackHelper.install(getNode());
 		
 	}
@@ -48,26 +48,29 @@ public class Router extends AbstractNs3Object {
 	public void setChannel(Channel channel) {
 		
 		channels.add(channel);
-		long time = (System.nanoTime() / 100 ) % 10;
 		
 		if (devices == null) {
 			devices = new NetDeviceContainer(channel.getType().toString() + 
-					"_devices_" + getName() + "_" + time);
+					"_devices_" + getName());
 		}
 		
 		NetDeviceContainer tempDev = new NetDeviceContainer("TEMP_" + channel.getType().toString() + 
-				"_devices_" + getName() + "_" + time);
+				"_devices_" + getName());
 		
 		if (channel.getType().equals(NetworkType.CSMA)) {
 			
-			CsmaHelper csmaHelper = new CsmaHelper("csmaHelper_" + time);
+			CsmaHelper csmaHelper = new CsmaHelper("csmaHelper");
+			csmaHelper.setChannelAttribute("Delay", channel.getDelay());
+			csmaHelper.setChannelAttribute("DataRate", channel.getDataRate());
 			csmaHelper.install(getNode(), (CsmaChannel) channel, tempDev);
 			
 			devices.addDevices(tempDev);
 			
 		} else if (channel.getType().equals(NetworkType.P2P)) {
 			
-			PointToPointHelper p2pHelper = new PointToPointHelper("p2pHelper_" + time);
+			PointToPointHelper p2pHelper = new PointToPointHelper("p2pHelper");
+			p2pHelper.setChannelAttribute("Delay", channel.getDelay());
+			p2pHelper.setDeviceAttribute("DataRate", channel.getDataRate());
 			p2pHelper.install(getNode(), (PointToPointChannel) channel, tempDev);
 			// TODO connect only one node to p2p channel? or delay ns-3 connection
 			

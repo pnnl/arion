@@ -144,17 +144,6 @@ public class Ns3Simulator {
 			return new YansWifiChannel();
 		}
 	}
-	
-	/**
-	 * TODO get purpose of this method; add obj to list of GLD objects to pass to Ns3Network or setup a Channel and pass it to Ns3Network?
-	 * @param obj the AbstractProsserObject to add to this Ns3Simulator
-	 */
-	public void add(AbstractGldObject obj) {
-		//network.addGldObject(obj);
-		
-		//Channel c = obj.getChannel();
-		//network.addChannel(c); // Do more Channel setup here or in Ns3Network?
-	}
 
 	/**
 	 * @return the list of Channels for the Ns3Network
@@ -255,7 +244,7 @@ public class Ns3Simulator {
 		
 		Node router = new Node("router_" + netType + "_" + time);
 		
-		InternetStackHelper stackHelper = new InternetStackHelper("internetStackHelper_" + time);		
+		InternetStackHelper stackHelper = new InternetStackHelper("internetStackHelper_" + time);
 		stackHelper.install(router);
 		
 		return router;
@@ -263,12 +252,22 @@ public class Ns3Simulator {
 	}
 
 	/**
-	 * Add this Channel to the network
+	 * Adds this Channel to the network
 	 * @param channel
 	 */
 	public void addChannel(Channel channel) {
 		this.network.addChannel(channel);
 		this.ns3Objects.add(channel);
+	}
+
+	/**
+	 * Adds all Channels in the list of channels to the network
+	 * @param channels
+	 */
+	public void addChannels(List<Channel> channels) {
+		for (Channel c : channels) {
+			addChannel(c);
+		}
 	}
 
 }

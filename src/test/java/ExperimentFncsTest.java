@@ -66,15 +66,16 @@ public class ExperimentFncsTest extends Experiment {
     	final String addressBase = "10.0.1.0";
 		final String addressMask = "255.255.255.0";
 		final String backboneDataRate = "10Gbps";
-		final String backboneDelay = "1ms";
+		final String backboneDelay = "500ns";
 		final double stopTime = 10.0;
 		
-		// Sets up header stuff and parameters (not used with below implementation)
+		// Sets up header stuff and parameters (params not used with below implementation)
 		sim.setup(numChannels, addressBase, addressMask, backboneDataRate, backboneDelay, stopTime);
 		
 		// Create auction channel & router
 		PointToPointChannel auctionChannel = new PointToPointChannel("auctionChannel");
 		auctionChannel.setDataRate("1Gbps");
+		auctionChannel.setDelay("1ms");
 		sim.addChannel(auctionChannel);
 		
 		Router auctionRouter = new Router("auctionRouter");
@@ -83,12 +84,15 @@ public class ExperimentFncsTest extends Experiment {
 		// Create backbone CSMA channel (connect Houses)
 		CsmaChannel csmaBackboneChannel = new CsmaChannel("csmaBackboneChannel");
 		csmaBackboneChannel.setDataRate(backboneDataRate);
+		csmaBackboneChannel.setDelay(backboneDelay);
 		
 		// Create house channels
 		for (int i = 0; i < numChannels; i++) {
 			
 			CsmaChannel csmaHouseChannel = new CsmaChannel("csmaHouseChannel_" + i);
 			csmaHouseChannel.setDataRate("100Mbps");
+			csmaHouseChannel.setDelay("1ms");
+			
 			// Add the house channel to simulator list of channels
 			sim.addChannel(csmaHouseChannel);
 			
@@ -101,7 +105,6 @@ public class ExperimentFncsTest extends Experiment {
 			csmaRouter.setChannel(csmaBackboneChannel);
 			
 		}
-		
 		
 	}
 

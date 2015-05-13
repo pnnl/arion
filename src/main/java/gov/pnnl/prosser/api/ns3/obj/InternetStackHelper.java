@@ -33,16 +33,11 @@ public class InternetStackHelper extends AbstractNs3Object {
 	 */
 	public void install(Node node) {
 		
-		// Get time to avoid name conflicts in output ns-3 file
-		long currentTime = System.currentTimeMillis();
-		
-		String nodeName = "nodePtr_" + currentTime;
-		
 		// Creates smart pointer for node
-		String nodePointer = "Ptr<Node> " + nodeName + " = " + node.getName() + ";\n";
+		String nodePointer = node.getAsPointer();
 		
 		appendPrintObj(nodePointer);
-		appendPrintObj(this.getName() + ".Install(" + nodeName + ");\n");
+		appendPrintObj(this.getName() + ".Install(" + node.getPointerName() + ");\n");
 
 	}
 

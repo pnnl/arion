@@ -4,6 +4,7 @@
 package gov.pnnl.prosser.api;
 
 import java.util.Objects;
+import java.util.UUID;
 
 /**
  * @author happ546
@@ -45,14 +46,16 @@ public abstract class AbstractNs3Object {
 	}
 	
 	/**
-	 * Sets the name of this AbstractNs3Object and adds the constructor text to this object's information field,
-	 * printObj, to later output to a c++ ns-3 file.
+	 * Sets the name of this AbstractNs3Object and adds the constructor 
+	 * text to this object's information field, printObj, 
+	 * to later output to a c++ ns-3 file.
 	 * Must be called immediately after the constructor.
 	 * @param name the name to set
 	 */
 	public void setName(String name) {
-		this.name = name;
-		this.appendPrintObj("\n\t" + this.getClass().getSimpleName() + " " + this.name + ";\n");
+		this.name = name + "_" + System.nanoTime() % 1000000;
+		this.appendPrintObj("\n\t" + this.getClass().getSimpleName() + 
+				" " + this.name + ";\n");
 	}
 	
 	/**

@@ -76,7 +76,7 @@ public class AdaptedAEPFncsTest extends Experiment {
         final String addressBase = "10.0.1.0";
         final String addressMask = "255.255.255.0";
         final String backboneDataRate = "10Gbps";
-        final String backboneDelay = "1ms";
+        final String backboneDelay = "500ns";
         final double stopTime = 10.0;
 
         // Sets parameters for ns-3 network & builds backbone network
@@ -84,7 +84,8 @@ public class AdaptedAEPFncsTest extends Experiment {
 
         // Create auction channel & router
         PointToPointChannel auctionChannel = new PointToPointChannel("auctionChannel");
-        auctionChannel.setAttribute("DataRate", "1Gbps");
+		auctionChannel.setDataRate("1Gbps");
+		auctionChannel.setDelay("1ms");
         sim.addChannel(auctionChannel);
 
         Router auctionRouter = new Router("auctionRouter");
@@ -92,13 +93,16 @@ public class AdaptedAEPFncsTest extends Experiment {
 
         // Create backbone CSMA channel (connect Houses)
         CsmaChannel csmaBackboneChannel = new CsmaChannel("csmaBackboneChannel");
-        csmaBackboneChannel.setAttribute("DataRate", backboneDataRate);
+		csmaBackboneChannel.setDataRate(backboneDataRate);
+		csmaBackboneChannel.setDelay(backboneDelay);
 
         // Create house channels
         for (int i = 0; i < numChannels; i++) {
 
             CsmaChannel csmaHouseChannel = new CsmaChannel("csmaHouseChannel_" + i);
-            csmaHouseChannel.setAttribute("DataRate", "100Mbps");
+			csmaHouseChannel.setDataRate("100Mbps");
+			csmaHouseChannel.setDelay("1ms");
+			
             // Add the house channel to simulator list of channels
             sim.addChannel(csmaHouseChannel);
 
