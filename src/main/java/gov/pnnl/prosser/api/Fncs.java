@@ -26,7 +26,7 @@ public class Fncs {
     public enum FncsSimType {
         @SerializedName("power_grid")
         PowerGrid,
-        @SerializedName("CommunicationNetwork")
+        @SerializedName("communication_network")
         CommunicationNetwork;
     }
 
