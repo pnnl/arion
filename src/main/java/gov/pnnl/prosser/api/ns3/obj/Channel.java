@@ -25,7 +25,8 @@ import gov.pnnl.prosser.api.ns3.enums.NetworkType;
 public class Channel extends AbstractNs3Object {
 	
 	/**
-	 * The base IP address of this Channel (full 4 byte IPv4)
+	 * The base IP address of this Channel (full 4 octet IPv4), 
+	 * legal to use with specified subnet mask
 	 */
 	private String addressBase;
 	
@@ -56,6 +57,10 @@ public class Channel extends AbstractNs3Object {
 	private List<AuctionObject> auctions;
 	
 	private NetworkType type;
+	
+	private String delay;
+	
+	private String dataRate;
 
 	
 	/**
@@ -154,6 +159,34 @@ public class Channel extends AbstractNs3Object {
 	 */
 	public void setType(NetworkType type) {
 		this.type = type;
+	}
+
+	/**
+	 * @return the delay of this channel
+	 */
+	public String getDelay() {
+		return delay;
+	}
+
+	/**
+	 * @param delay
+	 */
+	public void setDelay(String delay) {
+		this.delay = delay;
+	}
+
+	/**
+	 * @return the data rate of this channel
+	 */
+	public String getDataRate() {
+		return dataRate;
+	}
+
+	/**
+	 * @param dataRate
+	 */
+	public void setDataRate(String dataRate) {
+		this.dataRate = dataRate;
 	}
 
 	/**

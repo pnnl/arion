@@ -21,9 +21,11 @@ public class PointToPointEpcHelper extends NetworkHelper {
 	public void assignUeIpv4Address(NetDeviceContainer ueDevices, 
 									Ipv4InterfaceContainer destination) {
 		// Sets the dereferencer operator appropriately for pointer encapsulation or not
-		String deref = this.isPointer() ? "->" : ".";
-		appendPrintObj(destination.getName() + " = " + this.getName() + deref + 
-						"AssignUeIpv4Address(" + ueDevices.getName() + ");\n");
+		
+		// TODO refactor out deref
+		//String deref = this.isPointer() ? "->" : ".";
+		//appendPrintObj(destination.getName() + " = " + this.getName() + deref + 
+		//				"AssignUeIpv4Address(" + ueDevices.getName() + ");\n");
 	}
 	
 	/**
@@ -32,8 +34,10 @@ public class PointToPointEpcHelper extends NetworkHelper {
 	 */
 	public void getPgwNode(Pointer<Node> node) {
 		// Sets the dereferencer operator appropriately for pointer encapsulation or not
-		String deref = this.isPointer() ? "->" : ".";
-		appendPrintObj(node.getName() + " = " + this.getName() + deref + "GetPgwNode();\n");
+		
+		// TODO refactor out deref
+		//String deref = this.isPointer() ? "->" : ".";
+		//appendPrintObj(node.getName() + " = " + this.getName() + deref + "GetPgwNode();\n");
 	}
 	
 	/**
@@ -41,8 +45,10 @@ public class PointToPointEpcHelper extends NetworkHelper {
 	 */
 	public Ipv4Address getUeDefaultGatewayAddress() {
 		// Sets the dereferencer operator appropriately for pointer encapsulation or not
-		String deref = this.isPointer() ? "->" : ".";
-		appendPrintObj(this.getName() + deref + "GetUeDefaultGatewayAddress();\n");
+		
+		// TODO refactor out deref
+		//String deref = this.isPointer() ? "->" : ".";
+		//appendPrintObj(this.getName() + deref + "GetUeDefaultGatewayAddress();\n");
 		return new Ipv4Address(null);
 	}
 	

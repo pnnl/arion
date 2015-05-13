@@ -54,6 +54,13 @@ public abstract class AbstractNs3Object {
 		this.name = name;
 		this.appendPrintObj("\n\t" + this.getClass().getSimpleName() + " " + this.name + ";\n");
 	}
+	
+	/**
+	 * @return the name of this Node prefixed with "pointer_"
+	 */
+	public String getPointerName() {
+		return "pointer_" + getName();
+	}
 
 	/**
 	 * 
@@ -83,14 +90,16 @@ public abstract class AbstractNs3Object {
 	
 
 	/**
-	 * @return printObj the string containing the c++ implementation text for all ns-3 objects
+	 * @return printObj the string containing the c++ implementation 
+	 * text for all ns-3 objects
 	 */
 	public String getPrintObj() {
 		return AbstractNs3Object.printObj;
 	}
 
 	/**
-	 * @param text the text printObj (stored c++ implementation text for all ns-3 objects) is set to
+	 * @param text the text printObj (stored c++ implementation 
+	 * text for all ns-3 objects) is set to
 	 */
 	public void setPrintObj(String text) {
 		AbstractNs3Object.printObj = text;
@@ -104,7 +113,7 @@ public abstract class AbstractNs3Object {
 		this.setPrintObj(this.getPrintObj() + "\t" + text);
 	}
 	
- @Override
+	@Override
     public int hashCode() {
         return Objects.hash(this.name, AbstractNs3Object.printObj);
     }
@@ -126,20 +135,18 @@ public abstract class AbstractNs3Object {
     }
     
     /**
-     * @return 
-     * 		true if this object is encapsulated in a pointer
-     * 		false otherwise
+     * Gets the given AbstractNs3Object as a Ptr to be used in 
+     * ns-3 helper methods alongside Channels.
+     * @return a string of ns-3 code to "wrap" this object in a smart pointer
      */
-    public boolean isPointer() {
-    	return this.pointer;
-    }
+    public String getAsPointer() {
+    	String objClass = this.getClass().getSimpleName();
 
-	/**
-	 * @param b true if this object is encapsulated in a pointer
-	 * 			false otherwise
-	 */
-	public void setPointerFlag(boolean b) {
-		this.pointer = b;
-	}
+    	String result ="Ptr<" + objClass + "> " + this.getPointerName() +
+    			" = " + this.getName() + 
+    			".GetObject<" + objClass + ">();\n";
+    	
+    	return result;
+    }
 	
 }

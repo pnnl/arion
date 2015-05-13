@@ -65,7 +65,15 @@ public class Router extends AbstractNs3Object {
 			
 			devices.addDevices(tempDev);
 			
-		}
+		} else if (channel.getType().equals(NetworkType.P2P)) {
+			
+			PointToPointHelper p2pHelper = new PointToPointHelper("p2pHelper_" + time);
+			p2pHelper.install(getNode(), (PointToPointChannel) channel, tempDev);
+			// TODO connect only one node to p2p channel? or delay ns-3 connection
+			
+			devices.addDevices(tempDev);
+			
+		} 
 	}
 	
 	/**

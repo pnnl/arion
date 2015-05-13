@@ -67,12 +67,12 @@ public class ExperimentFncsTest extends Experiment {
 		final String backboneDelay = "1ms";
 		final double stopTime = 10.0;
 		
-		// Sets parameters for ns-3 network & builds backbone network
+		// Sets up header stuff and parameters (not used with below implementation)
 		sim.setup(numChannels, addressBase, addressMask, backboneDataRate, backboneDelay, stopTime);
 		
 		// Create auction channel & router
 		PointToPointChannel auctionChannel = new PointToPointChannel("auctionChannel");
-		auctionChannel.setAttribute("DataRate", "1Gbps");
+		auctionChannel.setDataRate("1Gbps");
 		sim.addChannel(auctionChannel);
 		
 		Router auctionRouter = new Router("auctionRouter");
@@ -80,13 +80,13 @@ public class ExperimentFncsTest extends Experiment {
 		
 		// Create backbone CSMA channel (connect Houses)
 		CsmaChannel csmaBackboneChannel = new CsmaChannel("csmaBackboneChannel");
-		csmaBackboneChannel.setAttribute("DataRate", backboneDataRate);
+		csmaBackboneChannel.setDataRate(backboneDataRate);
 		
 		// Create house channels
 		for (int i = 0; i < numChannels; i++) {
 			
 			CsmaChannel csmaHouseChannel = new CsmaChannel("csmaHouseChannel_" + i);
-			csmaHouseChannel.setAttribute("DataRate", "100Mbps");
+			csmaHouseChannel.setDataRate("100Mbps");
 			// Add the house channel to simulator list of channels
 			sim.addChannel(csmaHouseChannel);
 			

@@ -44,27 +44,25 @@ public class PointToPointHelper extends PcapHelperForDevice {
 	/**
 	 * @param nodeA 
 	 * @param nodeB 
+	 * @param channel 
 	 * @param p2pDevices
 	 */
-	public void install(Node nodeA, Node nodeB,
-			NetDeviceContainer p2pDevices) {
-		
-		// Get time to avoid name conflicts in output ns-3 file
-		long currentTime = System.currentTimeMillis();
-		
-		String nodeNameA = "nodePointerA_" + currentTime;
-		String nodeNameB = "nodePointerB_" + currentTime;
+	public void install(Node nodeA, Node nodeB, 
+			PointToPointChannel channel, NetDeviceContainer p2pDevices) {
 		
 		// Create ns-3 smart pointers for endpoint Nodes
-		String nodePointerA = "Ptr<Node> " + nodeNameA + 
-				" = " + nodeA.getName() +";\n\n";
-		String nodePointerB = "Ptr<Node> " + nodeNameB + 
-				" = " + nodeB.getName() +";\n\n";
+		String nodePointerA = nodeA.getAsPointer();
+		String nodePointerB = nodeB.getAsPointer();
 		
 		appendPrintObj(nodePointerA);
 		appendPrintObj(nodePointerB);
-		appendPrintObj(p2pDevices.getName() + " = " + this.getName() 
-				+ ".Install(" + nodeNameA+ ", " + nodeNameB + ");\n");		
+		
+		this.setChannelAttribute("Delay", channel.getDelay());
+		this.setDeviceAttribute("DataRate", channel.getDataRate());
+		
+		appendPrintObj(p2pDevices.getName() + " = " + this.getName() +
+				".Install(" + nodeA.getPointerName() + ", " + 
+				nodeB.getPointerName() + ");\n");
 	}
 
 	/**
@@ -116,6 +114,13 @@ public class PointToPointHelper extends PcapHelperForDevice {
 		deviceAttributes.put(attr, "" + value);
 		appendPrintObj(this.getName() + ".SetDeviceAttribute(\"" + attr 
 				+ "\", UintegerValue(" + value + "));\n");
+	}
+
+
+	public void install(Node node, PointToPointChannel channel,
+			NetDeviceContainer tempDev) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }
