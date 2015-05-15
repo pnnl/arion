@@ -70,6 +70,7 @@ public class AdaptedAEPFncsTest extends Experiment {
         // ns3Simulator.buildFrontend();
 
         // Extra GLD files
+        this.addExtraFiles(Paths.get("res/heat.yaml"));
         // this.addExtraFiles(Paths.get("res/tzinfo.txt"), Paths.get("res/unitfile.txt"));
     }
 
