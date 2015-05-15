@@ -94,7 +94,7 @@ public class Recorder extends AbstractGldObject {
     /**
      * Get the properties to record from the parent
      * 
-     * @return the property
+     * @return the properties
      */
     public List<String> getProperties() {
         return properties;
@@ -103,8 +103,8 @@ public class Recorder extends AbstractGldObject {
     /**
      * Set the properties to record from the parent
      * 
-     * @param property
-     *            the property to set
+     * @param properties
+     *            the properties to set
      */
     public void properties(final String... properties) {
         this.properties.addAll(Arrays.asList(properties));
