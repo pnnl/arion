@@ -1,7 +1,7 @@
 /**
  * 
  */
-package gov.pnnl.prosser.api;
+package gov.pnnl.prosser.api.fncs;
 
 import com.google.gson.annotations.SerializedName;
 
@@ -14,64 +14,22 @@ public class Fncs {
     @SerializedName("interface")
     private FncsIface iface = FncsIface.ZmqNetworkInterface;
 
-    public enum FncsIface {
-        ZmqNetworkInterface;
-    }
-
     private String broker;
 
     @SerializedName("simulator_type")
     private FncsSimType simulatorType;
 
-    public enum FncsSimType {
-        @SerializedName("power_grid")
-        PowerGrid,
-        @SerializedName("communication_network")
-        CommunicationNetwork;
-    }
-
     @SerializedName("synchronization_algorithm")
     private FncsSyncAlgo syncAlgo;
 
-    public enum FncsSyncAlgo {
-        GracePeriodSyncAlgo,
-        CommunicatorSimulatorSyncalgo;
-    }
-
     @SerializedName("simulator_time_metric")
     private FncsTimeMetric simulatorTimeMetric;
-
-    public enum FncsTimeMetric {
-        seconds,
-        nanoseconds;
-    }
 
     @SerializedName("packet_lost_period")
     private long packetLostPeriod;
 
     @SerializedName("sync_params")
     private SyncParams syncParams;
-
-    public static class SyncParams {
-        @SerializedName("number_of_power_grid_sims")
-        private int numPowerGridSims = 1;
-
-        /**
-         * @return the numPowerGridSims
-         */
-        public int getNumPowerGridSims() {
-            return numPowerGridSims;
-        }
-
-        /**
-         * @param numPowerGridSims
-         *            the numPowerGridSims to set
-         */
-        public void setNumPowerGridSims(int numPowerGridSims) {
-            this.numPowerGridSims = numPowerGridSims;
-        }
-
-    }
 
     /**
      * @return the iface

@@ -210,7 +210,7 @@ public class ExperimentFncsTest extends Experiment {
         // TODO: For instance GridLAB-D has an odbc recorder, processor needs to write the appropirate connection info in the glm and the sql
         // TODO: to create a table in the database to accept the comunication from gld.
         final Recorder recorder = auction.recorder();
-        recorder.setProperty("capacity_reference_bid_price", "current_market.clearing_price", "current_market.clearing_quantity");
+        recorder.properties("capacity_reference_bid_price", "current_market.clearing_price", "current_market.clearing_quantity");
         recorder.setLimit(100000000);
         recorder.setInterval(300L);
         recorder.setFile("baseprice_clearedprice_clearedquantity_" + sim.getName() + ".csv");

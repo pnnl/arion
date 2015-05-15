@@ -39,7 +39,7 @@ public class AdaptedAEPFncsTest extends Experiment {
 
         final GldSimulator gldSim = this.gldSimulator("fncs_GLD_1node_Feeder_1");
 
-        final AuctionObject auction = createMarket(gldSim);
+        final AuctionObject auction = createMarket(gldSim, "Market1");
         auction.setFncsControllerPrefix(controllerNIPrefix);
         channels.get(0).addAuction(auction);
 
@@ -50,9 +50,11 @@ public class AdaptedAEPFncsTest extends Experiment {
 
         // Add a recorder to the auction for some of the properties on the auction
         final Recorder recorder = auction.recorder();
-        recorder.setProperty("capacity_reference_bid_price", "current_market.clearing_price", "current_market.clearing_quantity");
+        recorder.setName("Market1_Recorder");
+        recorder.properties("capacity_reference_bid_price", "current_market.clearing_price", "current_market.clearing_quantity");
         recorder.setLimit(100000000);
         recorder.setInterval(300L);
+        recorder.setUsingSql(true);
 
         createTriplex(gldSim, numHouses);
 
@@ -186,9 +188,9 @@ public class AdaptedAEPFncsTest extends Experiment {
 
     private TriplexLineConfiguration tripLineConf;
 
-    private AuctionObject createMarket(final GldSimulator sim) {
+    private AuctionObject createMarket(final GldSimulator sim, final String marketName) {
         // final boolean useMarket = true;
-        final String marketName = "Market1";
+//        final String marketName = "Market1";
         // final double percentPenetration = 1;
         // final double sliderSetting = 1;
 

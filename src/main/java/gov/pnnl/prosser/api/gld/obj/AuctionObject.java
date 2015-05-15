@@ -12,6 +12,7 @@ import gov.pnnl.prosser.api.gld.AbstractGldObject;
 import gov.pnnl.prosser.api.gld.GldSerializable;
 import gov.pnnl.prosser.api.gld.enums.CurveOutput;
 import gov.pnnl.prosser.api.gld.enums.SpecialMode;
+import gov.pnnl.prosser.api.sql.SqlFile;
 
 /**
  * The auction object implements the basic auction
@@ -468,6 +469,13 @@ public class AuctionObject extends AbstractGldObject implements NetworkCapable {
     @Override
     public void writeExternalFiles(Path path) throws IOException {
         this.player.writeExternalFiles(path);
+    }
+
+    @Override
+    public void createSqlObjects(SqlFile file) {
+        if(this.recorder != null) {
+            this.recorder.createSqlObjects(file);
+        }
     }
 
     /**

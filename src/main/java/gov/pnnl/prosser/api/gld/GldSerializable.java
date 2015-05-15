@@ -3,6 +3,8 @@
  */
 package gov.pnnl.prosser.api.gld;
 
+import gov.pnnl.prosser.api.sql.SqlFile;
+
 import java.io.IOException;
 import java.nio.file.Path;
 
@@ -26,6 +28,9 @@ public interface GldSerializable {
      * @param path the output path
      */
     public default void writeExternalFiles(Path path) throws IOException {
+    }
+    
+    public default void createSqlObjects(SqlFile file) {
     }
 
     public default void writeProperty(final StringBuilder sb, final String propName, final String propValue) {

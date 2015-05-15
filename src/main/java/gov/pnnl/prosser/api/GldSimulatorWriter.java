@@ -7,9 +7,9 @@ import gov.pnnl.prosser.api.gld.AbstractGldObject;
 import gov.pnnl.prosser.api.gld.lib.GldClock;
 import gov.pnnl.prosser.api.gld.module.Module;
 import gov.pnnl.prosser.api.gld.obj.AbstractGldClass;
-
-
-
+import gov.pnnl.prosser.api.gld.obj.Recorder;
+import gov.pnnl.prosser.api.sql.SqlFile;
+import gov.pnnl.prosser.api.sql.SqlTableDef;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -77,21 +77,44 @@ public abstract class GldSimulatorWriter {
         }
         sb.append('\n');
         if (objects != null) {
+            final SqlFile sqlFile = new SqlFile(gldSimulator.getName());
             objects.forEach(o -> {
                 sb.append('\n');
                 o.writeGldString(sb);
+                o.createSqlObjects(sqlFile);
                 try {
                     o.writeExternalFiles(path);
                 } catch (Exception e) {
                     throw new RuntimeException("Unable to copy object file source to destination", e);
                 }
             });
+            if(!sqlFile.getSqlTableDefs().isEmpty()) {
+                final StringBuilder sql = new StringBuilder();
+                sql.append("CREATE DATABASE \"" + sqlFile.getDatabaseName() + "\";\n");
+                sql.append("USE \"" + sqlFile.getDatabaseName() + "\";\n\n");
+                sqlFile.getSqlTableDefs().forEach(t -> {
+                    sql.append("CREATE TABLE \"" + t.getName() + "\" (\n");
+                    sql.append("    time    DATETIME,\n");
+                    t.getSqlColumnDefs().forEach(c -> {
+                        sql.append("    ");
+                        sql.append(c.getName());
+                        sql.append("    ");
+                        sql.append(c.getType());
+                        sql.append(",\n");
+                    });
+                    sql.delete(sql.length() - 2, sql.length());
+                    sql.append(");");
+                });
+                try (final BufferedWriter writer = Files.newBufferedWriter(path.resolve("create.sql"), StandardCharsets.UTF_8)) {
+                    writer.write(sql.toString());
+                }
+            }
         }
         try (final BufferedWriter writer = Files.newBufferedWriter(path.resolve(gldSimulator.getName() + ".glm"), StandardCharsets.UTF_8)) {
             writer.write(sb.toString());
         }
     }
-    
+
     public static void writeSetting(final StringBuilder sb, final String key, final String value) {
         sb.append("#set ");
         sb.append(key);

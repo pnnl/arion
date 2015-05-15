@@ -3,10 +3,11 @@
  */
 package gov.pnnl.prosser.api;
 
-import gov.pnnl.prosser.api.Fncs.FncsSimType;
-import gov.pnnl.prosser.api.Fncs.FncsSyncAlgo;
-import gov.pnnl.prosser.api.Fncs.FncsTimeMetric;
-import gov.pnnl.prosser.api.Fncs.SyncParams;
+import gov.pnnl.prosser.api.fncs.Fncs;
+import gov.pnnl.prosser.api.fncs.FncsSimType;
+import gov.pnnl.prosser.api.fncs.FncsSyncAlgo;
+import gov.pnnl.prosser.api.fncs.FncsTimeMetric;
+import gov.pnnl.prosser.api.fncs.SyncParams;
 
 import java.io.BufferedWriter;
 import java.io.IOException;

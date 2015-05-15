@@ -5,7 +5,13 @@ package gov.pnnl.prosser.api.gld.obj;
 
 import gov.pnnl.prosser.api.GldSimulator;
 import gov.pnnl.prosser.api.gld.AbstractGldObject;
+import gov.pnnl.prosser.api.gld.GldSerializable;
+import gov.pnnl.prosser.api.sql.SqlFile;
+import gov.pnnl.prosser.api.sql.SqlTableDef;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -28,7 +34,7 @@ public class Recorder extends AbstractGldObject {
     /**
      * the properties to record from the parent
      */
-    private String[] property;
+    private final List<String> properties = new ArrayList<>();
 
     /**
      * the target (parent) that is read from
@@ -39,6 +45,8 @@ public class Recorder extends AbstractGldObject {
      * the maximum length limit for the number of samples taken
      */
     private Integer limit;
+    
+    private boolean usingSql;
 
     public Recorder(final GldSimulator simulator) {
         super(simulator);
@@ -88,8 +96,8 @@ public class Recorder extends AbstractGldObject {
      * 
      * @return the property
      */
-    public String[] getProperty() {
-        return property;
+    public List<String> getProperties() {
+        return properties;
     }
 
     /**
@@ -98,8 +106,18 @@ public class Recorder extends AbstractGldObject {
      * @param property
      *            the property to set
      */
-    public void setProperty(final String... property) {
-        this.property = property;
+    public void properties(final String... properties) {
+        this.properties.addAll(Arrays.asList(properties));
+    }
+    
+    /**
+     * Set the properties to record from the parent
+     * 
+     * @param property
+     *            the property to set
+     */
+    public void property(final String property) {
+        this.properties.add(property);
     }
 
     /**
@@ -140,9 +158,23 @@ public class Recorder extends AbstractGldObject {
         this.limit = limit;
     }
 
+    /**
+     * @return the usingSql
+     */
+    public boolean isUsingSql() {
+        return usingSql;
+    }
+
+    /**
+     * @param usingSql the usingSql to set
+     */
+    public void setUsingSql(boolean usingSql) {
+        this.usingSql = usingSql;
+    }
+
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), this.file, this.interval, this.parent, this.property, this.limit);
+        return Objects.hash(super.hashCode(), this.file, this.interval, this.parent, this.properties, this.limit, this.usingSql);
     }
 
     @Override
@@ -160,8 +192,9 @@ public class Recorder extends AbstractGldObject {
         return Objects.equals(this.file, other.file)
                 && Objects.equals(this.interval, other.interval)
                 && Objects.equals(this.parent, other.parent)
-                && Objects.equals(this.property, other.property)
-                && Objects.equals(this.limit, other.limit);
+                && Objects.equals(this.properties, other.properties)
+                && Objects.equals(this.limit, other.limit)
+                && Objects.equals(this.usingSql, other.usingSql);
     }
 
     /**
@@ -179,9 +212,17 @@ public class Recorder extends AbstractGldObject {
     protected void writeGldProperties(final StringBuilder sb) {
         writeProperty(sb, "interval", this.interval, "s");
         writeProperty(sb, "file", this.file);
-        writeProperty(sb, "property", String.join(", ", this.property));
+        writeProperty(sb, "property", String.join(", ", this.properties));
         writeProperty(sb, "parent", this.parent);
         writeProperty(sb, "limit", this.limit);
+    }
+
+    @Override
+    public void createSqlObjects(SqlFile file) {
+        if(this.isUsingSql()) {
+            final SqlTableDef tableDef = file.sqlTableDef(this.getName());
+            this.getProperties().forEach(p -> tableDef.sqlColumnDef(p));
+        }
     }
 
 }

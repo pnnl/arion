@@ -176,7 +176,7 @@ public class TestSeanZExperiment extends Experiment {
         final Recorder recorder = sim.recorder();
         recorder.setInterval(1800L);
         recorder.setFile("test_outputs.csv");
-        recorder.setProperty("air_temperature");
+        recorder.property("air_temperature");
         recorder.setParent(house);
     }
 }
