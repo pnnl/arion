@@ -550,7 +550,8 @@ public class Ns3Network {
 		    } else if (auctionChannel.getClass().getSimpleName().equalsIgnoreCase("pointtopointchannel")) {
 		    	
 		    	Pointer<PointToPointChannel> p2pChannelPtr = new Pointer<PointToPointChannel>("p2pChannelPtr_" + i);
-		    	p2pChannelPtr.createObject((PointToPointChannel) auctionChannel);
+		    	final PointToPointChannel auctionChannelP2p = (PointToPointChannel) auctionChannel;
+		    	p2pChannelPtr.createObject(auctionChannelP2p);
 		    	
 		    	PointToPointHelper p2pHelper = new PointToPointHelper("p2pHelper_" + i);
 		    	p2pHelper.setDeviceAttribute("DataRate", auctionChannel.getAttribute("DataRate"));
@@ -558,12 +559,13 @@ public class Ns3Network {
 		    	NetDeviceContainer p2pDevices = new NetDeviceContainer("p2pDevices_" + i);
 		    	
 		    	// Adds the node as second node for p2p auctionChannel
-		    	((PointToPointChannel) auctionChannel).setNodeB(node);
+		    	auctionChannelP2p.setNodeB(node);
 		    	
 		    	// Adds the p2p channel's other node to auctionNodes for IP stack install
 		    	auctionNodes.addNode(((PointToPointChannel) auctionChannel).getNodeA());
-		    			    	
-		    	p2pHelper.install(((PointToPointChannel) auctionChannel).getNodeA(), ((PointToPointChannel) auctionChannel).getNodeB(), p2pDevices);
+
+		    	// FIXME IS THIS RIGHT?
+		    	p2pHelper.install(auctionChannelP2p.getNodeA(), auctionChannelP2p.getNodeB(), auctionChannelP2p, p2pDevices);
 		    	
 		    	auctionDevices.addDevices(p2pDevices);
 		    	
@@ -674,8 +676,8 @@ public class Ns3Network {
 		// Create p2p channel for Auction
 		// TODO generalize this to allow CSMA
 		PointToPointChannel auctionChannel = new PointToPointChannel("auctionChannel");
-		auctionChannel.setAttribute("DataRate", "1Gbps");
-		auctionChannel.setAttribute("Delay", "500ns");
+		auctionChannel.setDataRate("1Gbps");
+		auctionChannel.setDelay("500ns");
 		addChannel(auctionChannel);
 		
 		final int numChannels = getNumChannels();
@@ -1071,8 +1073,8 @@ public class Ns3Network {
 		// TODO allow user to select channel type
 		// FIXME p2p channels can only have 2 devices on them; for 2+ auctions, need reference to backbonerouter
 		PointToPointChannel auctionChannel = new PointToPointChannel("p2pAuctionChannel");
-		auctionChannel.setAttribute("DataRate", dataRate);
-		auctionChannel.setAttribute("Delay", delay);
+		auctionChannel.setDataRate(dataRate);
+        auctionChannel.setDelay(delay);
 		auctionChannel.setAddressBase("1.1.1.0"); // TODO implement user-settable Auction addrBase
 		addChannel(auctionChannel);
 		
@@ -1114,8 +1116,8 @@ public class Ns3Network {
 			
 			// Create the CSMA Channel & add it to list of channels
 			CsmaChannel channel = new CsmaChannel("csmaChannel_backbone_" + i);
-			channel.setAttribute("DataRate", dataRate);
-			channel.setAttribute("Delay", delay);
+			channel.setDataRate(dataRate);
+			channel.setDelay(delay);
 			// Add IP address base to Channel for use later in Market/Controller integration
 			channel.setAddressBase(ipBase); // TODO check if this works later
 			addChannel(channel);
@@ -1143,7 +1145,8 @@ public class Ns3Network {
 			NetDeviceContainer p2pDevices = new NetDeviceContainer("p2pDevices_backbone_" + i);
 			
 			// Install p2p devices on ap node and backbone router & connect via p2p channel
-			p2pHelper.install(apNode, backboneRouter, p2pDevices);
+			// FIXME IS THIS RIGHT?
+			p2pHelper.install(apNode, backboneRouter, channel, p2pDevices);
 			
 			ipThird = ((2 * i) % 254 + 2);
 			

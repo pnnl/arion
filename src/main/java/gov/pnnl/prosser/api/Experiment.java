@@ -70,6 +70,7 @@ public abstract class Experiment {
     public GldSimulator gldSimulator(final String name) {
         final GldSimulator sim = new GldSimulator(name);
         this.gldSimulators.add(sim);
+        this.ensureFncs();
         return sim;
     }
 
@@ -80,6 +81,7 @@ public abstract class Experiment {
      */
     public Ns3Simulator ns3Simulator() {
         this.ns3Simulator = new Ns3Simulator();
+        this.ensureFncs();
         return this.ns3Simulator;
     }
 
@@ -110,5 +112,11 @@ public abstract class Experiment {
      * Put your generation code here for generating an experiment
      */
     public abstract void experiment();
+    
+    private void ensureFncs() {
+        if(this.gldSimulators.size() > 1 || this.ns3Simulator != null) {
+            this.fncsSimulator();
+        }
+    }
 
 }

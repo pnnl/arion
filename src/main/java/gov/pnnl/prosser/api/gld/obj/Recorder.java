@@ -28,7 +28,7 @@ public class Recorder extends AbstractGldObject {
     /**
      * the properties to record from the parent
      */
-    private String property;
+    private String[] property;
 
     /**
      * the target (parent) that is read from
@@ -88,7 +88,7 @@ public class Recorder extends AbstractGldObject {
      * 
      * @return the property
      */
-    public String getProperty() {
+    public String[] getProperty() {
         return property;
     }
 
@@ -98,7 +98,7 @@ public class Recorder extends AbstractGldObject {
      * @param property
      *            the property to set
      */
-    public void setProperty(final String property) {
+    public void setProperty(final String... property) {
         this.property = property;
     }
 
@@ -179,7 +179,7 @@ public class Recorder extends AbstractGldObject {
     protected void writeGldProperties(final StringBuilder sb) {
         writeProperty(sb, "interval", this.interval, "s");
         writeProperty(sb, "file", this.file);
-        writeProperty(sb, "property", this.property);
+        writeProperty(sb, "property", String.join(", ", this.property));
         writeProperty(sb, "parent", this.parent);
         writeProperty(sb, "limit", this.limit);
     }

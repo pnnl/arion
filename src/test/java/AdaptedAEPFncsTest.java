@@ -3,7 +3,6 @@
  */
 
 import gov.pnnl.prosser.api.*;
-import gov.pnnl.prosser.api.FncsSimulator;
 import gov.pnnl.prosser.api.gld.*;
 import gov.pnnl.prosser.api.gld.enums.*;
 import gov.pnnl.prosser.api.gld.lib.*;
@@ -22,16 +21,13 @@ import java.util.*;
  */
 public class AdaptedAEPFncsTest extends Experiment {
 
-    private static final int numHouses = 100;
-
     /**
      * Generate the experiment
      */
     @Override
     public void experiment() {
-        final int numHousesPerChannel = 1;
-        final int numChannels = (numHouses % numHousesPerChannel) == 0 ? (numHouses / numHousesPerChannel) + 1 : (numHouses / numHousesPerChannel) + 2;
-        System.out.println("Number of channels: " + numChannels); // TODO debugging
+        final int numHouses = 100;
+        // Controller network interface prefix
         final String controllerNIPrefix = "F1_C_NI";
 
         // Set parameters for Ns3Network and build backend network
@@ -42,13 +38,26 @@ public class AdaptedAEPFncsTest extends Experiment {
         final List<Channel> channels = ns3Simulator.getChannels();
 
         final GldSimulator gldSim = this.gldSimulator("fncs_GLD_1node_Feeder_1");
+
         final AuctionObject auction = createMarket(gldSim);
         auction.setFncsControllerPrefix(controllerNIPrefix);
         channels.get(0).addAuction(auction);
-        createTriplex(gldSim);
-        for (int i = 0; i < numHouses; i++) {
-            final House house = createHouse(gldSim, i, auction, controllerNIPrefix);
 
+        // Specify the climate information
+        final ClimateObject climate = gldSim.climateObject("Columbus OH");
+        climate.setTmyFile(Paths.get("res/ColumbusWeather2009_2a.csv"));
+        climate.addCsvReader("CSVREADER");
+
+        // Add a recorder to the auction for some of the properties on the auction
+        final Recorder recorder = auction.recorder();
+        recorder.setProperty("capacity_reference_bid_price", "current_market.clearing_price", "current_market.clearing_quantity");
+        recorder.setLimit(100000000);
+        recorder.setInterval(300L);
+
+        createTriplex(gldSim, numHouses);
+
+        for (int i = 0; i < numHouses; i++) {
+            final House house = createHouse(gldSim, i, auction);
             // createRouter();
             channels.get(i + 1).addController(house.getController());
         }
@@ -59,10 +68,7 @@ public class AdaptedAEPFncsTest extends Experiment {
         // ns3Simulator.buildFrontend();
 
         // Extra GLD files
-        this.addExtraFiles(Paths.get("res/tzinfo.txt"), Paths.get("res/unitfile.txt"));
-        // TODO FNCS Integration
-        final FncsSimulator fncsSim = this.fncsSimulator();
-        fncsSim.setBroker("localhost");
+        // this.addExtraFiles(Paths.get("res/tzinfo.txt"), Paths.get("res/unitfile.txt"));
     }
 
     /**
@@ -84,8 +90,8 @@ public class AdaptedAEPFncsTest extends Experiment {
 
         // Create auction channel & router
         PointToPointChannel auctionChannel = new PointToPointChannel("auctionChannel");
-		auctionChannel.setDataRate("1Gbps");
-		auctionChannel.setDelay("1ms");
+        auctionChannel.setDataRate("1Gbps");
+        auctionChannel.setDelay("1ms");
         sim.addChannel(auctionChannel);
 
         Router auctionRouter = new Router("auctionRouter");
@@ -93,16 +99,16 @@ public class AdaptedAEPFncsTest extends Experiment {
 
         // Create backbone CSMA channel (connect Houses)
         CsmaChannel csmaBackboneChannel = new CsmaChannel("csmaBackboneChannel");
-		csmaBackboneChannel.setDataRate(backboneDataRate);
-		csmaBackboneChannel.setDelay(backboneDelay);
+        csmaBackboneChannel.setDataRate(backboneDataRate);
+        csmaBackboneChannel.setDelay(backboneDelay);
 
         // Create house channels
         for (int i = 0; i < numChannels; i++) {
 
             CsmaChannel csmaHouseChannel = new CsmaChannel("csmaHouseChannel_" + i);
-			csmaHouseChannel.setDataRate("100Mbps");
-			csmaHouseChannel.setDelay("1ms");
-			
+            csmaHouseChannel.setDataRate("100Mbps");
+            csmaHouseChannel.setDelay("1ms");
+
             // Add the house channel to simulator list of channels
             sim.addChannel(csmaHouseChannel);
 
@@ -124,42 +130,60 @@ public class AdaptedAEPFncsTest extends Experiment {
 
     // %house parameters extracting them here
     private static final double smallhome_floorarea_1 = 1100;
+
     private static final double smallhome_floorarea_2 = 500;
 
     private static final double largehome_floorarea_1 = 3000;
+
     private static final double largehome_floorarea_2 = 900;
 
     private static final double mobilehome_floorarea_1 = 750;
 
     // % Parameter distributions (same for all) (average +/- range)
     private static final double cool_1 = 1;
+
     private static final double cool_2 = 0.05;
 
     private static final double cooloffset_1 = 4;
+
     private static final double cooloffset_2 = 2;
 
     private static final double heatoffset_1 = 0;
+
     private static final double heatoffset_2 = 3;
 
     private static final double basepwr_1 = 1;
+
     private static final double basepwr_2 = 0.5;
 
     private static final double z = 0;
+
     private static final double i = 0;
+
     private static final double p = 1;
+
     private static final double systemPf = 0.97;
+
     private static final double heatFraction = 0.8;
+
     private static final double hvacPf = 0.97;
+
     private static final double scaleFloor = 1;
+
     private static final double sigmaTstat = 2;
 
     private static final String marketMean = "current_price_mean_24h";
+
     private static final String marketStdev = "current_price_stdev_24h";
+
     private static final int marketPeriod = 300;
 
     private TriplexMeter tripMeterA;
+
     private TriplexMeter tripMeterB;
+
     private TriplexMeter tripMeterC;
+
     private TriplexLineConfiguration tripLineConf;
 
     private AuctionObject createMarket(final GldSimulator sim) {
@@ -197,11 +221,6 @@ public class AdaptedAEPFncsTest extends Experiment {
         auctionClass.addField(marketMean, "double");
         auctionClass.addField(marketStdev, "double");
 
-        // Specify the climate information
-        final ClimateObject climate = sim.climateObject("Columbus OH");
-        climate.setTmyFile(Paths.get("res/ColumbusWeather2009_2a.csv"));
-        climate.addCsvReader("CSVREADER");
-
         // Create the FNCS auction
         final AuctionObject auction = sim.auctionObject(marketName);
         auction.setUnit("kW");
@@ -222,16 +241,6 @@ public class AdaptedAEPFncsTest extends Experiment {
 
         auction.setSpecialMode(SpecialMode.BUYERS_ONLY);
 
-        // Add a recorder to the auction for some of the properties on the auction
-        // TODO: Need to add code for writing SQL commands for generating tables to collect data from all simulator data generating objects
-        // TODO: For instance GridLAB-D has an odbc recorder, processor needs to write the appropirate connection info in the glm and the sql
-        // TODO: to create a table in the database to accept the comunication from gld.
-        final Recorder recorder = auction.recorder();
-        recorder.setProperty("capacity_reference_bid_price, current_market.clearing_price, current_market.clearing_quantity");
-        recorder.setLimit(100000000);
-        recorder.setInterval(300L);
-        recorder.setFile("baseprice_clearedprice_clearedquantity_" + sim.getName() + ".csv");
-
         auction.setInitPrice(0.042676);
         auction.setInitStdev(0.02);
         auction.setUseFutureMeanPrice(false);
@@ -239,7 +248,7 @@ public class AdaptedAEPFncsTest extends Experiment {
         return auction;
     }
 
-    private void createTriplex(final GldSimulator sim) {
+    private void createTriplex(final GldSimulator sim, final int numHouses) {
         // Create Player for the Phase A load on the substation
         final PlayerObject phaseALoad = sim.playerObject("phase_A_load");
         phaseALoad.setFile(Paths.get("res/phase_A.player"));
@@ -384,7 +393,7 @@ public class AdaptedAEPFncsTest extends Experiment {
      * @param auction
      *            the Auction to connect the controller to
      */
-    private House createHouse(final GldSimulator sim, final int id, final AuctionObject auction, final String controllerNIPrefix) {
+    private House createHouse(final GldSimulator sim, final int id, final AuctionObject auction) {
         // Select the phases for our meters
         final int r = rand.nextInt(3);
         final PhaseCode phase;
@@ -472,7 +481,7 @@ public class AdaptedAEPFncsTest extends Experiment {
         final Controller controller = house.controller("F1_controller_" + phase.name() + id);
         controller.setAuction(auction);
         controller.setScheduleSkew(scheduleSkew);
-        controller.setNetworkInterfaceName(controllerNIPrefix + id);
+        controller.setNetworkInterfaceName(auction.getFncsControllerPrefix() + id);
         controller.setAverageTarget(auction.getNetworkAveragePriceProperty());
         controller.setStandardDeviationTarget(auction.getNetworkStdevPriceProperty());
         controller.setPeriod((double) auction.getPeriod());

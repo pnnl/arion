@@ -48,7 +48,7 @@ public class PointToPointHelper extends PcapHelperForDevice {
 	 * @param p2pDevices
 	 */
 	public void install(Node nodeA, Node nodeB, 
-			PointToPointChannel channel, NetDeviceContainer p2pDevices) {
+			Channel channel, NetDeviceContainer p2pDevices) {
 		
 		// Create ns-3 smart pointers for endpoint Nodes
 		String nodePointerA = nodeA.getAsPointer();
@@ -64,7 +64,7 @@ public class PointToPointHelper extends PcapHelperForDevice {
 				".Install(" + nodeA.getPointerName() + ", " + 
 				nodeB.getPointerName() + ");\n");
 	}
-
+	
 	/**
 	 * Installs p2p NetDevices on the nodes in the given NodeContainer
 	 * 
