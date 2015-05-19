@@ -554,18 +554,19 @@ public class Ns3Network {
 		    	p2pChannelPtr.createObject(auctionChannelP2p);
 		    	
 		    	PointToPointHelper p2pHelper = new PointToPointHelper("p2pHelper_" + i);
-		    	p2pHelper.setDeviceAttribute("DataRate", auctionChannel.getAttribute("DataRate"));
-		    	p2pHelper.setChannelAttribute("Delay", auctionChannel.getAttribute("Delay"));
+		    	p2pHelper.setDeviceAttribute("DataRate", auctionChannelP2p.getAttribute("DataRate"));
+		    	p2pHelper.setChannelAttribute("Delay", auctionChannelP2p.getAttribute("Delay"));
 		    	NetDeviceContainer p2pDevices = new NetDeviceContainer("p2pDevices_" + i);
 		    	
 		    	// Adds the node as second node for p2p auctionChannel
 		    	auctionChannelP2p.setNodeB(node);
 		    	
 		    	// Adds the p2p channel's other node to auctionNodes for IP stack install
-		    	auctionNodes.addNode(((PointToPointChannel) auctionChannel).getNodeA());
-
-		    	// FIXME IS THIS RIGHT?
-		    	p2pHelper.install(auctionChannelP2p.getNodeA(), auctionChannelP2p.getNodeB(), auctionChannelP2p, p2pDevices);
+		    	auctionNodes.addNode(auctionChannelP2p.getNodeA());
+		    			    	
+		    	p2pHelper.install(auctionChannelP2p.getNodeA(), 
+		    			auctionChannelP2p.getNodeB(), 
+		    			auctionChannelP2p, p2pDevices);
 		    	
 		    	auctionDevices.addDevices(p2pDevices);
 		    	
@@ -1074,7 +1075,7 @@ public class Ns3Network {
 		// FIXME p2p channels can only have 2 devices on them; for 2+ auctions, need reference to backbonerouter
 		PointToPointChannel auctionChannel = new PointToPointChannel("p2pAuctionChannel");
 		auctionChannel.setDataRate(dataRate);
-        auctionChannel.setDelay(delay);
+		auctionChannel.setDelay(delay);
 		auctionChannel.setAddressBase("1.1.1.0"); // TODO implement user-settable Auction addrBase
 		addChannel(auctionChannel);
 		
@@ -1145,8 +1146,7 @@ public class Ns3Network {
 			NetDeviceContainer p2pDevices = new NetDeviceContainer("p2pDevices_backbone_" + i);
 			
 			// Install p2p devices on ap node and backbone router & connect via p2p channel
-			// FIXME IS THIS RIGHT?
-			p2pHelper.install(apNode, backboneRouter, channel, p2pDevices);
+			p2pHelper.install(apNode, backboneRouter, auctionChannel, p2pDevices);
 			
 			ipThird = ((2 * i) % 254 + 2);
 			

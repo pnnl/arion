@@ -15,21 +15,23 @@ import gov.pnnl.prosser.api.AbstractNs3Object;
  *
  */
 public class Node extends AbstractNs3Object {
-	
-	
+
 	/**
-	 * Creates a nameless Node
-	 * Used in Ns3Network for Pointer&lt;Node&gt;
+	 * Create a nameless Node.
 	 */
 	public Node() {
+		super();
 	}
 	
 	/**
-	 * Creates a new, empty named Node
+	 * Creates a new, empty named Node.
+	 * Creates a Ptr (smart pointer) for this Node, 
+	 * used in helper methods.
 	 * @param name
 	 */
 	public Node(String name) {
 		this.setName(name);
+		this.getAsPointer();
 	}
 	
 }

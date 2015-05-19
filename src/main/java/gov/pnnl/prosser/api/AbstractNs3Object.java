@@ -14,7 +14,6 @@ public abstract class AbstractNs3Object {
 	
 	private String name;
 	private String nodeNamePrefix;
-	private boolean pointer;
 	private static String printObj;
 
 	/**
@@ -27,7 +26,6 @@ public abstract class AbstractNs3Object {
 			AbstractNs3Object.printObj = "";
 		}
 		this.name = null;
-		this.pointer = false;
 	}
 
 	/** 
@@ -139,17 +137,14 @@ public abstract class AbstractNs3Object {
     
     /**
      * Gets the given AbstractNs3Object as a Ptr to be used in 
-     * ns-3 helper methods alongside Channels.
-     * @return a string of ns-3 code to "wrap" this object in a smart pointer
+     * ns-3 helper methods.  Called automatically in Node and Channel construction.
      */
-    public String getAsPointer() {
+    protected void getAsPointer() {
     	String objClass = this.getClass().getSimpleName();
 
-    	String result ="Ptr<" + objClass + "> " + this.getPointerName() +
+    	appendPrintObj("Ptr<" + objClass + "> " + this.getPointerName() +
     			" = " + this.getName() + 
-    			".GetObject<" + objClass + ">();\n";
-    	
-    	return result;
+    			".GetObject<" + objClass + ">();\n");
     }
 	
 }

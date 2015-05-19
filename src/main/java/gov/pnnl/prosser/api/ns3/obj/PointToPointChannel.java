@@ -22,17 +22,22 @@ public class PointToPointChannel extends Channel {
 	 * Creates a nameless PointToPointChannel
 	 */
 	public PointToPointChannel() {
+		super();
 		nodeA = null;
 		nodeB = null;
 		this.setType(NetworkType.P2P);
 	}
 	
 	/**
+	 * Creates a PointToPointChannel with the given name.
+	 * Creates a Ptr (smart pointer) for this channel, used in 
+	 * helper methods.
 	 * @param name
 	 */
 	public PointToPointChannel(String name) {
 		this();
 		this.setName(name);
+		this.getAsPointer();
 	}
 	
 	/**
@@ -81,6 +86,17 @@ public class PointToPointChannel extends Channel {
 				+ currentTime + " = " + device.getName() + ";\n";
 		
 		appendPrintObj(this.getName() + ".Attach(" + pointer + ");\n");
+	}
+
+	/**
+	 * @return true if this PointToPointChannel has 2 endpoint nodes, 
+	 * false otherwise
+	 */
+	public boolean hasTwoNodes() {
+		if (getNodeA() != null && getNodeB() != null) {
+			return true;
+		}
+		return false;
 	}
 
 }

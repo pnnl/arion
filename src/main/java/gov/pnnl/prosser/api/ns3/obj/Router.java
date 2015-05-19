@@ -68,11 +68,21 @@ public class Router extends AbstractNs3Object {
 			
 		} else if (channel.getType().equals(NetworkType.P2P)) {
 			
-			PointToPointHelper p2pHelper = new PointToPointHelper("p2pHelper");
-			p2pHelper.setChannelAttribute("Delay", channel.getDelay());
-			p2pHelper.setDeviceAttribute("DataRate", channel.getDataRate());
-			p2pHelper.install(getNode(), (PointToPointChannel) channel, tempDev);
-			// TODO connect only one node to p2p channel? or delay ns-3 connection
+			if (!((PointToPointChannel) channel).hasTwoNodes()) {
+			
+				((PointToPointChannel) channel).setNodeB(getNode());
+
+				// TODO should we check here if router node being connected to channel
+				// 		is same as nodeA?
+			} else {
+				
+				PointToPointHelper p2pHelper = new PointToPointHelper("p2pHelper");
+				p2pHelper.setChannelAttribute("Delay", channel.getDelay());
+				p2pHelper.setDeviceAttribute("DataRate", channel.getDataRate());
+				p2pHelper.install(((PointToPointChannel) channel).getNodeB(), 
+						getNode(), (PointToPointChannel) channel, tempDev);
+				
+			}
 			
 			devices.addDevices(tempDev);
 			

@@ -32,11 +32,7 @@ public class InternetStackHelper extends AbstractNs3Object {
 	 * @param node
 	 */
 	public void install(Node node) {
-		
-		// Creates smart pointer for node
-		String nodePointer = node.getAsPointer();
-		
-		appendPrintObj(nodePointer);
+
 		appendPrintObj(this.getName() + ".Install(" + node.getPointerName() + ");\n");
 
 	}

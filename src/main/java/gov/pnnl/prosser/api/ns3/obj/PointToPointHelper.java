@@ -26,20 +26,6 @@ public class PointToPointHelper extends PcapHelperForDevice {
 		this.channelAttributes = new HashMap<String, String>();
 		this.deviceAttributes = new HashMap<String, String>();
 	}
-	
-
-//	/**
-//	 * Creates a PointToPointNetDevice on each Node and connects them with a p2p channel
-//	 * 
-//	 * @param node1 Pointer&lt;Node&gt;
-//	 * @param node2 Pointer&lt;Node&gt;
-//	 * @param destination the NetDeviceContainer to hold the created p2pNetDevices
-//	 */
-//	public void install(Pointer<Node> node1, Pointer<Node> node2, 
-//			NetDeviceContainer destination) {
-//		appendPrintObj(destination.getName() + " = " + this.getName() 
-//				+ ".Install(" + node1.getName() + ", " + node2.getName() + ");\n");
-//	}
 
 	/**
 	 * @param nodeA 
@@ -48,23 +34,27 @@ public class PointToPointHelper extends PcapHelperForDevice {
 	 * @param p2pDevices
 	 */
 	public void install(Node nodeA, Node nodeB, 
-			Channel channel, NetDeviceContainer p2pDevices) {
+			PointToPointChannel channel, NetDeviceContainer p2pDevices) {
 		
-		// Create ns-3 smart pointers for endpoint Nodes
-		String nodePointerA = nodeA.getAsPointer();
-		String nodePointerB = nodeB.getAsPointer();
-		
-		appendPrintObj(nodePointerA);
-		appendPrintObj(nodePointerB);
-		
-		this.setChannelAttribute("Delay", channel.getDelay());
-		this.setDeviceAttribute("DataRate", channel.getDataRate());
+		if (channel != null) {
+			this.setChannelAttribute("Delay", channel.getDelay());
+			this.setDeviceAttribute("DataRate", channel.getDataRate());
+		}
 		
 		appendPrintObj(p2pDevices.getName() + " = " + this.getName() +
 				".Install(" + nodeA.getPointerName() + ", " + 
 				nodeB.getPointerName() + ");\n");
 	}
 	
+	/**
+	 * @param nodeA
+	 * @param nodeB
+	 * @param p2pDevices
+	 */
+	public void install(Node nodeA, Node nodeB, NetDeviceContainer p2pDevices) {
+		install(nodeA, nodeB, null, p2pDevices);
+	}
+
 	/**
 	 * Installs p2p NetDevices on the nodes in the given NodeContainer
 	 * 
@@ -114,13 +104,6 @@ public class PointToPointHelper extends PcapHelperForDevice {
 		deviceAttributes.put(attr, "" + value);
 		appendPrintObj(this.getName() + ".SetDeviceAttribute(\"" + attr 
 				+ "\", UintegerValue(" + value + "));\n");
-	}
-
-
-	public void install(Node node, PointToPointChannel channel,
-			NetDeviceContainer tempDev) {
-		// TODO Auto-generated method stub
-		
 	}
 
 }

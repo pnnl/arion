@@ -23,12 +23,15 @@ public class CsmaChannel extends Channel {
 	}
 
 	/**
-	 * Creates a CsmaChannel with the given name
+	 * Creates a CsmaChannel with the given name.
+	 * Creates a Ptr (smart pointer) for this CsmaChannel, 
+	 * to be used in helper methods.
 	 * @param name
 	 */
 	public CsmaChannel(String name) {
 		this();
 		this.setName(name);
+		this.getAsPointer();
 	}
 
 	/**

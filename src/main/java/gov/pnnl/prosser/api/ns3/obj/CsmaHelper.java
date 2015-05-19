@@ -27,19 +27,6 @@ public class CsmaHelper extends PcapHelperForDevice {
 		this.deviceAttributes = new HashMap<String, String>();
 	}
 	
-/*	*//**
-	 * @param nodePtr the Pointer<Node>
-	 * @param channel the CsmaChannel
-	 * @param destinationContainer
-	 *//*
-	public void install(Pointer<Node> nodePtr, Pointer<CsmaChannel> channel, 
-						NetDeviceContainer destinationContainer) {
-		appendPrintObj(destinationContainer.getName() + " = " + this.getName() + 
-				".Install(" + nodePtr.getName() + ", " + channel.getName() + ");\n");
-	}*/
-	
-	// Methods for avoiding Pointer<...> class
-	
 	/**
 	 * @param node
 	 * @param channel 
@@ -48,15 +35,9 @@ public class CsmaHelper extends PcapHelperForDevice {
 	public void install(Node node, CsmaChannel channel, 
 			NetDeviceContainer destinationContainer) {
 		
-		// Creates ns-3 smart pointers for Node and CsmaChannel
-		String nodePointer = node.getAsPointer();
-		String channelPointer = channel.getAsPointer();
-		
-		appendPrintObj(nodePointer);
-		appendPrintObj(channelPointer);
 		appendPrintObj(destinationContainer.getName() + 
 				" = " + this.getName() + ".Install(" + 
-				node.getName() + ", " + channel.getName() + ");\n");
+				node.getPointerName() + ", " + channel.getPointerName() + ");\n");
 	}
 	
 	/**
@@ -67,25 +48,10 @@ public class CsmaHelper extends PcapHelperForDevice {
 	public void install(NodeContainer nodes, CsmaChannel channel, 
 			NetDeviceContainer destinationContainer) {
 		
-		// Creates ns-3 smart pointer for CsmaChannel
-		String channelPointer = channel.getAsPointer();
-		
-		appendPrintObj(channelPointer);
 		appendPrintObj(destinationContainer.getName() + 
 				" = " + this.getName() + ".Install(" + 
-				nodes.getName() + ", " + channel.getName() + ");\n");
+				nodes.getName() + ", " + channel.getPointerName() + ");\n");
 	}
-
-/*	*//**
-	 * @param sourceNodes the NodeContainer to install the CSMA devices on
-	 * @param channel the Pointer<CsmaChannel> to connect the CSMA devices to
-	 * @param destinationContainer the NetDeviceContainer to add the Nodes from sourceNodes to
-	 *//*
-	public void install(NodeContainer sourceNodes,
-			Pointer<CsmaChannel> channel, NetDeviceContainer destinationContainer) {
-		appendPrintObj(destinationContainer.getName() + " = " + this.getName() + 
-				".Install(" + sourceNodes.getName() + ", " + channel.getName() + ");\n");		
-	}*/
 	
 	/**
 	 * Set attributes for this CSMA channel
