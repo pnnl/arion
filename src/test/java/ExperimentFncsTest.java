@@ -70,7 +70,7 @@ public class ExperimentFncsTest extends Experiment {
 		final double stopTime = 10.0;
 		
 		// Sets up header stuff and parameters (params not used with below implementation)
-		sim.setup(numChannels, addressBase, addressMask, backboneDataRate, backboneDelay, stopTime);
+		sim.setup(addressBase, addressMask, backboneDataRate, backboneDelay, stopTime);
 		
 		// Create auction channel & router
 		PointToPointChannel auctionChannel = new PointToPointChannel("auctionChannel");

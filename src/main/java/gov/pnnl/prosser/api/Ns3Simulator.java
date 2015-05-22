@@ -55,7 +55,7 @@ public class Ns3Simulator {
 	 * @param backboneDelay 
 	 * @param stopTime 
 	 */
-	public void setup(final int numChannels, final String addressBase, 
+	public void setup(final String addressBase, 
 						final String addressMask, final String backboneDataRate, 
 						final String backboneDelay, final double stopTime) {
 		
@@ -63,10 +63,8 @@ public class Ns3Simulator {
 		
 		namespaces.add(new Namespace("ns3"));
 		namespaces.add(new Namespace("std"));
-		
-		network.setNumChannels(numChannels);
 
-		network.setAddrBase(addressBase); // First 2 values of IPV4 address to use as base in IP addr distribution
+		network.setAddrBase(addressBase);
 		network.setAddrMask(addressMask);
 		
 		network.setBackboneDataRate(backboneDataRate);

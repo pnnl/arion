@@ -19,6 +19,8 @@ public class Router extends AbstractNs3Object {
 	private List<Channel> channels;
 	private NetDeviceContainer devices;
 	
+	private boolean ipStackInstalled;
+	
 	/**
 	 * Create a new Router with the given Name
 	 * @param name
@@ -28,11 +30,7 @@ public class Router extends AbstractNs3Object {
 		setNameString(name);
 		node = new Node(name);
 		channels = new ArrayList<>();
-		
-		// REVIEW Assuming all routers will use IP
-		// Install IP stack on Router
-		InternetStackHelper stackHelper = new InternetStackHelper(getName() + "_internetStackHelper");
-		stackHelper.install(getNode());
+		ipStackInstalled = false;
 		
 	}
 	
@@ -63,30 +61,34 @@ public class Router extends AbstractNs3Object {
 			csmaHelper.setChannelAttribute("Delay", channel.getDelay());
 			csmaHelper.setChannelAttribute("DataRate", channel.getDataRate());
 			csmaHelper.install(getNode(), (CsmaChannel) channel, tempDev);
-			
-			devices.addDevices(tempDev);
-			
+						
 		} else if (channel.getType().equals(NetworkType.P2P)) {
 			
-			if (!((PointToPointChannel) channel).hasTwoNodes()) {
+			if (((PointToPointChannel) channel).getRouterA() == null) {
 			
-				((PointToPointChannel) channel).setNodeB(getNode());
+				((PointToPointChannel) channel).setRouterA(this);
 
 				// TODO should we check here if router node being connected to channel
 				// 		is same as nodeA?
 			} else {
 				
 				PointToPointHelper p2pHelper = new PointToPointHelper("p2pHelper");
-				p2pHelper.setChannelAttribute("Delay", channel.getDelay());
-				p2pHelper.setDeviceAttribute("DataRate", channel.getDataRate());
-				p2pHelper.install(((PointToPointChannel) channel).getNodeB(), 
-						getNode(), (PointToPointChannel) channel, tempDev);
+				p2pHelper.install(((PointToPointChannel) channel).getRouterA().getNode(), 
+						this.getNode(), (PointToPointChannel) channel, tempDev);
 				
 			}
+						
+		}
+		
+		if (!ipStackInstalled) {
 			
-			devices.addDevices(tempDev);
+			// Install IP stack on Router
+			InternetStackHelper stackHelper = new InternetStackHelper("internetStackHelper");
+			stackHelper.install(getNode());
 			
-		} 
+		}
+		
+		devices.addDevices(tempDev);
 	}
 	
 	/**

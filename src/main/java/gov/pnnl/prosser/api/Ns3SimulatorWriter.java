@@ -32,6 +32,9 @@ public class Ns3SimulatorWriter {
         final List<AbstractNs3Object> objects = ns3Simulator.getObjects();
 		final StringBuilder sb = new StringBuilder();
 		
+		// Add FNCS ns-3 application to output string
+		ns3Simulator.setupFncsApplicationHelper();
+		
 		// Ns-3 file header stuff; need this
 		sb.append("/* -*- Mode:C++; c-file-style:\"gnu\"; indent-tabs-mode:nil; -*- */\n");
 		

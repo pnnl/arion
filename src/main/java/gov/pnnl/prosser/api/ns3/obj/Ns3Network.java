@@ -179,13 +179,6 @@ public class Ns3Network {
 	}
 
 	/**
-	 * @param numChannels the numChannels to set
-	 */
-	public void setNumChannels(int numChannels) {
-		this.numChannels = numChannels;
-	}
-
-	/**
 	 * @return the list of Modules used by this network
 	 */
 	public List<Module> getModules() {

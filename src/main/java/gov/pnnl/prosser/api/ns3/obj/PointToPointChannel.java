@@ -14,17 +14,17 @@ import gov.pnnl.prosser.api.ns3.enums.NetworkType;
 public class PointToPointChannel extends Channel {
 	
 	/**
-	 * Nodes this Channel connects
+	 * Routers this Channel connects
 	 */
-	private Node nodeA, nodeB;
+	private Router routerA, routerB;
 	
 	/**
 	 * Creates a nameless PointToPointChannel
 	 */
 	public PointToPointChannel() {
 		super();
-		nodeA = null;
-		nodeB = null;
+		routerA = null;
+		routerB = null;
 		this.setType(NetworkType.P2P);
 	}
 	
@@ -41,37 +41,37 @@ public class PointToPointChannel extends Channel {
 	}
 	
 	/**
-	 * Returns one of the end point Nodes of this PointToPointChannel
+	 * Returns one of the end point Routers of this PointToPointChannel
 	 * 
-	 * @return nodeA
+	 * @return routerA
 	 */
-	public Node getNodeA() {
-		return nodeA;
+	public Router getRouterA() {
+		return routerA;
 	}
 	
 	/**
-	 * @param node one of the endpoint Nodes for this p2p channel
+	 * @param router one of the end point Routers for this p2p channel
 	 */
-	public void setNodeA(Node node) {
-		nodeA = node;
-		nodeA.setNameString(node.getName());
+	public void setRouterA(Router router) {
+		routerA = router;
+		routerA.setNameString(router.getName());
 	}
 
 	/**
-	 * Returns one of the end point Nodes of this PointToPointChannel
+	 * Returns one of the end point Routers of this PointToPointChannel
 	 * 
-	 * @return nodeB
+	 * @return routerB
 	 */
-	public Node getNodeB() {
-		return nodeB;
+	public Router getRouterB() {
+		return routerB;
 	}
 
 	/**
-	 * @param node one of the endpoint Nodes for this p2p channel
+	 * @param router one of the end point Routers for this p2p channel
 	 */
-	public void setNodeB(Node node) {
-		nodeB = node;
-		nodeB.setNameString(node.getName());
+	public void setNodeB(Router router) {
+		routerB = router;
+		routerB.setNameString(router.getName());
 	}
 
 	/**
@@ -89,11 +89,11 @@ public class PointToPointChannel extends Channel {
 	}
 
 	/**
-	 * @return true if this PointToPointChannel has 2 endpoint nodes, 
+	 * @return true if this PointToPointChannel has 2 end point Routers, 
 	 * false otherwise
 	 */
 	public boolean hasTwoNodes() {
-		if (getNodeA() != null && getNodeB() != null) {
+		if (getRouterA() != null && getRouterB() != null) {
 			return true;
 		}
 		return false;
