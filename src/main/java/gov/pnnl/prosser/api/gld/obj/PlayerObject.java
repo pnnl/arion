@@ -3,14 +3,13 @@
  */
 package gov.pnnl.prosser.api.gld.obj;
 
+import gov.pnnl.prosser.api.GldSimulator;
+import gov.pnnl.prosser.api.gld.AbstractGldObject;
+
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
-
-import gov.pnnl.prosser.api.GldSimulator;
-import gov.pnnl.prosser.api.gld.AbstractGldObject;
-import gov.pnnl.prosser.api.gld.GldSerializable;
 
 /**
  * Tape Player
@@ -116,7 +115,7 @@ public class PlayerObject extends AbstractGldObject {
 
     @Override
     public void writeExternalFiles(Path path) throws IOException {
-        if(file != null) {
+        if (file != null) {
             Files.copy(file, path.resolve(file.getFileName()), StandardCopyOption.REPLACE_EXISTING);
         }
     }

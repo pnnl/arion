@@ -5,7 +5,6 @@ package gov.pnnl.prosser.api.gld.obj;
 
 import gov.pnnl.prosser.api.GldSimulator;
 import gov.pnnl.prosser.api.gld.AbstractGldObject;
-import gov.pnnl.prosser.api.gld.GldSerializable;
 import gov.pnnl.prosser.api.sql.SqlFile;
 import gov.pnnl.prosser.api.sql.SqlTableDef;
 
@@ -45,7 +44,7 @@ public class Recorder extends AbstractGldObject {
      * the maximum length limit for the number of samples taken
      */
     private Integer limit;
-    
+
     private boolean usingSql;
 
     public Recorder(final GldSimulator simulator) {
@@ -109,7 +108,7 @@ public class Recorder extends AbstractGldObject {
     public void properties(final String... properties) {
         this.properties.addAll(Arrays.asList(properties));
     }
-    
+
     /**
      * Set the properties to record from the parent
      * 
@@ -166,7 +165,8 @@ public class Recorder extends AbstractGldObject {
     }
 
     /**
-     * @param usingSql the usingSql to set
+     * @param usingSql
+     *            the usingSql to set
      */
     public void setUsingSql(boolean usingSql) {
         this.usingSql = usingSql;
@@ -219,7 +219,7 @@ public class Recorder extends AbstractGldObject {
 
     @Override
     public void createSqlObjects(SqlFile file) {
-        if(this.isUsingSql()) {
+        if (this.isUsingSql()) {
             final SqlTableDef tableDef = file.sqlTableDef(this.getName());
             this.getProperties().forEach(p -> tableDef.sqlColumnDef(p));
         }

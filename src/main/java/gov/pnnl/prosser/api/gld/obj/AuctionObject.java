@@ -3,16 +3,15 @@
  */
 package gov.pnnl.prosser.api.gld.obj;
 
-import java.io.IOException;
-import java.nio.file.Path;
-
 import gov.pnnl.prosser.api.GldSimulator;
 import gov.pnnl.prosser.api.NetworkCapable;
 import gov.pnnl.prosser.api.gld.AbstractGldObject;
-import gov.pnnl.prosser.api.gld.GldSerializable;
 import gov.pnnl.prosser.api.gld.enums.CurveOutput;
 import gov.pnnl.prosser.api.gld.enums.SpecialMode;
 import gov.pnnl.prosser.api.sql.SqlFile;
+
+import java.io.IOException;
+import java.nio.file.Path;
 
 /**
  * The auction object implements the basic auction
@@ -473,7 +472,7 @@ public class AuctionObject extends AbstractGldObject implements NetworkCapable {
 
     @Override
     public void createSqlObjects(SqlFile file) {
-        if(this.recorder != null) {
+        if (this.recorder != null) {
             this.recorder.createSqlObjects(file);
         }
     }

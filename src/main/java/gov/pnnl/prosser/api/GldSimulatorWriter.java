@@ -7,9 +7,7 @@ import gov.pnnl.prosser.api.gld.AbstractGldObject;
 import gov.pnnl.prosser.api.gld.lib.GldClock;
 import gov.pnnl.prosser.api.gld.module.Module;
 import gov.pnnl.prosser.api.gld.obj.AbstractGldClass;
-import gov.pnnl.prosser.api.gld.obj.Recorder;
 import gov.pnnl.prosser.api.sql.SqlFile;
-import gov.pnnl.prosser.api.sql.SqlTableDef;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -88,7 +86,7 @@ public abstract class GldSimulatorWriter {
                     throw new RuntimeException("Unable to copy object file source to destination", e);
                 }
             });
-            if(!sqlFile.getSqlTableDefs().isEmpty()) {
+            if (!sqlFile.getSqlTableDefs().isEmpty()) {
                 final StringBuilder sql = new StringBuilder();
                 sql.append("CREATE DATABASE \"" + sqlFile.getDatabaseName() + "\";\n");
                 sql.append("USE \"" + sqlFile.getDatabaseName() + "\";\n\n");
