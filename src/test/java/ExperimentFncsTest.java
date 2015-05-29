@@ -62,7 +62,9 @@ public class ExperimentFncsTest extends Experiment {
      * 			the number of Channels to create in this network
      */
     private void populateNs3Sim(final Ns3Simulator sim, final int numChannels) {
-    	
+
+        final String marketNIPrefix = "Market1NI";
+        final String controllerNIPrefix = "F1_C_NI1";
     	final String addressBase = "10.0.1.0";
 		final String addressMask = "255.255.255.0";
 		final String backboneDataRate = "10Gbps";
@@ -70,7 +72,8 @@ public class ExperimentFncsTest extends Experiment {
 		final double stopTime = 10.0;
 		
 		// Sets up header stuff and parameters (params not used with below implementation)
-		sim.setup(addressBase, addressMask, backboneDataRate, backboneDelay, stopTime);
+		sim.setup(addressBase, addressMask, backboneDataRate, backboneDelay, stopTime,
+                marketNIPrefix, controllerNIPrefix);
 		
 		// Create auction channel & router
 		PointToPointChannel auctionChannel = new PointToPointChannel("auctionChannel");

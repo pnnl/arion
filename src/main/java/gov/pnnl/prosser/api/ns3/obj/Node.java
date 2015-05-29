@@ -24,14 +24,22 @@ public class Node extends AbstractNs3Object {
 	}
 	
 	/**
-	 * Creates a new, empty named Node.
-	 * Creates a Ptr (smart pointer) for this Node, 
-	 * used in helper methods.
+	 * Creates a new Node encapsulated in a smart pointer
 	 * @param name
 	 */
 	public Node(String name) {
-		this.setName(name);
-		this.getAsPointer();
+		setNameString(name);
+		getAsPointer();
+	}
+
+	/**
+	 *
+	 * @return name
+	 * 			the name of this Node
+	 */
+	@Override
+	public String getName() {
+		return this.getPointerName();
 	}
 	
 }

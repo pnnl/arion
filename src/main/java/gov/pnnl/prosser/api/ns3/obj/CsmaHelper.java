@@ -19,31 +19,31 @@ public class CsmaHelper extends PcapHelperForDevice {
 	
 	/**
 	 * Create a new CsmaHelper
-	 * @param name
+	 * @param name the string name
 	 */
 	public CsmaHelper(String name) {
 		this.setName(name);
-		this.channelAttributes = new HashMap<String, String>();
-		this.deviceAttributes = new HashMap<String, String>();
+		this.channelAttributes = new HashMap<>();
+		this.deviceAttributes = new HashMap<>();
 	}
 	
 	/**
-	 * @param node
-	 * @param channel 
-	 * @param destinationContainer 
+	 * @param node the Node to install the CSMA device on and connect to the channel
+	 * @param channel the CsmaChannel to use
+	 * @param destinationContainer the NetDeviceContainer to store the CsmaNetDevice in
 	 */
 	public void install(Node node, CsmaChannel channel, 
 			NetDeviceContainer destinationContainer) {
 		
 		appendPrintObj(destinationContainer.getName() + 
 				" = " + this.getName() + ".Install(" + 
-				node.getPointerName() + ", " + channel.getPointerName() + ");\n");
+				node.getName() + ", " + channel.getPointerName() + ");\n");
 	}
 	
 	/**
-	 * @param nodes
-	 * @param channel 
-	 * @param destinationContainer 
+	 * @param nodes the NodeContainer to install the CSMA devices on and connect to the channel
+	 * @param channel the CsmaChannel to use
+	 * @param destinationContainer the NetDeviceContainer to store the CsmaNetDevices in
 	 */
 	public void install(NodeContainer nodes, CsmaChannel channel, 
 			NetDeviceContainer destinationContainer) {
@@ -56,7 +56,7 @@ public class CsmaHelper extends PcapHelperForDevice {
 	/**
 	 * Set attributes for this CSMA channel
 	 * @param attr the attribute to set the value to
-	 * @param value
+	 * @param value the string value to set
 	 */
 	public void setChannelAttribute(String attr, String value) {
 		channelAttributes.put(attr, value);
@@ -67,7 +67,7 @@ public class CsmaHelper extends PcapHelperForDevice {
 	/**
 	 * Set attributes for this CSMA device
 	 * @param attr the attribute to set the value to
-	 * @param value
+	 * @param value the string value to set
 	 */
 	public void setDeviceAttribute(String attr, String value) {
 		deviceAttributes.put(attr, value);

@@ -42,8 +42,8 @@ public class PointToPointHelper extends PcapHelperForDevice {
 		}
 		
 		appendPrintObj(p2pDevices.getName() + " = " + this.getName() +
-				".Install(" + nodeA.getPointerName() + ", " + 
-				nodeB.getPointerName() + ");\n");
+				".Install(" + nodeA.getName() + ", " +
+				nodeB.getName() + ");\n");
 	}
 	
 	/**

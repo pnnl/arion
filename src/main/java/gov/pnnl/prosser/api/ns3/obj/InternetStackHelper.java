@@ -33,7 +33,7 @@ public class InternetStackHelper extends AbstractNs3Object {
 	 */
 	public void install(Node node) {
 
-		appendPrintObj(this.getName() + ".Install(" + node.getPointerName() + ");\n");
+		appendPrintObj(this.getName() + ".Install(" + node.getName() + ");\n");
 
 	}
 

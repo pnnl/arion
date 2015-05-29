@@ -28,13 +28,18 @@ public class AdaptedAEPFncsTest extends Experiment {
     public void experiment() {
     	
         // Define some values we want to reuse
-        final String controllerNIPrefix = "F1_C_NI";
+        final String controllerNIPrefix = "F1_C_NI1";
+        final String marketNIPrefix = "Market1NI"; // TODO Peter, is this fine defined here? Needed since creating NW before attaching controllers/market
         final String backboneDataRate = "10Gbps";
         final String backboneDelay = "500ns";
-        final int numHouses = 1;
+        final int numHouses = 150;
 
         final Ns3Simulator ns3Simulator = this.ns3Simulator();
-        ns3Simulator.setup("10.0.1.0", "255.255.255.0", backboneDataRate, backboneDelay, 10.0);
+        ns3Simulator.setup("10.0.1.0", "255.255.255.0", backboneDataRate, backboneDelay, 10.0,
+                marketNIPrefix, controllerNIPrefix);
+
+        // List of Routers for IP address assignment
+        List<Router> routers = new ArrayList<>();
         
         // Create Auction channel and connect it to a router
         PointToPointChannel auctionChannel = new PointToPointChannel("auctionChannel");
@@ -44,11 +49,15 @@ public class AdaptedAEPFncsTest extends Experiment {
         Router auctionRouter = new Router("auctionRouter");
         auctionRouter.setChannel(auctionChannel);
         auctionChannel.setRouterA(auctionRouter);
+        routers.add(auctionRouter);
         
         // Create backbone router to connect houses and auction
         Router backboneRouter = new Router("backboneRouter");
+        // Enable PCAP debugging on backbone router
+        backboneRouter.setPcap(true);
         backboneRouter.setChannel(auctionChannel);
-        
+        routers.add(backboneRouter);
+
         for (int i = 0; i < numHouses; i++) {
         	CsmaChannel houseChannel = new CsmaChannel("csmaHouseChannel_" + i);
         	houseChannel.setDataRate("100Mbps");
@@ -59,8 +68,11 @@ public class AdaptedAEPFncsTest extends Experiment {
         	Router houseRouter = new Router("csmaHouseRouter_" + i);
         	houseRouter.setChannel(houseChannel);
         	backboneRouter.setChannel(houseChannel);
+            routers.add(houseRouter);
         	
         }
+
+        ns3Simulator.assignIPs(routers);
         
 
         final List<Channel> channels = ns3Simulator.getChannels();
@@ -89,8 +101,6 @@ public class AdaptedAEPFncsTest extends Experiment {
         for (int i = 0; i < numHouses; i++) {
             final House house = createHouse(gldSim, i, auction);
 
-            Router csmaRouter = new Router("csmaHouseRouter_" + i);
-            
             channels.get(i + 1).addController(house.getController());
         }
 
@@ -115,9 +125,12 @@ public class AdaptedAEPFncsTest extends Experiment {
         final String backboneDataRate = "10Gbps";
         final String backboneDelay = "500ns";
         final double stopTime = 10.0;
+        final String marketNIPrefix = "Market1NI";
+        final String controllerNIPrefix = "F1_C_NI1";
 
         // Sets parameters for ns-3 network & builds backbone network
-        sim.setup(addressBase, addressMask, backboneDataRate, backboneDelay, stopTime);
+        sim.setup(addressBase, addressMask, backboneDataRate, backboneDelay, stopTime,
+                marketNIPrefix, controllerNIPrefix);
 
         // Create auction channel & router
         PointToPointChannel auctionChannel = new PointToPointChannel("auctionChannel");

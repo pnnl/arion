@@ -10,16 +10,7 @@ import gov.pnnl.prosser.api.gld.obj.Controller;
 import gov.pnnl.prosser.api.ns3.enums.NetworkType;
 import gov.pnnl.prosser.api.ns3.module.Module;
 import gov.pnnl.prosser.api.ns3.module.Namespace;
-import gov.pnnl.prosser.api.ns3.obj.Channel;
-import gov.pnnl.prosser.api.ns3.obj.CsmaChannel;
-import gov.pnnl.prosser.api.ns3.obj.CsmaHelper;
-import gov.pnnl.prosser.api.ns3.obj.InternetStackHelper;
-import gov.pnnl.prosser.api.ns3.obj.Ipv4AddressHelper;
-import gov.pnnl.prosser.api.ns3.obj.NetDeviceContainer;
-import gov.pnnl.prosser.api.ns3.obj.Node;
-import gov.pnnl.prosser.api.ns3.obj.Ns3Network;
-import gov.pnnl.prosser.api.ns3.obj.PointToPointChannel;
-import gov.pnnl.prosser.api.ns3.obj.YansWifiChannel;
+import gov.pnnl.prosser.api.ns3.obj.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -48,7 +39,6 @@ public class Ns3Simulator {
 	/**
 	 * Initializes the modules, namespaces, and objects used in this network based on 
 	 * the user specified parameters
-	 * @param numChannels
 	 * @param addressBase
 	 * @param addressMask 
 	 * @param backboneDataRate 
@@ -57,7 +47,8 @@ public class Ns3Simulator {
 	 */
 	public void setup(final String addressBase, 
 						final String addressMask, final String backboneDataRate, 
-						final String backboneDelay, final double stopTime) {
+						final String backboneDelay, final double stopTime,
+					  	final String marketNIPrefix, final String controllerNIPrefix) {
 		
 		network = new Ns3Network();
 		
@@ -72,7 +63,9 @@ public class Ns3Simulator {
 		
 		network.setStopTime(stopTime);
 		
-		network.setupFncsSimulator();
+		network.setupFncsSimulator(marketNIPrefix, controllerNIPrefix);
+
+
 		
 		//network.buildBackbone();
 	}
@@ -230,25 +223,6 @@ public class Ns3Simulator {
 		this.network.addName(name);
 	}
 
-
-	/**
-	 * @param type the NetworkType of the router to create
-	 * @return router a new router of the specified type
-	 */
-	public Node createRouter(NetworkType type) {
-		
-		String netType = type.toString();
-		long time = System.currentTimeMillis() % 1000;
-		
-		Node router = new Node("router_" + netType + "_" + time);
-		
-		InternetStackHelper stackHelper = new InternetStackHelper("internetStackHelper_" + time);
-		stackHelper.install(router);
-		
-		return router;
-		
-	}
-
 	/**
 	 * Adds this Channel to the network
 	 * @param channel
@@ -259,13 +233,11 @@ public class Ns3Simulator {
 	}
 
 	/**
-	 * Adds all Channels in the list of channels to the network
-	 * @param channels
+	 * Assigns IPv4 addresses to all Routers in the network
+	 * @param routers a list of all Routers in the network
 	 */
-	public void addChannels(List<Channel> channels) {
-		for (Channel c : channels) {
-			addChannel(c);
-		}
+	public void assignIPs(List<Router> routers) {
+		this.network.assignIPs(routers);
 	}
 
 }

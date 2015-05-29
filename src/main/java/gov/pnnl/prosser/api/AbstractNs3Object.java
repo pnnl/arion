@@ -51,8 +51,8 @@ public abstract class AbstractNs3Object {
 	 * @param name the name to set
 	 */
 	public void setName(String name) {
-		this.name = name + "_" + System.nanoTime() % 1000000;
-		this.appendPrintObj("\n\t" + this.getClass().getSimpleName() + 
+		this.name = name;
+		this.appendPrintObj("\n\t" + this.getClass().getSimpleName() +
 				" " + this.name + ";\n");
 	}
 	
@@ -60,7 +60,7 @@ public abstract class AbstractNs3Object {
 	 * @return the name of this Node prefixed with "pointer_"
 	 */
 	public String getPointerName() {
-		return "pointer_" + getName();
+		return "pointer_" + this.name;
 	}
 
 	/**
@@ -143,8 +143,7 @@ public abstract class AbstractNs3Object {
     	String objClass = this.getClass().getSimpleName();
 
     	appendPrintObj("Ptr<" + objClass + "> " + this.getPointerName() +
-    			" = " + this.getName() + 
-    			".GetObject<" + objClass + ">();\n");
+    			" = " + "CreateObject<" + objClass + ">();\n");
     }
 	
 }

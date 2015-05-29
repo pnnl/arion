@@ -32,7 +32,7 @@ public class Ns3Network {
 	private String backboneDataRate, backboneDelay;
 	private int numBackboneNodes, numChannels;
 	private double stopTime;
-	private NodeContainer backboneNodes, nodes;
+	private NodeContainer backboneNodes, allNodes;
 	private InternetStackHelper iStackHelper;
 	private List<Module> modules;
 	private List<AuctionObject> auctions;
@@ -53,7 +53,7 @@ public class Ns3Network {
 		this.addrMask = "255.255.255.0";
 		this.stopTime = Double.MAX_VALUE;
 		this.backboneNodes = new NodeContainer();
-		this.nodes = new NodeContainer();
+		this.allNodes = new NodeContainer();
 		this.iStackHelper = new InternetStackHelper();
 		this.modules = new ArrayList<Module>();
 		this.auctions = new ArrayList<>();
@@ -195,17 +195,17 @@ public class Ns3Network {
 
 	/**
 	 * 
-	 * @return nodes the list of all nodes in this network
+	 * @return allNodes the list of all allNodes in this network
 	 */
-	public NodeContainer getNodes() {
-		return nodes;
+	public NodeContainer getAllNodes() {
+		return allNodes;
 	}
 	
 	/**
 	 * @param node the Node to add to the list of Nodes for this network
 	 */
 	public void addNode(Node node) {
-		this.nodes.addNode(node);
+		this.allNodes.addNode(node);
 	}
 	
 	/**
@@ -358,14 +358,14 @@ public class Ns3Network {
 			    	csmaNodePtr.createObject(new Node());
 
 					// Add Node to NodeContainer for IP stuff later
-					csmaNodes.addNode(csmaNodePtr);
+					//csmaNodes.addNode(csmaNodePtr);
 					
 
 
 				}
 
 				// Adds csmaNodes to global NodeContainer for FNCSApplicationHelper
-				nodes.addNodeContainer(csmaNodes);
+				allNodes.addNodeContainer(csmaNodes);
 								
 				// Install CSMA protocol stack on csmaNodes & connect to ith Channel
 				csmaHelper.install(csmaNodes, (CsmaChannel) channel, csmaDevices);
@@ -375,7 +375,7 @@ public class Ns3Network {
 					csmaHelper.enablePcapAll("csmaControllerDevice");
 				}
 								
-				// Sets up IP routing tables, installs IP stack on nodes, and assigns IP addresses
+				// Sets up IP routing tables, installs IP stack on allNodes, and assigns IP addresses
 				//setupIp(ipv4AddrHelper, csmaNodes, csmaDevices);
 				iStackHelper.install(csmaNodes);
 				ipv4AddrHelper.assign(csmaDevices);
@@ -407,7 +407,7 @@ public class Ns3Network {
 					p2pNodePtr.encapsulate(node);
 
 					// Add Node to NodeContainer for IP stuff later
-					p2pNodes.addNode(p2pNodePtr);
+					//p2pNodes.addNode(p2pNodePtr);
 					
 			    	// Adds the name of the Controller to the names Vector
 			    	names.pushBack(controller);
@@ -415,12 +415,12 @@ public class Ns3Network {
 				}
 				
 				// Adds p2pNodes to NodeContainer of all Nodes in this network
-		    	nodes.addNodeContainer(p2pNodes);
+		    	allNodes.addNodeContainer(p2pNodes);
 				
 				// Install P2P protocol stack on p2pNodes
 				p2pHelper.install(p2pNodes, p2pDevices);
 				
-				// Sets up IP routing tables, installs IP stack on nodes, and assigns IP addresses
+				// Sets up IP routing tables, installs IP stack on allNodes, and assigns IP addresses
 				setupIp(ipv4AddrHelper, p2pNodes, p2pDevices);
 				
 			} else if (channel.getClass().getSimpleName().equalsIgnoreCase("wifichannel_" + i)) {
@@ -438,18 +438,18 @@ public class Ns3Network {
 				//wifiNode.encapsulate(node);
 
 				// Add Node to NodeContainer for IP stuff later
-				wifiNodes.addNode(wifiNodePtr);
+				//wifiNodes.addNode(wifiNodePtr);
 				
-				// TODO add other nodes created to names Vector
+				// TODO add other allNodes created to names Vector
 				names.pushBack(wifiNodePtr);
 				
 				// Adds wifiNodes to global NodeContainer for FncsApplicationHelper.Install
-				nodes.addNodeContainer(wifiNodes);
+				allNodes.addNodeContainer(wifiNodes);
 				
 				// Configure WiFi physical link and install protocol stack on wifiNodes
 				wifiHelper.install(phy, mac, wifiNodes, wifiDevices);
 				
-				// Sets up IP routing tables, installs IP stack on nodes, and assigns IP addresses
+				// Sets up IP routing tables, installs IP stack on allNodes, and assigns IP addresses
 				setupIp(ipv4AddrHelper, wifiNodes, wifiDevices);
 			}
 		}
@@ -518,8 +518,8 @@ public class Ns3Network {
 		    // Adds node to auctionNodes for IP stack install
 		    auctionNodes.addNode(node);
 		    
-		    // Adds node to global list of nodes
-		    nodes.addNode(node);
+		    // Adds node to global list of allNodes
+		    allNodes.addNode(node);
 		    
 			// IP setup
 			Ipv4AddressHelper addresses = new Ipv4AddressHelper("auctionAddresses");
@@ -552,14 +552,14 @@ public class Ns3Network {
 		    	NetDeviceContainer p2pDevices = new NetDeviceContainer("p2pDevices_" + i);
 		    	
 		    	// Adds the node as second node for p2p auctionChannel
-		    	auctionChannelP2p.setNodeB(node);
+		    	//auctionChannelP2p.setNodeB(node);
 		    	
 		    	// Adds the p2p channel's other node to auctionNodes for IP stack install
-		    	auctionNodes.addNode(auctionChannelP2p.getNodeA());
+		    	//auctionNodes.addNode(auctionChannelP2p.getNodeA());
 		    			    	
-		    	p2pHelper.install(auctionChannelP2p.getNodeA(), 
-		    			auctionChannelP2p.getNodeB(), 
-		    			auctionChannelP2p, p2pDevices);
+		    	//p2pHelper.install(auctionChannelP2p.getNodeA(),
+		    	//		auctionChannelP2p.getNodeB(),
+		    	//		auctionChannelP2p, p2pDevices);
 		    	
 		    	auctionDevices.addDevices(p2pDevices);
 		    	
@@ -595,7 +595,7 @@ public class Ns3Network {
 	private void setupIp(Ipv4AddressHelper addr, NodeContainer nodes, 
 						NetDeviceContainer devices) {
 				
-		// Install the IP stack protocols on the nodes
+		// Install the IP stack protocols on the allNodes
 		iStackHelper.install(nodes);
 		
 		// Assign IPv4 addresses to devices
@@ -634,7 +634,7 @@ public class Ns3Network {
 		StringMap<String, String> marketToControllerMap = new StringMap<String, String>("marketToControllerMap");
 		
 		// Things for FNCSApplicationHelper.SetApps(...) method at end of network setup
-		// A NodeContainer to hold the GLD market and house nodes
+		// A NodeContainer to hold the GLD market and house allNodes
 		NodeContainer gldNodes = new NodeContainer("gldNodes");
 		
 		// Setup the Internet protocols
@@ -681,7 +681,7 @@ public class Ns3Network {
 		// Create backbone router
 		NodeContainer backboneRouter = new NodeContainer("backboneRouter");
 		backboneRouter.create(1);
-		// NodeContainer for AP nodes
+		// NodeContainer for AP allNodes
 		NodeContainer apNodes = new NodeContainer("apNodes");
 		apNodes.create(numChannels);
 		
@@ -790,7 +790,7 @@ public class Ns3Network {
 	/**
 	 * Creates the FNCS simulator for ns-3 to use
 	 */
-	public void setupFncsSimulator() {
+	public void setupFncsSimulator(final String marketNIPrefix, final String controllerNIPrefix) {
 		// Setup FNCS simulator
 		FncsSimulator fncsSim = new FncsSimulator("fncsSim");
 		
@@ -811,11 +811,13 @@ public class Ns3Network {
 		this.addModule(new Bridge());
 		this.addModule(new PointToPoint());
 		
-		// TODO more appropriate place for these?
+		// Instantiates global NoodeContainer allNodes for "" ""
+		allNodes = new NodeContainer("allNodes");
+
 		// Instantiates global Vector names for use in FNCSApplicationHelper.setApps(...)
-		names = new Vector<String>("allNames", String.class);
-		// Instantiates global NoodeContainer nodes for "" ""
-		nodes = new NodeContainer("nodes");
+		names = new Vector<>("allNames", String.class);
+		names.pushBack(marketNIPrefix);
+		names.pushBack(controllerNIPrefix);
 		
 	}
 
@@ -841,7 +843,7 @@ public class Ns3Network {
 		for (int i = 0; i < nodeContSize; i++) {
 			// Adds each node to global List of Nodes
 			addNode(nodeCont.getNodeNoPrint(i));
-			// Gets the Controller at the index i offset by the current auctionIndex multiplied by the number of nodes in nodeCont
+			// Gets the Controller at the index i offset by the current auctionIndex multiplied by the number of allNodes in nodeCont
 	    	Controller tempCont = this.getControllers().get(auctionIndex*nodeContSize + i);
 	    	// Adds the name of the Controller to the Names StringVector
 	    	names.pushBack(tempCont);
@@ -859,10 +861,10 @@ public class Ns3Network {
 	public void setupFncsApplicationHelper() {
 		this.addModule(new Fncs());
 		this.addModule(new FncsApplication());
-		
+
 		Channel channel = channels.get(0);
 		AuctionObject auction = channel.getAuctions().get(0);
-		
+
 		// A map<string, string> mapping AuctionObject name to a Controller name
 		StringMap<String, String> marketToControllerMap = new StringMap<String, String>("marketToControllerMap");
 		// Maps the Auction NetworkInterfaceName to the GldNodePrefix
@@ -872,7 +874,7 @@ public class Ns3Network {
 		
 		ApplicationContainer fncsAps = new ApplicationContainer("fncsAps");
 		
-		fncsHelper.setApps(this.names, this.nodes, marketToControllerMap, fncsAps);
+		fncsHelper.setApps(this.names, this.allNodes, marketToControllerMap, fncsAps);
 		fncsAps.start(0.0);
 		fncsAps.stop(259200.0);
 		
@@ -905,7 +907,7 @@ public class Ns3Network {
 		StringMap<String, String> marketToControllerMap = new StringMap<String, String>("marketToControllerMap");
 		
 		// Things for FNCSApplicationHelper.SetApps(...) method at end of network setup
-		// A NodeContainer to hold the GLD market and house nodes
+		// A NodeContainer to hold the GLD market and house allNodes
 		NodeContainer gldNodes = new NodeContainer("gldNodes");
 		
 		LteHelper lteHelper = new LteHelper("lteHelper");
@@ -952,7 +954,7 @@ public class Ns3Network {
 		int numUeNodesPerEnbNode = numUeNodesPerAuction / numEnbNodesPerAuction;
 		
 		MobilityHelper mobilityHelper = new MobilityHelper("mobilityHelper");
-		// TODO ConstantPositionMobilityModel sets all nodes at origin (0,0,0)
+		// TODO ConstantPositionMobilityModel sets all allNodes at origin (0,0,0)
 		mobilityHelper.setMobilityModel("ns3::ConstantPositionMobilityModel"); 
 		
 		// Setup QoS Class Indicator 
@@ -976,11 +978,11 @@ public class Ns3Network {
 			
 			lteHelper.installEnbDevice(enbNodes, enbDevices);
 			
-			// TODO ConstantPositionMobilityModel sets all nodes at origin (0,0,0)
+			// TODO ConstantPositionMobilityModel sets all allNodes at origin (0,0,0)
 			mobilityHelper.setMobilityModel("ns3::ConstantPositionMobilityModel"); 
 			mobilityHelper.install(enbNodes);
 			
-			// Install the LTE protocol stack on the eNB nodes; not for EPC
+			// Install the LTE protocol stack on the eNB allNodes; not for EPC
 			//lteHelper.installEnbDevice(enbNodes, enbDevices); 
 			
 			lteDeviceContainers.add(enbDevices);
@@ -994,14 +996,14 @@ public class Ns3Network {
 			
 			for (int j = 0; j < numEnbNodesPerAuction; j++) {
 				
-				// Add all Nodes from this NodeContainer to Nodes global list of nodes
+				// Add all Nodes from this NodeContainer to Nodes global list of allNodes
 				addNode(enbNodes.getNodeNoPrint(j));
 				
 				NodeContainer ueNodes = new NodeContainer("ueNodes_" + j);
 				ueNodes.create(numUeNodesPerEnbNode);
 				ns3Objects.add(ueNodes);
 				
-				// TODO ConstantPositionMobilityModel sets all nodes at origin (0,0,0)
+				// TODO ConstantPositionMobilityModel sets all allNodes at origin (0,0,0)
 				mobilityHelper.setMobilityModel("ns3::ConstantPositionMobilityModel"); 
 				mobilityHelper.install(ueNodes);
 				
@@ -1009,7 +1011,7 @@ public class Ns3Network {
 				iStackHelper.install(ueNodes);
 				
 				NetDeviceContainer ueDevices = new NetDeviceContainer("ueDevices_" + j);
-				lteHelper.installUeDevice(ueNodes, ueDevices); // Install the LTE protocol stack on the UE nodes
+				lteHelper.installUeDevice(ueNodes, ueDevices); // Install the LTE protocol stack on the UE allNodes
 				lteHelper.attach(ueDevices, enbDevices, j); // Attach the newly created UE devices to an eNB device
 				//lteHelper.activateDataRadioBearer(ueDevices, bearer); // not used for EPC
 				ns3Objects.add(ueDevices);
@@ -1083,15 +1085,15 @@ public class Ns3Network {
 		iStackHelper.install(backboneRouter);
 		
 		// Adds the backbone router node to p2p auction channel
-		auctionChannel.setNodeA(backboneRouter);
+		//auctionChannel.setNodeA(backboneRouter);
 		
 		// Creates access point routers
 //		NodeContainer apNodes = new NodeContainer("apNodes_backbone");
 //		apNodes.create(numChannels - 1);
 		
-		// Adds backbone nodes to global NodeContainer for FNCSApplicationHelper
-		nodes.addNode(backboneRouter);
-		//nodes.addNodeContainer(apNodes);
+		// Adds backbone allNodes to global NodeContainer for FNCSApplicationHelper
+		allNodes.addNode(backboneRouter);
+		//allNodes.addNodeContainer(apNodes);
 		
 		// Adds node names to global Vector of names for FNCSApplicationHelper
 		names.pushBack(backboneRouter);
@@ -1130,7 +1132,7 @@ public class Ns3Network {
 			
 			// Installs the CSMA protocols on the devices using the given channel
 			csmaHelper.install(apNode, (CsmaChannel) channel, csmaDevices);
-			// Installs the IP stack protocols on the CSMA nodes
+			// Installs the IP stack protocols on the CSMA allNodes
 			iStackHelper.install(apNode);
 			
 			addresses.setBase(ipBase, "255.255.255.0"); // IPbase, mask
@@ -1163,17 +1165,19 @@ public class Ns3Network {
 	}
 
 	/**
+	 * @param marketNIPrefix the market network interface prefix
+	 * @param controllerNIPrefix the house controller network interface prefix
 	 * @return ns3Objects a list of all objects created in this network
 	 * 
 	 */
 	// TODO add all objects to ns3Objects or just add 1 (only need 1 to print all ns3 setup text)
 	// TODO give params to Ns3Network, then call this to call all other necessary methods
-	public List<AbstractNs3Object> buildBackbone() {
+	public List<AbstractNs3Object> buildBackbone(final String marketNIPrefix, final String controllerNIPrefix) {
 		
-		setupFncsSimulator();
+		setupFncsSimulator(marketNIPrefix, controllerNIPrefix);
 		
 		// Sets name for global NodeContainer for use in FNCSApplicationHelper.setApps(...)
-		nodes.setName("allNodes");
+		allNodes.setName("allNodes");
 		// Sets name for global InternetStackHelper (to utilize NixVectorRouting)
 		iStackHelper.setName("iStackHelper");
 		// Sets up iStackHelper with static and nix vector routing
@@ -1207,6 +1211,26 @@ public class Ns3Network {
 		
 		return ns3Objects;
 	}
-	
-	
+
+	/**
+	 * Assigns IPv4 addresses to all Routers in the network
+	 * @param routers a List of all Routers in the network
+	 */
+	public void assignIPs(List<Router> routers) {
+		Ipv4AddressHelper addr = new Ipv4AddressHelper("ipv4AddressHelper");
+		addr.setBase(getAddrBase(), getAddrMask());
+
+		for (Router r : routers) {
+			addr.assign(r.getDevices());
+			addr.newNetwork();
+			r.setAddressed();
+
+			// TODO debugging
+			addr.appendPrintObj("allNodes.Add(" + r.getNode().getName() + ");\n");
+			addr.appendPrintObj("allNames.push_back(\"" + r.getNode().getName() + "\");\n");
+
+
+		}
+
+	}
 }

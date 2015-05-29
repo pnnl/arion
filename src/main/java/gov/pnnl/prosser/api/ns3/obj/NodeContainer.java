@@ -27,21 +27,21 @@ public class NodeContainer extends AbstractNs3Object {
 	 * Creates nameless NodeContainer; used in NetDeviceContainer
 	 */
 	public NodeContainer() {
-		this.nodes = new ArrayList<Node>();
+		this.nodes = new ArrayList<>();
 	}
 	
 	/**
 	 * Initializes an empty NodeContainer
-	 * @param name
+	 * @param name the string name
 	 */
 	public NodeContainer(String name) {
-		this.nodes = new ArrayList<Node>();
+		this.nodes = new ArrayList<>();
 		this.setName(name);
 	}
 
 	/**
 	 * Creates specified number of nodes in this NodeContainer
-	 * @param numNodes
+	 * @param numNodes the number of nodes to create
 	 */
 	public void create(int numNodes) {
 		for (int i = 0; i < numNodes; i++) {
@@ -52,17 +52,10 @@ public class NodeContainer extends AbstractNs3Object {
 	}
 
 	/**
-	 * Appends a new node to the end of the nodes array
+	 * @param node the Node to add to this NodeContainer
 	 */
-	void addNode(Node node) {
-		this.nodes.add(node);
-	}
-
-	/**
-	 * @param node the Pointer&lt;Node&gt; to add to this NodeContainer
-	 */
-	public void addNode(Pointer<Node> node) {
-		appendPrintObj(this.getName() + ".Add(" + node.getName() + ");\n");		
+	public void addNode(Node node) {
+		appendPrintObj(this.getName() + ".Add(" + node.getName() + ");\n");
 	}
 	
 	/**
@@ -114,7 +107,7 @@ public class NodeContainer extends AbstractNs3Object {
 	}
 	
 	/**
-	 * @param index
+	 * @param index the index of the node to get
 	 * @param backboneRouterPtr the Pointer&lt;Node&gt; to add the node at index to
 	 */
 	public void getNode(int index, Pointer<Node> backboneRouterPtr) {

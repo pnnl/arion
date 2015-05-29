@@ -52,4 +52,11 @@ public class Ipv4AddressHelper extends AbstractNs3Object {
 						".Assign(" + devices.getName() + ");\n");
 	}
 
+	/**
+	 * Increments the network number and resets the IP address counter
+	 * to the preset base value.
+	 */
+	public void newNetwork() {
+		appendPrintObj(this.getName() + ".NewNetwork();\n");
+	}
 }
