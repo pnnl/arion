@@ -44,7 +44,7 @@ public class ExperimentFncsTest extends Experiment {
         final GldSimulator gldSim = this.gldSimulator("fncs_GLD_1node_Feeder_1");
         populateGldSim(gldSim, numHouses, controllerNIPrefix, channels);
         
-		
+     // TODO make this run by default when writing the NS3 file
 		ns3Simulator.setupFncsApplicationHelper();
 
         // Connect Controllers and Auctions to backbone network
