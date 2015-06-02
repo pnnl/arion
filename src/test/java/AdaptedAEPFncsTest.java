@@ -46,17 +46,33 @@ public class AdaptedAEPFncsTest extends Experiment {
         auctionChannel.setDataRate("1Gbps");
         auctionChannel.setDelay("1ms");
         ns3Simulator.addChannel(auctionChannel);
-        Router auctionRouter = new Router("auctionRouter");
+        Router auctionRouter = new Router("auctionRouter_0");
         auctionRouter.setChannel(auctionChannel);
         auctionChannel.setRouterA(auctionRouter);
         routers.add(auctionRouter);
         
         // Create backbone router to connect houses and auction
-        Router backboneRouter = new Router("backboneRouter");
+        Router backboneRouter = new Router("backboneRouter_0");
         // Enable PCAP debugging on backbone router
         backboneRouter.setPcap(true);
         backboneRouter.setChannel(auctionChannel);
         routers.add(backboneRouter);
+
+        int numHousesForMath = numHouses;
+        int count = 1;
+        // Check numHouses to prevent IP address overflow
+        // There are numHouses * 2 backbone devices created, + 2 for auction
+        while ((numHousesForMath * 2) + 2 >= 253) {
+            backboneRouter = new Router("backboneRouter_" + count);
+            // Enable PCAP debugging on backbone router
+            backboneRouter.setPcap(true);
+            routers.add(backboneRouter);
+            System.out.println("Extra router with " + numHousesForMath + " devices left.");
+
+            // Subtract 151 because (255-2)/2 = 151
+            numHousesForMath -= 151;
+            count++;
+        }
 
         for (int i = 0; i < numHouses; i++) {
         	CsmaChannel houseChannel = new CsmaChannel("csmaHouseChannel_" + i);

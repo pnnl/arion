@@ -1225,7 +1225,7 @@ public class Ns3Network {
 			addr.newNetwork();
 			r.setAddressed();
 
-			// TODO debugging
+			// TODO this should use allNodes/Names objects
 			addr.appendPrintObj("allNodes.Add(" + r.getNode().getName() + ");\n");
 			addr.appendPrintObj("allNames.push_back(\"" + r.getNode().getName() + "\");\n");
 
