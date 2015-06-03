@@ -1118,16 +1118,6 @@ public class Ns3Network {
 			channel.setAddressBase(ipBase); // TODO check if this works later
 			addChannel(channel);
 			
-			// Wrap channel in pointer for CsmaHelper.Install
-//			Pointer<CsmaChannel> channelPtr = new Pointer<CsmaChannel>("csmaChannelPtr_backbone_" + i);
-//			channelPtr.createObject(channel);
-			
-			// Attach this Pointer<CsmaChannel> to Channel
-//			channel.setPointer(channelPtr);
-					
-//			Pointer<Node> apNodePtr = new Pointer<Node>("csmaNode_backbone_" + i, new Node());
-//			apNodes.getNode(i, apNodePtr);
-			
 			NetDeviceContainer csmaDevices = new NetDeviceContainer("csmaDevices_backbone_" + i);
 			
 			// Installs the CSMA protocols on the devices using the given channel
@@ -1149,13 +1139,6 @@ public class Ns3Network {
 			
 			addresses.setBase(ipBase, "255.255.255.0");
 			addresses.assign(p2pDevices);
-			
-//			// Enable PCAP log output if pcapOutput is true
-//			if (pcapOutput) {
-//				csmaHelper.enablePcapSingleDevice("csmaBackboneRouterPcap_" + i, csmaDevices, 0);
-//				
-//				p2pHelper.enablePcapSingleDevice("p2pBackboneRouterPcap_" + i, p2pDevices, i);
-//			}
 			
 		}
 		

@@ -106,9 +106,6 @@ public class Router extends AbstractNs3Object {
 				p2pHelper.install(((PointToPointChannel) channel).getRouterA().getNode(),
 						this.getNode(), (PointToPointChannel) channel, tempDev);
 
-				// TODO debugging
-				System.out.println("Second p2p router added to auctionChannel");
-
 				// This router is ready for IP stack install
 				ready = true;
 				

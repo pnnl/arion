@@ -50,46 +50,42 @@ public class AdaptedAEPFncsTest extends Experiment {
         auctionRouter.setChannel(auctionChannel);
         auctionChannel.setRouterA(auctionRouter);
         routers.add(auctionRouter);
-        
-        // Create backbone router to connect houses and auction
-        Router backboneRouter = new Router("backboneRouter_0");
-        // Enable PCAP debugging on backbone router
-        backboneRouter.setPcap(true);
-        backboneRouter.setChannel(auctionChannel);
-        routers.add(backboneRouter);
 
-        int numHousesForMath = numHouses;
-        int count = 1;
-        // Check numHouses to prevent IP address overflow
-        // There are numHouses * 2 backbone devices created, + 2 for auction
-        while ((numHousesForMath * 2) + 2 >= 253) {
-            backboneRouter = new Router("backboneRouter_" + count);
+        // This is example of how network setup could be automated somewhat by user
+        // Equal number of houses per backbone router not hardcoded into Prosser
+        final int numBackboneRouters = numHouses / 126 + 1;
+        final int numHousesPerBackbone = numHouses / numBackboneRouters + numHouses % numBackboneRouters;
+
+        for (int i = 0; i < numBackboneRouters; i++) {
+
+            // Create backbone router to connect houses and auction
+            Router backboneRouter = new Router("backboneRouter_" + i);
             // Enable PCAP debugging on backbone router
             backboneRouter.setPcap(true);
+
+            // Can add more than one auction channel here
+            if (i == 0) {
+                backboneRouter.setChannel(auctionChannel);
+            }
             routers.add(backboneRouter);
-            System.out.println("Extra router with " + numHousesForMath + " devices left.");
 
-            // Subtract 151 because (255-2)/2 = 151
-            numHousesForMath -= 151;
-            count++;
+            for (int j = 0; j < numHousesPerBackbone; j++) {
+                CsmaChannel houseChannel = new CsmaChannel("csmaHouseChannel_" + i + "_" + j);
+                houseChannel.setDataRate("100Mbps");
+                houseChannel.setDelay("10ms");
+                ns3Simulator.addChannel(houseChannel);
+
+                // Connect house router and a backbone router to the house channel
+                Router houseRouter = new Router("csmaHouseRouter_" + i + "_" + j);
+                houseRouter.setChannel(houseChannel);
+                backboneRouter.setChannel(houseChannel);
+                routers.add(houseRouter);
+
+            }
         }
 
-        for (int i = 0; i < numHouses; i++) {
-        	CsmaChannel houseChannel = new CsmaChannel("csmaHouseChannel_" + i);
-        	houseChannel.setDataRate("100Mbps");
-        	houseChannel.setDelay("10ms");
-        	ns3Simulator.addChannel(houseChannel);
-        	
-        	// Connect house and backboneRouter to houseChannel
-        	Router houseRouter = new Router("csmaHouseRouter_" + i);
-        	houseRouter.setChannel(houseChannel);
-        	backboneRouter.setChannel(houseChannel);
-            routers.add(houseRouter);
-        	
-        }
-
+        // Assign IP addresses to the devices on the routers
         ns3Simulator.assignIPs(routers);
-        
 
         final List<Channel> channels = ns3Simulator.getChannels();
 
