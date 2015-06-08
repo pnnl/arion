@@ -68,8 +68,7 @@ public class Router extends AbstractNs3Object {
 		channels.add(channel);
 		
 		if (devices == null) {
-			devices = new NetDeviceContainer(channel.getType().toString() + 
-					"_devices_" + getName());
+			devices = new NetDeviceContainer(getName() + "_devices");
 		}
 		
 		NetDeviceContainer tempDev = new NetDeviceContainer("TEMP_" + channel.getType().toString() + 
@@ -79,8 +78,6 @@ public class Router extends AbstractNs3Object {
 			
 			CsmaHelper csmaHelper = new CsmaHelper("csmaHelper_" + getName() + "_" + channel.getName());
 			csmaHelper.install(getNode(), (CsmaChannel) channel, tempDev);
-
-			devices.addDevices(tempDev);
 
 			// This router is ready for IP stack install
 			ready = true;
@@ -139,14 +136,6 @@ public class Router extends AbstractNs3Object {
 		}
 		
 		devices.addDevices(tempDev);
-	}
-	
-	/**
-	 * Stores the given NetDeviceContainer on this Node
-	 * @param devices
-	 */
-	private void addDevices(NetDeviceContainer devices) {
-		this.devices.addDevices(devices);
 	}
 
 	/**
