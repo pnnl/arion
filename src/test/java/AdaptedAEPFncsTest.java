@@ -26,9 +26,9 @@ public class AdaptedAEPFncsTest extends Experiment {
      */
     @Override
     public void experiment() {
-    	
+
         // Define some values we want to reuse
-        final String controllerNIPrefix = "F1_C_NI1";
+        final String controllerNIPrefix = "F1_C_NI";
         final String marketNIPrefix = "Market1NI"; // TODO Peter, is this fine defined here? Needed since creating NW before attaching controllers/market
         final String backboneDataRate = "10Gbps";
         final String backboneDelay = "500ns";
@@ -40,7 +40,7 @@ public class AdaptedAEPFncsTest extends Experiment {
 
         // List of Routers for IP address assignment
         List<Router> routers = new ArrayList<>();
-        
+
         // Create Auction channel and connect it to a router
         PointToPointChannel auctionChannel = new PointToPointChannel("auctionChannel");
         auctionChannel.setDataRate("1Gbps");
@@ -244,7 +244,7 @@ public class AdaptedAEPFncsTest extends Experiment {
 
     private AuctionObject createMarket(final GldSimulator sim, final String marketName) {
         // final boolean useMarket = true;
-//        final String marketName = "Market1";
+        // final String marketName = "Market1";
         // final double percentPenetration = 1;
         // final double sliderSetting = 1;
 
