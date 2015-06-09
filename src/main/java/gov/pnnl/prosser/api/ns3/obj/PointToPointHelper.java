@@ -12,7 +12,7 @@ import java.util.Map;
  * @author happ546
  *
  */
-public class PointToPointHelper extends PcapHelperForDevice {
+public class PointToPointHelper extends NetworkHelper {
 	private Map<String, String> channelAttributes;
 	private Map<String, String> deviceAttributes;
 	

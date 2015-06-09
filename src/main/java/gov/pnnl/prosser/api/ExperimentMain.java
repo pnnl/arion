@@ -72,7 +72,8 @@ public abstract class ExperimentMain {
             GldSimulatorWriter.writeGldSimulator(outPath, sim);
         }
 
-        Ns3SimulatorWriter.writeNs3Simulator(outPath.resolve("ns3.cc"), experiment.getNs3Simulator());
+        final String ns3Name = experiment.getNs3Simulator().getName() + ".cc";
+        Ns3SimulatorWriter.writeNs3Simulator(outPath.resolve(ns3Name), experiment.getNs3Simulator());
         experiment.getExtraExperimentFiles().forEach((f) -> {
             try {
                 Files.copy(f, outPath.resolve(f.getFileName()), StandardCopyOption.REPLACE_EXISTING);

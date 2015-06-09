@@ -23,18 +23,28 @@ import java.util.List;
 public class Ns3Simulator {
 	
 	private Ns3Network network;
+	private String name;
 	private List<Namespace> namespaces;
 	private List<AbstractNs3Object> ns3Objects;
 	
 	/**
 	 * Create a new Ns3Simulator
 	 */
-	public Ns3Simulator() {
+	public Ns3Simulator(String name) {
 		this.network = null;
+		this.name = name;
 		this.namespaces = new ArrayList<>();
 		this.ns3Objects = new ArrayList<>();
 	}
 
+	/**
+	 *
+	 * @return name
+	 * 				the name of this Ns3Simulator
+	 */
+	public String getName() {
+		return name;
+	}
 	
 	/**
 	 * Initializes the modules, namespaces, and objects used in this network based on 
@@ -148,18 +158,6 @@ public class Ns3Simulator {
 	 */
 	public void buildFrontend() {
 		this.ns3Objects = network.buildFrontend();
-	}
-	
-
-	// TODO discuss if these are right approach to making ns-3 part less wizardy
-	
-	
-	/**
-	 * @param name
-	 * @return a new Pointer&lt;Node&gt;
-	 */
-	public Pointer<Node> nodePtr(String name) {
-		return new Pointer<Node>(name, new Node());
 	}
 
 

@@ -19,7 +19,7 @@ public class Router extends AbstractNs3Object {
 	private List<Channel> channels;
 	private NetDeviceContainer devices;
 	
-	private boolean ipStackInstalled, addressed, ready, pcap;
+	private boolean ipStackInstalled, addressed, ready, pcap, ascii;
 	
 	/**
 	 * Create a new Router with the given Name
@@ -32,6 +32,7 @@ public class Router extends AbstractNs3Object {
 		channels = new ArrayList<>();
 		ipStackInstalled = false;
 		addressed = false;
+		ready = false;
 		
 	}
 
@@ -84,6 +85,10 @@ public class Router extends AbstractNs3Object {
 
 			if (pcap) {
 				csmaHelper.enablePcap(this.getName() + "_PCAP", tempDev, 0);
+			}
+
+			if (ascii) {
+				csmaHelper.enableAscii(this.getName() + "_ASCII", tempDev, 0);
 			}
 
 		} else if (channel.getType().equals(NetworkType.P2P)) {
@@ -140,9 +145,15 @@ public class Router extends AbstractNs3Object {
 
 	/**
 	 *
-	 * @param b a boolean flag to set PCAP tracing on/off
+	 * @param b a boolean flag to set PCAP dump on/off
 	 */
 	public void setPcap(boolean b) {
 		this.pcap = b;
 	}
+
+	/**
+	 *
+	 * @param b a boolean flag to set ASCII tracing on/off
+	 */
+	public void setAscii(boolean b) { this.ascii = b; }
 }

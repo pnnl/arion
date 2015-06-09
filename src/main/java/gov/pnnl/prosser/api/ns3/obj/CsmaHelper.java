@@ -12,7 +12,7 @@ import java.util.Map;
  * @author happ546
  *
  */
-public class CsmaHelper extends PcapHelperForDevice {
+public class CsmaHelper extends NetworkHelper {
 	
 	private Map<String, String> channelAttributes;
 	private Map<String, String> deviceAttributes;

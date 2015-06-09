@@ -24,6 +24,7 @@ public abstract class Experiment {
 
     private final List<Path> extraExperimentFiles = new ArrayList<>();
 
+
     /**
      * Get the GLD Simulators
      * 
@@ -79,8 +80,8 @@ public abstract class Experiment {
      * 
      * @return the simulator
      */
-    public Ns3Simulator ns3Simulator() {
-        this.ns3Simulator = new Ns3Simulator();
+    public Ns3Simulator ns3Simulator(String name) {
+        this.ns3Simulator = new Ns3Simulator(name);
         this.ensureFncs();
         return this.ns3Simulator;
     }

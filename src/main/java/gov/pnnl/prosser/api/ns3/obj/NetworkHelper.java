@@ -13,6 +13,44 @@ import gov.pnnl.prosser.api.ns3.enums.NetworkType;
  *
  */
 public class NetworkHelper extends AbstractNs3Object {
+
+
+	/**
+	 * @param prefix the filename prefix
+	 */
+	public void enablePcapAll(String prefix) {
+		appendPrintObj(this.getName() + ".EnablePcapAll (\"" + prefix + "\", true);\n");
+	}
+
+	/**
+	 *
+	 * @param prefix the filename prefix
+	 * @param devs the NetDeviceContainer
+	 * @param index the index of the device in devs to do a PCAP on
+	 */
+	public void enablePcap(String prefix, NetDeviceContainer devs, int index) {
+		appendPrintObj(this.getName() + ".EnablePcap (\"" + prefix + "\", " + devs.getName() +
+				".Get (" + index + "));\n");
+	}
+
+
+	/**
+	 * @param prefix the filename prefix
+	 */
+	public void enableAsciiAll(String prefix) {
+		appendPrintObj(this.getName() + ".EnableAsciiAll (\"" + prefix + "\");\n");
+	}
+
+	/**
+	 *
+	 * @param prefix the filename prefix
+	 * @param devs the NetDeviceContainer
+	 * @param index the index of the device in devs to do an Ascii trace of
+	 */
+	public void enableAscii(String prefix, NetDeviceContainer devs, int index) {
+		appendPrintObj(this.getName() + ".EnableAscii (\"" + prefix + "\", " + devs.getName() +
+				".Get (" + index + "));\n");
+	}
 	
 	/**
 	 * 
