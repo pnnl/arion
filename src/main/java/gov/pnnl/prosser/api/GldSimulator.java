@@ -62,7 +62,7 @@ public class GldSimulator {
 
     private GldClock clock;
 
-    private final Map<Class<? extends Module>, Module> modules = new TreeMap<>((c1, c2)-> c1.getName().compareTo(c2.getName()));
+    private final Map<Class<? extends Module>, Module> modules = new TreeMap<>((c1, c2) -> c1.getName().compareTo(c2.getName()));
 
     private final Map<String, String> settings = new TreeMap<>();
 
@@ -434,7 +434,9 @@ public class GldSimulator {
      * @return the created object
      */
     public Transformer transformer(final String name, final TransformerConfiguration config) {
-        return setupObject(new Transformer(this), name);
+        final Transformer t = setupObject(new Transformer(this), name);
+        t.setConfiguration(config);
+        return t;
     }
 
     /**
