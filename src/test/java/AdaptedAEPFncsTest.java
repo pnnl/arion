@@ -29,12 +29,12 @@ public class AdaptedAEPFncsTest extends Experiment {
 
         // Define some values we want to reuse
         final String controllerNIPrefix = "F1_C_NI";
-        final String marketNIPrefix = "Market1NI"; // TODO Peter, is this fine defined here? Needed since creating NW before attaching controllers/market
+        final String marketNIPrefix = "Market1NI";
         final String backboneDataRate = "10Gbps";
         final String backboneDelay = "500ns";
-        final int numHouses = 150;
+        final int numHouses = 4;
 
-        final Ns3Simulator ns3Simulator = this.ns3Simulator();
+        final Ns3Simulator ns3Simulator = this.ns3Simulator("ns3");
         ns3Simulator.setup("10.0.1.0", "255.255.255.0", backboneDataRate, backboneDelay, 10.0,
                 marketNIPrefix, controllerNIPrefix);
 
@@ -56,24 +56,31 @@ public class AdaptedAEPFncsTest extends Experiment {
         final int numBackboneRouters = numHouses / 126 + 1;
         final int numHousesPerBackbone = numHouses / numBackboneRouters + numHouses % numBackboneRouters;
 
+        // FIXME all interfaces on single node need same network?
+        // FIXME do all csma devices on same channel need same network?
+
         for (int i = 0; i < numBackboneRouters; i++) {
 
             // Create backbone router to connect houses and auction
             Router backboneRouter = new Router("backboneRouter_" + i);
-            // Enable PCAP debugging on backbone router
+            // Enable PCAP and ASCII debugging on backbone router
             backboneRouter.setPcap(true);
+            backboneRouter.setAscii(true);
 
             // Can add more than one auction channel here
             if (i == 0) {
                 backboneRouter.setChannel(auctionChannel);
+                // TODO would be cleaner to do?: auctionChannel.setRouterB(backboneRouter);
             }
             routers.add(backboneRouter);
+
+            // FIXME need backbone channel to connect backbone routers
 
             for (int j = 0; j < numHousesPerBackbone; j++) {
                 CsmaChannel houseChannel = new CsmaChannel("csmaHouseChannel_" + i + "_" + j);
                 houseChannel.setDataRate("100Mbps");
                 houseChannel.setDelay("10ms");
-                ns3Simulator.addChannel(houseChannel);
+                ns3Simulator.addHouseChannel(houseChannel);
 
                 // Connect house router and a backbone router to the house channel
                 Router houseRouter = new Router("csmaHouseRouter_" + i + "_" + j);
@@ -87,13 +94,13 @@ public class AdaptedAEPFncsTest extends Experiment {
         // Assign IP addresses to the devices on the routers
         ns3Simulator.assignIPs(routers);
 
-        final List<Channel> channels = ns3Simulator.getChannels();
+        final List<Channel> houseChannels = ns3Simulator.getHouseChannels();
 
         final GldSimulator gldSim = this.gldSimulator("fncs_GLD_1node_Feeder_1");
 
         final AuctionObject auction = createMarket(gldSim, "Market1");
         auction.setFncsControllerPrefix(controllerNIPrefix);
-        channels.get(0).addAuction(auction);
+        auctionChannel.addAuction(auction);
 
         // Specify the climate information
         final ClimateObject climate = gldSim.climateObject("Columbus OH");
@@ -113,11 +120,8 @@ public class AdaptedAEPFncsTest extends Experiment {
         for (int i = 0; i < numHouses; i++) {
             final House house = createHouse(gldSim, i, auction);
 
-            channels.get(i + 1).addController(house.getController());
+            houseChannels.get(i).addController(house.getController());
         }
-
-        // Connect Controllers and Auctions to backbone network
-        // ns3Simulator.buildFrontend();
 
         // Extra GLD files
         this.addExtraFiles(Paths.get("res/heat.yaml"));

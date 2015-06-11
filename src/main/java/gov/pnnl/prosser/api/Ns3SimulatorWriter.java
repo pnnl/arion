@@ -32,9 +32,6 @@ public class Ns3SimulatorWriter {
         final List<AbstractNs3Object> objects = ns3Simulator.getObjects();
 		final StringBuilder sb = new StringBuilder();
 		
-		// Add FNCS ns-3 application to output string
-		ns3Simulator.setupFncsApplicationHelper();
-		
 		// Ns-3 file header stuff; need this
 		sb.append("/* -*- Mode:C++; c-file-style:\"gnu\"; indent-tabs-mode:nil; -*- */\n");
 		
@@ -65,7 +62,8 @@ public class Ns3SimulatorWriter {
 				"#include <stdexcept>\n";
         
         sb.append(includes + "\n");
-        
+
+
 		if (namespaces != null) {
 			namespaces.forEach(n -> n.writeNamespace(sb));
 		}
@@ -73,8 +71,16 @@ public class Ns3SimulatorWriter {
         sb.append("\nint\n");
         sb.append("main (int argc, char *argv[])\n");
         sb.append("{\n");
-        
-        if (objects != null && objects.size() > 0) {
+
+		// Adds FNCS ns-3 application at end of ns-3 file to output string
+		ns3Simulator.setupFncsApplicationHelper();
+
+		// TODO put these in right place
+		// Appends the GLD House controller interface names
+		sb.append(ns3Simulator.printControllerNames());
+
+
+		if (objects != null && objects.size() > 0) {
         	objects.get(0).writeNs3Properties(sb);
         }
         

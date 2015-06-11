@@ -154,6 +154,14 @@ public class Ns3Simulator {
 	}
 
 	/**
+	 *
+	 * @return the list of house Channels for the Ns3Network
+	 */
+	public List<Channel> getHouseChannels() {
+		return this.network.getHouseChannels();
+	}
+
+	/**
 	 * Build the Controller and Auction nodes and connect to backbone network
 	 */
 	public void buildFrontend() {
@@ -231,11 +239,34 @@ public class Ns3Simulator {
 	}
 
 	/**
+	 * Adds this House Channel to the network
+	 * @param houseChannel
+	 */
+	public void addHouseChannel(CsmaChannel houseChannel) {
+		this.network.addHouseChannel(houseChannel);
+	}
+
+	/**
 	 * Assigns IPv4 addresses to all Routers in the network
 	 * @param routers a list of all Routers in the network
 	 */
 	public void assignIPs(List<Router> routers) {
 		this.network.assignIPs(routers);
+	}
+
+	/**
+	 * Adds the GLD Controller names to the ns3 global list of names
+	 * for the FncsApplicationHelper setup
+	 */
+	public void addControllerNames() { this.network.addControllerNames();	}
+
+	/**
+	 * Prints the GLD Controller names and the ns-3 Node names to
+	 * the output ns-3 .cc file
+	 * @return a string
+	 */
+	public String printControllerNames() {
+		return this.network.printControllerNames();
 	}
 
 }
