@@ -37,7 +37,18 @@ public class Ipv4AddressHelper extends AbstractNs3Object {
 	 * @param devices the net devices to assign IP addresses to
 	 */
 	public void assign(NetDeviceContainer devices) {
-		appendPrintObj(this.getName() + ".Assign(" + devices.getName() + ");\n");
+		long time = System.nanoTime() % 100000;
+		String contName = "ipv4IntCont_" + this.getName() + time;
+		appendPrintObj("Ipv4InterfaceContainer " + contName +
+				" = " + this.getName() + ".Assign(" + devices.getName() + ");\n");
+
+		// TODO DEBUGGING of IP addresses
+		String[] arr = devices.getName().split("_");
+		String routerName = (arr.length == 4) ? arr[0] + arr[2] : arr[0];
+		appendPrintObj("for (int i = 0; i < " + contName + ".GetN(); i++) { \n" +
+				"\t\tcout << \"" + routerName + ": \" << " + contName + ".GetAddress (i) << endl;\n" +
+				"\t}\n\n");
+
 	}
 
 	/**

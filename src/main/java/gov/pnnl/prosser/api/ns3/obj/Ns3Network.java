@@ -829,6 +829,8 @@ public class Ns3Network {
 		this.addModule(new Internet());
 		this.addModule(new Bridge());
 		this.addModule(new PointToPoint());
+		this.addModule(new Fncs());
+		this.addModule(new FncsApplication());
 
 		// Instantiates global NodeContainer allNodes for use by FNCSApplicationHelper
 		allNodes = new NodeContainer("allNodes");

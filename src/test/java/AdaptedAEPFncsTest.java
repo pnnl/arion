@@ -35,7 +35,7 @@ public class AdaptedAEPFncsTest extends Experiment {
         final int numHouses = 4;
 
         final Ns3Simulator ns3Simulator = this.ns3Simulator("ns3");
-        ns3Simulator.setup("10.0.1.0", "255.255.255.0", backboneDataRate, backboneDelay, 10.0,
+        ns3Simulator.setup("10.1.1.0", "255.255.255.0", backboneDataRate, backboneDelay, 10.0,
                 marketNIPrefix, controllerNIPrefix);
 
         // List of Routers for IP address assignment
@@ -56,8 +56,14 @@ public class AdaptedAEPFncsTest extends Experiment {
         final int numBackboneRouters = numHouses / 126 + 1;
         final int numHousesPerBackbone = numHouses / numBackboneRouters + numHouses % numBackboneRouters;
 
-        // FIXME all interfaces on single node need same network?
-        // FIXME do all csma devices on same channel need same network?
+        // If more than 1 backboneRouter, create backbone channel to connect backbone routers
+        CsmaChannel backboneInterconnectChannel = null;
+        if (numBackboneRouters >= 2) {
+            backboneInterconnectChannel = new CsmaChannel("backboneInterconnectChannel");
+        }
+
+        Ipv4AddressHelper addressHelper = new Ipv4AddressHelper("addrHelper");
+        addressHelper.setBase(ns3Simulator.getIPBase(), ns3Simulator.getIPMask());
 
         for (int i = 0; i < numBackboneRouters; i++) {
 
@@ -71,10 +77,17 @@ public class AdaptedAEPFncsTest extends Experiment {
             if (i == 0) {
                 backboneRouter.setChannel(auctionChannel);
                 // TODO would be cleaner to do?: auctionChannel.setRouterB(backboneRouter);
-            }
-            routers.add(backboneRouter);
 
-            // FIXME need backbone channel to connect backbone routers
+                // TODO IP Addressing
+                auctionChannel.assignIPAddresses(addressHelper);
+            }
+
+            // If there are more than 1 backboneRouters, connect them together
+            if (backboneInterconnectChannel != null) {
+                backboneRouter.setChannel(backboneInterconnectChannel);
+            }
+
+            routers.add(backboneRouter);
 
             for (int j = 0; j < numHousesPerBackbone; j++) {
                 CsmaChannel houseChannel = new CsmaChannel("csmaHouseChannel_" + i + "_" + j);
@@ -88,11 +101,25 @@ public class AdaptedAEPFncsTest extends Experiment {
                 backboneRouter.setChannel(houseChannel);
                 routers.add(houseRouter);
 
+                // TODO IP Addressing
+                houseChannel.assignIPAddresses(addressHelper);
+
             }
+
+            if (backboneInterconnectChannel != null) {
+                // TODO IP Addressing
+                backboneInterconnectChannel.assignIPAddresses(addressHelper);
+            }
+
+            // TODO trying out ip assigning
+//            Ipv4AddressHelper addressHelper = new Ipv4AddressHelper("addrHelper");
+//            addressHelper.setBase(ns3Simulator.getIPBase(), ns3Simulator.getIPMask());
+//            backboneRouter.assignIPAddresses(addressHelper);
+
         }
 
         // Assign IP addresses to the devices on the routers
-        ns3Simulator.assignIPs(routers);
+        //ns3Simulator.assignIPs(routers);
 
         final List<Channel> houseChannels = ns3Simulator.getHouseChannels();
 

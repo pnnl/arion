@@ -269,4 +269,11 @@ public class Ns3Simulator {
 		return this.network.printControllerNames();
 	}
 
+	public String getIPBase() {
+		return network.getAddrBase();
+	}
+
+	public String getIPMask() {
+		return network.getAddrMask();
+	}
 }

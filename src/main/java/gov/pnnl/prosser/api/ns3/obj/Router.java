@@ -30,6 +30,7 @@ public class Router extends AbstractNs3Object {
 		setNameString(name);
 		node = new Node(name);
 		channels = new ArrayList<>();
+		devices = null;
 		ipStackInstalled = false;
 		addressed = false;
 		ready = false;
@@ -84,11 +85,11 @@ public class Router extends AbstractNs3Object {
 			ready = true;
 
 			if (pcap) {
-				csmaHelper.enablePcap(this.getName() + "_PCAP", tempDev, 0);
+				csmaHelper.enablePcap(channel.getName(), tempDev, 0);
 			}
 
 			if (ascii) {
-				csmaHelper.enableAscii(this.getName() + "_ASCII", tempDev, 0);
+				csmaHelper.enableAscii(channel.getName(), tempDev, 0);
 			}
 
 		} else if (channel.getType().equals(NetworkType.P2P)) {
@@ -117,7 +118,7 @@ public class Router extends AbstractNs3Object {
 			}
 
 			if (pcap) {
-				p2pHelper.enablePcap(this.getName() + "_PCAP", tempDev, 0);
+				p2pHelper.enablePcap(channel.getName(), tempDev, 0);
 			}
 						
 		}
@@ -131,17 +132,41 @@ public class Router extends AbstractNs3Object {
 			if (channel.getType().equals(NetworkType.P2P)) {
 				nc.addNode(((PointToPointChannel) channel).getRouterA().getNode());
 			}
-			
+
 			// Install IP stack on Router
 			InternetStackHelper stackHelper = new InternetStackHelper("internetStackHelper_" + getName());
 			stackHelper.install(nc);
 
 			ipStackInstalled = true;
-			
+
 		}
 		
 		devices.addDevices(tempDev);
+
+		channel.addDevices(tempDev);
 	}
+
+//	/**
+//	 * Assigns IP addresses to the NetDeviceContainer associated with each Channel
+//	 * @param addrHelper
+//	 */
+//	public void assignIPAddresses(Ipv4AddressHelper addrHelper) {
+//
+//		for (NetDeviceContainer devs : devices.values()) {
+//			addrHelper.assign(devs);
+//			addrHelper.newNetwork(); // Increment network between Channels
+//		}
+//	}
+
+//	public void installIPStack(NetDeviceContainer devs) {
+//		// Creates NodeContainer for InternetStackHelper.Install
+//		NodeContainer nc = new NodeContainer("nodeContainerStackHelper_" + getName());
+//		nc.addNode(this.getNode());
+//
+//		// Installs IP stack on Router
+//		InternetStackHelper stackHelper = new InternetStackHelper("internetStackHelper_" + getName());
+//		stackHelper.install(nc);
+//	}
 
 	/**
 	 *

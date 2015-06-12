@@ -33,12 +33,5 @@ public class CsmaChannel extends Channel {
 		this.setName(name);
 		this.getAsPointer();
 	}
-
-	/**
-	 * @param device the Pointer&lt;CsmaNetDevice&gt; to connect to this CsmaChannel
-	 */
-	public void attach(Pointer<CsmaNetDevice> device) {
-		appendPrintObj(this.getName() + ".Attach(" + device.getName() + ");\n");
-	}
 	
 }

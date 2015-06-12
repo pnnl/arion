@@ -23,44 +23,17 @@ import gov.pnnl.prosser.api.ns3.enums.NetworkType;
  *
  */
 public class Channel extends AbstractNs3Object {
-	
-	/**
-	 * The base IP address of this Channel (full 4 octet IPv4), 
-	 * legal to use with specified subnet mask
-	 */
+
 	private String addressBase;
-	
-	/**
-	 * The String-String Map of channel attributes (DataRate, Delay, etc.)
-	 */
 	private Map<String, String> attributes;
-	
-	/**
-	 * The Ns3Simulator that this Channel belongs to
-	 */
 	private Ns3Simulator owner;
-	
-	/**
-	 * The Pointer encapsulation of this Channel
-	 */
-	private Pointer<Channel> pointer;
-	
-	/**
-	 * The Controllers attached to this Channel
-	 */
 	// TODO Look at combining controllers and auctions into List<NetworkCapable>
 	private List<Controller> controllers;
-	
-	/**
-	 * The Auctions attached to this Channel
-	 */
 	private List<AuctionObject> auctions;
-	
 	private NetworkType type;
-	
 	private String delay;
-	
 	private String dataRate;
+	private NetDeviceContainer devices;
 
 	
 	/**
@@ -70,6 +43,7 @@ public class Channel extends AbstractNs3Object {
 		this.controllers = new ArrayList<>();
 		this.auctions = new ArrayList<>();
 		this.attributes = new HashMap<>();
+		this.devices = new NetDeviceContainer("channelDeviceContainer" + System.nanoTime() % 1000000);
 	}
 	
 	/**
@@ -189,19 +163,15 @@ public class Channel extends AbstractNs3Object {
 		this.dataRate = dataRate;
 	}
 
-	/**
-	 * @return the Pointer&lt;Channel&gt; attached to this Channel
-	 */
-	public Pointer<Channel> getPointer() {
-		return pointer;
-	}
-	
-	/**
-	 * @param pointer the Pointer&lt;Channel&gt; to attach to this Channel
-	 */
-	@SuppressWarnings("unchecked")
-	public void setPointer(Pointer<? extends Channel> pointer) {
-		this.pointer = (Pointer<Channel>) pointer;
+	// TODO IP Addressing
+	public void assignIPAddresses(Ipv4AddressHelper addressHelper) {
+		addressHelper.assign(devices);
+
+		// Increments the IP address base for a new network for the next Channel
+		addressHelper.newNetwork();
 	}
 
+	public void addDevices(NetDeviceContainer tempDev) {
+		devices.addDevices(tempDev);
+	}
 }
