@@ -28,15 +28,15 @@ public class AdaptedAEPFncsTest extends Experiment {
     public void experiment() {
 
         // Define some values we want to reuse
-        final String controllerNIPrefix = "F1_C_NI";
         final String marketNIPrefix = "Market1NI";
+        final String controllerNIPrefix = "F1_C_NI";
         final String backboneDataRate = "10Gbps";
         final String backboneDelay = "500ns";
-        final int numHouses = 400;
+        final int numHouses = 1;
 
         final Ns3Simulator ns3Simulator = this.ns3Simulator("ns3");
         ns3Simulator.setup("10.1.1.0", "255.255.255.0", backboneDataRate, backboneDelay, 10.0,
-                marketNIPrefix, controllerNIPrefix);
+                marketNIPrefix);
 
         // List of Routers for IP address assignment
         List<Router> routers = new ArrayList<>();
@@ -162,7 +162,7 @@ public class AdaptedAEPFncsTest extends Experiment {
 
         // Sets parameters for ns-3 network & builds backbone network
         sim.setup(addressBase, addressMask, backboneDataRate, backboneDelay, stopTime,
-                marketNIPrefix, controllerNIPrefix);
+                marketNIPrefix);
 
         // Create auction channel & router
         PointToPointChannel auctionChannel = new PointToPointChannel("auctionChannel");

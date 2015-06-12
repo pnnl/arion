@@ -7,7 +7,6 @@ import gov.pnnl.prosser.api.AbstractNs3Object;
 import gov.pnnl.prosser.api.c.obj.Pointer;
 import gov.pnnl.prosser.api.c.obj.StringMap;
 import gov.pnnl.prosser.api.c.obj.Vector;
-import gov.pnnl.prosser.api.gld.AbstractGldObject;
 import gov.pnnl.prosser.api.gld.obj.AuctionObject;
 import gov.pnnl.prosser.api.gld.obj.Controller;
 import gov.pnnl.prosser.api.ns3.enums.NetworkType;
@@ -38,28 +37,27 @@ public class Ns3Network {
 	private List<AuctionObject> auctions;
 	private List<Controller> controllers;
 	private List<AbstractNs3Object> ns3Objects;
-	private List<AbstractGldObject> gldObjects;
 	private List<Channel> channels, houseChannels;
 	private Vector<String> allNames;
 
 	
 	/**
 	 * Create a new Ns3Network object, used to set up an ns-3 network for use in Prosser simulation
+	 * with default values for the parameters
 	 */
 	public Ns3Network() {
 		this.backboneType = null;
 		this.auctionType = null;
-		this.addrBase = "10.1.0.0";
+		this.addrBase = "10.1.1.0";
 		this.addrMask = "255.255.255.0";
 		this.stopTime = Double.MAX_VALUE;
 		this.backboneNodes = new NodeContainer();
 		this.allNodes = new NodeContainer();
 		this.iStackHelper = new InternetStackHelper();
-		this.modules = new ArrayList<Module>();
+		this.modules = new ArrayList<>();
 		this.auctions = new ArrayList<>();
 		this.controllers = new ArrayList<>();
 		this.ns3Objects = new ArrayList<>();
-		this.gldObjects = new ArrayList<>();
 		this.channels = new ArrayList<>();
 		this.houseChannels = new ArrayList<>();
 	}
@@ -809,11 +807,13 @@ public class Ns3Network {
 	/**
 	 * Creates the FNCS simulator for ns-3 to use
 	 */
-	public void setupFncsSimulator(final String marketNIPrefix, final String controllerNIPrefix) {
-		// Setup FNCS simulator
+	public void setupFncsSimulator(final String marketNIPrefix) {
+
+        Pointer<FncsSimulator> hb2 = new Pointer<>("hb2");
+
+        // Setup FNCS simulator
 		FncsSimulator fncsSim = new FncsSimulator("fncsSim");
 		
-		Pointer<FncsSimulator> hb2 = new Pointer<>("hb2");
 		hb2.encapsulate(fncsSim);
 		
 		fncsSim.unref();
@@ -834,7 +834,6 @@ public class Ns3Network {
 
 		// Instantiates global NodeContainer allNodes for use by FNCSApplicationHelper
 		allNodes = new NodeContainer("allNodes");
-
 		// Instantiates global Vector allNames for use by FNCSApplicationHelper
 		allNames = new Vector<>("allNames", String.class);
 
@@ -882,33 +881,30 @@ public class Ns3Network {
 	 * starts the ns-3 simulator
 	 */
 	public void setupFncsApplicationHelper() {
-		this.addModule(new Fncs());
-		this.addModule(new FncsApplication());
 
-		// TODO will need to fix this if more than 1 auction allowed
-		Channel channel = channels.get(0);
-		AuctionObject auction = channel.getAuctions().get(0);
+        // Adds and prints all controller network interface allNames to list of all allNames
+        addControllerNames();
+        printControllerNames();
 
-		// Adds all controller network interface allNames to list of all allNames
-		addControllerNames();
+        // TODO will need to fix this if more than 1 auction allowed
+        Channel channel = channels.get(0);
+        AuctionObject auction = channel.getAuctions().get(0);
 
-		// A map<string, string> mapping AuctionObject name to a Controller name
-		StringMap<String, String> marketToControllerMap = new StringMap<String, String>("marketToControllerMap");
-		// Maps the Auction NetworkInterfaceName to the GldNodePrefix
-		marketToControllerMap.put(auction.getNetworkInterfaceName(), auction.getFncsControllerPrefix());
-		
-		FNCSApplicationHelper fncsHelper = new FNCSApplicationHelper("fncsHelper");
-		
-		ApplicationContainer fncsAps = new ApplicationContainer("fncsAps");
-		
+        // A map<string, string> mapping AuctionObject name to a Controller name
+        StringMap<String, String> marketToControllerMap = new StringMap<String, String>("marketToControllerMap");
+        // Maps the Auction NetworkInterfaceName to the GldNodePrefix
+        marketToControllerMap.put(auction.getNetworkInterfaceName(), auction.getFncsControllerPrefix());
+
+        ApplicationContainer fncsAps = new ApplicationContainer("fncsAps");
+        FNCSApplicationHelper fncsHelper = new FNCSApplicationHelper("fncsHelper");
 		fncsHelper.setApps(this.allNames, this.allNodes, marketToControllerMap, fncsAps);
 		fncsAps.start(0.0);
 		fncsAps.stop(259200.0);
 		
 		// Run Simulator then clean up after it's done (according to FncsAps.stop(...))
-		fncsAps.appendPrintObj("Simulator::Run();\n");
-		fncsAps.appendPrintObj("Simulator::Destroy();\n");
-		fncsAps.appendPrintObj("return 0;\n");
+        fncsHelper.appendPrintObj("Simulator::Run();\n");
+        fncsHelper.appendPrintObj("Simulator::Destroy();\n");
+        fncsHelper.appendPrintObj("return 0;\n");
 	}
 
 	/**
@@ -1184,7 +1180,7 @@ public class Ns3Network {
 	// TODO give params to Ns3Network, then call this to call all other necessary methods
 	public List<AbstractNs3Object> buildBackbone(final String marketNIPrefix, final String controllerNIPrefix) {
 		
-		setupFncsSimulator(marketNIPrefix, controllerNIPrefix);
+		setupFncsSimulator(marketNIPrefix);
 		
 		// Sets name for global NodeContainer for use in FNCSApplicationHelper.setApps(...)
 		allNodes.setName("allNodes");

@@ -13,8 +13,8 @@ import java.util.UUID;
 public abstract class AbstractNs3Object {
 	
 	private String name;
-	private String nodeNamePrefix;
 	private static String printObj;
+	private String printInfo;
 
 	/**
 	 * If printObj doesn't already contains text from other ns-3 objects,
@@ -25,15 +25,10 @@ public abstract class AbstractNs3Object {
 		if (AbstractNs3Object.printObj == null) {
 			AbstractNs3Object.printObj = "";
 		}
+		this.printInfo = "";
 		this.name = null;
-	}
 
-	/** 
-	 * Append characteristics of this object to given Stringbuilder
-	 * @param sb
-	 */
-	public void writeNs3Properties(StringBuilder sb) {
-		sb.append(getPrintObj());
+		Ns3Simulator.addObject(this);
 	}
 
 	/**
@@ -61,22 +56,6 @@ public abstract class AbstractNs3Object {
 	 */
 	public String getPointerName() {
 		return "pointer_" + this.name;
-	}
-
-	/**
-	 * 
-	 * @return the nodeNamePrefix for this Node
-	 */
-	public String getNodeNamePrefix() {
-		return this.nodeNamePrefix;
-	}
-	
-	/**
-	 * 
-	 * @param prefix the nodeNamePrefix to set for this Node
-	 */
-	public void setNodeNamePrefix(String prefix) {
-		this.nodeNamePrefix = prefix;
 	}
 	
 	/**
@@ -111,7 +90,25 @@ public abstract class AbstractNs3Object {
 	 * @param text the text to append to this object's printObj string
 	 */
 	public void appendPrintObj(String text) {
-		this.setPrintObj(this.getPrintObj() + "\t" + text);
+		//this.setPrintObj(this.getPrintObj() + "\t" + text);
+		this.setPrintInfo(this.getPrintInfo() + "\t" + text);
+	}
+
+	public void setPrintInfo(String text) {
+		this.printInfo = text;
+	}
+
+	public String getPrintInfo() {
+		return this.printInfo;
+	}
+
+	/**
+	 * Append characteristics of this object to given Stringbuilder
+	 * @param sb
+	 */
+	public void writeNs3Properties(StringBuilder sb) {
+		//sb.append(getPrintObj());
+		sb.append(getPrintInfo());
 	}
 	
 	@Override

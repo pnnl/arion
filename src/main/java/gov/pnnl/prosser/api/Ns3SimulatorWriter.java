@@ -52,7 +52,7 @@ public class Ns3SimulatorWriter {
 		sb.append(" */\n\n");
 		
         if (modules != null) {
-            modules.forEach(m -> m.writeNs3String(sb)); 
+            modules.forEach(m -> m.writeNs3String(sb));
         }
 		
 		String includes = "#include <cstdlib>\n" +
@@ -75,13 +75,10 @@ public class Ns3SimulatorWriter {
 		// Adds FNCS ns-3 application at end of ns-3 file to output string
 		ns3Simulator.setupFncsApplicationHelper();
 
-		// TODO put these in right place
-		// Appends the GLD House controller interface names
-		sb.append(ns3Simulator.printControllerNames());
-
-
 		if (objects != null && objects.size() > 0) {
-        	objects.get(0).writeNs3Properties(sb);
+			for (int i = 0; i < objects.size(); i++) {
+				objects.get(i).writeNs3Properties(sb);
+			}
         }
         
         sb.append("}\n");

@@ -33,19 +33,72 @@ public class ExperimentFncsTest extends Experiment {
         final int numChannels = (numHouses % numHousesPerChannel) == 0 ? (numHouses / numHousesPerChannel) + 1 : (numHouses / numHousesPerChannel) + 2;
         System.out.println("Number of channels: " + numChannels); // TODO debugging
         final String controllerNIPrefix = "F1_C_NI";
+        final String marketNIPrefix = "Market1NI"; // TODO Peter, is this fine defined here? Needed since creating NW before attaching controllers/market
+        final String backboneDataRate = "10Gbps";
+        final String backboneDelay = "500ns";
 
         // Set parameters for Ns3Network and build backend network
-        final Ns3Simulator ns3Simulator = this.ns3Simulator();
-        //populateNs3Sim(ns3Simulator, numChannels);
-        populateNs3Sim(ns3Simulator, numHouses);
+        final Ns3Simulator ns3Simulator = this.ns3Simulator("ns3");
+        ns3Simulator.setup("10.0.1.0", "255.255.255.0", backboneDataRate, backboneDelay, 10.0,
+                marketNIPrefix);
+
+        // List of Routers for IP address assignment
+        List<Router> routers = new ArrayList<>();
+
+        // Create Auction channel and connect it to a router
+        PointToPointChannel auctionChannel = new PointToPointChannel("auctionChannel");
+        auctionChannel.setDataRate("1Gbps");
+        auctionChannel.setDelay("1ms");
+        ns3Simulator.addChannel(auctionChannel);
+        Router auctionRouter = new Router("auctionRouter_0");
+        auctionRouter.setChannel(auctionChannel);
+        auctionChannel.setRouterA(auctionRouter);
+        routers.add(auctionRouter);
+
+        // This is example of how network setup could be automated somewhat by user
+        // Equal number of houses per backbone router not hardcoded into Prosser
+        final int numBackboneRouters = numHouses / 126 + 1;
+        final int numHousesPerBackbone = numHouses / numBackboneRouters + numHouses % numBackboneRouters;
+
+        // FIXME all interfaces on single node need same network?
+        // FIXME do all csma devices on same channel need same network?
+
+        for (int i = 0; i < numBackboneRouters; i++) {
+
+            // Create backbone router to connect houses and auction
+            Router backboneRouter = new Router("backboneRouter_" + i);
+            // Enable PCAP debugging on backbone router
+            backboneRouter.setPcap(true);
+
+            // Can add more than one auction channel here
+            if (i == 0) {
+                backboneRouter.setChannel(auctionChannel);
+            }
+            routers.add(backboneRouter);
+
+            for (int j = 0; j < numHousesPerBackbone; j++) {
+                CsmaChannel houseChannel = new CsmaChannel("csmaHouseChannel_" + i + "_" + j);
+                houseChannel.setDataRate("100Mbps");
+                houseChannel.setDelay("10ms");
+                ns3Simulator.addChannel(houseChannel);
+
+                // Connect house router and a backbone router to the house channel
+                Router houseRouter = new Router("csmaHouseRouter_" + i + "_" + j);
+                houseRouter.setChannel(houseChannel);
+                backboneRouter.setChannel(houseChannel);
+                routers.add(houseRouter);
+
+            }
+        }
+
+        // Assign IP addresses to the devices on the routers
+        //ns3Simulator.assignIPs(routers);
 
         final List<Channel> channels = ns3Simulator.getChannels();
+
         // TODO Add numHousesPerChannel param and use instead of hard-coded "20" to get channelID
         final GldSimulator gldSim = this.gldSimulator("fncs_GLD_1node_Feeder_1");
         populateGldSim(gldSim, numHouses, controllerNIPrefix, channels);
-        
-     // TODO make this run by default when writing the NS3 file
-		ns3Simulator.setupFncsApplicationHelper();
 
         // Connect Controllers and Auctions to backbone network
         //ns3Simulator.buildFrontend();
@@ -73,7 +126,7 @@ public class ExperimentFncsTest extends Experiment {
 		
 		// Sets up header stuff and parameters (params not used with below implementation)
 		sim.setup(addressBase, addressMask, backboneDataRate, backboneDelay, stopTime,
-                marketNIPrefix, controllerNIPrefix);
+                marketNIPrefix);
 		
 		// Create auction channel & router
 		PointToPointChannel auctionChannel = new PointToPointChannel("auctionChannel");

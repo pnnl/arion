@@ -25,7 +25,7 @@ public class Ns3Simulator {
 	private Ns3Network network;
 	private String name;
 	private List<Namespace> namespaces;
-	private List<AbstractNs3Object> ns3Objects;
+	private static List<AbstractNs3Object> ns3Objects;
 	
 	/**
 	 * Create a new Ns3Simulator
@@ -35,6 +35,15 @@ public class Ns3Simulator {
 		this.name = name;
 		this.namespaces = new ArrayList<>();
 		this.ns3Objects = new ArrayList<>();
+	}
+
+	/**
+	 *
+	 * @param object the AbstractNs3Object to add to this Ns3Simulator's
+	 *               list of ns-3 objects
+	 */
+	public static void addObject(AbstractNs3Object object) {
+		ns3Objects.add(object);
 	}
 
 	/**
@@ -58,7 +67,7 @@ public class Ns3Simulator {
 	public void setup(final String addressBase, 
 						final String addressMask, final String backboneDataRate, 
 						final String backboneDelay, final double stopTime,
-					  	final String marketNIPrefix, final String controllerNIPrefix) {
+					  	final String marketNIPrefix) {
 		
 		network = new Ns3Network();
 		
@@ -73,11 +82,8 @@ public class Ns3Simulator {
 		
 		network.setStopTime(stopTime);
 		
-		network.setupFncsSimulator(marketNIPrefix, controllerNIPrefix);
-
-
+		network.setupFncsSimulator(marketNIPrefix);
 		
-		//network.buildBackbone();
 	}
 	
 	/**
@@ -174,7 +180,6 @@ public class Ns3Simulator {
 	 */
 	public void addChannel(Channel channel) {
 		this.network.addChannel(channel);
-		this.ns3Objects.add(channel);
 	}
 
 	/**
@@ -190,15 +195,6 @@ public class Ns3Simulator {
 	 * for the FncsApplicationHelper setup
 	 */
 	public void addControllerNames() { this.network.addControllerNames();	}
-
-	/**
-	 * Prints the GLD Controller names and the ns-3 Node names to
-	 * the output ns-3 .cc file
-	 * @return a string
-	 */
-	public String printControllerNames() {
-		return this.network.printControllerNames();
-	}
 
 	/**
 	 *
