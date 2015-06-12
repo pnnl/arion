@@ -1223,30 +1223,6 @@ public class Ns3Network {
 	}
 
 	/**
-	 * Assigns IPv4 addresses to all Routers in the network
-	 * @param routers a List of all Routers in the network
-	 */
-	public void assignIPs(List<Router> routers) {
-		Ipv4AddressHelper addr = new Ipv4AddressHelper("ipv4AddressHelper");
-		addr.setBase(getAddrBase(), getAddrMask());
-
-		for (Router r : routers) {
-			addr.assign(r.getDevices());
-			addr.newNetwork();
-			r.setAddressed();
-
-			allNames.addName(r.getNode().getName());
-			allNodes.addNode(r.getNode());
-			// TODO this should use allNodes/Names objects
-//			addr.appendPrintObj("allNodes.Add(" + r.getNode().getName() + ");\n");
-//			addr.appendPrintObj("allNames.push_back(\"" + r.getNode().getName() + "\");\n");
-
-
-		}
-
-	}
-
-	/**
 	 * Adds the controller network interface name for the controller attached to
 	 * each house channel to the list of all allNames needed for the
 	 * FncsApplicationHelper to setup the communication between the
@@ -1269,4 +1245,8 @@ public class Ns3Network {
 		return allNames.printInfo();
 	}
 
+	public void setupGlobalRouting() {
+		Ipv4GlobalRoutingHelper globalRtHelper = new Ipv4GlobalRoutingHelper("globalRoutingHelper");
+		globalRtHelper.populate();
+	}
 }

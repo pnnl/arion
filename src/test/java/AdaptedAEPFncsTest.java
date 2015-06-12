@@ -32,7 +32,7 @@ public class AdaptedAEPFncsTest extends Experiment {
         final String marketNIPrefix = "Market1NI";
         final String backboneDataRate = "10Gbps";
         final String backboneDelay = "500ns";
-        final int numHouses = 4;
+        final int numHouses = 400;
 
         final Ns3Simulator ns3Simulator = this.ns3Simulator("ns3");
         ns3Simulator.setup("10.1.1.0", "255.255.255.0", backboneDataRate, backboneDelay, 10.0,
@@ -77,8 +77,6 @@ public class AdaptedAEPFncsTest extends Experiment {
             if (i == 0) {
                 backboneRouter.setChannel(auctionChannel);
                 // TODO would be cleaner to do?: auctionChannel.setRouterB(backboneRouter);
-
-                // TODO IP Addressing
                 auctionChannel.assignIPAddresses(addressHelper);
             }
 
@@ -101,27 +99,16 @@ public class AdaptedAEPFncsTest extends Experiment {
                 backboneRouter.setChannel(houseChannel);
                 routers.add(houseRouter);
 
-                // TODO IP Addressing
                 houseChannel.assignIPAddresses(addressHelper);
 
             }
-
-            if (backboneInterconnectChannel != null) {
-                // TODO IP Addressing
-                backboneInterconnectChannel.assignIPAddresses(addressHelper);
-            }
-
-            // TODO trying out ip assigning
-//            Ipv4AddressHelper addressHelper = new Ipv4AddressHelper("addrHelper");
-//            addressHelper.setBase(ns3Simulator.getIPBase(), ns3Simulator.getIPMask());
-//            backboneRouter.assignIPAddresses(addressHelper);
-
         }
 
-        // Assign IP addresses to the devices on the routers
-        //ns3Simulator.assignIPs(routers);
+        if (backboneInterconnectChannel != null) {
+            backboneInterconnectChannel.assignIPAddresses(addressHelper);
+        }
 
-        final List<Channel> houseChannels = ns3Simulator.getHouseChannels();
+        ns3Simulator.setupGlobalRouting();
 
         final GldSimulator gldSim = this.gldSimulator("fncs_GLD_1node_Feeder_1");
 
@@ -143,6 +130,8 @@ public class AdaptedAEPFncsTest extends Experiment {
         recorder.setUsingSql(true);
 
         createTriplex(gldSim, numHouses);
+
+        final List<Channel> houseChannels = ns3Simulator.getHouseChannels();
 
         for (int i = 0; i < numHouses; i++) {
             final House house = createHouse(gldSim, i, auction);

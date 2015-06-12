@@ -168,67 +168,6 @@ public class Ns3Simulator {
 		this.ns3Objects = network.buildFrontend();
 	}
 
-
-	/**
-	 * @param name
-	 * @return a new CsmaHelper
-	 */
-	public CsmaHelper csmaHelper(String name) {
-		return new CsmaHelper(name);
-	}
-
-
-	/**
-	 * @param name
-	 * @return a new Pointer&lt;CsmaChannel&gt;
-	 */
-	public Pointer<CsmaChannel> csmaChannelPointer(String name) {
-		return new Pointer<CsmaChannel>(name, new CsmaChannel());
-	}
-
-
-	/**
-	 * @param name
-	 * @return a new InternetStackHelper
-	 */
-	public InternetStackHelper internetStackHelper(String name) {
-		return new InternetStackHelper(name);
-	}
-
-
-	/**
-	 * @param name
-	 * @return a new NetDeviceContainer
-	 */
-	public NetDeviceContainer netDeviceContainer(String name) {
-		return new NetDeviceContainer(name);
-	}
-
-
-	/**
-	 * @param name
-	 * @return a new Ipv4AddressHelper
-	 */
-	public Ipv4AddressHelper ipv4AddressHelper(String name) {
-		return new Ipv4AddressHelper(name);
-	}
-
-
-	/**
-	 * @param name
-	 * @return a new CsmaChannel
-	 */
-	public CsmaChannel csmaChannel(String name) {
-		return new CsmaChannel(name);
-	}
-	
-	/**
-	 * @param name
-	 */
-	public void addName(String name) {
-		this.network.addName(name);
-	}
-
 	/**
 	 * Adds this Channel to the network
 	 * @param channel
@@ -247,14 +186,6 @@ public class Ns3Simulator {
 	}
 
 	/**
-	 * Assigns IPv4 addresses to all Routers in the network
-	 * @param routers a list of all Routers in the network
-	 */
-	public void assignIPs(List<Router> routers) {
-		this.network.assignIPs(routers);
-	}
-
-	/**
 	 * Adds the GLD Controller names to the ns3 global list of names
 	 * for the FncsApplicationHelper setup
 	 */
@@ -269,11 +200,26 @@ public class Ns3Simulator {
 		return this.network.printControllerNames();
 	}
 
+	/**
+	 *
+	 * @return the base IP address of the network
+	 */
 	public String getIPBase() {
 		return network.getAddrBase();
 	}
 
+	/**
+	 *
+	 * @return the IP address subnet mask of the network
+	 */
 	public String getIPMask() {
 		return network.getAddrMask();
+	}
+
+	/**
+	 * Populates global routing tables on each Router in the network
+	 */
+	public void setupGlobalRouting() {
+		network.setupGlobalRouting();
 	}
 }

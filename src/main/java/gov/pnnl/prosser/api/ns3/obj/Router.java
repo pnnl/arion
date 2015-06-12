@@ -19,7 +19,7 @@ public class Router extends AbstractNs3Object {
 	private List<Channel> channels;
 	private NetDeviceContainer devices;
 	
-	private boolean ipStackInstalled, addressed, ready, pcap, ascii;
+	private boolean ipStackInstalled, ready, pcap, ascii;
 	
 	/**
 	 * Create a new Router with the given Name
@@ -32,7 +32,6 @@ public class Router extends AbstractNs3Object {
 		channels = new ArrayList<>();
 		devices = null;
 		ipStackInstalled = false;
-		addressed = false;
 		ready = false;
 		
 	}
@@ -51,13 +50,6 @@ public class Router extends AbstractNs3Object {
 	 */
 	public NetDeviceContainer getDevices() {
 		return devices;
-	}
-
-	/**
-	 * Sets the addressed flag to true
-	 */
-	public void setAddressed() {
-		addressed = true;
 	}
 
 	/**
