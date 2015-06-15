@@ -34,22 +34,18 @@ public class AdaptedAEPFncsTest extends Experiment {
         final String backboneDelay = "500ns";
         final int numHouses = 1;
 
-        final Ns3Simulator ns3Simulator = this.ns3Simulator("ns3");
-        ns3Simulator.setup("10.1.1.0", "255.255.255.0", backboneDataRate, backboneDelay, 10.0,
+        final Ns3Simulator ns3Sim = this.ns3Simulator("ns3");
+        ns3Sim.setup("10.1.1.0", "255.255.255.0", backboneDataRate, backboneDelay, 10.0,
                 marketNIPrefix);
 
         // List of Routers for IP address assignment
         List<Router> routers = new ArrayList<>();
 
-        // Create Auction channel and connect it to a router
-        PointToPointChannel auctionChannel = new PointToPointChannel("auctionChannel");
-        auctionChannel.setDataRate("1Gbps");
-        auctionChannel.setDelay("1ms");
-        ns3Simulator.addChannel(auctionChannel);
-        Router auctionRouter = new Router("auctionRouter_0");
-        auctionRouter.setChannel(auctionChannel);
-        auctionChannel.setRouterA(auctionRouter);
-        routers.add(auctionRouter);
+        // Creates Auction Channel and Auction Router
+        final PointToPointChannel auctionChannel = createAuctionRouter(ns3Sim, routers);
+
+        final Ipv4AddressHelper addressHelper = new Ipv4AddressHelper("addrHelper");
+        addressHelper.setBase(ns3Sim.getIPBase(), ns3Sim.getIPMask());
 
         // This is example of how network setup could be automated somewhat by user
         // Equal number of houses per backbone router not hardcoded into Prosser
@@ -62,8 +58,74 @@ public class AdaptedAEPFncsTest extends Experiment {
             backboneInterconnectChannel = new CsmaChannel("backboneInterconnectChannel");
         }
 
-        Ipv4AddressHelper addressHelper = new Ipv4AddressHelper("addrHelper");
-        addressHelper.setBase(ns3Simulator.getIPBase(), ns3Simulator.getIPMask());
+        // Creates the specified number of house Routers and attaches them to backbone Routers
+        createBackboneRouters(ns3Sim, routers, numBackboneRouters, numHousesPerBackbone,
+                auctionChannel, backboneInterconnectChannel, addressHelper);
+
+        if (backboneInterconnectChannel != null) {
+            backboneInterconnectChannel.assignIPAddresses(addressHelper);
+        }
+
+        // Sets up global IPv4 routing tables on each Router
+        ns3Sim.setupGlobalRouting();
+
+
+        final GldSimulator gldSim = this.gldSimulator("fncs_GLD_1node_Feeder_1");
+
+        final AuctionObject auction = createMarket(gldSim, "Market1");
+        auction.setFncsControllerPrefix(controllerNIPrefix);
+        auctionChannel.addAuction(auction);
+
+        // Specify the climate information
+        final ClimateObject climate = gldSim.climateObject("Columbus OH");
+        climate.setTmyFile(Paths.get("res/ColumbusWeather2009_2a.csv"));
+        climate.addCsvReader("CSVREADER");
+
+        // Add a recorder to the auction for some of the properties on the auction
+        final Recorder recorder = auction.recorder();
+        recorder.setName("Market1_Recorder");
+        recorder.properties("capacity_reference_bid_price", "current_market.clearing_price", "current_market.clearing_quantity");
+        recorder.setLimit(100000000);
+        recorder.setInterval(300L);
+        recorder.setUsingSql(true);
+
+        createTriplex(gldSim, numHouses);
+
+        final List<Channel> houseChannels = ns3Sim.getHouseChannels();
+
+        for (int i = 0; i < numHouses; i++) {
+            final House house = createHouse(gldSim, i, auction);
+
+            houseChannels.get(i).addController(house.getController());
+        }
+
+        // Extra GLD files
+        this.addExtraFiles(Paths.get("res/heat.yaml"));
+        // this.addExtraFiles(Paths.get("res/tzinfo.txt"), Paths.get("res/unitfile.txt"));
+    }
+
+    /**
+     *
+     * @param ns3Sim
+     *              the Ns3Simulator
+     * @param routers
+     *              a List of Routers for this sim
+     * @param numBackboneRouters
+     *              the number of backbone Routers to create
+     * @param numHousesPerBackbone
+     *              the number of house Routers per backbone Router
+     * @param auctionChannel
+     *              the Auction Channel
+     * @param backboneInterconnectChannel
+     *              the Channel to connect the backbone Routers
+     * @param addressHelper
+     *              the Ipv4AddressHelper for this sim
+     */
+    private void createBackboneRouters(final Ns3Simulator ns3Sim, final List<Router> routers,
+                                       final int numBackboneRouters, final int numHousesPerBackbone,
+                                       final PointToPointChannel auctionChannel,
+                                       final CsmaChannel backboneInterconnectChannel,
+                                       final Ipv4AddressHelper addressHelper) {
 
         for (int i = 0; i < numBackboneRouters; i++) {
 
@@ -91,7 +153,7 @@ public class AdaptedAEPFncsTest extends Experiment {
                 CsmaChannel houseChannel = new CsmaChannel("csmaHouseChannel_" + i + "_" + j);
                 houseChannel.setDataRate("100Mbps");
                 houseChannel.setDelay("10ms");
-                ns3Simulator.addHouseChannel(houseChannel);
+                ns3Sim.addHouseChannel(houseChannel);
 
                 // Connect house router and a backbone router to the house channel
                 Router houseRouter = new Router("csmaHouseRouter_" + i + "_" + j);
@@ -100,48 +162,28 @@ public class AdaptedAEPFncsTest extends Experiment {
                 routers.add(houseRouter);
 
                 houseChannel.assignIPAddresses(addressHelper);
-
             }
         }
+    }
 
-        if (backboneInterconnectChannel != null) {
-            backboneInterconnectChannel.assignIPAddresses(addressHelper);
-        }
-
-        ns3Simulator.setupGlobalRouting();
-
-        final GldSimulator gldSim = this.gldSimulator("fncs_GLD_1node_Feeder_1");
-
-        final AuctionObject auction = createMarket(gldSim, "Market1");
-        auction.setFncsControllerPrefix(controllerNIPrefix);
-        auctionChannel.addAuction(auction);
-
-        // Specify the climate information
-        final ClimateObject climate = gldSim.climateObject("Columbus OH");
-        climate.setTmyFile(Paths.get("res/ColumbusWeather2009_2a.csv"));
-        climate.addCsvReader("CSVREADER");
-
-        // Add a recorder to the auction for some of the properties on the auction
-        final Recorder recorder = auction.recorder();
-        recorder.setName("Market1_Recorder");
-        recorder.properties("capacity_reference_bid_price", "current_market.clearing_price", "current_market.clearing_quantity");
-        recorder.setLimit(100000000);
-        recorder.setInterval(300L);
-        recorder.setUsingSql(true);
-
-        createTriplex(gldSim, numHouses);
-
-        final List<Channel> houseChannels = ns3Simulator.getHouseChannels();
-
-        for (int i = 0; i < numHouses; i++) {
-            final House house = createHouse(gldSim, i, auction);
-
-            houseChannels.get(i).addController(house.getController());
-        }
-
-        // Extra GLD files
-        this.addExtraFiles(Paths.get("res/heat.yaml"));
-        // this.addExtraFiles(Paths.get("res/tzinfo.txt"), Paths.get("res/unitfile.txt"));
+    /**
+     *
+     * @param ns3Sim
+     *              the Ns3Simulator
+     * @param routers
+     *              a list of routers for the simulator
+     * @return a PointToPointChannel for the auction router
+     */
+    private PointToPointChannel createAuctionRouter(final Ns3Simulator ns3Sim, final List<Router> routers) {
+        PointToPointChannel auctionChannel = new PointToPointChannel("auctionChannel");
+        auctionChannel.setDataRate("1Gbps");
+        auctionChannel.setDelay("1ms");
+        ns3Sim.addChannel(auctionChannel);
+        Router auctionRouter = new Router("auctionRouter_0");
+        auctionRouter.setChannel(auctionChannel);
+        auctionChannel.setRouterA(auctionRouter);
+        routers.add(auctionRouter);
+        return auctionChannel;
     }
 
     /**

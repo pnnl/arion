@@ -884,14 +884,13 @@ public class Ns3Network {
 
         // Adds and prints all controller network interface allNames to list of all allNames
         addControllerNames();
-        printControllerNames();
 
         // TODO will need to fix this if more than 1 auction allowed
         Channel channel = channels.get(0);
         AuctionObject auction = channel.getAuctions().get(0);
 
         // A map<string, string> mapping AuctionObject name to a Controller name
-        StringMap<String, String> marketToControllerMap = new StringMap<String, String>("marketToControllerMap");
+        StringMap<String, String> marketToControllerMap = new StringMap<>("marketToControllerMap");
         // Maps the Auction NetworkInterfaceName to the GldNodePrefix
         marketToControllerMap.put(auction.getNetworkInterfaceName(), auction.getFncsControllerPrefix());
 
@@ -1229,16 +1228,9 @@ public class Ns3Network {
 			Controller controller = chan.getControllers().get(0);
 			String controllerNIName = controller.getNetworkInterfaceName();
 			allNames.addName(controllerNIName);
+			// TODO debugging
+            System.out.println("Controller " + controllerNIName + " added.");
 		}
-	}
-
-	/**
-	 * Outputs the GLD Controller allNames and the ns-3 node allNames to the output
-	 * ns-3 .cc file
-	 * @return a string
-	 */
-	public String printControllerNames() {
-		return allNames.printInfo();
 	}
 
 	public void setupGlobalRouting() {

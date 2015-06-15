@@ -31,29 +31,28 @@ public class Vector<T> extends AbstractNs3Object {
 	}
 
 	/**
+	 * @param clazz the type class of this Vector
+	 */
+	public void setType(Class<T> clazz) {
+		appendPrintObj("vector<" + clazz.getSimpleName().toLowerCase() + "> " + this.getName() + ";\n");
+	}
+
+	/**
 	 * Adds the given name to the List of names to output to the ns3 file
 	 * @param name
 	 */
 	public void addName(String name) {
 		names.add(name);
+		pushBack(name);
 	}
 
 	/**
-	 * Outputs each stored name string in this Vector's list of names
+	 * @param name
+	 * 			the String name of the ns-3 object to add to this Vector
 	 */
-	public String printInfo() {
-		String result = "";
-		for (String name : names) {
-			result += pushBack(name);
-		}
-		return result;
-	}
-
-	/**
-	 * @param clazz the type class of this Vector
-	 */
-	public void setType(Class<T> clazz) {
-		appendPrintObj("vector<" + clazz.getSimpleName().toLowerCase() + "> " + this.getName() + ";\n");
+	public void pushBack(String name) {
+		appendPrintObj(this.getName() + ".push_back(\"" +
+				name + "\");\n");
 	}
 	
 	/**
@@ -62,8 +61,7 @@ public class Vector<T> extends AbstractNs3Object {
 	 * 			with the name to add to this StringVector
 	 */
 	public void pushBack(NetworkCapable obj) {
-		appendPrintObj(this.getName() + ".push_back(\"" + 
-					obj.getNetworkInterfaceName() + "\");\n");
+		pushBack(obj.getNetworkInterfaceName() + "\");\n");
 	}
 	
 	/**
@@ -71,7 +69,7 @@ public class Vector<T> extends AbstractNs3Object {
 	 * 			this Vector
 	 */
 	public void pushBack(AbstractNs3Object obj) {
-		this.pushBack(obj.getName());
+		pushBack(obj.getName());
 	}
 	
 	/**
@@ -81,18 +79,8 @@ public class Vector<T> extends AbstractNs3Object {
 	 */
 	public void pushBack(NodeContainer nc) {
 		for (int i = 0; i < nc.getNumNodes(); i++) {
-			this.pushBack(nc.getNodeNoPrint(i));
+			pushBack(nc.getNodeNoPrint(i));
 		}
-	}
-	
-	/**
-	 * @param name
-	 * @return a String of the given name string pushed into a
-	 * 			C++ string vector
-	 */
-	public String pushBack(String name) {
-		return this.getName() + ".push_back(\"" +
-				name + "\");\n";
 	}
 	
 }
