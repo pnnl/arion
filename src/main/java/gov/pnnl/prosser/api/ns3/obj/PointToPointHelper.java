@@ -23,8 +23,8 @@ public class PointToPointHelper extends NetworkHelper {
 	 */
 	public PointToPointHelper(String name) {
 		this.setName(name);
-		this.channelAttributes = new HashMap<String, String>();
-		this.deviceAttributes = new HashMap<String, String>();
+		this.channelAttributes = new HashMap<>();
+		this.deviceAttributes = new HashMap<>();
 	}
 
 	/**
@@ -41,9 +41,9 @@ public class PointToPointHelper extends NetworkHelper {
 			this.setDeviceAttribute("DataRate", channel.getDataRate());
 		}
 		
-		appendPrintObj(p2pDevices.getName() + " = " + this.getName() +
-				".Install(" + nodeA.getName() + ", " +
-				nodeB.getName() + ");\n");
+		appendPrintObj(p2pDevices.getName() + ".Add (" + this.getName() +
+				".Install (" + nodeA.getName() + ", " +
+				nodeB.getName() + "));\n");
 	}
 	
 	/**
@@ -61,7 +61,7 @@ public class PointToPointHelper extends NetworkHelper {
 	 * @param nodes
 	 */
 	public void install(NodeContainer nodes) {
-		appendPrintObj(this.getName() + ".Install(" + nodes.getName() + ");\n");
+		appendPrintObj(this.getName() + ".Install (" + nodes.getName() + ");\n");
 	}
 	
 
@@ -74,8 +74,8 @@ public class PointToPointHelper extends NetworkHelper {
 	 */
 	public void setChannelAttribute(String attr, String value) {
 		channelAttributes.put(attr, value);
-		appendPrintObj(this.getName() + ".SetChannelAttribute(\"" + attr 
-				+ "\", StringValue(\"" + value + "\"));\n");
+		appendPrintObj(this.getName() + ".SetChannelAttribute (\"" + attr
+				+ "\", StringValue (\"" + value + "\"));\n");
 	}
 	
 	/**
@@ -86,13 +86,13 @@ public class PointToPointHelper extends NetworkHelper {
 	 */
 	public void setDeviceAttribute(String attr, String value) {
 		deviceAttributes.put(attr, value);
-		String valueWrapperPrefix = "StringValue(\"";
+		String valueWrapperPrefix = "StringValue (\"";
 		String valueWrapperSuffix = "\")";
 		if (attr.equals("DataRate")) {
-			valueWrapperPrefix = "DataRateValue(DataRate(\"";
+			valueWrapperPrefix = "DataRateValue (DataRate (\"";
 			valueWrapperSuffix = "\"))";
 		}
-		appendPrintObj(this.getName() + ".SetDeviceAttribute(\"" + attr + "\", " 
+		appendPrintObj(this.getName() + ".SetDeviceAttribute (\"" + attr + "\", "
 				+ valueWrapperPrefix + value + valueWrapperSuffix + ");\n");
 	}
 
@@ -102,8 +102,8 @@ public class PointToPointHelper extends NetworkHelper {
 	 */
 	public void setDeviceAttribute(String attr, int value) {
 		deviceAttributes.put(attr, "" + value);
-		appendPrintObj(this.getName() + ".SetDeviceAttribute(\"" + attr 
-				+ "\", UintegerValue(" + value + "));\n");
+		appendPrintObj(this.getName() + ".SetDeviceAttribute (\"" + attr
+				+ "\", UintegerValue (" + value + "));\n");
 	}
 
 }

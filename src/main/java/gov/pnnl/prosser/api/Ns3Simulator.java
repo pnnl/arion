@@ -62,12 +62,10 @@ public class Ns3Simulator {
 	 * @param addressMask 
 	 * @param backboneDataRate 
 	 * @param backboneDelay 
-	 * @param stopTime 
 	 */
-	public void setup(final String addressBase, 
-						final String addressMask, final String backboneDataRate, 
-						final String backboneDelay, final double stopTime,
-					  	final String marketNIPrefix) {
+	public void setup(final String addressBase, final String addressMask,
+					  final String backboneDataRate, final String backboneDelay,
+					  final String marketNIPrefix) {
 		
 		network = new Ns3Network();
 		
@@ -79,9 +77,7 @@ public class Ns3Simulator {
 		
 		network.setBackboneDataRate(backboneDataRate);
 		network.setBackboneDelay(backboneDelay);
-		
-		network.setStopTime(stopTime);
-		
+
 		network.setupFncsSimulator(marketNIPrefix);
 		
 	}

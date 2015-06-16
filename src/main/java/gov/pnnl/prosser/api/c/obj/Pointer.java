@@ -77,7 +77,7 @@ public class Pointer<T extends AbstractNs3Object> extends AbstractNs3Object {
 	public void createObject(T obj) {
 		this.object = obj;
 		appendPrintObj("\n\tPtr<" + obj.getClass().getSimpleName() + "> " 
-					+ this.getName() + " = CreateObject<" + obj.getClass().getSimpleName() + ">();\n");
+					+ this.getName() + " = CreateObject<" + obj.getClass().getSimpleName() + "> ();\n");
 	}
 	
 	/**

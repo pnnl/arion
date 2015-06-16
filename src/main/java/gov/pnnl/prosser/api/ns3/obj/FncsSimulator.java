@@ -21,6 +21,9 @@ public class FncsSimulator extends AbstractNs3Object {
 	 */
 	public FncsSimulator(String name) {
 		this.setName(name);
+        pointerize();
+        unref();
+        setImplementation();
 	}
 	
 	/**
@@ -36,10 +39,10 @@ public class FncsSimulator extends AbstractNs3Object {
 	}
 	
 	/**
-	 * @param ptr the Pointer&lt;FncsSimulator&gt; of the attached FncsSimulator
-	 */
-	public void setImplementation(Pointer<FncsSimulator> ptr) {
-		appendPrintObj("Simulator::SetImplementation(" + ptr.getName() + ");\n");
+     * Sets the implementation of this simulator
+     */
+	public void setImplementation() {
+		appendPrintObj("Simulator::SetImplementation(hb2);\n");
 	}
 	
 	/**
@@ -50,4 +53,10 @@ public class FncsSimulator extends AbstractNs3Object {
 		appendPrintObj(this.getName() + "->Unref();\n");
 	}
 
+	/**
+	 * Wraps this simulator in a pointer
+	 */
+	public void pointerize() {
+		appendPrintObj("Ptr<FncsSimulator> hb2 (" + getName() + ");\n");
+	}
 }

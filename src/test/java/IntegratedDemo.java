@@ -39,7 +39,7 @@ public class IntegratedDemo extends Experiment {
         final GldSimulator gldSim = this.gldSimulator("IntegratedDemo");
 
         // Sets parameters for information technology communication network
-        ns3Simulator.setup("10.0.1.0", "255.255.255.0", backboneDataRate, backboneDelay, 10.0, marketNIPrefix);
+        ns3Simulator.setup("10.0.1.0", "255.255.255.0", backboneDataRate, backboneDelay, marketNIPrefix);
 
         // Create communication channel and router for the auction object
         PointToPointChannel auctionChannel = new PointToPointChannel("auctionChannel");

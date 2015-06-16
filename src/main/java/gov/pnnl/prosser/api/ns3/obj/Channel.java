@@ -75,8 +75,8 @@ public class Channel extends AbstractNs3Object {
 	 */
 	private void setAttribute(String attribute, String value) {
 		this.attributes.put(attribute, value);
-		appendPrintObj(this.getName() + ".SetAttribute(\"" + 
-				attribute + "\", StringValue(\"" + value + "\"));\n");
+		appendPrintObj(this.getName() + ".SetAttribute (\"" +
+				attribute + "\", StringValue (\"" + value + "\"));\n");
 	}
 
 	/**
@@ -173,5 +173,9 @@ public class Channel extends AbstractNs3Object {
 
 	public void addDevices(NetDeviceContainer tempDev) {
 		devices.addDevices(tempDev);
+	}
+
+	public NetDeviceContainer getDevices() {
+		return devices;
 	}
 }

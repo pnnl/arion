@@ -36,8 +36,8 @@ public class CsmaHelper extends NetworkHelper {
 			NetDeviceContainer destinationContainer) {
 		
 		appendPrintObj(destinationContainer.getName() + 
-				" = " + this.getName() + ".Install(" + 
-				node.getName() + ", " + channel.getPointerName() + ");\n");
+				".Add (" + this.getName() + ".Install (" +
+				node.getName() + ", " + channel.getPointerName() + "));\n");
 	}
 	
 	/**
@@ -49,8 +49,8 @@ public class CsmaHelper extends NetworkHelper {
 			NetDeviceContainer destinationContainer) {
 		
 		appendPrintObj(destinationContainer.getName() + 
-				" = " + this.getName() + ".Install(" + 
-				nodes.getName() + ", " + channel.getPointerName() + ");\n");
+				".Add (" + this.getName() + ".Install (" +
+				nodes.getName() + ", " + channel.getPointerName() + "));\n");
 	}
 	
 	/**
@@ -60,8 +60,8 @@ public class CsmaHelper extends NetworkHelper {
 	 */
 	public void setChannelAttribute(String attr, String value) {
 		channelAttributes.put(attr, value);
-		appendPrintObj(this.getName() + ".SetChannelAttribute(\"" + attr + 
-				"\", StringValue(\"" + value + "\"));\n");
+		appendPrintObj(this.getName() + ".SetChannelAttribute (\"" + attr +
+				"\", StringValue (\"" + value + "\"));\n");
 	}
 	
 	/**
@@ -71,8 +71,8 @@ public class CsmaHelper extends NetworkHelper {
 	 */
 	public void setDeviceAttribute(String attr, String value) {
 		deviceAttributes.put(attr, value);
-		appendPrintObj(this.getName() + ".SetDeviceAttribute(\"" + attr + 
-				"\", StringValue(\"" + value + "\"));\n");
+		appendPrintObj(this.getName() + ".SetDeviceAttribute (\"" + attr +
+				"\", StringValue (\"" + value + "\"));\n");
 	}
 
 }

@@ -65,23 +65,20 @@ public class Router extends AbstractNs3Object {
 			devices = new NetDeviceContainer(getName() + "_devices");
 		}
 		
-		NetDeviceContainer tempDev = new NetDeviceContainer("TEMP_" + channel.getType().toString() + 
-				"_devices_" + getName() + "_" + channel.getName());
-		
 		if (channel.getType().equals(NetworkType.CSMA)) {
 			
 			CsmaHelper csmaHelper = new CsmaHelper("csmaHelper_" + getName() + "_" + channel.getName());
-			csmaHelper.install(getNode(), (CsmaChannel) channel, tempDev);
+			csmaHelper.install(getNode(), (CsmaChannel) channel, channel.getDevices());
 
 			// This router is ready for IP stack install
 			ready = true;
 
 			if (pcap) {
-				csmaHelper.enablePcap(channel.getName(), tempDev, 0);
+				csmaHelper.enablePcap(channel.getName(), channel.getDevices(), 0);
 			}
 
 			if (ascii) {
-				csmaHelper.enableAscii(channel.getName(), tempDev, 0);
+				csmaHelper.enableAscii(channel.getName(), channel.getDevices(), 0);
 			}
 
 		} else if (channel.getType().equals(NetworkType.P2P)) {
@@ -99,7 +96,7 @@ public class Router extends AbstractNs3Object {
 			} else if (!((PointToPointChannel) channel).getRouterA().equals(this)) {
 				
 				p2pHelper.install(((PointToPointChannel) channel).getRouterA().getNode(),
-						this.getNode(), (PointToPointChannel) channel, tempDev);
+						this.getNode(), (PointToPointChannel) channel, channel.getDevices());
 
 				// This router is ready for IP stack install
 				ready = true;
@@ -110,9 +107,9 @@ public class Router extends AbstractNs3Object {
 			}
 
 			if (pcap) {
-				p2pHelper.enablePcap(channel.getName(), tempDev, 0);
+				p2pHelper.enablePcap(channel.getName(), channel.getDevices(), 0);
 			}
-						
+
 		}
 		
 		if (!ipStackInstalled && ready) {
@@ -132,33 +129,10 @@ public class Router extends AbstractNs3Object {
 			ipStackInstalled = true;
 
 		}
-		
-		devices.addDevices(tempDev);
 
-		channel.addDevices(tempDev);
+		// FIXME change to addDevices(devices, channel)?
+		//channel.addDevices(devices);
 	}
-
-//	/**
-//	 * Assigns IP addresses to the NetDeviceContainer associated with each Channel
-//	 * @param addrHelper
-//	 */
-//	public void assignIPAddresses(Ipv4AddressHelper addrHelper) {
-//
-//		for (NetDeviceContainer devs : devices.values()) {
-//			addrHelper.assign(devs);
-//			addrHelper.newNetwork(); // Increment network between Channels
-//		}
-//	}
-
-//	public void installIPStack(NetDeviceContainer devs) {
-//		// Creates NodeContainer for InternetStackHelper.Install
-//		NodeContainer nc = new NodeContainer("nodeContainerStackHelper_" + getName());
-//		nc.addNode(this.getNode());
-//
-//		// Installs IP stack on Router
-//		InternetStackHelper stackHelper = new InternetStackHelper("internetStackHelper_" + getName());
-//		stackHelper.install(nc);
-//	}
 
 	/**
 	 *

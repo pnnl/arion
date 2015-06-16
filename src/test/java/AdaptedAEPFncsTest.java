@@ -35,8 +35,7 @@ public class AdaptedAEPFncsTest extends Experiment {
         final int numHouses = 1;
 
         final Ns3Simulator ns3Sim = this.ns3Simulator("ns3");
-        ns3Sim.setup("10.1.1.0", "255.255.255.0", backboneDataRate, backboneDelay, 10.0,
-                marketNIPrefix);
+        ns3Sim.setup("10.1.1.0", "255.255.255.0", backboneDataRate, backboneDelay, marketNIPrefix);
 
         // List of Routers for IP address assignment
         List<Router> routers = new ArrayList<>();
@@ -198,13 +197,10 @@ public class AdaptedAEPFncsTest extends Experiment {
         final String addressMask = "255.255.255.0";
         final String backboneDataRate = "10Gbps";
         final String backboneDelay = "500ns";
-        final double stopTime = 10.0;
         final String marketNIPrefix = "Market1NI";
-        final String controllerNIPrefix = "F1_C_NI1";
 
         // Sets parameters for ns-3 network & builds backbone network
-        sim.setup(addressBase, addressMask, backboneDataRate, backboneDelay, stopTime,
-                marketNIPrefix);
+        sim.setup(addressBase, addressMask, backboneDataRate, backboneDelay, marketNIPrefix);
 
         // Create auction channel & router
         PointToPointChannel auctionChannel = new PointToPointChannel("auctionChannel");

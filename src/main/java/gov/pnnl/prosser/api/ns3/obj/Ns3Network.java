@@ -25,13 +25,12 @@ import java.util.List;
  */
 public class Ns3Network {
 	
-	private NetworkType backboneType, auctionType;
 	private String addrBase, addrMask;
 	private String gldNodePrefix;
 	private String backboneDataRate, backboneDelay;
 	private int numBackboneNodes, numChannels;
 	private double stopTime;
-	private NodeContainer backboneNodes, allNodes;
+	private NodeContainer allNodes;
 	private InternetStackHelper iStackHelper;
 	private List<Module> modules;
 	private List<AuctionObject> auctions;
@@ -43,15 +42,14 @@ public class Ns3Network {
 	
 	/**
 	 * Create a new Ns3Network object, used to set up an ns-3 network for use in Prosser simulation
-	 * with default values for the parameters
+	 * with default values for some parameters
 	 */
 	public Ns3Network() {
-		this.backboneType = null;
-		this.auctionType = null;
 		this.addrBase = "10.1.1.0";
 		this.addrMask = "255.255.255.0";
+        this.numBackboneNodes = 0;
+        this.numChannels = 0;
 		this.stopTime = Double.MAX_VALUE;
-		this.backboneNodes = new NodeContainer();
 		this.allNodes = new NodeContainer();
 		this.iStackHelper = new InternetStackHelper();
 		this.modules = new ArrayList<>();
@@ -60,37 +58,6 @@ public class Ns3Network {
 		this.ns3Objects = new ArrayList<>();
 		this.channels = new ArrayList<>();
 		this.houseChannels = new ArrayList<>();
-	}
-	
-	/**
-	 * @return the NetworkType of the Backbone infrastructure
-	 */
-	public NetworkType getBackboneType() {
-		return backboneType;
-	}
-	
-	/**
-	 * 
-	 * @param backboneType the NetworkType to set for the Backbone infrastructure
-	 */
-	public void setBackboneType(NetworkType backboneType) {
-		this.backboneType = backboneType;
-	}
-	
-	/**
-	 * @return the NetworkType of the Auction market
-	 */
-	public NetworkType getAuctionType() {
-		return auctionType;
-	}
-	
-	/**
-	 * 
-	 * @param auctionType the NetworkType to set for the Auction market
-	 */
-	//TODO: Not sure this type of information should be stored here; Need convincing to allow simulator specific variables in NS3 objects
-	public void setAuctionType(NetworkType auctionType) {
-		this.auctionType = auctionType;
 	}
 
 	/**
@@ -171,7 +138,6 @@ public class Ns3Network {
 	}
 
 	/**
-	 *
 	 * @return a List of house Channels for this Ns3Network
 	 */
 	public List<Channel> getHouseChannels() {
@@ -221,20 +187,6 @@ public class Ns3Network {
 	 */
 	public void setStopTime(double time) {
 		this.stopTime = time;
-	}
-
-	/**
-	 * @return the backboneNodes
-	 */
-	public NodeContainer getBackboneNodes() {
-		return backboneNodes;
-	}
-
-	/**
-	 * @param node the backboneNode to add
-	 */
-	public void addBackboneNode(Node node) {
-		this.backboneNodes.addNode(node);
 	}
 
 	/**
@@ -308,19 +260,59 @@ public class Ns3Network {
 	private Channel getChannel(int i) {
 		return this.channels.get(i);
 	}
-	
+
 	/**
-	 * @return the allNames
+	 * Sets up a FNCSApplicationHelper and ApplicationContainer for the FNCS simulator and
+	 * starts the ns-3 simulator
 	 */
-	public Vector<String> getAllNames() {
-		return allNames;
+	public void setupFncsApplicationHelper() {
+
+		// Adds and prints all controller network interface allNames to list of all allNames
+		addControllerNames();
+
+		// TODO will need to fix this if more than 1 auction allowed
+		Channel channel = channels.get(0);
+		AuctionObject auction = channel.getAuctions().get(0);
+
+		// A map<string, string> mapping AuctionObject name to a Controller name
+		StringMap<String, String> marketToControllerMap = new StringMap<>("marketToControllerMap");
+		// Maps the Auction NetworkInterfaceName to the GldNodePrefix
+		marketToControllerMap.put(auction.getNetworkInterfaceName(), auction.getFncsControllerPrefix());
+
+		ApplicationContainer fncsAps = new ApplicationContainer("fncsAps");
+		FNCSApplicationHelper fncsHelper = new FNCSApplicationHelper("fncsHelper");
+		fncsHelper.setApps(this.allNames, this.allNodes, marketToControllerMap, fncsAps);
+		fncsAps.start(0.0);
+		fncsAps.stop(stopTime);
+
+		// Run Simulator then clean up after it's done (according to FncsAps.stop(...))
+		fncsHelper.appendPrintObj("Simulator::Run();\n");
+		fncsHelper.appendPrintObj("Simulator::Destroy();\n");
+		fncsHelper.appendPrintObj("return 0;\n");
 	}
 
 	/**
-	 * @param name the name to add to the vector (list) of allNames for FNCSApplication
+	 * Adds the controller network interface name for the controller attached to
+	 * each house channel to the list of all allNames needed for the
+	 * FncsApplicationHelper to setup the communication between the
+	 * GLD simulator(s) and the ns-3 simulator(s).
 	 */
-	public void addName(String name) {
-		this.allNames.pushBack(name);
+	public void addControllerNames() {
+		for (Channel chan : getHouseChannels()) {
+			Controller controller = chan.getControllers().get(0);
+			String controllerNIName = controller.getNetworkInterfaceName();
+			allNames.addName(controllerNIName);
+		}
+	}
+
+	/**
+	 * Creates a global routing helper to populate the routing tables
+	 * of all Routers on this network
+	 */
+	public void setupGlobalRouting() {
+		Ipv4GlobalRoutingHelper globalRtHelper =
+				new Ipv4GlobalRoutingHelper("globalRoutingHelper");
+		globalRtHelper.populate();
 	}
 
 	/**
@@ -809,15 +801,8 @@ public class Ns3Network {
 	 */
 	public void setupFncsSimulator(final String marketNIPrefix) {
 
-        Pointer<FncsSimulator> hb2 = new Pointer<>("hb2");
-
         // Setup FNCS simulator
 		FncsSimulator fncsSim = new FncsSimulator("fncsSim");
-		
-		hb2.encapsulate(fncsSim);
-		
-		fncsSim.unref();
-		fncsSim.setImplementation(hb2);
 		
 		// Add modules required for all simulations
 		this.addModule(new Core());
@@ -875,36 +860,6 @@ public class Ns3Network {
 		
 		return names;
 	}
-	
-	/**
-	 * Sets up a FNCSApplicationHelper and ApplicationContainer for the FNCS simulator and 
-	 * starts the ns-3 simulator
-	 */
-	public void setupFncsApplicationHelper() {
-
-        // Adds and prints all controller network interface allNames to list of all allNames
-        addControllerNames();
-
-        // TODO will need to fix this if more than 1 auction allowed
-        Channel channel = channels.get(0);
-        AuctionObject auction = channel.getAuctions().get(0);
-
-        // A map<string, string> mapping AuctionObject name to a Controller name
-        StringMap<String, String> marketToControllerMap = new StringMap<>("marketToControllerMap");
-        // Maps the Auction NetworkInterfaceName to the GldNodePrefix
-        marketToControllerMap.put(auction.getNetworkInterfaceName(), auction.getFncsControllerPrefix());
-
-        ApplicationContainer fncsAps = new ApplicationContainer("fncsAps");
-        FNCSApplicationHelper fncsHelper = new FNCSApplicationHelper("fncsHelper");
-		fncsHelper.setApps(this.allNames, this.allNodes, marketToControllerMap, fncsAps);
-		fncsAps.start(0.0);
-		fncsAps.stop(259200.0);
-		
-		// Run Simulator then clean up after it's done (according to FncsAps.stop(...))
-        fncsHelper.appendPrintObj("Simulator::Run();\n");
-        fncsHelper.appendPrintObj("Simulator::Destroy();\n");
-        fncsHelper.appendPrintObj("return 0;\n");
-	}
 
 	/**
 	 * @return a List of all objects created for this network
@@ -949,7 +904,7 @@ public class Ns3Network {
 		epcHelper.getPgwNode(pgw);
 
 		//TODO fix backbonetype so don't have to do this
-		this.setBackboneType(NetworkType.P2P);
+		//this.setBackboneType(NetworkType.P2P);
 		PointToPointHelper p2pHelper = new PointToPointHelper("p2pHelper");
 		p2pHelper.setDeviceAttribute("DataRate", "100Gb/s");
 		p2pHelper.setDeviceAttribute("Mtu", 1500); // TODO may be able to use string for this as well
@@ -1077,7 +1032,7 @@ public class Ns3Network {
 		this.addModule(new NixVectorRouting());
 
 		final int numChannels = getNumChannels();
-		
+
 		// IP setup
 		Ipv4AddressHelper addresses = new Ipv4AddressHelper("backboneAddresses");
 		
@@ -1217,24 +1172,4 @@ public class Ns3Network {
 		return ns3Objects;
 	}
 
-	/**
-	 * Adds the controller network interface name for the controller attached to
-	 * each house channel to the list of all allNames needed for the
-	 * FncsApplicationHelper to setup the communication between the
-	 * GLD simulator(s) and the ns-3 simulator(s).
-	 */
-	public void addControllerNames() {
-		for (Channel chan : getHouseChannels()) {
-			Controller controller = chan.getControllers().get(0);
-			String controllerNIName = controller.getNetworkInterfaceName();
-			allNames.addName(controllerNIName);
-			// TODO debugging
-            System.out.println("Controller " + controllerNIName + " added.");
-		}
-	}
-
-	public void setupGlobalRouting() {
-		Ipv4GlobalRoutingHelper globalRtHelper = new Ipv4GlobalRoutingHelper("globalRoutingHelper");
-		globalRtHelper.populate();
-	}
 }
