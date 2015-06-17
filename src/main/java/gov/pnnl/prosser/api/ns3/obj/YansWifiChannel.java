@@ -39,7 +39,7 @@ public class YansWifiChannel extends Channel {
 	 * @param phy the YansWifiPhy object
 	 */
 	public void add(Pointer<YansWifiPhy> phy) {
-		appendPrintObj(this.getName() + ".Add(" + phy.getName() + ");\n");
+		appendPrintInfo(this.getName() + ".Add(" + phy.getName() + ");\n");
 	}
 	
 }

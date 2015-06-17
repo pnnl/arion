@@ -49,7 +49,7 @@ public class Pointer<T extends AbstractNs3Object> extends AbstractNs3Object {
 	 * @param obj the AbstractNs3Object to set as this pointer
 	 */
 	public void assign(AbstractNs3Object obj) {
-		appendPrintObj(this.getName() + " = " + obj.getName() + ";\n");
+		appendPrintInfo(this.getName() + " = " + obj.getName() + ";\n");
 	}
 	
 	/**
@@ -58,15 +58,15 @@ public class Pointer<T extends AbstractNs3Object> extends AbstractNs3Object {
 	 * @param obj the AbstractNs3Object to wrap in a pointer
 	 */
 	public void encapsulate(AbstractNs3Object obj) {
-		appendPrintObj("\n\tPtr<" + obj.getClass().getSimpleName() + "> " 
-					+ this.getName() + "(" + obj.getName() + ");\n");
+		appendPrintInfo("\n  Ptr<" + obj.getClass().getSimpleName() + "> "
+				+ this.getName() + "(" + obj.getName() + ");\n");
 	}
 	
 	/**
 	 * @param obj the AbstractNs3Object to set this Pointer type to
 	 */
 	public void setType(AbstractNs3Object obj) {
-		appendPrintObj("\n\tPtr<" + obj.getClass().getSimpleName() + "> " + this.getName() + ";\n");
+		appendPrintInfo("\n  Ptr<" + obj.getClass().getSimpleName() + "> " + this.getName() + ";\n");
 	}
 	
 	/**
@@ -76,8 +76,8 @@ public class Pointer<T extends AbstractNs3Object> extends AbstractNs3Object {
 	 */
 	public void createObject(T obj) {
 		this.object = obj;
-		appendPrintObj("\n\tPtr<" + obj.getClass().getSimpleName() + "> " 
-					+ this.getName() + " = CreateObject<" + obj.getClass().getSimpleName() + "> ();\n");
+		appendPrintInfo("\n  Ptr<" + obj.getClass().getSimpleName() + "> "
+				+ this.getName() + " = CreateObject<" + obj.getClass().getSimpleName() + "> ();\n");
 	}
 	
 	/**

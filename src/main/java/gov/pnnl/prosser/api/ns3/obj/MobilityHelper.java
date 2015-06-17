@@ -33,11 +33,11 @@ public class MobilityHelper extends AbstractNs3Object {
 	 */
 	//TODO create actual object for bounds if we expect to use this
 	public void setMobilityModel(String model, String mode, String modeValue, String speed, String bounds) {
-		appendPrintObj(this.getName() + ".SetMobilityModel(\"" + model + "\", " +
-						"\"Mode\", StringValue(\"" + mode + "\"), " + 
-						"\"Time\", StringValue(\"" + modeValue + "\"), " + 
-						"\"Speed\", StringValue(\"" + speed + "\"), " +
-						"\"Bounds\", " + bounds + ");\n");
+		appendPrintInfo(this.getName() + ".SetMobilityModel(\"" + model + "\", " +
+				"\"Mode\", StringValue(\"" + mode + "\"), " +
+				"\"Time\", StringValue(\"" + modeValue + "\"), " +
+				"\"Speed\", StringValue(\"" + speed + "\"), " +
+				"\"Bounds\", " + bounds + ");\n");
 	}
 	
 	/**
@@ -45,7 +45,7 @@ public class MobilityHelper extends AbstractNs3Object {
 	 * @param model the mobility model used by this MobilityHelper
 	 */
 	public void setMobilityModel(String model) {
-		appendPrintObj(this.getName() + ".SetMobilityModel(\"" + model + "\");\n");
+		appendPrintInfo(this.getName() + ".SetMobilityModel(\"" + model + "\");\n");
 	}
 	
 	/**
@@ -53,7 +53,7 @@ public class MobilityHelper extends AbstractNs3Object {
 	 * @param nodes the NodeContainer to install this Mobility model on
 	 */
 	public void install(NodeContainer nodes) {
-		appendPrintObj(this.getName() + ".Install(" + nodes.getName() + ");\n");
+		appendPrintInfo(this.getName() + ".Install(" + nodes.getName() + ");\n");
 	}
 	
 	/**
@@ -62,7 +62,7 @@ public class MobilityHelper extends AbstractNs3Object {
 	 * @param index the index of the Node to install this MobilityModel on
 	 */
 	public void install(NodeContainer nodes, int index) {
-		appendPrintObj(this.getName() + ".Install(" + nodes.getName() + ".Get(" + index + "));\n");
+		appendPrintInfo(this.getName() + ".Install(" + nodes.getName() + ".Get(" + index + "));\n");
 	}
 
 	/**
@@ -80,7 +80,7 @@ public class MobilityHelper extends AbstractNs3Object {
 	public void setPositionAllocator(String gridPositionAllocator,
 									double minX, double minY, double deltaX,
 									double deltaY, int gridWidth, String rowFirst) {
-		appendPrintObj(this.getName() + 
+		appendPrintInfo(this.getName() +
 				".SetPositionAllocator(\"" + gridPositionAllocator + "\", " +
 				"\"MinX\", DoubleValue(" + minX + "), " +
 				"\"MinY\", DoubleValue(" + minY + "), " +

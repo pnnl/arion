@@ -34,7 +34,7 @@ public class Vector<T> extends AbstractNs3Object {
 	 * @param clazz the type class of this Vector
 	 */
 	public void setType(Class<T> clazz) {
-		appendPrintObj("vector<" + clazz.getSimpleName().toLowerCase() + "> " + this.getName() + ";\n");
+		appendPrintInfo("vector<" + clazz.getSimpleName().toLowerCase() + "> " + this.getName() + ";\n");
 	}
 
 	/**
@@ -51,7 +51,7 @@ public class Vector<T> extends AbstractNs3Object {
 	 * 			the String name of the ns-3 object to add to this Vector
 	 */
 	public void pushBack(String name) {
-		appendPrintObj(this.getName() + ".push_back(\"" +
+		appendPrintInfo(this.getName() + ".push_back(\"" +
 				name + "\");\n");
 	}
 	

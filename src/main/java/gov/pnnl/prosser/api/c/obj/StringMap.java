@@ -24,7 +24,7 @@ public class StringMap<T1, T2> extends AbstractNs3Object {
 	@Override
 	public void setName(String name) {
 		this.setNameString(name);
-		appendPrintObj("map<string, string> " + this.getName() + ";\n");
+		appendPrintInfo("map<string, string> " + this.getName() + ";\n");
 	}
 	
 	/**
@@ -35,7 +35,7 @@ public class StringMap<T1, T2> extends AbstractNs3Object {
 	 * 			should be the controllerNetworkInterface prefix name
 	 */
 	public void put(String key, String value) {
-		appendPrintObj(this.getName() + "[\"" + key + "\"] = \"" + value + "\";\n");
+		appendPrintInfo(this.getName() + "[\"" + key + "\"] = \"" + value + "\";\n");
 	}
 	
 }

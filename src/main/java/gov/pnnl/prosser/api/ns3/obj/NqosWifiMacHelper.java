@@ -25,7 +25,7 @@ public class NqosWifiMacHelper extends AbstractNs3Object {
 	 * Sets the default parameters for this NqosWifiMacHelper (see ns-3 documentation for information)
 	 */
 	public void defaultParams() {
-		appendPrintObj(this.getName() + " = NqosWifiMacHelper::Default();\n");
+		appendPrintInfo(this.getName() + " = NqosWifiMacHelper::Default();\n");
 	}
 
 	/**
@@ -36,9 +36,9 @@ public class NqosWifiMacHelper extends AbstractNs3Object {
 	 * @param activeProbing used by the StaWifiMac ns-3 class
 	 */
 	public void setType(String type, Ssid ssid, boolean activeProbing) {
-		appendPrintObj(this.getName() + ".SetType(\"" + type + "\", "
+		appendPrintInfo(this.getName() + ".SetType(\"" + type + "\", "
 				+ "\"Ssid\", SsidValue(" + ssid.getName() + "), "
-						+ "\"ActiveProbing\", BooleanValue(" + activeProbing + "));\n");
+				+ "\"ActiveProbing\", BooleanValue(" + activeProbing + "));\n");
 	}
 
 	/**
@@ -48,7 +48,7 @@ public class NqosWifiMacHelper extends AbstractNs3Object {
 	 * 			this NQosWifiMacHelper
 	 */
 	public void setType(String type, Ssid ssid) {
-		appendPrintObj(this.getName() + ".SetType(\"" + type + "\", "
+		appendPrintInfo(this.getName() + ".SetType(\"" + type + "\", "
 				+ "\"Ssid\", SsidValue(" + ssid.getName() + "));\n");
 	} 
 	

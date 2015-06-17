@@ -26,7 +26,7 @@ public class UdpEchoHelper extends AbstractNs3Object {
 	 */
 	public void port(int port) {
 		this.port = port;
-		setPrintObj(getPrintObj() + "(" + this.port + ");\n");
+		appendPrintInfo("(" + this.port + ");\n");
 	}
 
 	/**

@@ -29,7 +29,7 @@ public class Ipv4ListRoutingHelper extends AbstractNs3Object {
 	 * @param priority the integer priority of the given Ipv4RoutingHelper
 	 */
 	public void add(AbstractNs3Object staticRouting, int priority) {
-		appendPrintObj(this.getName() + ".Add(" + staticRouting.getName() + ", " + priority + ");\n");
+		appendPrintInfo(this.getName() + ".Add(" + staticRouting.getName() + ", " + priority + ");\n");
 	}
 
 }

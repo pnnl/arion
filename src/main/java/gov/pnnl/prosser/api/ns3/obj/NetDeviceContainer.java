@@ -29,7 +29,7 @@ public class NetDeviceContainer extends AbstractNs3Object {
 	 */
 	public void addDevice(NetDeviceContainer nodes, int index) {
 		this.nodes.addNode(nodes.getDevice(index));
-		appendPrintObj(this.getName() + ".Add(" + nodes.getName() + ".Get(" + index + "));\n");
+		appendPrintInfo(this.getName() + ".Add(" + nodes.getName() + ".Get(" + index + "));\n");
 	}
 	
 	/**
@@ -46,7 +46,7 @@ public class NetDeviceContainer extends AbstractNs3Object {
 	 */
 	public void addDevices(NetDeviceContainer sourceDevices) {
 		this.addDevicesNoPrint(sourceDevices);
-		appendPrintObj(this.getName() + ".Add(" + sourceDevices.getName() + ");\n");
+		appendPrintInfo(this.getName() + ".Add(" + sourceDevices.getName() + ");\n");
 	}
 	
 	/**

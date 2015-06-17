@@ -41,7 +41,7 @@ public class PointToPointHelper extends NetworkHelper {
 			this.setDeviceAttribute("DataRate", channel.getDataRate());
 		}
 		
-		appendPrintObj(p2pDevices.getName() + ".Add (" + this.getName() +
+		appendPrintInfo(p2pDevices.getName() + ".Add (" + this.getName() +
 				".Install (" + nodeA.getName() + ", " +
 				nodeB.getName() + "));\n");
 	}
@@ -61,7 +61,7 @@ public class PointToPointHelper extends NetworkHelper {
 	 * @param nodes
 	 */
 	public void install(NodeContainer nodes) {
-		appendPrintObj(this.getName() + ".Install (" + nodes.getName() + ");\n");
+		appendPrintInfo(this.getName() + ".Install (" + nodes.getName() + ");\n");
 	}
 	
 
@@ -74,7 +74,7 @@ public class PointToPointHelper extends NetworkHelper {
 	 */
 	public void setChannelAttribute(String attr, String value) {
 		channelAttributes.put(attr, value);
-		appendPrintObj(this.getName() + ".SetChannelAttribute (\"" + attr
+		appendPrintInfo(this.getName() + ".SetChannelAttribute (\"" + attr
 				+ "\", StringValue (\"" + value + "\"));\n");
 	}
 	
@@ -92,7 +92,7 @@ public class PointToPointHelper extends NetworkHelper {
 			valueWrapperPrefix = "DataRateValue (DataRate (\"";
 			valueWrapperSuffix = "\"))";
 		}
-		appendPrintObj(this.getName() + ".SetDeviceAttribute (\"" + attr + "\", "
+		appendPrintInfo(this.getName() + ".SetDeviceAttribute (\"" + attr + "\", "
 				+ valueWrapperPrefix + value + valueWrapperSuffix + ");\n");
 	}
 
@@ -102,7 +102,7 @@ public class PointToPointHelper extends NetworkHelper {
 	 */
 	public void setDeviceAttribute(String attr, int value) {
 		deviceAttributes.put(attr, "" + value);
-		appendPrintObj(this.getName() + ".SetDeviceAttribute (\"" + attr
+		appendPrintInfo(this.getName() + ".SetDeviceAttribute (\"" + attr
 				+ "\", UintegerValue (" + value + "));\n");
 	}
 

@@ -28,7 +28,7 @@ public class Ssid extends AbstractNs3Object {
 	 * 		basically the name of a WiFi network) value for this Ssid object
 	 */
 	public void setSsid(String ssid) {
-		appendPrintObj(this.getName() + " = Ssid(\"" + ssid + "\");");
+		appendPrintInfo(this.getName() + " = Ssid(\"" + ssid + "\");");
 	}
 	
 }

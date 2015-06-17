@@ -19,7 +19,7 @@ public class UdpEchoServerHelper extends UdpEchoHelper {
 	 */
 	public UdpEchoServerHelper(String name) {
 		this.setName(name);
-		setPrintObj("UdpEchoServerHelper " + this.getName());
+		appendPrintInfo("UdpEchoServerHelper " + this.getName());
 	}
 
 }

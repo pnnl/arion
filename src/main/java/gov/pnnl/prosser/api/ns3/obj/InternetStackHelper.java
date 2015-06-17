@@ -33,7 +33,7 @@ public class InternetStackHelper extends AbstractNs3Object {
 	 */
 	public void install(Node node) {
 
-		appendPrintObj(this.getName() + ".Install(" + node.getName() + ");\n");
+		appendPrintInfo(this.getName() + ".Install(" + node.getName() + ");\n");
 
 	}
 
@@ -43,7 +43,7 @@ public class InternetStackHelper extends AbstractNs3Object {
 	 * @param nodes the NodeContainer
 	 */
 	public void install(NodeContainer nodes) {
-		appendPrintObj(this.getName() + ".Install(" + nodes.getName() + ");\n");
+		appendPrintInfo(this.getName() + ".Install(" + nodes.getName() + ");\n");
 	}
 
 	/**
@@ -51,7 +51,7 @@ public class InternetStackHelper extends AbstractNs3Object {
 	 * @param list the Ipv4ListRoutingHelper to be this InternetStackHelper's routing helper
 	 */
 	public void setRoutingHelper(Ipv4ListRoutingHelper list) {
-		appendPrintObj(this.getName() + ".SetRoutingHelper(" + list.getName() + ");\n");
+		appendPrintInfo(this.getName() + ".SetRoutingHelper(" + list.getName() + ");\n");
 	}
 	
 }

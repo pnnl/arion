@@ -4,7 +4,6 @@
 package gov.pnnl.prosser.api;
 
 import java.util.Objects;
-import java.util.UUID;
 
 /**
  * @author happ546
@@ -47,7 +46,7 @@ public abstract class AbstractNs3Object {
 	 */
 	public void setName(String name) {
 		this.name = name;
-		this.appendPrintObj("\n\t" + this.getClass().getSimpleName() +
+		this.appendPrintInfo("\n  " + this.getClass().getSimpleName() +
 				" " + this.name + ";\n");
 	}
 	
@@ -68,36 +67,28 @@ public abstract class AbstractNs3Object {
 		this.name = name;
 	}
 	
-
-	/**
-	 * @return printObj the string containing the c++ implementation 
-	 * text for all ns-3 objects
-	 */
-	public String getPrintObj() {
-		return AbstractNs3Object.printObj;
-	}
-
-	/**
-	 * @param text the text printObj (stored c++ implementation 
-	 * text for all ns-3 objects) is set to
-	 */
-	public void setPrintObj(String text) {
-		AbstractNs3Object.printObj = text;
-	}
-	
 	/**
 	 * 
-	 * @param text the text to append to this object's printObj string
+	 * @param text
+	 * 			the text to append to this object's printInfo string for the
+	 * 			ns-3 output file
 	 */
-	public void appendPrintObj(String text) {
-		//this.setPrintObj(this.getPrintObj() + "\t" + text);
-		this.setPrintInfo(this.getPrintInfo() + "\t" + text);
+	public void appendPrintInfo(String text) {
+		this.setPrintInfo(this.getPrintInfo() + "  " + text);
 	}
 
+	/**
+	 * @param text
+	 * 			the text to set this object's printInfo string
+	 */
 	public void setPrintInfo(String text) {
 		this.printInfo = text;
 	}
 
+	/**
+	 * @return
+	 * 			this object's printInfo string
+	 */
 	public String getPrintInfo() {
 		return this.printInfo;
 	}
@@ -107,7 +98,6 @@ public abstract class AbstractNs3Object {
 	 * @param sb
 	 */
 	public void writeNs3Properties(StringBuilder sb) {
-		//sb.append(getPrintObj());
 		sb.append(getPrintInfo());
 	}
 	
@@ -139,8 +129,8 @@ public abstract class AbstractNs3Object {
     protected void getAsPointer() {
     	String objClass = this.getClass().getSimpleName();
 
-    	appendPrintObj("Ptr<" + objClass + "> " + this.getPointerName() +
-    			" = " + "CreateObject<" + objClass + ">();\n");
+    	appendPrintInfo("Ptr<" + objClass + "> " + this.getPointerName() +
+				" = " + "CreateObject<" + objClass + ">();\n");
     }
 	
 }

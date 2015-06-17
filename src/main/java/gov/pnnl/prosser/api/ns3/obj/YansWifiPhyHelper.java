@@ -26,7 +26,7 @@ public class YansWifiPhyHelper extends AbstractNs3Object {
 	 * Sets the default parameters for this YansWifiPhyHelper (see ns-3 documentation for information) 
 	 */
 	public void defaultParams() {
-		appendPrintObj(this.getName() + " = YansWifiPhyHelper::Default();\n");
+		appendPrintInfo(this.getName() + " = YansWifiPhyHelper::Default();\n");
 	}
 	
 	/**
@@ -34,7 +34,7 @@ public class YansWifiPhyHelper extends AbstractNs3Object {
 	 * @param channel the channel used by this YansWifiChannelHelper
 	 */
 	public void setChannel(YansWifiChannelHelper channel) {
-		appendPrintObj(this.getName() + ".SetChannel(" + channel.getName() + ".Create());\n");
+		appendPrintInfo(this.getName() + ".SetChannel(" + channel.getName() + ".Create());\n");
 	}
 
 	/**
@@ -42,7 +42,7 @@ public class YansWifiPhyHelper extends AbstractNs3Object {
 	 * @param dlType the PCAP data link type for this YansWifiPhyHelper
 	 */
 	public void setPcapDataLinkType(String dlType) {
-		appendPrintObj(this.getName() + ".SetPcapDataLinkType(" + dlType + ");\n");
+		appendPrintInfo(this.getName() + ".SetPcapDataLinkType(" + dlType + ");\n");
 		
 	}
 	

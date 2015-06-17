@@ -43,9 +43,6 @@ public class AdaptedAEPFncsTest extends Experiment {
         // Creates Auction Channel and Auction Router
         final PointToPointChannel auctionChannel = createAuctionRouter(ns3Sim, routers);
 
-        final Ipv4AddressHelper addressHelper = new Ipv4AddressHelper("addrHelper");
-        addressHelper.setBase(ns3Sim.getIPBase(), ns3Sim.getIPMask());
-
         // This is example of how network setup could be automated somewhat by user
         // Equal number of houses per backbone router not hardcoded into Prosser
         final int numBackboneRouters = numHouses / 126 + 1;
@@ -59,10 +56,17 @@ public class AdaptedAEPFncsTest extends Experiment {
 
         // Creates the specified number of house Routers and attaches them to backbone Routers
         createBackboneRouters(ns3Sim, routers, numBackboneRouters, numHousesPerBackbone,
-                auctionChannel, backboneInterconnectChannel, addressHelper);
+                auctionChannel, backboneInterconnectChannel);
+
+        final Ipv4AddressHelper addressHelper = new Ipv4AddressHelper("addrHelper");
+        addressHelper.setBase(ns3Sim.getIPBase(), ns3Sim.getIPMask());
 
         if (backboneInterconnectChannel != null) {
             backboneInterconnectChannel.assignIPAddresses(addressHelper);
+        }
+
+        for (Channel c : ns3Sim.getChannels()) {
+            c.assignIPAddresses(addressHelper);
         }
 
         // Sets up global IPv4 routing tables on each Router
@@ -106,25 +110,22 @@ public class AdaptedAEPFncsTest extends Experiment {
     /**
      *
      * @param ns3Sim
-     *              the Ns3Simulator
+     *         the Ns3Simulator
      * @param routers
-     *              a List of Routers for this sim
+     *         a List of Routers for this sim
      * @param numBackboneRouters
-     *              the number of backbone Routers to create
+     *         the number of backbone Routers to create
      * @param numHousesPerBackbone
-     *              the number of house Routers per backbone Router
+     *         the number of house Routers per backbone Router
      * @param auctionChannel
-     *              the Auction Channel
+     *         the Auction Channel
      * @param backboneInterconnectChannel
-     *              the Channel to connect the backbone Routers
-     * @param addressHelper
-     *              the Ipv4AddressHelper for this sim
+     *         the Channel to connect the backbone Routers
      */
     private void createBackboneRouters(final Ns3Simulator ns3Sim, final List<Router> routers,
                                        final int numBackboneRouters, final int numHousesPerBackbone,
                                        final PointToPointChannel auctionChannel,
-                                       final CsmaChannel backboneInterconnectChannel,
-                                       final Ipv4AddressHelper addressHelper) {
+                                       final CsmaChannel backboneInterconnectChannel) {
 
         for (int i = 0; i < numBackboneRouters; i++) {
 
@@ -138,7 +139,7 @@ public class AdaptedAEPFncsTest extends Experiment {
             if (i == 0) {
                 backboneRouter.setChannel(auctionChannel);
                 // TODO would be cleaner to do?: auctionChannel.setRouterB(backboneRouter);
-                auctionChannel.assignIPAddresses(addressHelper);
+                //auctionChannel.assignIPAddresses(addressHelper);
             }
 
             // If there are more than 1 backboneRouters, connect them together
@@ -160,7 +161,7 @@ public class AdaptedAEPFncsTest extends Experiment {
                 backboneRouter.setChannel(houseChannel);
                 routers.add(houseRouter);
 
-                houseChannel.assignIPAddresses(addressHelper);
+                //houseChannel.assignIPAddresses(addressHelper);
             }
         }
     }

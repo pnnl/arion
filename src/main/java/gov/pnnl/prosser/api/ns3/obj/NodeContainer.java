@@ -48,14 +48,14 @@ public class NodeContainer extends AbstractNs3Object {
 			String name = this.getName() + "_container_node_" + (i + 1) * Math.random();
 			this.addNode(new Node(name.replace('.', '_')));
 		}
-		appendPrintObj(this.getName() + ".Create(" + numNodes + ");\n");
+		appendPrintInfo(this.getName() + ".Create(" + numNodes + ");\n");
 	}
 
 	/**
 	 * @param node the Node to add to this NodeContainer
 	 */
 	public void addNode(Node node) {
-		appendPrintObj(this.getName() + ".Add(" + node.getName() + ");\n");
+		appendPrintInfo(this.getName() + ".Add(" + node.getName() + ");\n");
 	}
 	
 	/**
@@ -65,7 +65,7 @@ public class NodeContainer extends AbstractNs3Object {
 	 */
 	public void addNode(NodeContainer container, int index) {
 		this.addNode(container.getNodeNoPrint(index));
-		appendPrintObj(this.getName() + ".Add(" + container.getName() + ".Get(" + index + "));\n");
+		appendPrintInfo(this.getName() + ".Add(" + container.getName() + ".Get(" + index + "));\n");
 	}
 	
 	/**
@@ -76,7 +76,7 @@ public class NodeContainer extends AbstractNs3Object {
 		for (int i = 0; i < sourceNodes.getNumNodes(); i++) {
 			this.nodes.add(sourceNodes.getNodeNoPrint(i));
 		}
-		appendPrintObj(this.getName() + ".Add(" + sourceNodes.getName() + ");\n");
+		appendPrintInfo(this.getName() + ".Add(" + sourceNodes.getName() + ");\n");
 	}
 	
 	/**
@@ -111,8 +111,8 @@ public class NodeContainer extends AbstractNs3Object {
 	 * @param backboneRouterPtr the Pointer&lt;Node&gt; to add the node at index to
 	 */
 	public void getNode(int index, Pointer<Node> backboneRouterPtr) {
-		appendPrintObj(backboneRouterPtr.getName() + " = " + this.getName() 
-						+ ".Get(" + index + ");\n");
+		appendPrintInfo(backboneRouterPtr.getName() + " = " + this.getName()
+				+ ".Get(" + index + ");\n");
 	}
 
 	/**

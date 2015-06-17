@@ -24,7 +24,7 @@ public class WifiHelper extends NetworkHelper {
 	 * Sets the default parameters for this WifiHelper (see ns-3 documentation for information)
 	 */
 	public void defaultParams() {
-		appendPrintObj(this.getName() + " = WifiHelper::Default();\n");
+		appendPrintInfo(this.getName() + " = WifiHelper::Default();\n");
 	}
 
 	/**
@@ -32,7 +32,7 @@ public class WifiHelper extends NetworkHelper {
 	 * @param remoteStationManager
 	 */
 	public void setRemoteStationManager(String remoteStationManager) {
-		appendPrintObj(this.getName() + "SetRemoteStationManager(\"" 
+		appendPrintInfo(this.getName() + "SetRemoteStationManager(\""
 				+ remoteStationManager + "\");\n");
 	}
 
@@ -47,8 +47,8 @@ public class WifiHelper extends NetworkHelper {
 	 */
 	public void install(YansWifiPhyHelper phy, NqosWifiMacHelper mac,
 			NodeContainer sourceNodes, NetDeviceContainer destinationContainer) {
-		appendPrintObj(destinationContainer.getName() + " = " + this.getName() + 
-				".Install(" + phy.getName() + ", " + mac.getName() + ", " 
+		appendPrintInfo(destinationContainer.getName() + " = " + this.getName() +
+				".Install(" + phy.getName() + ", " + mac.getName() + ", "
 				+ sourceNodes.getName() + ");\n");
 	}
 
@@ -64,8 +64,8 @@ public class WifiHelper extends NetworkHelper {
 	 */
 	public void install(YansWifiPhyHelper phy, NqosWifiMacHelper mac, 
 			NodeContainer sourceNodes, int index, NetDeviceContainer destinationContainer) {
-		appendPrintObj(destinationContainer.getName() + " = " + this.getName() + 
-				".Install(" + phy.getName() + ", " + mac.getName() + ", " 
+		appendPrintInfo(destinationContainer.getName() + " = " + this.getName() +
+				".Install(" + phy.getName() + ", " + mac.getName() + ", "
 				+ sourceNodes.getName() + ".Get(" + index + "));\n");
 	}
 	

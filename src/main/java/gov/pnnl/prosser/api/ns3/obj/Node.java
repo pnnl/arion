@@ -31,8 +31,8 @@ public class Node extends AbstractNs3Object {
 		setNameString(name);
 		getAsPointer();
 		// TODO un-hardcode this; for FNCSApplicationHelper.Setup
-		appendPrintObj("allNames.push_back (\"" + getPointerName() + "\");\n");
-		appendPrintObj("allNodes.Add (" + getPointerName() + ");\n");
+		appendPrintInfo("allNames.push_back (\"" + getPointerName() + "\");\n");
+		appendPrintInfo("allNodes.Add (" + getPointerName() + ");\n");
 
 	}
 

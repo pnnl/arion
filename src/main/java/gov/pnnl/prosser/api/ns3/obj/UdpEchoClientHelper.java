@@ -26,7 +26,7 @@ public class UdpEchoClientHelper extends UdpEchoHelper {
 	 */
 	public UdpEchoClientHelper(String name) {
 		this.setName(name);
-		attributes = new HashMap<String, Double>();
+		attributes = new HashMap<>();
 	}
 
 	/**
@@ -47,8 +47,8 @@ public class UdpEchoClientHelper extends UdpEchoHelper {
 				|| attr.equalsIgnoreCase("remoteport")) {
 			modifier = "UintegerValue";
 		}
-		setPrintObj(getPrintObj() + this.getName() + ".SetAttribute(\"" + attr + "\", " 
-					+ modifier + "(" + this.getPort() + ");\n");
+		appendPrintInfo(this.getName() + ".SetAttribute(\"" + attr + "\", "
+				+ modifier + "(" + this.getPort() + ");\n");
 	}
 
 	/**
@@ -57,8 +57,8 @@ public class UdpEchoClientHelper extends UdpEchoHelper {
 	 * @param address the IP address
 	 */
 	public void setAddress(String address) {
-		setPrintObj("UdpEchoClientHelper " + this.getName() + "(" + address + "," 
-					+ this.getPort() + ");\n");
+		appendPrintInfo("UdpEchoClientHelper " + this.getName() + "(" + address + ","
+				+ this.getPort() + ");\n");
 	}	
 
 }

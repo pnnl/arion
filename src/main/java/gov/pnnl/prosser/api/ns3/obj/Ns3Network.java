@@ -9,7 +9,6 @@ import gov.pnnl.prosser.api.c.obj.StringMap;
 import gov.pnnl.prosser.api.c.obj.Vector;
 import gov.pnnl.prosser.api.gld.obj.AuctionObject;
 import gov.pnnl.prosser.api.gld.obj.Controller;
-import gov.pnnl.prosser.api.ns3.enums.NetworkType;
 import gov.pnnl.prosser.api.ns3.enums.Qci;
 import gov.pnnl.prosser.api.ns3.module.*;
 
@@ -49,7 +48,7 @@ public class Ns3Network {
 		this.addrMask = "255.255.255.0";
         this.numBackboneNodes = 0;
         this.numChannels = 0;
-		this.stopTime = Double.MAX_VALUE;
+		this.stopTime = 31536000.0; // TODO get simulation end time (seconds) from GLD clock
 		this.allNodes = new NodeContainer();
 		this.iStackHelper = new InternetStackHelper();
 		this.modules = new ArrayList<>();
@@ -248,7 +247,7 @@ public class Ns3Network {
 	 * @param houseChannel the house Channel to add to this
 	 *                     Ns3Network
 	 */
-	public void addHouseChannel(CsmaChannel houseChannel) {
+	public void addHouseChannel(Channel houseChannel) {
 		this.houseChannels.add(houseChannel);
 		this.channels.add(houseChannel);
 	}
@@ -279,16 +278,13 @@ public class Ns3Network {
 		// Maps the Auction NetworkInterfaceName to the GldNodePrefix
 		marketToControllerMap.put(auction.getNetworkInterfaceName(), auction.getFncsControllerPrefix());
 
-		ApplicationContainer fncsAps = new ApplicationContainer("fncsAps");
 		FNCSApplicationHelper fncsHelper = new FNCSApplicationHelper("fncsHelper");
-		fncsHelper.setApps(this.allNames, this.allNodes, marketToControllerMap, fncsAps);
-		fncsAps.start(0.0);
-		fncsAps.stop(stopTime);
+		fncsHelper.setApps(this.allNames, this.allNodes, marketToControllerMap, stopTime);
 
 		// Run Simulator then clean up after it's done (according to FncsAps.stop(...))
-		fncsHelper.appendPrintObj("Simulator::Run();\n");
-		fncsHelper.appendPrintObj("Simulator::Destroy();\n");
-		fncsHelper.appendPrintObj("return 0;\n");
+		fncsHelper.appendPrintInfo("Simulator::Run();\n");
+		fncsHelper.appendPrintInfo("Simulator::Destroy();\n");
+		fncsHelper.appendPrintInfo("return 0;\n");
 	}
 
 	/**
@@ -317,7 +313,7 @@ public class Ns3Network {
 
 	/**
 	 * Connect the Controllers to the appropriate Channels
-	 * TODO first channel is for Auction; any beyond that have up to 20 controllers on them
+	 * Note: first channel is for Auction
 	 */
 	public void connectControllerChannels() {
 		
@@ -390,8 +386,8 @@ public class Ns3Network {
 				ipv4AddrHelper.assign(csmaDevices);
 				
 				// TODO debugging					
-			    //String stuff = "\tcsmaDeviceVector.push_back(csmaDevices_" + i + ");\n";
-			    //csmaHelper.appendPrintObj(stuff);
+			    //String stuff = "  csmaDeviceVector.push_back(csmaDevices_" + i + ");\n";
+			    //csmaHelper.appendPrintInfo(stuff);
 				
 			} else if (channel.getClass().getSimpleName().equalsIgnoreCase("pointtopointchannel")) {
 				Pointer<PointToPointChannel> chanPtr  = new Pointer<PointToPointChannel>("chanPtr_" + i);
@@ -497,7 +493,7 @@ public class Ns3Network {
 		      "   MobilityHelper::EnableAsciiAll (ascii.CreateFileStream (\"wifi-wired-bridging.mob\"));\n" +
 		    "   }\n";
 		
-		ns3.appendPrintObj(stuff + "\n");*/
+		ns3.appendPrintInfo(stuff + "\n");*/
 		
 	}
 	
@@ -671,7 +667,7 @@ public class Ns3Network {
 //						  "std::vector<Ipv4InterfaceContainer> staInterfaceVector;\n" +
 //						  "std::vector<Ipv4InterfaceContainer> apInterfaceVector;\n";
 		
-//		stack.appendPrintObj(vectors);
+//		stack.appendPrintInfo(vectors);
 		
 		// Used by MobilityHelper's positionAllocator and setMobilityModel
 		double wifiX = 0.0;
@@ -746,13 +742,13 @@ public class Ns3Network {
 //			                               + numStaNodesPerApNode + " + 1) * 5.0))");
 			    
 			    // Saves everything in containers.
-			    String stuff = "\n\tstaNodeVector.push_back(staNodes_" + i + ");\n" +
-					    "\tapDeviceVector.push_back(apDev_" + i + ");\n" +
-					    "\tapInterfaceVector.push_back(apInterface_" + i + ");\n" +
-					    "\tstaDeviceVector.push_back(staDev_" + i + ");\n" +
-					    "\tstaInterfaceVector.push_back(staInterface_" + i + ");\n";
+			    String stuff = "\n  staNodeVector.push_back(staNodes_" + i + ");\n" +
+					    "  apDeviceVector.push_back(apDev_" + i + ");\n" +
+					    "  apInterfaceVector.push_back(apInterface_" + i + ");\n" +
+					    "  staDeviceVector.push_back(staDev_" + i + ");\n" +
+					    "  staInterfaceVector.push_back(staInterface_" + i + ");\n";
 			    
-			    addressHelper.appendPrintObj(stuff);
+			    addressHelper.appendPrintInfo(stuff);
 	
 			    wifiX += 20.0;
 		}
@@ -790,7 +786,7 @@ public class Ns3Network {
 //		      "   MobilityHelper::EnableAsciiAll (ascii.CreateFileStream (\"wifi-wired-bridging.mob\"));\n" +
 //		    "   }\n";
 		
-//		ns3.appendPrintObj(stuff + "\n");
+//		ns3.appendPrintInfo(stuff + "\n");
 		
 		return ns3Objects;
 		

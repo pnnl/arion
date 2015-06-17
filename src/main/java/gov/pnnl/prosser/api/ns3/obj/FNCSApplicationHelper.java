@@ -28,15 +28,17 @@ public class FNCSApplicationHelper extends AbstractNs3Object {
 	 * @param gldNodes
 	 * @param marketToControllerMapName a Map from the MarketNetworkInterface name String 
 	 * 			to the ControllerNetworkInterface name String
-	 * @param destContainer the ApplicationContainer to hold the generated application
+	 * @param stopTime
 	 */
 	public void setApps(Vector<String> names, NodeContainer gldNodes, 
 						StringMap<String, String> marketToControllerMapName, 
-						ApplicationContainer destContainer) {
-		appendPrintObj(destContainer.getName() + " = " + this.getName() 
-						+ ".SetApps(" + names.getName() + ", " 
-						+ gldNodes.getName() + ", " 
-						+ marketToControllerMapName.getName() + ");\n");
+						double stopTime) {
+		appendPrintInfo("ApplicationContainer fncsAps = " + this.getName()
+				+ ".SetApps (" + names.getName() + ", "
+				+ gldNodes.getName() + ", "
+				+ marketToControllerMapName.getName() + ");\n");
+		appendPrintInfo("fncsAps.Start ( Seconds(0.0));\n");
+		appendPrintInfo("fncsAps.Stop ( Seconds(" + stopTime + "));\n");
 	}
 	
 }

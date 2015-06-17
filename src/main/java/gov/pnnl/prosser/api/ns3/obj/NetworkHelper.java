@@ -19,7 +19,7 @@ public class NetworkHelper extends AbstractNs3Object {
 	 * @param prefix the filename prefix
 	 */
 	public void enablePcapAll(String prefix) {
-		appendPrintObj(this.getName() + ".EnablePcapAll (\"" + prefix + "\", true);\n");
+		appendPrintInfo(this.getName() + ".EnablePcapAll (\"" + prefix + "\", true);\n");
 	}
 
 	/**
@@ -29,7 +29,7 @@ public class NetworkHelper extends AbstractNs3Object {
 	 * @param index the index of the device in devs to do a PCAP on
 	 */
 	public void enablePcap(String prefix, NetDeviceContainer devs, int index) {
-		appendPrintObj(this.getName() + ".EnablePcap (\"" + prefix + "\", " + devs.getName() +
+		appendPrintInfo(this.getName() + ".EnablePcap (\"" + prefix + "\", " + devs.getName() +
 				".Get (" + index + "));\n");
 	}
 
@@ -38,7 +38,7 @@ public class NetworkHelper extends AbstractNs3Object {
 	 * @param prefix the filename prefix
 	 */
 	public void enableAsciiAll(String prefix) {
-		appendPrintObj(this.getName() + ".EnableAsciiAll (\"" + prefix + "\");\n");
+		appendPrintInfo(this.getName() + ".EnableAsciiAll (\"" + prefix + "\");\n");
 	}
 
 	/**
@@ -48,7 +48,7 @@ public class NetworkHelper extends AbstractNs3Object {
 	 * @param index the index of the device in devs to do an Ascii trace of
 	 */
 	public void enableAscii(String prefix, NetDeviceContainer devs, int index) {
-		appendPrintObj(this.getName() + ".EnableAscii (\"" + prefix + "\", " + devs.getName() +
+		appendPrintInfo(this.getName() + ".EnableAscii (\"" + prefix + "\", " + devs.getName() +
 				".Get (" + index + "));\n");
 	}
 	
@@ -59,7 +59,7 @@ public class NetworkHelper extends AbstractNs3Object {
 	 * Equivalent statement: destination = this.install(nodes);
 	 */
 	public void install(NodeContainer nodes, NetDeviceContainer destination) {
-		appendPrintObj(destination.getName() + " = " + this.getName() + ".Install(" + nodes.getName() + ");\n");
+		appendPrintInfo(destination.getName() + " = " + this.getName() + ".Install(" + nodes.getName() + ");\n");
 	}
 	
 	/**

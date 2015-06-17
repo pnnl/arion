@@ -36,8 +36,8 @@ public class LteHelper extends NetworkHelper {
 				NetDeviceContainer destinationContainer, 
 				String enbOrUe) {
 		destinationContainer.addNodes(sourceNodes);
-		this.appendPrintObj(destinationContainer.getName() + " = " + this.getName() + ".Install" 
-						+ enbOrUe + "Device(" + sourceNodes.getName() + ");\n");
+		this.appendPrintInfo(destinationContainer.getName() + " = " + this.getName() + ".Install"
+				+ enbOrUe + "Device(" + sourceNodes.getName() + ");\n");
 	}
 	
 	/**
@@ -71,8 +71,8 @@ public class LteHelper extends NetworkHelper {
 	 */
 	public void attach(NetDeviceContainer ueDevices, 
 				NetDeviceContainer enbDevices, int index) {
-		this.appendPrintObj(this.getName() + ".Attach(" + ueDevices.getName() + ", " 
-							+ enbDevices.getName() + ".Get(" + index + "));\n");
+		this.appendPrintInfo(this.getName() + ".Attach(" + ueDevices.getName() + ", "
+				+ enbDevices.getName() + ".Get(" + index + "));\n");
 	}
 	
 	/**
@@ -82,15 +82,15 @@ public class LteHelper extends NetworkHelper {
 	 * @param bearer the EpsBearer to attach to ueDevices
 	 */
 	public void activateDataRadioBearer(NetDeviceContainer ueDevices, EpsBearer bearer) {
-		this.appendPrintObj(this.getName() + ".ActivateDataRadioBearer(" + ueDevices.getName() 
-							+ ", " + bearer.getName() + ");\n");
+		this.appendPrintInfo(this.getName() + ".ActivateDataRadioBearer(" + ueDevices.getName()
+				+ ", " + bearer.getName() + ");\n");
 	}
 	
 	/**
 	 * @param epcHelperPointer the EPC (Evolved Packet Core) helper to use
 	 */
 	public void setEpcHelper(Pointer<PointToPointEpcHelper> epcHelperPointer) {
-		this.appendPrintObj(this.getName() + ".SetEpcHelper(" + epcHelperPointer.getName() + ");\n");
+		this.appendPrintInfo(this.getName() + ".SetEpcHelper(" + epcHelperPointer.getName() + ");\n");
 	}
 
 }

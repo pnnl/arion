@@ -29,7 +29,7 @@ public class Ipv4StaticRoutingHelper extends AbstractNs3Object {
 	 * @param interfaceIndex 
 	 */
 	public void setDefaultRoute(Ipv4Address addr, int interfaceIndex) {
-		appendPrintObj(this.getName() + 
+		appendPrintInfo(this.getName() +
 				".SetDefaultRoute(" + addr.getName() + ", " + interfaceIndex);
 	}
 	

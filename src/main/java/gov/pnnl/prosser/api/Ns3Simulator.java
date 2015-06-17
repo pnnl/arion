@@ -3,8 +3,6 @@
  */
 package gov.pnnl.prosser.api;
 
-import gov.pnnl.prosser.api.c.obj.Pointer;
-import gov.pnnl.prosser.api.gld.AbstractGldObject;
 import gov.pnnl.prosser.api.gld.obj.AuctionObject;
 import gov.pnnl.prosser.api.gld.obj.Controller;
 import gov.pnnl.prosser.api.ns3.enums.NetworkType;
@@ -81,13 +79,21 @@ public class Ns3Simulator {
 		network.setupFncsSimulator(marketNIPrefix);
 		
 	}
-	
+
 	/**
 	 * Creates the FncsApplicationHelper used to connect the GLD and ns-3 simulators
 	 */
 	public void setupFncsApplicationHelper() {
 		network.setupFncsApplicationHelper();
 	}
+
+
+    /**
+     * Populates global routing tables on each Router in the network
+     */
+    public void setupGlobalRouting() {
+        network.setupGlobalRouting();
+    }
 	
     /**
      * Gets the Modules used in this simulation
@@ -112,36 +118,15 @@ public class Ns3Simulator {
 	public List<AbstractNs3Object> getObjects() {		
 		return ns3Objects;
 	}
-
-	/**
-	 * @param auctions
-	 */
-	public void setAuctions(List<AuctionObject> auctions) {
-		network.setAuctions(auctions);
-	}
-
-	/**
-	 * @param controllers
-	 */
-	public void setControllers(List<Controller> controllers) {
-		network.setControllers(controllers);
-	}
-
-	/**
-	 * @param controllerPrefix
-	 */
-	public void setGldNodePrefix(String controllerPrefix) {
-		network.setGldNodePrefix(controllerPrefix);
-	}
 	
 	/**
 	 * @param type
 	 * @return an instance of the specified subclass of Channel
 	 */
 	public Channel channel(NetworkType type) {
-		if (type.name().equalsIgnoreCase("csma")) {
+		if (type.equals(NetworkType.CSMA)) {
 			return new CsmaChannel();
-		} else if (type.name().equalsIgnoreCase("p2p")) {
+		} else if (type.equals(NetworkType.P2P)) {
 			return new PointToPointChannel();
 		} else {
 			return new YansWifiChannel();
@@ -156,18 +141,10 @@ public class Ns3Simulator {
 	}
 
 	/**
-	 *
 	 * @return the list of house Channels for the Ns3Network
 	 */
 	public List<Channel> getHouseChannels() {
 		return this.network.getHouseChannels();
-	}
-
-	/**
-	 * Build the Controller and Auction nodes and connect to backbone network
-	 */
-	public void buildFrontend() {
-		this.ns3Objects = network.buildFrontend();
 	}
 
 	/**
@@ -182,18 +159,11 @@ public class Ns3Simulator {
 	 * Adds this House Channel to the network
 	 * @param houseChannel
 	 */
-	public void addHouseChannel(CsmaChannel houseChannel) {
+	public void addHouseChannel(Channel houseChannel) {
 		this.network.addHouseChannel(houseChannel);
 	}
 
 	/**
-	 * Adds the GLD Controller names to the ns3 global list of names
-	 * for the FncsApplicationHelper setup
-	 */
-	public void addControllerNames() { this.network.addControllerNames();	}
-
-	/**
-	 *
 	 * @return the base IP address of the network
 	 */
 	public String getIPBase() {
@@ -208,10 +178,37 @@ public class Ns3Simulator {
 		return network.getAddrMask();
 	}
 
-	/**
-	 * Populates global routing tables on each Router in the network
-	 */
-	public void setupGlobalRouting() {
-		network.setupGlobalRouting();
-	}
+    /**
+     * Adds the GLD Controller names to the ns3 global list of names
+     * for the FncsApplicationHelper setup
+     */
+    public void addControllerNames() { this.network.addControllerNames();	}
+
+    /**
+     * Build the Controller and Auction nodes and connect to backbone network
+     */
+    public void buildFrontend() {
+        this.ns3Objects = network.buildFrontend();
+    }
+
+    /**
+     * @param auctions
+     */
+    public void setAuctions(List<AuctionObject> auctions) {
+        network.setAuctions(auctions);
+    }
+
+    /**
+     * @param controllers
+     */
+    public void setControllers(List<Controller> controllers) {
+        network.setControllers(controllers);
+    }
+
+    /**
+     * @param controllerPrefix
+     */
+    public void setGldNodePrefix(String controllerPrefix) {
+        network.setGldNodePrefix(controllerPrefix);
+    }
 }

@@ -36,8 +36,8 @@ public class BridgeHelper extends AbstractNs3Object {
 	 * @param destinationContainer the NetDeviceContainer to add the Nodes from sourceNodes to
 	 */
 	public void install(NodeContainer sourceNodes, NetDeviceContainer destinationContainer) {
-		appendPrintObj(destinationContainer.getName() + " = " + this.getName() + 
-						".Install(" + sourceNodes.getName() + ");\n");
+		appendPrintInfo(destinationContainer.getName() + " = " + this.getName() +
+				".Install(" + sourceNodes.getName() + ");\n");
 	}
 	
 
@@ -52,9 +52,9 @@ public class BridgeHelper extends AbstractNs3Object {
 	 */
 	public void install(NodeContainer sourceNodes, int index, 
 						NetDeviceContainer sourceDevices, NetDeviceContainer destinationContainer) {
-		appendPrintObj(destinationContainer.getName() + " = " + this.getName() + 
-						".Install(" + sourceNodes.getName() + ".Get(" + index + "), " + 
-						sourceDevices.getName() +");\n");
+		appendPrintInfo(destinationContainer.getName() + " = " + this.getName() +
+				".Install(" + sourceNodes.getName() + ".Get(" + index + "), " +
+				sourceDevices.getName() + ");\n");
 	}
 	
 	/**

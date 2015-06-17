@@ -10,7 +10,6 @@ import java.util.Map;
 
 import gov.pnnl.prosser.api.AbstractNs3Object;
 import gov.pnnl.prosser.api.Ns3Simulator;
-import gov.pnnl.prosser.api.c.obj.Pointer;
 import gov.pnnl.prosser.api.gld.obj.AuctionObject;
 import gov.pnnl.prosser.api.gld.obj.Controller;
 import gov.pnnl.prosser.api.ns3.enums.NetworkType;
@@ -75,7 +74,7 @@ public class Channel extends AbstractNs3Object {
 	 */
 	private void setAttribute(String attribute, String value) {
 		this.attributes.put(attribute, value);
-		appendPrintObj(this.getName() + ".SetAttribute (\"" +
+		appendPrintInfo(this.getName() + ".SetAttribute (\"" +
 				attribute + "\", StringValue (\"" + value + "\"));\n");
 	}
 

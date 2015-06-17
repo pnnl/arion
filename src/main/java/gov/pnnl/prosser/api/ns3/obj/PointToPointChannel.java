@@ -85,7 +85,7 @@ public class PointToPointChannel extends Channel {
 		String pointer = "Ptr<PointToPointNetDevice> pointToPointNetDevicePointer_" 
 				+ currentTime + " = " + device.getName() + ";\n";
 		
-		appendPrintObj(this.getName() + ".Attach(" + pointer + ");\n");
+		appendPrintInfo(this.getName() + ".Attach(" + pointer + ");\n");
 	}
 
 	/**

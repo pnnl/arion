@@ -22,6 +22,6 @@ public class Ipv4GlobalRoutingHelper extends AbstractNs3Object {
      * global routing information.
      */
     public void populate() {
-        appendPrintObj(this.getName() + ".PopulateRoutingTables ();\n");
+        appendPrintInfo(this.getName() + ".PopulateRoutingTables ();\n");
     }
 }

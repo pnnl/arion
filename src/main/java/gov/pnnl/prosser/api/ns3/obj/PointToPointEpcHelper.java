@@ -24,7 +24,7 @@ public class PointToPointEpcHelper extends NetworkHelper {
 		
 		// TODO refactor out deref
 		//String deref = this.isPointer() ? "->" : ".";
-		//appendPrintObj(destination.getName() + " = " + this.getName() + deref + 
+		//appendPrintInfo(destination.getName() + " = " + this.getName() + deref +
 		//				"AssignUeIpv4Address(" + ueDevices.getName() + ");\n");
 	}
 	
@@ -37,7 +37,7 @@ public class PointToPointEpcHelper extends NetworkHelper {
 		
 		// TODO refactor out deref
 		//String deref = this.isPointer() ? "->" : ".";
-		//appendPrintObj(node.getName() + " = " + this.getName() + deref + "GetPgwNode();\n");
+		//appendPrintInfo(node.getName() + " = " + this.getName() + deref + "GetPgwNode();\n");
 	}
 	
 	/**
@@ -48,7 +48,7 @@ public class PointToPointEpcHelper extends NetworkHelper {
 		
 		// TODO refactor out deref
 		//String deref = this.isPointer() ? "->" : ".";
-		//appendPrintObj(this.getName() + deref + "GetUeDefaultGatewayAddress();\n");
+		//appendPrintInfo(this.getName() + deref + "GetUeDefaultGatewayAddress();\n");
 		return new Ipv4Address(null);
 	}
 	

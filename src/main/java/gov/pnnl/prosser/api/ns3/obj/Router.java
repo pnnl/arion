@@ -17,8 +17,7 @@ public class Router extends AbstractNs3Object {
 	
 	private Node node;
 	private List<Channel> channels;
-	private NetDeviceContainer devices;
-	
+
 	private boolean ipStackInstalled, ready, pcap, ascii;
 	
 	/**
@@ -30,7 +29,6 @@ public class Router extends AbstractNs3Object {
 		setNameString(name);
 		node = new Node(name);
 		channels = new ArrayList<>();
-		devices = null;
 		ipStackInstalled = false;
 		ready = false;
 		
@@ -45,14 +43,6 @@ public class Router extends AbstractNs3Object {
 	}
 
 	/**
-	 * @return devices
-	 * 				the NetDeviceContainer of all devices on this Router
-	 */
-	public NetDeviceContainer getDevices() {
-		return devices;
-	}
-
-	/**
 	 * Stores the given Channel on this Node and
 	 * installs the protocols specified by the Channel type
 	 * @param channel
@@ -60,10 +50,6 @@ public class Router extends AbstractNs3Object {
 	public void setChannel(Channel channel) {
 		
 		channels.add(channel);
-		
-		if (devices == null) {
-			devices = new NetDeviceContainer(getName() + "_devices");
-		}
 		
 		if (channel.getType().equals(NetworkType.CSMA)) {
 			

@@ -36,9 +36,9 @@ public class EpsBearer extends AbstractNs3Object {
 	 */
 	public void setQci(Qci q) {
 		// Write the Qci constructor string
-		this.appendPrintObj("\n\tenum EpsBearer::Qci " + q.getName() + " = EpsBearer::" + q.name() + ";\n");
+		this.appendPrintInfo("\n  enum EpsBearer::Qci " + q.getName() + " = EpsBearer::" + q.name() + ";\n");
 		// Create an EpsBearer with given Qci
-		this.appendPrintObj(this.getClass().getSimpleName() + " " + this.getName() + "(" + q.getName() + ");\n");
+		this.appendPrintInfo(this.getClass().getSimpleName() + " " + this.getName() + "(" + q.getName() + ");\n");
 	}
 	
 }

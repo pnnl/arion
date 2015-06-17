@@ -28,7 +28,7 @@ public class ApplicationContainer extends AbstractNs3Object {
 	 */
 	public void start(double start) {
 		this.start = start;
-		appendPrintObj(this.getName() + ".Start(Seconds(" + this.start + "));\n");
+		appendPrintInfo(this.getName() + ".Start (Seconds (" + this.start + "));\n");
 	}
 
 	/**
@@ -37,7 +37,7 @@ public class ApplicationContainer extends AbstractNs3Object {
 	 */
 	public void stop(double stop) {
 		this.stop = stop;
-		appendPrintObj(this.getName() + ".Stop(Seconds(" + this.stop + "));\n");
+		appendPrintInfo(this.getName() + ".Stop (Seconds (" + this.stop + "));\n");
 	}
 
 }
