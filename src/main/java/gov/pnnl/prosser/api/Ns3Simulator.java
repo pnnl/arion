@@ -56,25 +56,15 @@ public class Ns3Simulator {
 	/**
 	 * Initializes the modules, namespaces, and objects used in this network based on 
 	 * the user specified parameters
-	 * @param addressBase
-	 * @param addressMask 
-	 * @param backboneDataRate 
-	 * @param backboneDelay 
+	 * @param marketNIPrefix
+     *          the GridlabD market network interface prefix
 	 */
-	public void setup(final String addressBase, final String addressMask,
-					  final String backboneDataRate, final String backboneDelay,
-					  final String marketNIPrefix) {
+	public void setup(final String marketNIPrefix) {
 		
 		network = new Ns3Network();
 		
 		namespaces.add(new Namespace("ns3"));
 		namespaces.add(new Namespace("std"));
-
-		network.setAddrBase(addressBase);
-		network.setAddrMask(addressMask);
-		
-		network.setBackboneDataRate(backboneDataRate);
-		network.setBackboneDelay(backboneDelay);
 
 		network.setupFncsSimulator(marketNIPrefix);
 		
@@ -161,21 +151,6 @@ public class Ns3Simulator {
 	 */
 	public void addHouseChannel(Channel houseChannel) {
 		this.network.addHouseChannel(houseChannel);
-	}
-
-	/**
-	 * @return the base IP address of the network
-	 */
-	public String getIPBase() {
-		return network.getAddrBase();
-	}
-
-	/**
-	 *
-	 * @return the IP address subnet mask of the network
-	 */
-	public String getIPMask() {
-		return network.getAddrMask();
 	}
 
     /**

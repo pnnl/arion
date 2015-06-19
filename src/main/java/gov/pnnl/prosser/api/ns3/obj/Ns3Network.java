@@ -24,9 +24,7 @@ import java.util.List;
  */
 public class Ns3Network {
 	
-	private String addrBase, addrMask;
 	private String gldNodePrefix;
-	private String backboneDataRate, backboneDelay;
 	private int numBackboneNodes, numChannels;
 	private double stopTime;
 	private NodeContainer allNodes;
@@ -44,8 +42,6 @@ public class Ns3Network {
 	 * with default values for some parameters
 	 */
 	public Ns3Network() {
-		this.addrBase = "10.1.1.0";
-		this.addrMask = "255.255.255.0";
         this.numBackboneNodes = 0;
         this.numChannels = 0;
 		this.stopTime = 31536000.0; // TODO get simulation end time (seconds) from GLD clock
@@ -60,34 +56,6 @@ public class Ns3Network {
 	}
 
 	/**
-	 * @return the addrBase
-	 */
-	public String getAddrBase() {
-		return addrBase;
-	}
-
-	/**
-	 * @param addrBase the addrBase to set
-	 */
-	public void setAddrBase(String addrBase) {
-		this.addrBase = addrBase;
-	}
-
-	/**
-	 * @return the addrMask
-	 */
-	public String getAddrMask() {
-		return addrMask;
-	}
-
-	/**
-	 * @param addrMask the addrMask to set
-	 */
-	public void setAddrMask(String addrMask) {
-		this.addrMask = addrMask;
-	}
-
-	/**
 	 * @return the gldNodePrefix
 	 */
 	public String getGldNodePrefix() {
@@ -99,34 +67,6 @@ public class Ns3Network {
 	 */
 	public void setGldNodePrefix(String gldNodePrefix) {
 		this.gldNodePrefix = gldNodePrefix;
-	}
-	
-	/**
-	 * @return the backboneDataRate
-	 */
-	public String getBackboneDataRate() {
-		return backboneDataRate;
-	}
-
-	/**
-	 * @param backboneDataRate the backboneDataRate to set
-	 */
-	public void setBackboneDataRate(String backboneDataRate) {
-		this.backboneDataRate = backboneDataRate;
-	}
-
-	/**
-	 * @return the backboneDelay
-	 */
-	public String getBackboneDelay() {
-		return backboneDelay;
-	}
-
-	/**
-	 * @param backboneDelay the backboneDelay to set
-	 */
-	public void setBackboneDelay(String backboneDelay) {
-		this.backboneDelay = backboneDelay;
 	}
 	
 	/**
@@ -249,7 +189,7 @@ public class Ns3Network {
 	 */
 	public void addHouseChannel(Channel houseChannel) {
 		this.houseChannels.add(houseChannel);
-		this.channels.add(houseChannel);
+		addChannel(houseChannel);
 	}
 	
 	/**
@@ -295,6 +235,8 @@ public class Ns3Network {
 	 */
 	public void addControllerNames() {
 		for (Channel chan : getHouseChannels()) {
+			// FIXME debugging
+			//System.out.println("Num controllers: " + chan.getControllers().size());
 			Controller controller = chan.getControllers().get(0);
 			String controllerNIName = controller.getNetworkInterfaceName();
 			allNames.addName(controllerNIName);
@@ -335,7 +277,7 @@ public class Ns3Network {
 //			String ipFirstTwo = (i / 64832 + 192) + "." + (i / 254 + 1) + ".";
 //			String ipBase = ipFirstTwo + ipThird + ".0";
 			
-			String ipBase = channel.getAddressBase();
+			String ipBase = channel.getIPBase();
 			
 			// Set the base address and subnet mask for the IPv4 addresses
 			ipv4AddrHelper.setBase(ipBase, "255.255.255.0");
@@ -395,8 +337,8 @@ public class Ns3Network {
 				
 				PointToPointHelper p2pHelper = new PointToPointHelper("p2pHelper_" + i);
 				// P2PHelper doesn't take Channel param, so need to set attributes manually
-				p2pHelper.setChannelAttribute("DataRate", channel.getAttribute("DataRate"));
-				p2pHelper.setDeviceAttribute("Delay", channel.getAttribute("Delay"));
+				p2pHelper.setChannelAttribute("DataRate", channel.getDataRate());
+				p2pHelper.setDeviceAttribute("Delay", channel.getDelay());
 				
 				NodeContainer p2pNodes = new NodeContainer("p2pNodes_" + i);
 				NetDeviceContainer p2pDevices = new NetDeviceContainer("p2pDevices_" + i);
@@ -528,7 +470,7 @@ public class Ns3Network {
 		    
 			// IP setup
 			Ipv4AddressHelper addresses = new Ipv4AddressHelper("auctionAddresses");
-			addresses.setBase(auctionChannel.getAddressBase(), "255.255.255.0");
+			addresses.setBase(auctionChannel.getIPBase(), auctionChannel.getIPMask());
 		    
 		    if (auctionChannel.getClass().getSimpleName().equalsIgnoreCase("csmachannel")) {
 		    	
@@ -552,8 +494,8 @@ public class Ns3Network {
 		    	p2pChannelPtr.createObject(auctionChannelP2p);
 		    	
 		    	PointToPointHelper p2pHelper = new PointToPointHelper("p2pHelper_" + i);
-		    	p2pHelper.setDeviceAttribute("DataRate", auctionChannelP2p.getAttribute("DataRate"));
-		    	p2pHelper.setChannelAttribute("Delay", auctionChannelP2p.getAttribute("Delay"));
+		    	p2pHelper.setDeviceAttribute("DataRate", auctionChannelP2p.getDataRate());
+		    	p2pHelper.setChannelAttribute("Delay", auctionChannelP2p.getDelay());
 		    	NetDeviceContainer p2pDevices = new NetDeviceContainer("p2pDevices_" + i);
 		    	
 		    	// Adds the node as second node for p2p auctionChannel
@@ -963,7 +905,7 @@ public class Ns3Network {
 			// Create a point-to-point network between the enbNodes
 			//createBackbone(p2pHelper, enbNodes, enbDevices, i);
 			
-			ipv4AddrHelper.setBase(getAddrBase() + i + ".0", getAddrMask());
+			//ipv4AddrHelper.setBase(getAddrBase() + i + ".0", getAddrMask());
 			// Assign IP addresses to NetDevices in enbDevices
 			ipv4AddrHelper.assign(enbDevices, ipv4Interfaces);
 			
@@ -1044,7 +986,7 @@ public class Ns3Network {
 		PointToPointChannel auctionChannel = new PointToPointChannel("p2pAuctionChannel");
 		auctionChannel.setDataRate(dataRate);
 		auctionChannel.setDelay(delay);
-		auctionChannel.setAddressBase("1.1.1.0"); // TODO implement user-settable Auction addrBase
+		auctionChannel.setIPBase("1.1.1.0"); // TODO implement user-settable Auction addrBase
 		addChannel(auctionChannel);
 		
 		// Creates main backbone router
@@ -1088,7 +1030,7 @@ public class Ns3Network {
 			channel.setDataRate(dataRate);
 			channel.setDelay(delay);
 			// Add IP address base to Channel for use later in Market/Controller integration
-			channel.setAddressBase(ipBase); // TODO check if this works later
+			channel.setIPBase(ipBase); // TODO check if this works later
 			addChannel(channel);
 			
 			NetDeviceContainer csmaDevices = new NetDeviceContainer("csmaDevices_backbone_" + i);
@@ -1147,7 +1089,7 @@ public class Ns3Network {
 		
 		// Creates backbone network
 		// TODO build appropriate network(s) type
-		createCsma(this.getBackboneDataRate(), this.getBackboneDelay(), pcapOutput);
+		//createCsma(this.getBackboneDataRate(), this.getBackboneDelay(), pcapOutput);
 		
 		return ns3Objects;
 	}

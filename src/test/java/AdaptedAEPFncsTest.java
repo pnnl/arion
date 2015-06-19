@@ -30,12 +30,10 @@ public class AdaptedAEPFncsTest extends Experiment {
         // Define some values we want to reuse
         final String marketNIPrefix = "Market1NI";
         final String controllerNIPrefix = "F1_C_NI";
-        final String backboneDataRate = "10Gbps";
-        final String backboneDelay = "500ns";
-        final int numHouses = 1;
+        final int numHouses = 65536;
 
         final Ns3Simulator ns3Sim = this.ns3Simulator("ns3");
-        ns3Sim.setup("10.1.1.0", "255.255.255.0", backboneDataRate, backboneDelay, marketNIPrefix);
+        ns3Sim.setup(marketNIPrefix);
 
         // List of Routers for IP address assignment
         List<Router> routers = new ArrayList<>();
@@ -45,8 +43,8 @@ public class AdaptedAEPFncsTest extends Experiment {
 
         // This is example of how network setup could be automated somewhat by user
         // Equal number of houses per backbone router not hardcoded into Prosser
-        final int numBackboneRouters = numHouses / 126 + 1;
-        final int numHousesPerBackbone = numHouses / numBackboneRouters + numHouses % numBackboneRouters;
+        final int numHousesPerBackbone = 100;
+        final int numBackboneRouters = numHouses / numHousesPerBackbone + 1;
 
         // If more than 1 backboneRouter, create backbone channel to connect backbone routers
         CsmaChannel backboneInterconnectChannel = null;
@@ -55,18 +53,15 @@ public class AdaptedAEPFncsTest extends Experiment {
         }
 
         // Creates the specified number of house Routers and attaches them to backbone Routers
-        createBackboneRouters(ns3Sim, routers, numBackboneRouters, numHousesPerBackbone,
-                auctionChannel, backboneInterconnectChannel);
-
-        final Ipv4AddressHelper addressHelper = new Ipv4AddressHelper("addrHelper");
-        addressHelper.setBase(ns3Sim.getIPBase(), ns3Sim.getIPMask());
+        createBackboneRouters(ns3Sim, routers, numHouses, numBackboneRouters,
+                numHousesPerBackbone, auctionChannel, backboneInterconnectChannel);
 
         if (backboneInterconnectChannel != null) {
-            backboneInterconnectChannel.assignIPAddresses(addressHelper);
+            backboneInterconnectChannel.assignIPAddresses();
         }
 
         for (Channel c : ns3Sim.getChannels()) {
-            c.assignIPAddresses(addressHelper);
+            c.assignIPAddresses();
         }
 
         // Sets up global IPv4 routing tables on each Router
@@ -123,23 +118,22 @@ public class AdaptedAEPFncsTest extends Experiment {
      *         the Channel to connect the backbone Routers
      */
     private void createBackboneRouters(final Ns3Simulator ns3Sim, final List<Router> routers,
-                                       final int numBackboneRouters, final int numHousesPerBackbone,
+                                       final int numHouses, final int numBackboneRouters,
+                                       final int numHousesPerBackbone,
                                        final PointToPointChannel auctionChannel,
                                        final CsmaChannel backboneInterconnectChannel) {
 
         for (int i = 0; i < numBackboneRouters; i++) {
 
-            // Create backbone router to connect houses and auction
+            // Creates backbone router to connect houses and auction
             Router backboneRouter = new Router("backboneRouter_" + i);
-            // Enable PCAP and ASCII debugging on backbone router
+            // Enables PCAP and ASCII debugging on backbone router
             backboneRouter.setPcap(true);
             backboneRouter.setAscii(true);
 
             // Can add more than one auction channel here
             if (i == 0) {
                 backboneRouter.setChannel(auctionChannel);
-                // TODO would be cleaner to do?: auctionChannel.setRouterB(backboneRouter);
-                //auctionChannel.assignIPAddresses(addressHelper);
             }
 
             // If there are more than 1 backboneRouters, connect them together
@@ -150,18 +144,19 @@ public class AdaptedAEPFncsTest extends Experiment {
             routers.add(backboneRouter);
 
             for (int j = 0; j < numHousesPerBackbone; j++) {
-                CsmaChannel houseChannel = new CsmaChannel("csmaHouseChannel_" + i + "_" + j);
-                houseChannel.setDataRate("100Mbps");
-                houseChannel.setDelay("10ms");
-                ns3Sim.addHouseChannel(houseChannel);
+                if (i*numHousesPerBackbone < numHouses) {
 
-                // Connect house router and a backbone router to the house channel
-                Router houseRouter = new Router("csmaHouseRouter_" + i + "_" + j);
-                houseRouter.setChannel(houseChannel);
-                backboneRouter.setChannel(houseChannel);
-                routers.add(houseRouter);
+                    CsmaChannel houseChannel = new CsmaChannel("csmaHouseChannel_" + i + "_" + j);
+                    houseChannel.setDataRate("100Mbps");
+                    houseChannel.setDelay("10ms");
+                    ns3Sim.addHouseChannel(houseChannel);
 
-                //houseChannel.assignIPAddresses(addressHelper);
+                    // Connects house router and a backbone router to the house channel
+                    Router houseRouter = new Router("csmaHouseRouter_" + i + "_" + j);
+                    houseRouter.setChannel(houseChannel);
+                    backboneRouter.setChannel(houseChannel);
+                    routers.add(houseRouter);
+                }
             }
         }
     }
@@ -193,15 +188,12 @@ public class AdaptedAEPFncsTest extends Experiment {
      *            the number of Channels to create in this network
      */
     private void populateNs3Sim(final Ns3Simulator sim, final int numChannels) {
-
-        final String addressBase = "10.0.1.0";
-        final String addressMask = "255.255.255.0";
         final String backboneDataRate = "10Gbps";
         final String backboneDelay = "500ns";
         final String marketNIPrefix = "Market1NI";
 
         // Sets parameters for ns-3 network & builds backbone network
-        sim.setup(addressBase, addressMask, backboneDataRate, backboneDelay, marketNIPrefix);
+        sim.setup(marketNIPrefix);
 
         // Create auction channel & router
         PointToPointChannel auctionChannel = new PointToPointChannel("auctionChannel");

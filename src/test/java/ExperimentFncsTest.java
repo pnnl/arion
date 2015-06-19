@@ -39,7 +39,7 @@ public class ExperimentFncsTest extends Experiment {
 
         // Set parameters for Ns3Network and build backend network
         final Ns3Simulator ns3Simulator = this.ns3Simulator("ns3");
-        ns3Simulator.setup("10.0.1.0", "255.255.255.0", backboneDataRate, backboneDelay, marketNIPrefix);
+        ns3Simulator.setup(marketNIPrefix);
 
         // List of Routers for IP address assignment
         List<Router> routers = new ArrayList<>();
@@ -116,15 +116,11 @@ public class ExperimentFncsTest extends Experiment {
     private void populateNs3Sim(final Ns3Simulator sim, final int numChannels) {
 
         final String marketNIPrefix = "Market1NI";
-        final String controllerNIPrefix = "F1_C_NI1";
-    	final String addressBase = "10.0.1.0";
-		final String addressMask = "255.255.255.0";
 		final String backboneDataRate = "10Gbps";
 		final String backboneDelay = "500ns";
-		final double stopTime = 10.0;
-		
+
 		// Sets up header stuff and parameters (params not used with below implementation)
-		sim.setup(addressBase, addressMask, backboneDataRate, backboneDelay, marketNIPrefix);
+		sim.setup(marketNIPrefix);
 		
 		// Create auction channel & router
 		PointToPointChannel auctionChannel = new PointToPointChannel("auctionChannel");
