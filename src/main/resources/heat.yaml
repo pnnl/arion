@@ -1,0 +1,169 @@
+heat_template_version: 2013-05-23
+
+description: Simple template to deploy a single compute instance
+
+parameters:
+  file_inject:
+    type: string
+    description: The file to be injected.
+  private_net_name:
+    type: string
+    description: Name of private network to be created.
+  private_net_cidr:
+    type: string
+    description: Private network address (CIDR notation)
+  external_gateway_network:
+    type: string
+    default: 923a95ab-1869-4b8b-8232-b8e1c745e101
+  gld_image:
+    type: string
+    default: bddb7d5a-8fb8-466e-9616-e32a0768c549
+  ns3_image:
+    type: string
+    default: 5e14777a-aeb6-487f-a517-6c211a15db47
+  fncs_image:
+    type: string
+    default: 40f053e4-e24c-4c05-be9e-be8da609fa61
+
+resources:
+  private_net:
+    type: OS::Neutron::Net
+    properties:
+      name: {get_param: private_net_name}
+
+  private_subnet:
+    type: OS::Neutron::Subnet
+    properties:
+      cidr: { get_param: private_net_cidr }
+      network_id: {get_resource: private_net}
+
+  router:
+    type: OS::Neutron::Router
+    properties:
+      external_gateway_info:
+        network: {get_param: external_gateway_network}
+
+  router_interface:
+    type: OS::Neutron::RouterInterface
+    properties:
+      router_id: {get_resource: router}
+      subnet_id: {get_resource: private_subnet}
+
+  gridlab1_port:
+    type: OS::Neutron::Port
+    properties:
+      network_id: {get_resource: private_net}
+      fixed_ips:
+        - subnet_id: {get_resource: private_subnet}
+
+  ns3_port:
+    type: OS::Neutron::Port
+    properties:
+      network_id: {get_resource: private_net}
+      fixed_ips:
+        - subnet_id: {get_resource: private_subnet}
+
+  fncs_port:
+    type: OS::Neutron::Port
+    properties:
+      network_id: {get_resource: private_net}
+      fixed_ips:
+        - subnet_id: {get_resource: private_subnet}
+
+  gridlab1_floating_ip:
+    type: OS::Neutron::FloatingIP
+    properties:
+      floating_network_id: {get_param: external_gateway_network}
+      port_id: {get_resource: gridlab1_port}
+
+  ns3_floating_ip:
+    type: OS::Neutron::FloatingIP
+    properties:
+      floating_network_id: {get_param: external_gateway_network}
+      port_id: {get_resource: ns3_port}
+
+  fncs_floating_ip:
+    type: OS::Neutron::FloatingIP
+    properties:
+      floating_network_id: {get_param: external_gateway_network}
+      port_id: {get_resource: fncs_port}
+
+  gridlab1:
+    type: OS::Nova::Server
+    properties:
+      key_name: Test
+      image: {get_param: gld_image}
+      flavor: m1.medium
+      networks:
+        - port: { get_resource: gridlab1_port }
+      user_data_format: RAW
+      user_data:
+        str_replace:
+          template: |
+            #!/bin/bash
+            exec 1>> /home/ubuntu/output.txt
+            exec 2>&1
+            cd /home/ubuntu
+            wget 172.29.0.67/uploads/file -O /home/ubuntu/file
+            tar -xvf /home/ubuntu/file -C /home/ubuntu
+            sed -i 's/localhost/$fncs/' /home/ubuntu/configgld.json
+            awk '{ sub("\r$", ""); print}' .CCSIenv > .CCSIenv2
+            mv .CCSIenv2 .CCSIenv
+            source /home/ubuntu/.CCSIenv
+            gridlabd Run_CASE9_NS3_S1_B7_H250_2days.glm
+          params:
+            file: {get_param: file_inject}
+            $fncs: {get_attr: [fncs_machine, first_address]}
+
+  ns3_machine:
+    type: OS::Nova::Server
+    properties:
+      key_name: Test
+      image: {get_param: ns3_image}
+      flavor: m1.medium
+      networks:
+        - port: { get_resource: ns3_port }
+      user_data_format: RAW
+      user_data:
+        str_replace:
+          template: |
+            #!/bin/bash -l
+            exec 1>> /home/ubuntu/output.txt
+            exec 2>&1
+            cd /home/ubuntu
+            wget 172.29.0.67/uploads/file -O /home/ubuntu/file
+            tar -xvf /home/ubuntu/file -C /home/ubuntu
+            sed -i 's/localhost/$fncs/' /home/ubuntu/configns3.json
+            awk '{ sub("\r$", ""); print}' .CCSIenv > .CCSIenv2
+            mv .CCSIenv2 .CCSIenv
+            source /home/ubuntu/.CCSIenv
+            ./compile-ns3.sh firstN.cc
+            ./firstN LinkModel_CASE9_3_feeders.txt
+          params:
+            file: {get_param: file_inject}
+            $fncs: {get_attr: [fncs_machine, first_address]}
+
+  fncs_machine:
+    type: OS::Nova::Server
+    properties:
+      key_name: Test
+      image: {get_param: fncs_image}
+      flavor: m1.medium
+      networks:
+        - port: { get_resource: fncs_port }
+      user_data_format: RAW
+      user_data:
+        str_replace:
+          template: |
+            #!/bin/bash -l
+            exec 1>> /home/ubuntu/output.txt
+            exec 2>&1
+            cd /home/ubuntu
+            wget 172.29.0.67/uploads/file -O /home/ubuntu/file
+            tar -xvf /home/ubuntu/file -C /home/ubuntu
+            awk '{ sub("\r$", ""); print}' .CCSIenv > .CCSIenv2
+            mv .CCSIenv2 .CCSIenv
+            source /home/ubuntu/.CCSIenv
+            fncsbroker 5
+          params:
+            file: {get_param: file_inject}

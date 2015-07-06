@@ -3,10 +3,15 @@
  */
 package gov.pnnl.prosser.api;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+import gov.pnnl.prosser.api.heat.HeatTemplate;
+import gov.pnnl.prosser.api.heat.HeatTemplateReader;
 
 /**
  * Prosser Experiment comprising multiple GLD simulators and an NS-3 and FNCS Simulator
@@ -21,6 +26,8 @@ public abstract class Experiment {
     private Ns3Simulator ns3Simulator = null;
 
     private FncsSimulator fncsSimulator = null;
+    
+    private HeatTemplate heatTemplate = null;
 
     private final List<Path> extraExperimentFiles = new ArrayList<>();
 
@@ -97,6 +104,13 @@ public abstract class Experiment {
             this.fncsSimulator = new FncsSimulator();
         }
         return this.fncsSimulator;
+    }
+    
+    public HeatTemplate loadDefaultHeatTemplate() throws IOException {
+        try(final InputStream is = this.getClass().getClassLoader().getResourceAsStream("/heat.yaml")) {
+            this.heatTemplate = HeatTemplateReader.readHeatTemplate(is);
+            return this.heatTemplate;
+        }
     }
 
     /**
