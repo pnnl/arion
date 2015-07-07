@@ -69,6 +69,13 @@ public abstract class Experiment {
     }
 
     /**
+     * @return the heatTemplate
+     */
+    public HeatTemplate getHeatTemplate() {
+        return heatTemplate;
+    }
+
+    /**
      * Get a new GLD Simulator
      * 
      * @param name
@@ -106,10 +113,17 @@ public abstract class Experiment {
         return this.fncsSimulator;
     }
     
-    public HeatTemplate loadDefaultHeatTemplate() throws IOException {
-        try(final InputStream is = this.getClass().getClassLoader().getResourceAsStream("/heat.yaml")) {
+    public HeatTemplate loadDefaultHeatTemplate() {
+        try(final InputStream is = Experiment.class.getClassLoader().getResourceAsStream("heat.yaml")) {
+            if(is == null) {
+                throw new IOException("Unable to load file");
+            }
             this.heatTemplate = HeatTemplateReader.readHeatTemplate(is);
             return this.heatTemplate;
+        } catch (final IOException e) {
+            e.printStackTrace();
+            this.heatTemplate = null;
+            return null;
         }
     }
 

@@ -105,6 +105,7 @@ public class ExperimentFncsTest extends Experiment {
         // TODO FNCS Integration
 		final FncsSimulator fncsSim = this.fncsSimulator();
         fncsSim.setBroker("localhost");
+        this.loadDefaultHeatTemplate();
     }
 
     /**

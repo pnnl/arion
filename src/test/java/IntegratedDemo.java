@@ -106,7 +106,8 @@ public class IntegratedDemo extends Experiment {
         ns3Simulator.setupFncsApplicationHelper();
 
         // Extra GLD files
-        this.addExtraFiles(Paths.get("res/heat.yaml"));
+        this.loadDefaultHeatTemplate();
+//        this.addExtraFiles(Paths.get("res/heat.yaml"));
 
     }
 

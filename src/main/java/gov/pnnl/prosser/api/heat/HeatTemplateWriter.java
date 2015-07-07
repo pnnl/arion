@@ -13,16 +13,25 @@ import java.nio.file.Paths;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
+import com.fasterxml.jackson.dataformat.yaml.YAMLGenerator;
 
 /**
  * @author nord229
  *
  */
 public class HeatTemplateWriter {
+    
+    private static final ObjectMapper mapper;
+    
+    static {
+        final YAMLFactory factory = new YAMLFactory();
+        factory.disable(YAMLGenerator.Feature.USE_NATIVE_TYPE_ID);
+        factory.disable(YAMLGenerator.Feature.WRITE_DOC_START_MARKER);
+        mapper = new ObjectMapper(factory);
+    }
 
     public static void writeHeatTemplate(final Path path, final HeatTemplate template) throws IOException {
         Files.createDirectories(path);
-        final ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
         try (final BufferedWriter writer = Files.newBufferedWriter(path.resolve("heat.yaml"), StandardCharsets.UTF_8)) {
             mapper.writeValue(writer, template);
         }

@@ -7,12 +7,14 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.annotation.JsonValue;
 
 /**
  * @author nord229
  *
  */
+@JsonPropertyOrder({"heatTemplateVersion", "description", "parameters", "resources"})
 public class HeatTemplate {
 
     public enum TemplateVersion {
