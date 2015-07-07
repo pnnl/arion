@@ -34,11 +34,11 @@ public class NeutronNetwork extends Resource {
         
     }
 
-    /**
-     * @return the properties
-     */
-    public NeutronNetworkProperties getProperties() {
-        return properties;
-    }
+//    /**
+//     * @return the properties
+//     */
+//    public NeutronNetworkProperties getProperties() {
+//        return properties;
+//    }
 
 }
