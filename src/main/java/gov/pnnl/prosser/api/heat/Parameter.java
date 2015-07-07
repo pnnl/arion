@@ -3,12 +3,15 @@
  */
 package gov.pnnl.prosser.api.heat;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
 /**
  * @author nord229
  *
  */
+@JsonInclude(Include.NON_NULL)
 public class Parameter {
 
     private String type;
@@ -20,6 +23,8 @@ public class Parameter {
     @JsonProperty("default")
     private String defaultValue;
 
+    @JsonProperty(defaultValue = "false")
+    @JsonInclude(Include.NON_DEFAULT)
     private boolean hidden;
 
     /**

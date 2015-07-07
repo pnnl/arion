@@ -6,15 +6,18 @@ package gov.pnnl.prosser.api.heat;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.annotation.JsonValue;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
 /**
  * @author nord229
  *
  */
 @JsonPropertyOrder({"heatTemplateVersion", "description", "parameters", "resources"})
+@JsonInclude(Include.NON_NULL)
 public class HeatTemplate {
 
     public enum TemplateVersion {

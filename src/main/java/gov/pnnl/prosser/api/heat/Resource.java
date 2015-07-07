@@ -6,14 +6,15 @@ package gov.pnnl.prosser.api.heat;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
 /**
  * @author nord229
  *
  */
-
 public class Resource {
     
     private String type;
