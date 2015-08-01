@@ -16,8 +16,6 @@ import javax.tools.ToolProvider;
 
 import org.apache.commons.io.FilenameUtils;
 
-import gov.pnnl.prosser.api.heat.HeatTemplateWriter;
-
 /**
  * Main class referenced by the manifest for this Package
  * This class will take a java file and an output directory and compile the java file to the output directory
@@ -86,9 +84,7 @@ public abstract class ExperimentMain {
         if (experiment.getFncsSimulator() != null) {
             FncsSimulatorWriter.writeSimulator(outPath, experiment.getFncsSimulator(), experiment.getGldSimulators().size());
         }
-        if(experiment.getHeatTemplate() != null) {
-            HeatTemplateWriter.writeHeatTemplate(outPath, experiment.getHeatTemplate());
-        }
+        HeatTemplateWriter.writeHeatTemplate(outPath, experiment.getGldSimulators(), experiment.getNs3Simulator(), experiment.getFncsSimulator());
         // TODO FNCS simulator writer
         System.out.println("Written!");
     }

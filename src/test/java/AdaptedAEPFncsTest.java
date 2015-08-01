@@ -30,7 +30,7 @@ public class AdaptedAEPFncsTest extends Experiment {
         // Define some values we want to reuse
         final String marketNIPrefix = "Market1NI";
         final String controllerNIPrefix = "F1_C_NI";
-        final int numHouses = 65536;
+        final int numHouses = 1000;
 
         final Ns3Simulator ns3Sim = this.ns3Simulator("ns3");
         ns3Sim.setup(marketNIPrefix);
@@ -98,7 +98,6 @@ public class AdaptedAEPFncsTest extends Experiment {
         }
 
         // Extra GLD files
-        this.loadDefaultHeatTemplate();
 //        this.addExtraFiles(Paths.get("res/heat.yaml"));
         // this.addExtraFiles(Paths.get("res/tzinfo.txt"), Paths.get("res/unitfile.txt"));
     }

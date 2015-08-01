@@ -3,15 +3,10 @@
  */
 package gov.pnnl.prosser.api;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
-import gov.pnnl.prosser.api.heat.HeatTemplate;
-import gov.pnnl.prosser.api.heat.HeatTemplateReader;
 
 /**
  * Prosser Experiment comprising multiple GLD simulators and an NS-3 and FNCS Simulator
@@ -26,11 +21,8 @@ public abstract class Experiment {
     private Ns3Simulator ns3Simulator = null;
 
     private FncsSimulator fncsSimulator = null;
-    
-    private HeatTemplate heatTemplate = null;
 
     private final List<Path> extraExperimentFiles = new ArrayList<>();
-
 
     /**
      * Get the GLD Simulators
@@ -66,13 +58,6 @@ public abstract class Experiment {
      */
     public List<Path> getExtraExperimentFiles() {
         return extraExperimentFiles;
-    }
-
-    /**
-     * @return the heatTemplate
-     */
-    public HeatTemplate getHeatTemplate() {
-        return heatTemplate;
     }
 
     /**
@@ -112,20 +97,6 @@ public abstract class Experiment {
         }
         return this.fncsSimulator;
     }
-    
-    public HeatTemplate loadDefaultHeatTemplate() {
-        try(final InputStream is = Experiment.class.getClassLoader().getResourceAsStream("heat.yaml")) {
-            if(is == null) {
-                throw new IOException("Unable to load file");
-            }
-            this.heatTemplate = HeatTemplateReader.readHeatTemplate(is);
-            return this.heatTemplate;
-        } catch (final IOException e) {
-            e.printStackTrace();
-            this.heatTemplate = null;
-            return null;
-        }
-    }
 
     /**
      * Add an extra file to be included when the experiment is created
@@ -141,9 +112,9 @@ public abstract class Experiment {
      * Put your generation code here for generating an experiment
      */
     public abstract void experiment();
-    
+
     private void ensureFncs() {
-        if(this.gldSimulators.size() > 1 || this.ns3Simulator != null) {
+        if (this.gldSimulators.size() > 1 || this.ns3Simulator != null) {
             this.fncsSimulator();
         }
     }
