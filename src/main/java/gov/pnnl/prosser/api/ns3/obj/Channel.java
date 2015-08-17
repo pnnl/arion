@@ -40,8 +40,9 @@ public class Channel extends AbstractNs3Object {
 	public Channel() {
 		this.controllers = new ArrayList<>();
 		this.auctions = new ArrayList<>();
-		this.devices = new NetDeviceContainer("channelDeviceContainer" + System.nanoTime() % 1000000);
-        final int num = instanceCount.incrementAndGet();
+		final int num = instanceCount.incrementAndGet();
+		this.devices = new NetDeviceContainer("channelDeviceContainer" + num);
+        
 
         ipBase += (num / 65534 + 1) +
                 "." + (num / 254 + 1) +
