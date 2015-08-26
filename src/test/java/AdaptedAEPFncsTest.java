@@ -28,12 +28,12 @@ public class AdaptedAEPFncsTest extends Experiment {
     public void experiment() {
 
         // Define some values we want to reuse
-        final String marketNIPrefix = "Market1NI";
-        final String controllerNIPrefix = "F1_C_NI";
+        //final String marketNIPrefix = "Market1NI";
+        //final String controllerNIPrefix = "F1_C_NI";
         final int numHouses = 1000;
 
         final Ns3Simulator ns3Sim = this.ns3Simulator("ns3");
-        ns3Sim.setup(marketNIPrefix);
+        final String marketID = ns3Sim.setup();
 
         // List of Routers for IP address assignment
         List<Router> routers = new ArrayList<>();
@@ -70,8 +70,8 @@ public class AdaptedAEPFncsTest extends Experiment {
 
         final GldSimulator gldSim = this.gldSimulator("fncs_GLD_1node_Feeder_1");
 
-        final AuctionObject auction = createMarket(gldSim, "Market1");
-        auction.setFncsControllerPrefix(controllerNIPrefix);
+        final AuctionObject auction = createMarket(gldSim, marketID);
+        auction.setFncsControllerPrefix();
         auctionChannel.addAuction(auction);
 
         // Specify the climate information
@@ -352,6 +352,9 @@ public class AdaptedAEPFncsTest extends Experiment {
         auction.setInitStdev(0.02);
         auction.setUseFutureMeanPrice(false);
         auction.setWarmup(0);
+        
+        auction.setFncsControllerPrefix();
+        
         return auction;
     }
 

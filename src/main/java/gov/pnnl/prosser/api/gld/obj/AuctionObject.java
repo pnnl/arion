@@ -12,6 +12,7 @@ import gov.pnnl.prosser.api.sql.SqlFile;
 
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.UUID;
 
 /**
  * The auction object implements the basic auction
@@ -416,6 +417,21 @@ public class AuctionObject extends AbstractGldObject implements NetworkCapable {
     public void setFncsControllerPrefix(String fncsControllerPrefix) {
         this.fncsControllerPrefix = fncsControllerPrefix;
     }
+    
+    /**
+     * Set the controller prefix for FNCS to a unique id.
+     * only controllers with this prefix will talk with this auction
+     * 
+     * @return the unique fncsControllerPrefix
+     *            
+     */
+    public String setFncsControllerPrefix() {
+    	UUID myUUID = UUID.randomUUID();
+		final String fncsPrefix = myUUID.toString() + "NI";
+    	setFncsControllerPrefix(fncsPrefix);
+    	return fncsPrefix;
+    }
+    
 
     /**
      * {@inheritDoc}

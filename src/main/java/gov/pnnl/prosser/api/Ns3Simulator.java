@@ -12,6 +12,7 @@ import gov.pnnl.prosser.api.ns3.obj.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * Stub for NS-3 Simulator configurations
@@ -56,6 +57,21 @@ public class Ns3Simulator {
 	/**
 	 * Initializes the modules, namespaces, and objects used in this network based on 
 	 * the user specified parameters
+	 * 
+     * @return the generated GridlabD market network interface prefix
+	 */
+	public String setup() {
+		
+		UUID myUUID = UUID.randomUUID();
+		String s = myUUID.toString();
+		setup(s + "NI");
+		return s;
+	}
+	
+	
+	/**
+	 * Initializes the modules, namespaces, and objects used in this network based on 
+	 * the user specified parameters
 	 * @param marketNIPrefix
      *          the GridlabD market network interface prefix
 	 */
@@ -65,9 +81,8 @@ public class Ns3Simulator {
 		
 		namespaces.add(new Namespace("ns3"));
 		namespaces.add(new Namespace("std"));
-
-		network.setupFncsSimulator(marketNIPrefix);
 		
+		network.setupFncsSimulator(marketNIPrefix);		
 	}
 
 	/**
