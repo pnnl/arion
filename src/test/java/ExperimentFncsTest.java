@@ -39,7 +39,7 @@ public class ExperimentFncsTest extends Experiment {
 
         // Set parameters for Ns3Network and build backend network
         final Ns3Simulator ns3Simulator = this.ns3Simulator("ns3");
-        ns3Simulator.setup(marketNIPrefix);
+        //ns3Simulator.setup(marketNIPrefix);
 
         // List of Routers for IP address assignment
         List<Router> routers = new ArrayList<>();
@@ -120,7 +120,7 @@ public class ExperimentFncsTest extends Experiment {
 		final String backboneDelay = "500ns";
 
 		// Sets up header stuff and parameters (params not used with below implementation)
-		sim.setup(marketNIPrefix);
+		//sim.setup(marketNIPrefix);
 		
 		// Create auction channel & router
 		PointToPointChannel auctionChannel = new PointToPointChannel("auctionChannel");
@@ -165,8 +165,6 @@ public class ExperimentFncsTest extends Experiment {
      *            Prefix to network controllers in Houses and will be enclosed in the auction object
      * @param channels
      *            the network channels to use - channel 0 will be used for the auction, and then channels other than 0 will have up to 20 controllers on it
-     *
-     * @return
      */
     private static void populateGldSim(final GldSimulator sim, final int numHouses, final String controllerNIPrefix, final List<Channel> channels) {
         // final boolean useMarket = true;

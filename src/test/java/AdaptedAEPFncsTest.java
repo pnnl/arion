@@ -27,33 +27,30 @@ public class AdaptedAEPFncsTest extends Experiment {
     @Override
     public void experiment() {
 
-        // Define some values we want to reuse
-        //final String marketNIPrefix = "Market1NI";
-        //final String controllerNIPrefix = "F1_C_NI";
-        final int numHouses = 105;
+        // This is example of how network setup could be automated somewhat by user
+        // Equal number of houses per backbone router not hardcoded into Prosser
+        final int numHouses = 45;
+        final int numHousesPerBackbone = 20;
+        final int numBackboneRouters = numHouses / numHousesPerBackbone + 1;
+        final int numAuctions = 2;
+
 
         final Ns3Simulator ns3Sim = this.ns3Simulator("ns3");
-        final String marketID = ns3Sim.setup();
+        ns3Sim.setup(numAuctions);
 
         // List of Routers for IP address assignment
         List<Router> routers = new ArrayList<>();
 
-        // Creates Auction Channel and Auction Router
-        final PointToPointChannel auctionChannel = new PointToPointChannel("auctionChannel");
-        auctionChannel.setDataRate("1Gbps");
-        auctionChannel.setDelay("1ms");
-        ns3Sim.addChannel(auctionChannel);
-        final Router auctionRouter = new Router("auctionRouter_0");
-        auctionRouter.setChannel(auctionChannel);
-        auctionChannel.setRouterA(auctionRouter);
-        routers.add(auctionRouter);
-        // Add to node container needed for FNCSApplicationHelper stuff
-        ns3Sim.addFncsNode(auctionRouter);
-
-        // This is example of how network setup could be automated somewhat by user
-        // Equal number of houses per backbone router not hardcoded into Prosser
-        final int numHousesPerBackbone = 20;
-        final int numBackboneRouters = numHouses / numHousesPerBackbone + 1;
+        // Creates Auction Channels
+        final PointToPointChannel auctionChannel0 = new PointToPointChannel("auctionChannel0");
+        auctionChannel0.setDataRate("1Gbps");
+        auctionChannel0.setDelay("1ms");
+        final PointToPointChannel auctionChannel1 = new PointToPointChannel("auctionChannel1");
+        auctionChannel1.setDataRate("1Gbps");
+        auctionChannel1.setDelay("1ms");
+        // Create auction Routers with PCAP and ASCII debugging set to true
+        final Router auctionRouter0 = ns3Sim.auctionRouter(auctionChannel0, true);
+        final Router auctionRouter1 = ns3Sim.auctionRouter(auctionChannel1, true);
 
         // If more than 1 backboneRouter, create backbone channel to connect backbone routers
         CsmaChannel backboneInterconnectChannel = null;
@@ -65,7 +62,7 @@ public class AdaptedAEPFncsTest extends Experiment {
 
         // Creates the specified number of house Routers and attaches them to backbone Routers
         createBackboneRouters(ns3Sim, routers, numHouses, numBackboneRouters,
-                numHousesPerBackbone, auctionChannel, backboneInterconnectChannel);
+                numHousesPerBackbone, backboneInterconnectChannel);
 
         // Assign IP addresses to backbone routers
         if (backboneInterconnectChannel != null) {
@@ -84,9 +81,15 @@ public class AdaptedAEPFncsTest extends Experiment {
 
         final GldSimulator gldSim = this.gldSimulator("fncs_GLD_1node_Feeder_1");
 
-        final AuctionObject auction = createMarket(gldSim, marketID);
-        auction.setFncsControllerPrefix();
-        auctionChannel.addAuction(auction);
+        List<String> auctionNames = ns3Sim.getAuctionNames();
+
+        final AuctionObject auction0 = createMarket(gldSim, auctionNames.get(0));
+        auction0.setFncsControllerPrefix();
+        auctionChannel0.addAuction(auction0);
+
+        final AuctionObject auction1 = createMarket(gldSim, auctionNames.get(1));
+        auction1.setFncsControllerPrefix();
+        auctionChannel1.addAuction(auction1);
 
         // Specify the climate information
         final ClimateObject climate = gldSim.climateObject("Columbus OH");
@@ -94,19 +97,31 @@ public class AdaptedAEPFncsTest extends Experiment {
         climate.addCsvReader("CSVREADER");
 
         // Add a recorder to the auction for some of the properties on the auction
-        final Recorder recorder = auction.recorder();
-        recorder.setName("Market1_Recorder");
-        recorder.properties("capacity_reference_bid_price", "current_market.clearing_price", "current_market.clearing_quantity");
-        recorder.setLimit(100000000);
-        recorder.setInterval(300L);
-        recorder.setUsingSql(true);
+        final Recorder recorder0 = auction0.recorder();
+        recorder0.setName("Market1_Recorder");
+        recorder0.properties("capacity_reference_bid_price", "current_market.clearing_price", "current_market.clearing_quantity");
+        recorder0.setLimit(100000000);
+        recorder0.setInterval(300L);
+        recorder0.setUsingSql(true);
+
+        final Recorder recorder1 = auction1.recorder();
+        recorder1.setName("Market1_Recorder");
+        recorder1.properties("capacity_reference_bid_price", "current_market.clearing_price", "current_market.clearing_quantity");
+        recorder1.setLimit(100000000);
+        recorder1.setInterval(300L);
+        recorder1.setUsingSql(true);
 
         createTriplex(gldSim, numHouses);
 
         final List<Channel> houseChannels = ns3Sim.getHouseChannels();
 
         for (int i = 0; i < numHouses; i++) {
-            final House house = createHouse(gldSim, i, auction);
+            final House house;
+            if (i <= 20) {
+                house = createHouse(gldSim, i, auction0);
+            } else {
+                house = createHouse(gldSim, i, auction1);
+            }
 
             houseChannels.get(i).addController(house.getController());
         }
@@ -126,33 +141,36 @@ public class AdaptedAEPFncsTest extends Experiment {
      *         the number of backbone Routers to create
      * @param numHousesPerBackbone
      *         the number of house Routers per backbone Router
-     * @param auctionChannel
-     *         the Auction Channel
      * @param backboneInterconnectChannel
      *         the Channel to connect the backbone Routers
      */
     private void createBackboneRouters(final Ns3Simulator ns3Sim, final List<Router> routers,
                                        final int numHouses, final int numBackboneRouters,
                                        final int numHousesPerBackbone,
-                                       final PointToPointChannel auctionChannel,
                                        final CsmaChannel backboneInterconnectChannel) {
 
         for (int i = 0; i < numBackboneRouters; i++) {
 
             // Creates backbone router to connect houses and auction
-            Router backboneRouter = new Router("backboneRouter_" + i);
+            Router backboneRouter = null;
             // Enables PCAP and ASCII debugging on backbone router
             //backboneRouter.setPcap(true);
             //backboneRouter.setAscii(true);
 
+            List<Channel> auctionChannels = ns3Sim.getAuctionChannels();
             // Can add more than one auction channel here
-            if (i == 0) {
-                backboneRouter.setChannel(auctionChannel);
+            if (i < auctionChannels.size()) {
+                backboneRouter = ns3Sim.backboneRouter(auctionChannels.get(i));
             }
 
             // If there are more than 1 backboneRouters, connect them together
             if (backboneInterconnectChannel != null) {
-                backboneRouter.setChannel(backboneInterconnectChannel);
+                if (backboneRouter == null) {
+                    backboneRouter = ns3Sim.backboneRouter(backboneInterconnectChannel);
+                }
+                else {
+                    backboneRouter.setChannel(backboneInterconnectChannel);
+                }
             }
 
             //routers.add(backboneRouter);
@@ -164,15 +182,19 @@ public class AdaptedAEPFncsTest extends Experiment {
                     houseChannel.setDataRate("100Mbps");
                     houseChannel.setDelay("10ms");
                     //houseChannel.setIPBase((i / numHousesPerBackbone + 1) + "." + (i % numHousesPerBackbone + 1) + "." + (j + 1) + ".0");
-                    ns3Sim.addHouseChannel(houseChannel);
+                    //ns3Sim.addHouseChannel(houseChannel);
 
                     // Connects house router and a backbone router to the house channel
-                    Router houseRouter = new Router("csmaHouseRouter_" + i + "_" + j);
-                    houseRouter.setChannel(houseChannel);
-                    backboneRouter.setChannel(houseChannel);
+                    Router houseRouter = ns3Sim.houseRouter(houseChannel);
+                    if (backboneRouter == null) {
+                        backboneRouter = ns3Sim.backboneRouter(houseChannel);
+                    }
+                    else {
+                        backboneRouter.setChannel(houseChannel);
+                    }
                     routers.add(houseRouter);
                     // Add house node to node container needed for FNSCApplicationHelper stuff
-                    ns3Sim.addFncsNode(houseRouter);
+                    //ns3Sim.addFncsNode(houseRouter);
                 }
             }
         }

@@ -13,6 +13,7 @@ import gov.pnnl.prosser.api.ns3.obj.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Stub for NS-3 Simulator configurations
@@ -20,7 +21,7 @@ import java.util.UUID;
  * @author nord229
  */
 public class Ns3Simulator {
-	
+
 	private Ns3Network network;
 	private String name;
 	private List<Namespace> namespaces;
@@ -60,11 +61,10 @@ public class Ns3Simulator {
 	 * 
      * @return the generated GridlabD market network interface prefix
 	 */
-	public String setup() {
+	private String generateAuctionPrefix() {
 		
 		UUID myUUID = UUID.randomUUID();
 		String s = myUUID.toString();
-		setup(s + "NI");
 		return s;
 	}
 	
@@ -72,17 +72,22 @@ public class Ns3Simulator {
 	/**
 	 * Initializes the modules, namespaces, and objects used in this network based on 
 	 * the user specified parameters
-	 * @param marketNIPrefix
-     *          the GridlabD market network interface prefix
+	 * @param numAuctions
+     *          the number of GridlabD auctions (aka markets) that will be created
+	 *          in this network
 	 */
-	public void setup(final String marketNIPrefix) {
+	public void setup(final int numAuctions) {
 		
 		network = new Ns3Network();
 		
 		namespaces.add(new Namespace("ns3"));
 		namespaces.add(new Namespace("std"));
+
+		for (int i = 0; i < numAuctions; i++) {
+			network.addAuctionName(generateAuctionPrefix());
+		}
 		
-		network.setupFncsSimulator(marketNIPrefix);		
+		network.setupFncsSimulator();
 	}
 
 	/**
@@ -154,6 +159,13 @@ public class Ns3Simulator {
 	}
 
 	/**
+	 * @return the list of auction Channels for the Ns3Network
+	 */
+	public List<Channel> getAuctionChannels() {
+		return network.getAuctionChannels();
+	}
+
+	/**
 	 * Adds this Channel to the network
 	 * @param channel
 	 */
@@ -173,18 +185,97 @@ public class Ns3Simulator {
 		this.network.addFncsNode(router.getNode());
 	}
 
+	/**
+	 * @param auctionChannel
+	 * @return a Router connected to this auctionChannel
+	 */
+	public Router auctionRouter(Channel auctionChannel) {
+		return router(auctionChannel, "auction", false);
+	}
+
+	/**
+	 * @param auctionChannel
+	 * @param debug
+	 * 			set true to enable PCAP and ASCII files for this Router
+	 * @return a Router connected to this auctionChannel
+	 */
+	public Router auctionRouter(Channel auctionChannel, boolean debug) {
+		return router(auctionChannel, "auction", debug);
+	}
+
+	/**
+	 * @param houseChannel
+	 * @return a Router connected to this houseChannel
+	 */
+	public Router houseRouter(Channel houseChannel) {
+		return router(houseChannel, "house", false);
+	}
+
+	/**
+	 * @param houseChannel
+	 * @param debug
+	 * 			set true to enable PCAP and ASCII files for this Router
+	 * @return a Router connected to this houseChannel
+	 */
+	public Router houseRouter(Channel houseChannel, boolean debug) {
+		return router(houseChannel, "house", debug);
+	}
+
+	/**
+	 * @param backboneChannel
+	 * @return a Router connected to this backboneChannel
+	 */
+	public Router backboneRouter(Channel backboneChannel) {
+		return router(backboneChannel, "backbone", false);
+	}
+
+	/**
+	 * @param backboneChannel
+	 * @param debug
+	 * 			set true to enable PCAP and ASCII trace files for this Router
+	 * @return a Router connected to this backboneChannel
+	 */
+	public Router backboneRouter(Channel backboneChannel, boolean debug) {
+		return router(backboneChannel, "backbone", debug);
+	}
+
+	private Router router(Channel chan, String routerType, boolean debug) {
+		NetworkType type = chan.getType();
+		String name = routerType + "Rtr_" + chan.getName();
+		// Add chan to appropriate list of Channels
+		if (routerType.equals("house")) {
+			this.network.addHouseChannel(chan);
+		} else if (routerType.equals("auction")) {
+			this.network.addAuctionChannel(chan);
+		}
+		this.network.addChannel(chan);
+		Router router = new Router(name);
+		router.setPcap(debug);
+		router.setAscii(debug);
+		router.setChannel(chan);
+		if (type.equals(NetworkType.P2P)) {
+			((PointToPointChannel) chan).setRouterA(router);
+		}
+		// Add router to node container needed for FNCSApplicationHelper stuff if
+		//  router is not a backbone node
+		if (!routerType.equals("backbone")) {
+			addFncsNode(router);
+		}
+		return router;
+	}
+
     /**
      * Adds the GLD Controller names to the ns3 global list of names
      * for the FncsApplicationHelper setup
      */
     public void addControllerNames() { this.network.addControllerNames();	}
 
-    /**
-     * Build the Controller and Auction nodes and connect to backbone network
-     */
-    public void buildFrontend() {
-        this.ns3Objects = network.buildFrontend();
-    }
+	/**
+	 * @return a List of Strings of auction names
+	 */
+	public List<String> getAuctionNames() {
+		return network.getAuctionNames();
+	}
 
     /**
      * @param auctions

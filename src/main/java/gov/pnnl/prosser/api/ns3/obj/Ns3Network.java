@@ -33,7 +33,8 @@ public class Ns3Network {
 	private List<AuctionObject> auctions;
 	private List<Controller> controllers;
 	private List<AbstractNs3Object> ns3Objects;
-	private List<Channel> channels, houseChannels;
+	private List<Channel> channels, houseChannels, auctionChannels;
+	private List<String> auctionNames;
 	private Vector<String> allNames;
 
 	
@@ -54,6 +55,8 @@ public class Ns3Network {
 		this.ns3Objects = new ArrayList<>();
 		this.channels = new ArrayList<>();
 		this.houseChannels = new ArrayList<>();
+		this.auctionChannels = new ArrayList<>();
+		this.auctionNames = new ArrayList<>();
 	}
 
 	/**
@@ -82,6 +85,13 @@ public class Ns3Network {
 	 */
 	public List<Channel> getHouseChannels() {
 		return houseChannels;
+	}
+
+	/**
+	 * @return a List of auction Channels for this Ns3Network
+	 */
+	public List<Channel> getAuctionChannels() {
+		return auctionChannels;
 	}
 
 	/**
@@ -119,6 +129,41 @@ public class Ns3Network {
 	 */
 	public void addNode(Node node) {
 		this.allNodes.addNode(node);
+	}
+
+	/**
+	 *
+	 * @param node
+	 * 		the Node to add to the NodeContainer needed by
+	 * 			the FNCSApplicationHelper
+	 */
+	public void addFncsNode(Node node) {
+		node.appendPrintInfo(fncsNodes.getName() + ".Add (" + node.getName() + ");");
+	}
+
+	/**
+	 *
+	 * @param auctionChannel
+	 * 		the Channel to add to the list of auction Channels
+	 */
+	public void addAuctionChannel(Channel auctionChannel) {
+		auctionChannels.add(auctionChannel);
+	}
+
+	/**
+	 * @param name
+	 * 		the String name of the market network interface
+	 * 		prefix to add to this list of auction prefixes
+	 */
+	public void addAuctionName(String name) {
+		auctionNames.add(name);
+	}
+
+	/**
+	 * @return the List of String Auction names
+	 */
+	public List<String> getAuctionNames() {
+		return auctionNames;
 	}
 	
 	/**
@@ -208,17 +253,20 @@ public class Ns3Network {
 	 */
 	public void setupFncsApplicationHelper() {
 
+
+		// Adds the market (auction) network interface prefix name to the list of
+		// all names for the FNCSApplicationHelper
+		addAuctionNames();
 		// Adds and prints all controller network interface names to list of all allNames
 		addControllerNames();
 
-		// TODO will need to fix this if more than 1 auction allowed
-		Channel channel = channels.get(0);
-		AuctionObject auction = channel.getAuctions().get(0);
-
 		// A C++ map<string, string> construct mapping AuctionObject name to a Controller name
 		StringMap<String, String> marketToControllerMap = new StringMap<>("marketToControllerMap");
-		// Maps the Auction NetworkInterfaceName to the GldNodePrefix
-		marketToControllerMap.put(auction.getNetworkInterfaceName(), auction.getFncsControllerPrefix());
+		for (Channel chan : auctionChannels) {
+			AuctionObject auction = chan.getAuctions().get(0);
+			// Maps the Auction NetworkInterfaceName to the GldNodePrefix
+			marketToControllerMap.put(auction.getNetworkInterfaceName(), auction.getFncsControllerPrefix());
+		}
 
 		FNCSApplicationHelper fncsHelper = new FNCSApplicationHelper("fncsHelper");
 		fncsHelper.setApps(this.allNames, this.fncsNodes, marketToControllerMap, stopTime);
@@ -227,6 +275,18 @@ public class Ns3Network {
 		fncsHelper.appendPrintInfo("Simulator::Run();\n");
 		fncsHelper.appendPrintInfo("Simulator::Destroy();\n");
 		fncsHelper.appendPrintInfo("return 0;\n");
+	}
+
+	/**
+	 * Adds the market network interface name for each auction in
+	 * this network to the list of allNames needed for the
+	 * FncsApplicationHelper to setup the communication between the
+	 * GLD simulator(s) and the ns-3 simulator(s).
+	 */
+	public void addAuctionNames() {
+		for (String name : getAuctionNames()) {
+			allNames.addName(name + "NI");
+		}
 	}
 
 	/**
@@ -737,7 +797,7 @@ public class Ns3Network {
 	/**
 	 * Creates the FNCS simulator for ns-3 to use
 	 */
-	public void setupFncsSimulator(final String marketNIPrefix) {
+	public void setupFncsSimulator() {
 
         // Setup FNCS simulator
 		FncsSimulator fncsSim = new FncsSimulator("fncsSim");
@@ -759,11 +819,6 @@ public class Ns3Network {
 		fncsNodes = new NodeContainer("fncsNodes");
 		// Instantiates global Vector allNames for use by FNCSApplicationHelper
 		allNames = new Vector<>("allNames", String.class);
-
-		// Adds the market (auction) network interface prefix name to the list of
-		// all names for the FNCSApplicationHelper
-		allNames.addName(marketNIPrefix);
-
 	}
 
 	/**
@@ -1060,58 +1115,5 @@ public class Ns3Network {
 		csmaHelper.enablePcapAll("csmaBackboneRouter");
 		p2pHelper.enablePcapAll("p2pBackboneRouter");
 		
-	}
-
-	/**
-	 * @param marketNIPrefix the market network interface prefix
-	 * @param controllerNIPrefix the house controller network interface prefix
-	 * @return ns3Objects a list of all objects created in this network
-	 * 
-	 */
-	// TODO add all objects to ns3Objects or just add 1 (only need 1 to print all ns3 setup text)
-	// TODO give params to Ns3Network, then call this to call all other necessary methods
-	public List<AbstractNs3Object> buildBackbone(final String marketNIPrefix, final String controllerNIPrefix) {
-		
-		setupFncsSimulator(marketNIPrefix);
-		
-		// Sets name for global NodeContainer for use in FNCSApplicationHelper.setApps(...)
-		allNodes.setName("allNodes");
-		// Sets name for global InternetStackHelper (to utilize NixVectorRouting)
-		iStackHelper.setName("iStackHelper");
-		// Sets up iStackHelper with static and nix vector routing
-		setupInternetStackAndRouting();
-		
-/*		// Instantiates global Vector allNames for use in FNCSApplicationHelper.setApps(...)
-		allNames = new Vector<String>("allNames", String.class);*/
-		
-		// TODO get user input for this
-		boolean pcapOutput = true;
-		
-		// Creates backbone network
-		// TODO build appropriate network(s) type
-		//createCsma(this.getBackboneDataRate(), this.getBackboneDelay(), pcapOutput);
-		
-		return ns3Objects;
-	}
-	
-	/**
-	 * @return ns3Objects a list of all objects created in this network
-	 */
-	public List<AbstractNs3Object> buildFrontend() {
-		
-		// Connect the Controllers and Auction to the backbone network
-		connectControllerChannels();
-		
-		StringMap<String, String> marketToControllerMap = connectAuctionChannels();
-		
-		// Sets up the FNCS and ns-3 simulators, runs them, and cleans up
-		setupFncsApplicationHelper();
-		
-		return ns3Objects;
-	}
-
-	// TODO write doc, move to better place in code
-	public void addFncsNode(Node node) {
-		node.appendPrintInfo(fncsNodes.getName() + ".Add (" + node.getName() + ");");
 	}
 }

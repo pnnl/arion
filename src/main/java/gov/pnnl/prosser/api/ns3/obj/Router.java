@@ -95,7 +95,10 @@ public class Router extends AbstractNs3Object {
 			}
 
 			if (pcap) {
-				p2pHelper.enablePcap(channel.getName(), channel.getDevices(), 0);
+				p2pHelper.enablePcapAll(channel.getName());
+			}
+			if (ascii) {
+				p2pHelper.enableAsciiAll(channel.getName());
 			}
 
 		}
