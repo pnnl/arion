@@ -126,6 +126,7 @@ public class Ns3Simulator {
 	
 	/**
 	 * @param type
+	 * 			the NetworkType of this Channel
 	 * @return an instance of the specified subclass of Channel
 	 */
 	public Channel channel(NetworkType type) {
@@ -166,6 +167,10 @@ public class Ns3Simulator {
 	 */
 	public void addHouseChannel(Channel houseChannel) {
 		this.network.addHouseChannel(houseChannel);
+	}
+
+	public void addFncsNode(Router router) {
+		this.network.addFncsNode(router.getNode());
 	}
 
     /**

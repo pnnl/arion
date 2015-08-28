@@ -31,6 +31,8 @@ public class Router extends AbstractNs3Object {
 		channels = new ArrayList<>();
 		ipStackInstalled = false;
 		ready = false;
+		pcap = false;
+		ascii = false;
 		
 	}
 
@@ -60,11 +62,11 @@ public class Router extends AbstractNs3Object {
 			ready = true;
 
 			if (pcap) {
-				csmaHelper.enablePcap(channel.getName(), channel.getDevices(), 0);
+				csmaHelper.enablePcapAll(channel.getName());
 			}
 
 			if (ascii) {
-				csmaHelper.enableAscii(channel.getName(), channel.getDevices(), 0);
+				csmaHelper.enableAsciiAll(channel.getName());
 			}
 
 		} else if (channel.getType().equals(NetworkType.P2P)) {

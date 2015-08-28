@@ -14,12 +14,13 @@ import gov.pnnl.prosser.api.ns3.enums.NetworkType;
  */
 public class NetworkHelper extends AbstractNs3Object {
 
+	private static final String DEBUG_DIRECTORY = "";
 
 	/**
 	 * @param prefix the filename prefix
 	 */
 	public void enablePcapAll(String prefix) {
-		appendPrintInfo(this.getName() + ".EnablePcapAll (\"" + prefix + "\", true);\n");
+		appendPrintInfo(this.getName() + ".EnablePcapAll (\"" + DEBUG_DIRECTORY + prefix + "\", true);\n");
 	}
 
 	/**
@@ -29,7 +30,7 @@ public class NetworkHelper extends AbstractNs3Object {
 	 * @param index the index of the device in devs to do a PCAP on
 	 */
 	public void enablePcap(String prefix, NetDeviceContainer devs, int index) {
-		appendPrintInfo(this.getName() + ".EnablePcap (\"" + prefix + "\", " + devs.getName() +
+		appendPrintInfo(this.getName() + ".EnablePcap (\"" + DEBUG_DIRECTORY + prefix + "\", " + devs.getName() +
 				".Get (" + index + "));\n");
 	}
 
@@ -38,7 +39,7 @@ public class NetworkHelper extends AbstractNs3Object {
 	 * @param prefix the filename prefix
 	 */
 	public void enableAsciiAll(String prefix) {
-		appendPrintInfo(this.getName() + ".EnableAsciiAll (\"" + prefix + "\");\n");
+		appendPrintInfo(this.getName() + ".EnableAsciiAll (\"" + DEBUG_DIRECTORY + prefix + "\");\n");
 	}
 
 	/**
@@ -48,7 +49,7 @@ public class NetworkHelper extends AbstractNs3Object {
 	 * @param index the index of the device in devs to do an Ascii trace of
 	 */
 	public void enableAscii(String prefix, NetDeviceContainer devs, int index) {
-		appendPrintInfo(this.getName() + ".EnableAscii (\"" + prefix + "\", " + devs.getName() +
+		appendPrintInfo(this.getName() + ".EnableAscii (\"" + DEBUG_DIRECTORY + prefix + "\", " + devs.getName() +
 				".Get (" + index + "));\n");
 	}
 	

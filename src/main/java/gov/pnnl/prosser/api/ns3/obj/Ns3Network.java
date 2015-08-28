@@ -17,7 +17,7 @@ import java.util.List;
 
 /**
  * This class takes the basic network parameters from the user and constructs all of the 
- * ns-3 backbone to make it work.
+ * ns-3 backbone for a functional network.
  * 
  * @author happ546
  *
@@ -27,7 +27,7 @@ public class Ns3Network {
 	private String gldNodePrefix;
 	private int numBackboneNodes, numChannels;
 	private double stopTime;
-	private NodeContainer allNodes;
+	private NodeContainer allNodes, fncsNodes;
 	private InternetStackHelper iStackHelper;
 	private List<Module> modules;
 	private List<AuctionObject> auctions;
@@ -46,6 +46,7 @@ public class Ns3Network {
         this.numChannels = 0;
 		this.stopTime = 31536000.0; // TODO get simulation end time (seconds) from GLD clock
 		this.allNodes = new NodeContainer();
+		this.fncsNodes = new NodeContainer();
 		this.iStackHelper = new InternetStackHelper();
 		this.modules = new ArrayList<>();
 		this.auctions = new ArrayList<>();
@@ -194,6 +195,7 @@ public class Ns3Network {
 	
 	/**
 	 * @param i
+	 * 			integer index
 	 * @return the Channel at index i
 	 */
 	private Channel getChannel(int i) {
@@ -206,20 +208,20 @@ public class Ns3Network {
 	 */
 	public void setupFncsApplicationHelper() {
 
-		// Adds and prints all controller network interface allNames to list of all allNames
+		// Adds and prints all controller network interface names to list of all allNames
 		addControllerNames();
 
 		// TODO will need to fix this if more than 1 auction allowed
 		Channel channel = channels.get(0);
 		AuctionObject auction = channel.getAuctions().get(0);
 
-		// A map<string, string> mapping AuctionObject name to a Controller name
+		// A C++ map<string, string> construct mapping AuctionObject name to a Controller name
 		StringMap<String, String> marketToControllerMap = new StringMap<>("marketToControllerMap");
 		// Maps the Auction NetworkInterfaceName to the GldNodePrefix
 		marketToControllerMap.put(auction.getNetworkInterfaceName(), auction.getFncsControllerPrefix());
 
 		FNCSApplicationHelper fncsHelper = new FNCSApplicationHelper("fncsHelper");
-		fncsHelper.setApps(this.allNames, this.allNodes, marketToControllerMap, stopTime);
+		fncsHelper.setApps(this.allNames, this.fncsNodes, marketToControllerMap, stopTime);
 
 		// Run Simulator then clean up after it's done (according to FncsAps.stop(...))
 		fncsHelper.appendPrintInfo("Simulator::Run();\n");
@@ -235,8 +237,6 @@ public class Ns3Network {
 	 */
 	public void addControllerNames() {
 		for (Channel chan : getHouseChannels()) {
-			// FIXME debugging
-			//System.out.println("Num controllers: " + chan.getControllers().size());
 			Controller controller = chan.getControllers().get(0);
 			String controllerNIName = controller.getNetworkInterfaceName();
 			allNames.addName(controllerNIName);
@@ -278,7 +278,7 @@ public class Ns3Network {
 //			String ipBase = ipFirstTwo + ipThird + ".0";
 			
 			String ipBase = channel.getIPBase();
-			
+
 			// Set the base address and subnet mask for the IPv4 addresses
 			ipv4AddrHelper.setBase(ipBase, "255.255.255.0");
 			
@@ -289,7 +289,7 @@ public class Ns3Network {
 			if (channel.getClass().getSimpleName().equalsIgnoreCase("csmachannel")) {
 //				Pointer<CsmaChannel> chanPtr  = new Pointer<CsmaChannel>("chanPtr_" + i, new CsmaChannel());
 //				chanPtr.assign(channel.getPointer());
-				
+
 				CsmaHelper csmaHelper = new CsmaHelper("csmaHelper_" + i);
 				NodeContainer csmaNodes = new NodeContainer("csmaNodes_" + i);
 				NetDeviceContainer csmaDevices = new NetDeviceContainer("csmaDevices_" + i);
@@ -306,7 +306,7 @@ public class Ns3Network {
 
 					// Add Node to NodeContainer for IP stuff later
 					//csmaNodes.addNode(csmaNodePtr);
-					
+
 
 
 				}
@@ -756,7 +756,7 @@ public class Ns3Network {
 		this.addModule(new FncsApplication());
 
 		// Instantiates global NodeContainer allNodes for use by FNCSApplicationHelper
-		allNodes = new NodeContainer("allNodes");
+		fncsNodes = new NodeContainer("fncsNodes");
 		// Instantiates global Vector allNames for use by FNCSApplicationHelper
 		allNames = new Vector<>("allNames", String.class);
 
@@ -1110,4 +1110,8 @@ public class Ns3Network {
 		return ns3Objects;
 	}
 
+	// TODO write doc, move to better place in code
+	public void addFncsNode(Node node) {
+		node.appendPrintInfo(fncsNodes.getName() + ".Add (" + node.getName() + ");");
+	}
 }

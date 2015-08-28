@@ -27,6 +27,7 @@ public class Channel extends AbstractNs3Object {
 	private List<Controller> controllers;
 	private List<AuctionObject> auctions;
 	private NetDeviceContainer devices;
+	private Ipv4AddressHelper addressHelper;
 	private NetworkType type;
 	private String delay = "50us";
 	private String dataRate = "100Mbps";
@@ -42,7 +43,7 @@ public class Channel extends AbstractNs3Object {
 		this.auctions = new ArrayList<>();
 		final int num = instanceCount.incrementAndGet();
 		this.devices = new NetDeviceContainer("channelDeviceContainer" + num);
-        
+		this.addressHelper = null;
 
         ipBase += (num / 65534 + 1) +
                 "." + (num / 254 + 1) +
@@ -168,5 +169,18 @@ public class Channel extends AbstractNs3Object {
 		Ipv4AddressHelper addressHelper = new Ipv4AddressHelper(getName() + "_addressHelper");
 		addressHelper.setBase(getIPBase(), getIPMask());
 		addressHelper.assign(devices);
+	}
+
+	/**
+	 * Increments the IPv4 address network bits and resets the subnet to the
+	 * previously specified base.
+	 */
+	public void newNetwork() {
+		if (addressHelper != null)
+			addressHelper.newNetwork();
+		else
+			System.out.println("Address helper for channel " + getName() +
+					" was not initialized.  Must call assignIPAddresses() before" +
+					"newNetwork().");
 	}
 }

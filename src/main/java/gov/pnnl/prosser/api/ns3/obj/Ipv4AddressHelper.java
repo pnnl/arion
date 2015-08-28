@@ -28,7 +28,7 @@ public class Ipv4AddressHelper extends AbstractNs3Object {
 	 * @param mask the subnet mask used for DHCP address assignment
 	 */
 	public void setBase(String ipBase, String mask) {
-		appendPrintInfo(this.getName() + ".SetBase(\"" + ipBase +
+		appendPrintInfo(this.getName() + ".SetBase (\"" + ipBase +
 				"\", \"" + mask + "\");\n");
 	}
 
@@ -40,15 +40,16 @@ public class Ipv4AddressHelper extends AbstractNs3Object {
 		long time = System.nanoTime() % 100000;
 		String contName = "ipv4IntCont_" + this.getName() + time;
 		appendPrintInfo("Ipv4InterfaceContainer " + contName +
-				" = " + this.getName() + ".Assign(" + devices.getName() + ");\n");
+				" = " + this.getName() + ".Assign (" + devices.getName() + ");\n");
 
-		// TODO DEBUGGING of IP addresses
+		// TODO DEBUGGING prints IP addresses to console
+/*
 		String[] arr = devices.getName().split("_");
 		String routerName = (arr.length == 4) ? arr[0] + arr[2] : arr[0];
-		appendPrintInfo("for (int i = 0; i < " + contName + ".GetN(); i++) { \n" +
+		appendPrintInfo("for (int i = 0; i < " + contName + ".GetN (); i++) { \n" +
 				"    cout << \"" + routerName + ": \" << " + contName + ".GetAddress (i) << endl;\n" +
 				"  }\n\n");
-
+*/
 	}
 
 	/**
@@ -60,7 +61,7 @@ public class Ipv4AddressHelper extends AbstractNs3Object {
 	public void assign(NetDeviceContainer devices, 
 			Ipv4InterfaceContainer destinationInterface) {
 		appendPrintInfo(destinationInterface.getName() + " = " + this.getName() +
-				".Assign(" + devices.getName() + ");\n");
+				".Assign (" + devices.getName() + ");\n");
 	}
 
 	/**
@@ -68,6 +69,6 @@ public class Ipv4AddressHelper extends AbstractNs3Object {
 	 * to the preset base value.
 	 */
 	public void newNetwork() {
-		appendPrintInfo(this.getName() + ".NewNetwork();\n");
+		appendPrintInfo(this.getName() + ".NewNetwork ();\n");
 	}
 }

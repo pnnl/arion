@@ -30,7 +30,7 @@ public class AdaptedAEPFncsTest extends Experiment {
         // Define some values we want to reuse
         //final String marketNIPrefix = "Market1NI";
         //final String controllerNIPrefix = "F1_C_NI";
-        final int numHouses = 1000;
+        final int numHouses = 105;
 
         final Ns3Simulator ns3Sim = this.ns3Simulator("ns3");
         final String marketID = ns3Sim.setup();
@@ -39,27 +39,41 @@ public class AdaptedAEPFncsTest extends Experiment {
         List<Router> routers = new ArrayList<>();
 
         // Creates Auction Channel and Auction Router
-        final PointToPointChannel auctionChannel = createAuctionRouter(ns3Sim, routers);
+        final PointToPointChannel auctionChannel = new PointToPointChannel("auctionChannel");
+        auctionChannel.setDataRate("1Gbps");
+        auctionChannel.setDelay("1ms");
+        ns3Sim.addChannel(auctionChannel);
+        final Router auctionRouter = new Router("auctionRouter_0");
+        auctionRouter.setChannel(auctionChannel);
+        auctionChannel.setRouterA(auctionRouter);
+        routers.add(auctionRouter);
+        // Add to node container needed for FNCSApplicationHelper stuff
+        ns3Sim.addFncsNode(auctionRouter);
 
         // This is example of how network setup could be automated somewhat by user
         // Equal number of houses per backbone router not hardcoded into Prosser
-        final int numHousesPerBackbone = 100;
+        final int numHousesPerBackbone = 20;
         final int numBackboneRouters = numHouses / numHousesPerBackbone + 1;
 
         // If more than 1 backboneRouter, create backbone channel to connect backbone routers
         CsmaChannel backboneInterconnectChannel = null;
         if (numBackboneRouters >= 2) {
             backboneInterconnectChannel = new CsmaChannel("backboneInterconnectChannel");
+            //backboneInterconnectChannel.setIPBase("1.0.1.0");
+            //backboneInterconnectChannel.setIPMask("255.255.255.0");
         }
 
         // Creates the specified number of house Routers and attaches them to backbone Routers
         createBackboneRouters(ns3Sim, routers, numHouses, numBackboneRouters,
                 numHousesPerBackbone, auctionChannel, backboneInterconnectChannel);
 
+        // Assign IP addresses to backbone routers
         if (backboneInterconnectChannel != null) {
             backboneInterconnectChannel.assignIPAddresses();
         }
 
+        // Assign IP addresses to routers on all channels (House channels)
+        // TODO would ns3Sim.getHouseChannels() work? Backbone channel already has IPs
         for (Channel c : ns3Sim.getChannels()) {
             c.assignIPAddresses();
         }
@@ -128,8 +142,8 @@ public class AdaptedAEPFncsTest extends Experiment {
             // Creates backbone router to connect houses and auction
             Router backboneRouter = new Router("backboneRouter_" + i);
             // Enables PCAP and ASCII debugging on backbone router
-            backboneRouter.setPcap(true);
-            backboneRouter.setAscii(true);
+            //backboneRouter.setPcap(true);
+            //backboneRouter.setAscii(true);
 
             // Can add more than one auction channel here
             if (i == 0) {
@@ -141,14 +155,15 @@ public class AdaptedAEPFncsTest extends Experiment {
                 backboneRouter.setChannel(backboneInterconnectChannel);
             }
 
-            routers.add(backboneRouter);
+            //routers.add(backboneRouter);
 
             for (int j = 0; j < numHousesPerBackbone; j++) {
-                if (i*numHousesPerBackbone < numHouses) {
+                if ((i * numHousesPerBackbone + j) < numHouses) {
 
                     CsmaChannel houseChannel = new CsmaChannel("csmaHouseChannel_" + i + "_" + j);
                     houseChannel.setDataRate("100Mbps");
                     houseChannel.setDelay("10ms");
+                    //houseChannel.setIPBase((i / numHousesPerBackbone + 1) + "." + (i % numHousesPerBackbone + 1) + "." + (j + 1) + ".0");
                     ns3Sim.addHouseChannel(houseChannel);
 
                     // Connects house router and a backbone router to the house channel
@@ -156,6 +171,8 @@ public class AdaptedAEPFncsTest extends Experiment {
                     houseRouter.setChannel(houseChannel);
                     backboneRouter.setChannel(houseChannel);
                     routers.add(houseRouter);
+                    // Add house node to node container needed for FNSCApplicationHelper stuff
+                    ns3Sim.addFncsNode(houseRouter);
                 }
             }
         }
@@ -178,56 +195,9 @@ public class AdaptedAEPFncsTest extends Experiment {
         auctionRouter.setChannel(auctionChannel);
         auctionChannel.setRouterA(auctionRouter);
         routers.add(auctionRouter);
+        // Add to node container needed for FNCSApplicationHelper stuff
+        ns3Sim.addFncsNode(auctionRouter);
         return auctionChannel;
-    }
-
-    /**
-     * @param sim
-     *            the Ns3Simulator
-     * @param numChannels
-     *            the number of Channels to create in this network
-     */
-    private void populateNs3Sim(final Ns3Simulator sim, final int numChannels) {
-        final String backboneDataRate = "10Gbps";
-        final String backboneDelay = "500ns";
-        final String marketNIPrefix = "Market1NI";
-
-        // Sets parameters for ns-3 network & builds backbone network
-        sim.setup(marketNIPrefix);
-
-        // Create auction channel & router
-        PointToPointChannel auctionChannel = new PointToPointChannel("auctionChannel");
-        auctionChannel.setDataRate("1Gbps");
-        auctionChannel.setDelay("1ms");
-        sim.addChannel(auctionChannel);
-
-        Router auctionRouter = new Router("auctionRouter");
-        auctionRouter.setChannel(auctionChannel);
-
-        // Create backbone CSMA channel (connect Houses)
-        CsmaChannel csmaBackboneChannel = new CsmaChannel("csmaBackboneChannel");
-        csmaBackboneChannel.setDataRate(backboneDataRate);
-        csmaBackboneChannel.setDelay(backboneDelay);
-
-        // Create house channels
-        for (int i = 0; i < numChannels; i++) {
-
-            CsmaChannel csmaHouseChannel = new CsmaChannel("csmaHouseChannel_" + i);
-            csmaHouseChannel.setDataRate("100Mbps");
-            csmaHouseChannel.setDelay("1ms");
-
-            // Add the house channel to simulator list of channels
-            sim.addChannel(csmaHouseChannel);
-
-            Router csmaRouter = new Router("csmaHouseRouter_" + i);
-
-            // Connect router to house channel
-            csmaRouter.setChannel(csmaHouseChannel);
-
-            // Connect router to backbone channel
-            csmaRouter.setChannel(csmaBackboneChannel);
-
-        }
     }
 
     private static final Random rand = new Random(13);
