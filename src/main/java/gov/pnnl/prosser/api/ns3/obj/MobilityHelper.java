@@ -4,6 +4,7 @@
 package gov.pnnl.prosser.api.ns3.obj;
 
 import gov.pnnl.prosser.api.AbstractNs3Object;
+import gov.pnnl.prosser.api.ns3.enums.MobilityModel;
 
 /**
  * This class is used by wireless networks (Wi-Fi, LTE).
@@ -31,12 +32,12 @@ public class MobilityHelper extends AbstractNs3Object {
 	 * @param bounds the bounds value used for the mobility model (implemented in ns-3 as shapes:
 	 * 			e.g. Rectangle(...))
 	 */
-	//TODO create actual object for bounds if we expect to use this
+	//TODO allow for all model types; and create actual object for bounds if we expect to use this
 	public void setMobilityModel(String model, String mode, String modeValue, String speed, String bounds) {
-		appendPrintInfo(this.getName() + ".SetMobilityModel(\"" + model + "\", " +
-				"\"Mode\", StringValue(\"" + mode + "\"), " +
-				"\"Time\", StringValue(\"" + modeValue + "\"), " +
-				"\"Speed\", StringValue(\"" + speed + "\"), " +
+		appendPrintInfo(this.getName() + ".SetMobilityModel (\"" + model + "\", " +
+				"\"Mode\", StringValue (\"" + mode + "\"), " +
+				"\"Time\", StringValue (\"" + modeValue + "\"), " +
+				"\"Speed\", StringValue (\"" + speed + "\"), " +
 				"\"Bounds\", " + bounds + ");\n");
 	}
 	
@@ -44,16 +45,26 @@ public class MobilityHelper extends AbstractNs3Object {
 	 * 
 	 * @param model the mobility model used by this MobilityHelper
 	 */
-	public void setMobilityModel(String model) {
-		appendPrintInfo(this.getName() + ".SetMobilityModel(\"" + model + "\");\n");
+	// TODO allow for all model types
+	public void setMobilityModel(MobilityModel model) {
+		appendPrintInfo(this.getName() + ".SetMobilityModel (\"" + model.toString() + "\");\n");
+	}
+
+
+	/**
+	 * @param node
+	 * 		the Node to install this MobilityModel on
+	 */
+	public void install(Node node) {
+		appendPrintInfo(this.getName() + ".Install (" + node.getPointerName() + ");\n");
 	}
 	
 	/**
 	 * 
-	 * @param nodes the NodeContainer to install this Mobility model on
+	 * @param nodes the NodeContainer to install this MobilityModel on
 	 */
 	public void install(NodeContainer nodes) {
-		appendPrintInfo(this.getName() + ".Install(" + nodes.getName() + ");\n");
+		appendPrintInfo(this.getName() + ".Install (" + nodes.getName() + ");\n");
 	}
 	
 	/**
@@ -62,7 +73,7 @@ public class MobilityHelper extends AbstractNs3Object {
 	 * @param index the index of the Node to install this MobilityModel on
 	 */
 	public void install(NodeContainer nodes, int index) {
-		appendPrintInfo(this.getName() + ".Install(" + nodes.getName() + ".Get(" + index + "));\n");
+		appendPrintInfo(this.getName() + ".Install (" + nodes.getName() + ".Get (" + index + "));\n");
 	}
 
 	/**
@@ -77,17 +88,18 @@ public class MobilityHelper extends AbstractNs3Object {
 	 * @param gridWidth the integer width of the grid used
 	 * @param rowFirst a String of RowFirst or ColumnFirst
 	 */
-	public void setPositionAllocator(String gridPositionAllocator,
+	// TODO allow for other position allocator types
+	public void setPositionAllocator(//(String gridPositionAllocator,
 									double minX, double minY, double deltaX,
 									double deltaY, int gridWidth, String rowFirst) {
 		appendPrintInfo(this.getName() +
-				".SetPositionAllocator(\"" + gridPositionAllocator + "\", " +
-				"\"MinX\", DoubleValue(" + minX + "), " +
-				"\"MinY\", DoubleValue(" + minY + "), " +
-				"\"DeltaX\", DoubleValue(" + deltaX + "), " +
-				"\"DeltaY\", DoubleValue(" + deltaY + "), " +
-				"\"GridWidth\", UintegerValue(" + gridWidth + "), " +
-				"\"LayoutType\", StringValue(\"" + rowFirst + "\"));\n");
+				".SetPositionAllocator (\"ns3::GridPositionAllocator\", " + // + gridPositionAllocator + "\", " +
+				"\"MinX\", DoubleValue (" + minX + "), " +
+				"\"MinY\", DoubleValue (" + minY + "), " +
+				"\"DeltaX\", DoubleValue (" + deltaX + "), " +
+				"\"DeltaY\", DoubleValue (" + deltaY + "), " +
+				"\"GridWidth\", UintegerValue (" + gridWidth + "), " +
+				"\"LayoutType\", StringValue (\"" + rowFirst + "\"));\n");
 	}
-	
+
 }

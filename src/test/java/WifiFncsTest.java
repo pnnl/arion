@@ -1,27 +1,30 @@
-/**
- *
- */
-
-import gov.pnnl.prosser.api.*;
-import gov.pnnl.prosser.api.gld.*;
+import gov.pnnl.prosser.api.Experiment;
+import gov.pnnl.prosser.api.GldSimulator;
+import gov.pnnl.prosser.api.Ns3Simulator;
+import gov.pnnl.prosser.api.gld.HouseType;
 import gov.pnnl.prosser.api.gld.enums.*;
-import gov.pnnl.prosser.api.gld.lib.*;
+import gov.pnnl.prosser.api.gld.lib.GldClock;
+import gov.pnnl.prosser.api.gld.lib.TransformerConfiguration;
+import gov.pnnl.prosser.api.gld.lib.TriplexLineConductor;
+import gov.pnnl.prosser.api.gld.lib.TriplexLineConfiguration;
 import gov.pnnl.prosser.api.gld.obj.*;
-import gov.pnnl.prosser.api.ns3.obj.*;
-import gov.pnnl.prosser.api.ns3.obj.csma.CsmaChannel;
+import gov.pnnl.prosser.api.ns3.enums.MobilityModel;
+import gov.pnnl.prosser.api.ns3.obj.Channel;
+import gov.pnnl.prosser.api.ns3.obj.Router;
+import gov.pnnl.prosser.api.ns3.obj.wifi.*;
 import gov.pnnl.prosser.api.ns3.obj.p2p.PointToPointChannel;
 
-import java.nio.file.*;
-import java.time.*;
-import java.util.*;
+import java.nio.file.Paths;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.EnumSet;
+import java.util.List;
+import java.util.Random;
 
 /**
- * First FNCS experiment
- *
- * @author nord229
- *
+ * Created by happ546 on 9/3/2015.
  */
-public class IntegratedDemo extends Experiment {
+public class WifiFncsTest extends Experiment {
 
     /**
      * Generate the experiment
@@ -29,59 +32,102 @@ public class IntegratedDemo extends Experiment {
     @Override
     public void experiment() {
 
-        // Define some values we want to reuse
-        final String controllerNIPrefix = "F1_C_NI";
-        final String marketNIPrefix = "Market1NI"; // TODO Peter, is this fine defined here? Needed since creating NW before attaching controllers/market
-        final String backboneDataRate = "10Gbps";
-        final String backboneDelay = "500ns";
-        final int numHouses = 100;
+        // This is example of how network setup could be automated somewhat by user
+        // Equal number of houses per backbone router not hardcoded into Prosser
+        final int numHouses = 1;
+        final int numHousesPerBackbone = 20;
+        final int numBackboneRouters = numHouses / numHousesPerBackbone + 1;
+        final int numAuctions = 1;
 
-        // Initialize the simulator object spaces
-        final Ns3Simulator ns3Simulator = this.ns3Simulator("ns3");
-        final GldSimulator gldSim = this.gldSimulator("IntegratedDemo");
 
-        // Sets parameters for information technology communication network
-        //ns3Simulator.setup(marketNIPrefix);
+        final Ns3Simulator ns3Sim = this.ns3Simulator("ns3");
+        ns3Sim.setup(numAuctions);
 
-        // Create communication channel and router for the auction object
-        PointToPointChannel auctionChannel = new PointToPointChannel("auctionChannel");
-        auctionChannel.setDataRate("1Gbps");
-        auctionChannel.setDelay("1ms");
-        ns3Simulator.addChannel(auctionChannel);
-        Router auctionRouter = new Router("auctionRouter");
-        auctionRouter.setChannel(auctionChannel);
+        // List of Routers for IP address assignment
+        List<Router> routers = new ArrayList<>();
 
-        // Create backbone CSMA channel (connect Houses)
-        CsmaChannel csmaBackboneChannel = new CsmaChannel("csmaBackboneChannel");
-        csmaBackboneChannel.setDataRate(backboneDataRate);
-        csmaBackboneChannel.setDelay(backboneDelay);
+        // Creates Auction Channels
+        final PointToPointChannel auctionChannel0 = new PointToPointChannel("auctionChannel0");
+        auctionChannel0.setDataRate("1Gbps");
+        auctionChannel0.setDelay("1ms");
+        // Create auction Routers with PCAP and ASCII debugging set to true
+        final Router auctionRouter0 = ns3Sim.auctionRouter(auctionChannel0, true);
 
-        // Create house channels
-        for (int i = 0; i < numHouses; i++) {
-
-            CsmaChannel csmaHouseChannel = new CsmaChannel("csmaHouseChannel_" + i);
-            csmaHouseChannel.setDataRate("100Mbps");
-            csmaHouseChannel.setDelay("1ms");
-
-            // Add the house channel to simulator list of channels
-            ns3Simulator.addChannel(csmaHouseChannel);
-
-            Router csmaRouter = new Router("csmaHouseRouter_" + i);
-
-            // Connect router to house channel
-            csmaRouter.setChannel(csmaHouseChannel);
-
-            // Connect router to backbone channel
-            csmaRouter.setChannel(csmaBackboneChannel);
-
+        // If more than 1 backboneRouter, create backbone channel to connect backbone routers
+        YansWifiChannel backboneInterconnectChannel = null;
+        if (numBackboneRouters >= 2) {
+            backboneInterconnectChannel = new YansWifiChannel("backboneInterconnectChannel");
+            //backboneInterconnectChannel.setIPBase("1.0.1.0");
+            //backboneInterconnectChannel.setIPMask("255.255.255.0");
         }
 
-		final List<Channel> channels = ns3Simulator.getChannels();
+        // Creates the specified number of house Routers and attaches them to backbone Routers
+        for (int i = 0; i < numBackboneRouters; i++) {
 
-		//Create the auction
-        final AuctionObject auction = createMarket(gldSim, "Market1");
-        auction.setFncsControllerPrefix(controllerNIPrefix);
-        channels.get(0).addAuction(auction);
+            // Creates backbone router to connect houses and auction
+            Router backboneRouter = null;
+
+            List<Channel> auctionChannels = ns3Sim.getAuctionChannels();
+            // Can add more than one auction channel here
+            if (i < auctionChannels.size()) {
+                backboneRouter = ns3Sim.backboneRouter(auctionChannels.get(i), WifiMacType.Ap);
+            }
+
+            // If there are more than 1 backboneRouters, connect them together
+            if (backboneInterconnectChannel != null) {
+                if (backboneRouter == null) {
+                    backboneRouter = ns3Sim.backboneRouter(backboneInterconnectChannel, WifiMacType.Ap);
+                }
+                else {
+                    backboneRouter.setChannel(backboneInterconnectChannel, WifiMacType.Ap);
+                }
+            }
+
+            //routers.add(backboneRouter);
+
+            YansWifiChannel houseChannel = new YansWifiChannel("WifiHouseChannel_" + i);
+            houseChannel.setSsid("Wifi1");
+            houseChannel.setWifiPhyStandard(WifiPhyStandard.WIFI_PHY_STANDARD_80211g);
+            houseChannel.setWifiPhyMode(WifiPhyMode.OfdmRate12Mbps);
+            houseChannel.setMobilityModel(MobilityModel.ConstantPosition);
+
+            for (int j = 0; j < numHousesPerBackbone; j++) {
+                if ((i * numHousesPerBackbone + j) < numHouses) {
+
+                    // Connects house router and a backbone router to the house channel
+                    Router houseRouter = ns3Sim.houseRouter(houseChannel, WifiMacType.Sta);
+                    if (backboneRouter == null) {
+                        backboneRouter = ns3Sim.backboneRouter(houseChannel, WifiMacType.Ap);
+                    }
+                    else {
+                        backboneRouter.setChannel(houseChannel, WifiMacType.Ap);
+                    }
+                    routers.add(houseRouter);
+                }
+            }
+        }
+
+        // Assign IP addresses to backbone routers
+        if (backboneInterconnectChannel != null) {
+            backboneInterconnectChannel.assignIPAddresses();
+        }
+
+        // Assign IP addresses to routers on all channels (House channels)
+        for (Channel c : ns3Sim.getChannels()) {
+            c.assignIPAddresses();
+        }
+
+        // Sets up global IPv4 routing tables on each Router
+        ns3Sim.setupGlobalRouting();
+
+
+        final GldSimulator gldSim = this.gldSimulator("fncs_GLD_1node_Feeder_1");
+
+        List<String> auctionNames = ns3Sim.getAuctionNames();
+
+        final AuctionObject auction0 = createMarket(gldSim, auctionNames.get(0));
+        auction0.setFncsControllerPrefix();
+        auctionChannel0.addAuction(auction0);
 
         // Specify the climate information
         final ClimateObject climate = gldSim.climateObject("Columbus OH");
@@ -89,44 +135,28 @@ public class IntegratedDemo extends Experiment {
         climate.addCsvReader("CSVREADER");
 
         // Add a recorder to the auction for some of the properties on the auction
-        final Recorder recorder = auction.recorder();
-        recorder.setName("Market1_Recorder");
-        recorder.properties("capacity_reference_bid_price", "current_market.clearing_price", "current_market.clearing_quantity");
-        recorder.setLimit(100000000);
-        recorder.setInterval(300L);
-        recorder.setUsingSql(true);
+        final Recorder recorder0 = auction0.recorder();
+        recorder0.setName("Market1_Recorder");
+        recorder0.properties("capacity_reference_bid_price", "current_market.clearing_price", "current_market.clearing_quantity");
+        recorder0.setLimit(100000000);
+        recorder0.setInterval(300L);
+        recorder0.setUsingSql(true);
 
         createTriplex(gldSim, numHouses);
 
-	    //Create the houses and attach to the communication network
-        for (int i = 0; i < numHouses; i++) {
-            final House house = createHouse(gldSim, i, auction);
-            // createRouter();
-            channels.get(i + 1).addController(house.getController());
-        }
+        final List<Channel> houseChannels = ns3Sim.getHouseChannels();
 
-        ns3Simulator.setupFncsApplicationHelper();
+        for (int i = 0; i < numHouses; i++) {
+            final House house;
+            house = createHouse(gldSim, i, auction0);
+
+            houseChannels.get(i).addController(house.getController());
+        }
 
         // Extra GLD files
 //        this.addExtraFiles(Paths.get("res/heat.yaml"));
-
+        // this.addExtraFiles(Paths.get("res/tzinfo.txt"), Paths.get("res/unitfile.txt"));
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     private static final Random rand = new Random(13);
 
@@ -193,7 +223,7 @@ public class IntegratedDemo extends Experiment {
 
     private AuctionObject createMarket(final GldSimulator sim, final String marketName) {
         // final boolean useMarket = true;
-//        final String marketName = "Market1";
+        // final String marketName = "Market1";
         // final double percentPenetration = 1;
         // final double sliderSetting = 1;
 
@@ -250,6 +280,9 @@ public class IntegratedDemo extends Experiment {
         auction.setInitStdev(0.02);
         auction.setUseFutureMeanPrice(false);
         auction.setWarmup(0);
+
+        auction.setFncsControllerPrefix();
+
         return auction;
     }
 

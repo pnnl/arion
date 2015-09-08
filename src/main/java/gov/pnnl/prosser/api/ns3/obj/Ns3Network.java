@@ -9,8 +9,17 @@ import gov.pnnl.prosser.api.c.obj.StringMap;
 import gov.pnnl.prosser.api.c.obj.Vector;
 import gov.pnnl.prosser.api.gld.obj.AuctionObject;
 import gov.pnnl.prosser.api.gld.obj.Controller;
-import gov.pnnl.prosser.api.ns3.enums.Qci;
+import gov.pnnl.prosser.api.ns3.obj.lte.Qci;
 import gov.pnnl.prosser.api.ns3.module.*;
+import gov.pnnl.prosser.api.ns3.obj.csma.CsmaChannel;
+import gov.pnnl.prosser.api.ns3.obj.csma.CsmaHelper;
+import gov.pnnl.prosser.api.ns3.obj.internet.*;
+import gov.pnnl.prosser.api.ns3.obj.lte.EpsBearer;
+import gov.pnnl.prosser.api.ns3.obj.lte.LteHelper;
+import gov.pnnl.prosser.api.ns3.obj.lte.PointToPointEpcHelper;
+import gov.pnnl.prosser.api.ns3.obj.p2p.PointToPointChannel;
+import gov.pnnl.prosser.api.ns3.obj.p2p.PointToPointHelper;
+import gov.pnnl.prosser.api.ns3.obj.wifi.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -314,286 +323,6 @@ public class Ns3Network {
 	}
 
 	/**
-	 * Connect the Controllers to the appropriate Channels
-	 * Note: first channel is for Auction
-	 */
-	public void connectControllerChannels() {
-		
-		// TODO debugging
-		String vectors = "std::vector<NetDeviceContainer> csmaDeviceVector;\n";
-		
-		int numChannels = this.channels.size();
-		
-		ns3Objects.add(iStackHelper);
-		Ipv4AddressHelper ipv4AddrHelper = new Ipv4AddressHelper("ipv4AddrHelper");
-		
-		// 0th channel is reserved for Auction
-		for (int i = 1; i < numChannels; i++) {
-			
-			Channel channel = getChannel(i);
-			
-//			int ipThird = (i == 1) ? (i % 254) : (i % 254 + 1);
-//			// Sets IP address base to use for devices in this NetDeviceContainer
-//			String ipFirstTwo = (i / 64832 + 192) + "." + (i / 254 + 1) + ".";
-//			String ipBase = ipFirstTwo + ipThird + ".0";
-			
-			String ipBase = channel.getIPBase();
-
-			// Set the base address and subnet mask for the IPv4 addresses
-			ipv4AddrHelper.setBase(ipBase, "255.255.255.0");
-			
-			List<Controller> controllers = channel.getControllers();
-			// TODO structure methods in build() so that backbone network & channels are created first
-			// 	then given back to me after GLD stuff adds controllers to the channels
-			
-			if (channel.getClass().getSimpleName().equalsIgnoreCase("csmachannel")) {
-//				Pointer<CsmaChannel> chanPtr  = new Pointer<CsmaChannel>("chanPtr_" + i, new CsmaChannel());
-//				chanPtr.assign(channel.getPointer());
-
-				CsmaHelper csmaHelper = new CsmaHelper("csmaHelper_" + i);
-				NodeContainer csmaNodes = new NodeContainer("csmaNodes_" + i);
-				NetDeviceContainer csmaDevices = new NetDeviceContainer("csmaDevices_" + i);
-								
-				// Create new CSMA Node for each Controller
-				for (int j = 0; j < controllers.size(); j++) {
-					
-					Controller controller = controllers.get(j);					
-			    	// Adds the name of the Controller to the allNames Vector
-			    	allNames.pushBack(controller);
-			    	
-			    	Pointer<Node> csmaNodePtr = new Pointer<Node>("csmaControllerNodePtr_" + i + "_" + j);
-			    	csmaNodePtr.createObject(new Node());
-
-					// Add Node to NodeContainer for IP stuff later
-					//csmaNodes.addNode(csmaNodePtr);
-
-
-
-				}
-
-				// Adds csmaNodes to global NodeContainer for FNCSApplicationHelper
-				allNodes.addNodeContainer(csmaNodes);
-								
-				// Install CSMA protocol stack on csmaNodes & connect to ith Channel
-				csmaHelper.install(csmaNodes, (CsmaChannel) channel, csmaDevices);
-				
-				// TODO debugging
-				if (i == 1) {
-					csmaHelper.enablePcapAll("csmaControllerDevice");
-				}
-								
-				// Sets up IP routing tables, installs IP stack on allNodes, and assigns IP addresses
-				//setupIp(ipv4AddrHelper, csmaNodes, csmaDevices);
-				iStackHelper.install(csmaNodes);
-				ipv4AddrHelper.assign(csmaDevices);
-				
-				// TODO debugging					
-			    //String stuff = "  csmaDeviceVector.push_back(csmaDevices_" + i + ");\n";
-			    //csmaHelper.appendPrintInfo(stuff);
-				
-			} else if (channel.getClass().getSimpleName().equalsIgnoreCase("pointtopointchannel")) {
-				Pointer<PointToPointChannel> chanPtr  = new Pointer<PointToPointChannel>("chanPtr_" + i);
-				chanPtr.encapsulate(channel);
-				
-				PointToPointHelper p2pHelper = new PointToPointHelper("p2pHelper_" + i);
-				// P2PHelper doesn't take Channel param, so need to set attributes manually
-				p2pHelper.setChannelAttribute("DataRate", channel.getDataRate());
-				p2pHelper.setDeviceAttribute("Delay", channel.getDelay());
-				
-				NodeContainer p2pNodes = new NodeContainer("p2pNodes_" + i);
-				NetDeviceContainer p2pDevices = new NetDeviceContainer("p2pDevices_" + i);
-				
-				Pointer<Node> p2pNodePtr = new Pointer<Node>("p2pNode_" + i);
-				
-				for (int j = 0; j < controllers.size(); j++) {
-					Node node = new Node("node_" + i + "_" + j);
-					
-					Controller controller = controllers.get(j);
-					
-					// Wrap node in a Pointer
-					p2pNodePtr.encapsulate(node);
-
-					// Add Node to NodeContainer for IP stuff later
-					//p2pNodes.addNode(p2pNodePtr);
-					
-			    	// Adds the name of the Controller to the allNames Vector
-			    	allNames.pushBack(controller);
-			    	
-				}
-				
-				// Adds p2pNodes to NodeContainer of all Nodes in this network
-		    	allNodes.addNodeContainer(p2pNodes);
-				
-				// Install P2P protocol stack on p2pNodes
-				p2pHelper.install(p2pNodes, p2pDevices);
-				
-				// Sets up IP routing tables, installs IP stack on allNodes, and assigns IP addresses
-				setupIp(ipv4AddrHelper, p2pNodes, p2pDevices);
-				
-			} else if (channel.getClass().getSimpleName().equalsIgnoreCase("wifichannel_" + i)) {
-				Pointer<YansWifiChannel> chanPtr  = new Pointer<YansWifiChannel>("chanPtr_" + i);
-				chanPtr.encapsulate(channel);
-				
-				WifiHelper wifiHelper = new WifiHelper("wifiHelper_" + i);
-				NodeContainer wifiNodes = new NodeContainer("wifiNodes_" + i);
-				NetDeviceContainer wifiDevices = new NetDeviceContainer("wifiDevices_" + i);
-				
-				YansWifiPhyHelper phy = new YansWifiPhyHelper("phy_" + i);
-				NqosWifiMacHelper mac = new NqosWifiMacHelper("mac");
-				
-				Pointer<Node> wifiNodePtr = new Pointer<Node>("wifiNode_" + i);
-				//wifiNode.encapsulate(node);
-
-				// Add Node to NodeContainer for IP stuff later
-				//wifiNodes.addNode(wifiNodePtr);
-				
-				// TODO add other allNodes created to allNames Vector
-				allNames.pushBack(wifiNodePtr);
-				
-				// Adds wifiNodes to global NodeContainer for FncsApplicationHelper.Install
-				allNodes.addNodeContainer(wifiNodes);
-				
-				// Configure WiFi physical link and install protocol stack on wifiNodes
-				wifiHelper.install(phy, mac, wifiNodes, wifiDevices);
-				
-				// Sets up IP routing tables, installs IP stack on allNodes, and assigns IP addresses
-				setupIp(ipv4AddrHelper, wifiNodes, wifiDevices);
-			}
-		}
-		
-//		 TODO debugging
-		
-/*		AbstractNs3Object ns3 = ns3Objects.get(0);
-		
-		String stuff = "\n   Address dest;\n" +
-		  "   std::string protocol;\n" +
-		 "   if (false)\n" +
-		  "   {\n" +
-		 "    dest = InetSocketAddress(staInterfaceVector.at(0).GetAddress(1), 1025);\n" +
-		  "    protocol = \"ns3::UdpSocketFactory\";\n" +
-		  "   }\n" +
-		 "   else\n" +
-		  "   {\n" +
-		   "   PacketSocketAddress tmp;\n" +
-		   "   tmp.SetSingleDevice (staDeviceVector[0].Get(0)->GetIfIndex ());\n" +
-		   "   tmp.SetPhysicalAddress (staDeviceVector[0].Get(0)->GetAddress ());\n" +
-		   "   tmp.SetProtocol (0x807);\n" +
-		   "   dest = tmp;\n" +
-		   "   protocol = \"ns3::PacketSocketFactory\";\n" +
-		   "   }\n" + 
-
-		  "   OnOffHelper onoff = OnOffHelper (protocol, dest);\n" +
-		  "   onoff.SetConstantRate (DataRate (\"500kb/s\"));\n" +
-		  "   ApplicationContainer apps = onoff.Install (csmaNodeVector[0].Get (0));\n" +
-		  "   apps.Start (Seconds (0.5));\n" +
-		  "   apps.Stop (Seconds (3.0));\n" +
-		  "   wifiPhy.EnablePcap (\"wifi-wired-bridging\", csmaDeviceVector[0]);\n" +
-
-		  "   if (true)\n" +
-		    "   {\n" +
-		      "   AsciiTraceHelper ascii;\n" +
-		      "   MobilityHelper::EnableAsciiAll (ascii.CreateFileStream (\"wifi-wired-bridging.mob\"));\n" +
-		    "   }\n";
-		
-		ns3.appendPrintInfo(stuff + "\n");*/
-		
-	}
-	
-	/**
-	 * Connect the Auctions to the Auction Channel
-	 * @return a map of Auction name to Controller prefix
-	 */
-	public StringMap<String, String> connectAuctionChannels() {
-		// Call after controllers connected to network
-		// Create node for each auction
-		Channel auctionChannel = channels.get(0);
-		List<AuctionObject> auctions = auctionChannel.getAuctions();
-		
-		// A map<string, string> mapping AuctionObject name to a Controller name
-		StringMap<String, String> marketToControllerMap = new StringMap<String, String>("marketToControllerMap");
-		
-		NodeContainer auctionNodes = new NodeContainer("auctionNodes");
-		NetDeviceContainer auctionDevices = new NetDeviceContainer("auctionDevices");
-		
-		for (int i = 0; i < auctions.size(); i++) {
-			AuctionObject auction = auctions.get(i);
-			
-			Node node = new Node("auctionNode_" + i);
-//			Pointer<Node> nodePtr = new Pointer<Node>("auctionNodePtr_" + i);
-//			nodePtr.createObject(node);
-					    
-		    // Adds node to auctionNodes for IP stack install
-		    auctionNodes.addNode(node);
-		    
-		    // Adds node to global list of allNodes
-		    allNodes.addNode(node);
-		    
-			// IP setup
-			Ipv4AddressHelper addresses = new Ipv4AddressHelper("auctionAddresses");
-			addresses.setBase(auctionChannel.getIPBase(), auctionChannel.getIPMask());
-		    
-		    if (auctionChannel.getClass().getSimpleName().equalsIgnoreCase("csmachannel")) {
-		    	
-		    	// Wraps auctionChannel in a CsmaChannel Pointer
-//		    	Pointer<CsmaChannel> csmaChannelPtr = new Pointer<CsmaChannel>("csmaChannelPtr_" + i);
-//		    	csmaChannelPtr.encapsulate(auctionChannel);
-		    	
-		    	// Installs CSMA stack and channel on Node
-		    	CsmaHelper csmaHelper = new CsmaHelper("csmaHelper_" + i);
-		    	NetDeviceContainer csmaDevices = new NetDeviceContainer("csmaDevices_" + i);
-		    	csmaHelper.install(node, (CsmaChannel) auctionChannel, csmaDevices);
-		    	auctionDevices.addDevices(csmaDevices);
-		    	
-				// TODO pcap tracing
-				csmaHelper.enablePcapAll("csmaChannelDevices");
-
-		    } else if (auctionChannel.getClass().getSimpleName().equalsIgnoreCase("pointtopointchannel")) {
-		    	
-		    	Pointer<PointToPointChannel> p2pChannelPtr = new Pointer<PointToPointChannel>("p2pChannelPtr_" + i);
-		    	final PointToPointChannel auctionChannelP2p = (PointToPointChannel) auctionChannel;
-		    	p2pChannelPtr.createObject(auctionChannelP2p);
-		    	
-		    	PointToPointHelper p2pHelper = new PointToPointHelper("p2pHelper_" + i);
-		    	p2pHelper.setDeviceAttribute("DataRate", auctionChannelP2p.getDataRate());
-		    	p2pHelper.setChannelAttribute("Delay", auctionChannelP2p.getDelay());
-		    	NetDeviceContainer p2pDevices = new NetDeviceContainer("p2pDevices_" + i);
-		    	
-		    	// Adds the node as second node for p2p auctionChannel
-		    	//auctionChannelP2p.setNodeB(node);
-		    	
-		    	// Adds the p2p channel's other node to auctionNodes for IP stack install
-		    	//auctionNodes.addNode(auctionChannelP2p.getNodeA());
-		    			    	
-		    	//p2pHelper.install(auctionChannelP2p.getNodeA(),
-		    	//		auctionChannelP2p.getNodeB(),
-		    	//		auctionChannelP2p, p2pDevices);
-		    	
-		    	auctionDevices.addDevices(p2pDevices);
-		    	
-				// TODO pcap tracing
-		    	p2pHelper.enablePcapAll("p2pChannelDevices");
-		    	
-		    } else if (auctionChannel.getClass().getSimpleName().equalsIgnoreCase("yanswifichannel")) {
-		    	// TODO WiFi auction
-		    }
-		    
-		    // Install the IP stack on the auctioNodes
-		    iStackHelper.install(auctionNodes);
-		    
-		    // Assigns IPv4 address to devices
-	    	addresses.assign(auctionDevices);
-		    
-		    // Adds Auction name to vector of allNames
-		    allNames.pushBack(auction);
-			// Maps the Auction NetworkInterfaceName to the GldNodePrefix
-			marketToControllerMap.put(auction.getNetworkInterfaceName(), auction.getFncsControllerPrefix());
-		}
-		
-		
-		return marketToControllerMap;
-	}
-
-	/**
 	 * 
 	 * @param addr the Ipv4AddressHelper
 	 * @param nodes the NodeContainer to enable for IP communication
@@ -622,178 +351,7 @@ public class Ns3Network {
 		iStackHelper.setRoutingHelper(list);
 
 	}
-	
-	/**
-	 * @param latency
-	 * @return objects a List of all AbstractNs3Objects created for this WiFi network
-	 */
-	public List<AbstractNs3Object> createWifi(String latency) {
-		
-		// Add the necessary modules for WiFi
-		this.addModule(new Mobility());
-		this.addModule(new Wifi());
-		this.addModule(new Network());
-		this.addModule(new Csma());
-		this.addModule(new Internet());
-		this.addModule(new Bridge());
-		
-		// A map<string, string> mapping AuctionObject name to a Controller name
-		StringMap<String, String> marketToControllerMap = new StringMap<String, String>("marketToControllerMap");
-		
-		// Things for FNCSApplicationHelper.SetApps(...) method at end of network setup
-		// A NodeContainer to hold the GLD market and house allNodes
-		NodeContainer gldNodes = new NodeContainer("gldNodes");
-		
-		// Setup the Internet protocols
-		Ipv4InterfaceContainer apInterfaces = new Ipv4InterfaceContainer("apInterfaces");
-		ns3Objects.add(apInterfaces);
-		Ipv4InterfaceContainer staInterfaces = new Ipv4InterfaceContainer("staInterfaces");
-		ns3Objects.add(staInterfaces);
-		InternetStackHelper stack = new InternetStackHelper("stack");
-		ns3Objects.add(stack);
-		Ipv4AddressHelper addressHelper = new Ipv4AddressHelper("addressHelper");
-		ns3Objects.add(addressHelper);
-		
-		// Generic helper for installing the selected network protocol on the backbone Nodes
-		NetworkHelper backboneHelper = new NetworkHelper();		
-		
-		YansWifiPhyHelper wifiPhy = new YansWifiPhyHelper("wifiPhy");
-		wifiPhy.defaultParams();
-		wifiPhy.setPcapDataLinkType("YansWifiPhyHelper::DLT_IEEE802_11_RADIO");
-		ns3Objects.add(wifiPhy);
-		
-		// TODO make these as actual Vector objects if vectors needed for more than testing
-//		String vectors = "std::vector<NodeContainer> staNodeVector;\n" +
-//						  "std::vector<NetDeviceContainer> staDeviceVector;\n" +
-//						  "std::vector<NetDeviceContainer> apDeviceVector;\n" +
-//						  "std::vector<Ipv4InterfaceContainer> staInterfaceVector;\n" +
-//						  "std::vector<Ipv4InterfaceContainer> apInterfaceVector;\n";
-		
-//		stack.appendPrintInfo(vectors);
-		
-		// Used by MobilityHelper's positionAllocator and setMobilityModel
-		double wifiX = 0.0;
-		
-		// Create p2p channel for Auction
-		// TODO generalize this to allow CSMA
-		PointToPointChannel auctionChannel = new PointToPointChannel("auctionChannel");
-		auctionChannel.setDataRate("1Gbps");
-		auctionChannel.setDelay("500ns");
-		addChannel(auctionChannel);
-		
-		final int numChannels = getNumChannels();
-		
-		PointToPointHelper p2pHelper = new PointToPointHelper("p2pHelper");
-		
-		// Create backbone router
-		NodeContainer backboneRouter = new NodeContainer("backboneRouter");
-		backboneRouter.create(1);
-		// NodeContainer for AP allNodes
-		NodeContainer apNodes = new NodeContainer("apNodes");
-		apNodes.create(numChannels);
-		
-		WifiHelper wifiHelper = new WifiHelper("wifiHelper");
-		wifiHelper.defaultParams();
-		
-		NqosWifiMacHelper wifiMacHelper = new NqosWifiMacHelper("wifiMacHelper");
-		wifiMacHelper.defaultParams();
-		
-		YansWifiChannelHelper wifiChannelHelper = new YansWifiChannelHelper("wifiChannelHelper");
-		wifiChannelHelper.defaultParams();
-		wifiPhy.setChannel(wifiChannelHelper.create());
-		
-		MobilityHelper mobility = new MobilityHelper("mobilityHelper");
 
-		
-		// TODO figure out how to implement own wifihelper.install method to be able to get specific channels out of wifi
-		
-		for (int i = 1; i < numChannels; i++) {
-			
-			
-				String ssidBase = "wifi_" + i;
-				Ssid ssid = new Ssid("ssid_" + i);
-				ssid.setSsid(ssidBase);
-				
-				NetDeviceContainer apDevs = new NetDeviceContainer("apDev_" + i);
-				ns3Objects.add(apDevs);
-				
-				Ipv4InterfaceContainer staInterface = new Ipv4InterfaceContainer("staInterface_" + i);
-				ns3Objects.add(staInterface);
-				Ipv4InterfaceContainer apInterface = new Ipv4InterfaceContainer("apInterface_" + i);
-				ns3Objects.add(apInterface);
-				
-			    mobility.setPositionAllocator("ns3::GridPositionAllocator",
-			    								wifiX, 0.0, 5.0, 5.0, 1,
-			                                    "RowFirst");
-			    // Setup the AP
-			    mobility.setMobilityModel("ns3::ConstantPositionMobilityModel");
-			    mobility.install(apNodes, i);
-			    wifiMacHelper.setType("ns3::ApWifiMac", ssid);
-			    
-			    // Installs a WiFi device on the ith backbone Node to make the AP WiFi device
-			    wifiHelper.install(wifiPhy, wifiMacHelper, apNodes, i, apDevs);
-			   
-			    
-			    // TODO use this for sta node setup
-//			    // Setup the Mobility model
-//			    mobility.setMobilityModel("ns3::RandomWalk2dMobilityModel",
-//			                               "Time", "2s", 
-//			                               "ns3::ConstantRandomVariable[Constant=1.0]",
-//			                               "RectangleValue(Rectangle(" + 
-//			                               wifiX + ", " + wifiX + " + 5.0, 0.0, (" 
-//			                               + numStaNodesPerApNode + " + 1) * 5.0))");
-			    
-			    // Saves everything in containers.
-			    String stuff = "\n  staNodeVector.push_back(staNodes_" + i + ");\n" +
-					    "  apDeviceVector.push_back(apDev_" + i + ");\n" +
-					    "  apInterfaceVector.push_back(apInterface_" + i + ");\n" +
-					    "  staDeviceVector.push_back(staDev_" + i + ");\n" +
-					    "  staInterfaceVector.push_back(staInterface_" + i + ");\n";
-			    
-			    addressHelper.appendPrintInfo(stuff);
-	
-			    wifiX += 20.0;
-		}
-			
-		
-//		AbstractNs3Object ns3 = ns3Objects.get(0);
-//		
-//		String stuff = "\n   Address dest;\n" +
-//		  "   std::string protocol;\n" +
-//		 "   if (false)\n" +
-//		  "   {\n" +
-//		 "    dest = InetSocketAddress(staInterfaceVector.at(0).GetAddress(1), 1025);\n" +
-//		  "    protocol = \"ns3::UdpSocketFactory\";\n" +
-//		  "   }\n" +
-//		 "   else\n" +
-//		  "   {\n" +
-//		   "   PacketSocketAddress tmp;\n" +
-//		   "   tmp.SetSingleDevice (staDeviceVector[0].Get(0)->GetIfIndex ());\n" +
-//		   "   tmp.SetPhysicalAddress (staDeviceVector[0].Get(0)->GetAddress ());\n" +
-//		   "   tmp.SetProtocol (0x807);\n" +
-//		   "   dest = tmp;\n" +
-//		   "   protocol = \"ns3::PacketSocketFactory\";\n" +
-//		   "   }\n" + 
-//
-//		  "   OnOffHelper onoff = OnOffHelper (protocol, dest);\n" +
-//		  "   onoff.SetConstantRate (DataRate (\"500kb/s\"));\n" +
-//		  "   ApplicationContainer apps = onoff.Install (staNodeVector[0].Get (0));\n" +
-//		  "   apps.Start (Seconds (0.5));\n" +
-//		  "   apps.Stop (Seconds (3.0));\n" +
-//		  "   wifiPhy.EnablePcap (\"wifi-wired-bridging\", apDeviceVector[0]);\n" +
-//
-//		  "   if (true)\n" +
-//		    "   {\n" +
-//		      "   AsciiTraceHelper ascii;\n" +
-//		      "   MobilityHelper::EnableAsciiAll (ascii.CreateFileStream (\"wifi-wired-bridging.mob\"));\n" +
-//		    "   }\n";
-		
-//		ns3.appendPrintInfo(stuff + "\n");
-		
-		return ns3Objects;
-		
-	}
-	
 	/**
 	 * Creates the FNCS simulator for ns-3 to use
 	 */
@@ -925,7 +483,7 @@ public class Ns3Network {
 		
 		MobilityHelper mobilityHelper = new MobilityHelper("mobilityHelper");
 		// TODO ConstantPositionMobilityModel sets all allNodes at origin (0,0,0)
-		mobilityHelper.setMobilityModel("ns3::ConstantPositionMobilityModel"); 
+		//mobilityHelper.setMobilityModel("ns3::ConstantPositionMobilityModel");
 		
 		// Setup QoS Class Indicator 
 		Qci q = Qci.GBR_CONV_VOICE;
@@ -949,7 +507,7 @@ public class Ns3Network {
 			lteHelper.installEnbDevice(enbNodes, enbDevices);
 			
 			// TODO ConstantPositionMobilityModel sets all allNodes at origin (0,0,0)
-			mobilityHelper.setMobilityModel("ns3::ConstantPositionMobilityModel"); 
+			//mobilityHelper.setMobilityModel("ns3::ConstantPositionMobilityModel");
 			mobilityHelper.install(enbNodes);
 			
 			// Install the LTE protocol stack on the eNB allNodes; not for EPC
@@ -974,7 +532,7 @@ public class Ns3Network {
 				ns3Objects.add(ueNodes);
 				
 				// TODO ConstantPositionMobilityModel sets all allNodes at origin (0,0,0)
-				mobilityHelper.setMobilityModel("ns3::ConstantPositionMobilityModel"); 
+				//mobilityHelper.setMobilityModel("ns3::ConstantPositionMobilityModel");
 				mobilityHelper.install(ueNodes);
 				
 				// Install IP stack on UEs
@@ -1007,113 +565,5 @@ public class Ns3Network {
 		
 		return ns3Objects;
 
-	}
-	
-	/**
-	 * @param dataRate
-	 * @param delay
-	 * @param pcapOutput
-	 */
-	public void createCsma(String dataRate, String delay, boolean pcapOutput) {
-		
-		this.addModule(new Core());
-		this.addModule(new Applications());
-		this.addModule(new Network());
-		this.addModule(new Csma());
-		this.addModule(new PointToPoint());
-		this.addModule(new Internet());
-		this.addModule(new NixVectorRouting());
-
-		final int numChannels = getNumChannels();
-
-		// IP setup
-		Ipv4AddressHelper addresses = new Ipv4AddressHelper("backboneAddresses");
-		
-		// CSMA channel/device setup
-		CsmaHelper csmaHelper = new CsmaHelper("csmaHelper");
-		
-		// Point to point channel/device setup
-		PointToPointHelper p2pHelper = new PointToPointHelper("p2pHelper");
-		
-		// Creates a channel for the Auctions & add it to list of channels
-		// TODO allow user to select channel type
-		// FIXME p2p channels can only have 2 devices on them; for 2+ auctions, need reference to backbonerouter
-		PointToPointChannel auctionChannel = new PointToPointChannel("p2pAuctionChannel");
-		auctionChannel.setDataRate(dataRate);
-		auctionChannel.setDelay(delay);
-		auctionChannel.setIPBase("1.1.1.0"); // TODO implement user-settable Auction addrBase
-		addChannel(auctionChannel);
-		
-		// Creates main backbone router
-		Node backboneRouter = new Node("backboneRouter");
-		
-		// Stores backboneRouter in Pointer for p2pHelper.install
-//		Pointer<Node> backboneRouterPtr = new Pointer<Node>("backboneRouterPtr", new Node());
-//		backboneRouter.getNode(0, backboneRouterPtr);
-		
-		// Install IP stack on backboneRouterPtr
-		iStackHelper.install(backboneRouter);
-		
-		// Adds the backbone router node to p2p auction channel
-		//auctionChannel.setNodeA(backboneRouter);
-		
-		// Creates access point routers
-//		NodeContainer apNodes = new NodeContainer("apNodes_backbone");
-//		apNodes.create(numChannels - 1);
-		
-		// Adds backbone allNodes to global NodeContainer for FNCSApplicationHelper
-		allNodes.addNode(backboneRouter);
-		//allNodes.addNodeContainer(apNodes);
-		
-		// Adds node allNames to global Vector of allNames for FNCSApplicationHelper
-		allNames.pushBack(backboneRouter);
-		//allNames.pushBack(apNodes);
-
-		
-		for (int i = 0; i < numChannels - 1; i++) {
-			
-			Node apNode = new Node("apNode_" + i);
-			allNames.pushBack(apNode);
-			
-			int ipThird = ((2 * i) % 254 + 1);
-			// Sets IP address base to use for devices in this NetDeviceContainer
-			String ipFirstTwo = (i / 65014 + 10) + "." + (i / 254 + 1) + ".";
-			String ipBase = ipFirstTwo + ipThird + ".0";
-			
-			// Create the CSMA Channel & add it to list of channels
-			CsmaChannel channel = new CsmaChannel("csmaChannel_backbone_" + i);
-			channel.setDataRate(dataRate);
-			channel.setDelay(delay);
-			// Add IP address base to Channel for use later in Market/Controller integration
-			channel.setIPBase(ipBase); // TODO check if this works later
-			addChannel(channel);
-			
-			NetDeviceContainer csmaDevices = new NetDeviceContainer("csmaDevices_backbone_" + i);
-			
-			// Installs the CSMA protocols on the devices using the given channel
-			csmaHelper.install(apNode, (CsmaChannel) channel, csmaDevices);
-			// Installs the IP stack protocols on the CSMA allNodes
-			iStackHelper.install(apNode);
-			
-			addresses.setBase(ipBase, "255.255.255.0"); // IPbase, mask
-			addresses.assign(csmaDevices);
-			
-			NetDeviceContainer p2pDevices = new NetDeviceContainer("p2pDevices_backbone_" + i);
-			
-			// Install p2p devices on ap node and backbone router & connect via p2p channel
-			p2pHelper.install(apNode, backboneRouter, auctionChannel, p2pDevices);
-			
-			ipThird = ((2 * i) % 254 + 2);
-			
-			ipBase = ipFirstTwo + ipThird + ".0";
-			
-			addresses.setBase(ipBase, "255.255.255.0");
-			addresses.assign(p2pDevices);
-			
-		}
-		
-		csmaHelper.enablePcapAll("csmaBackboneRouter");
-		p2pHelper.enablePcapAll("p2pBackboneRouter");
-		
 	}
 }

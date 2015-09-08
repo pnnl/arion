@@ -9,11 +9,14 @@ import gov.pnnl.prosser.api.ns3.enums.NetworkType;
 import gov.pnnl.prosser.api.ns3.module.Module;
 import gov.pnnl.prosser.api.ns3.module.Namespace;
 import gov.pnnl.prosser.api.ns3.obj.*;
+import gov.pnnl.prosser.api.ns3.obj.csma.CsmaChannel;
+import gov.pnnl.prosser.api.ns3.obj.p2p.PointToPointChannel;
+import gov.pnnl.prosser.api.ns3.obj.wifi.WifiMacType;
+import gov.pnnl.prosser.api.ns3.obj.wifi.YansWifiChannel;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Stub for NS-3 Simulator configurations
@@ -190,7 +193,7 @@ public class Ns3Simulator {
 	 * @return a Router connected to this auctionChannel
 	 */
 	public Router auctionRouter(Channel auctionChannel) {
-		return router(auctionChannel, "auction", false);
+		return router(auctionChannel, "auction", false, null);
 	}
 
 	/**
@@ -200,7 +203,7 @@ public class Ns3Simulator {
 	 * @return a Router connected to this auctionChannel
 	 */
 	public Router auctionRouter(Channel auctionChannel, boolean debug) {
-		return router(auctionChannel, "auction", debug);
+		return router(auctionChannel, "auction", debug, null);
 	}
 
 	/**
@@ -208,7 +211,7 @@ public class Ns3Simulator {
 	 * @return a Router connected to this houseChannel
 	 */
 	public Router houseRouter(Channel houseChannel) {
-		return router(houseChannel, "house", false);
+		return router(houseChannel, "house", false, null);
 	}
 
 	/**
@@ -218,7 +221,11 @@ public class Ns3Simulator {
 	 * @return a Router connected to this houseChannel
 	 */
 	public Router houseRouter(Channel houseChannel, boolean debug) {
-		return router(houseChannel, "house", debug);
+		return router(houseChannel, "house", debug, null);
+	}
+
+	public Router houseRouter(Channel houseChannel, WifiMacType macType) {
+		return router(houseChannel, "house", false, macType);
 	}
 
 	/**
@@ -226,7 +233,7 @@ public class Ns3Simulator {
 	 * @return a Router connected to this backboneChannel
 	 */
 	public Router backboneRouter(Channel backboneChannel) {
-		return router(backboneChannel, "backbone", false);
+		return router(backboneChannel, "backbone", false, null);
 	}
 
 	/**
@@ -236,10 +243,14 @@ public class Ns3Simulator {
 	 * @return a Router connected to this backboneChannel
 	 */
 	public Router backboneRouter(Channel backboneChannel, boolean debug) {
-		return router(backboneChannel, "backbone", debug);
+		return router(backboneChannel, "backbone", debug, null);
 	}
 
-	private Router router(Channel chan, String routerType, boolean debug) {
+	public Router backboneRouter(Channel backboneChannel, WifiMacType macType) {
+		return router(backboneChannel, "backbone", false, macType);
+	}
+
+	private Router router(Channel chan, String routerType, boolean debug, WifiMacType macType) {
 		NetworkType type = chan.getType();
 		String name = routerType + "Rtr_" + chan.getName();
 		// Add chan to appropriate list of Channels
@@ -253,6 +264,7 @@ public class Ns3Simulator {
 		router.setPcap(debug);
 		router.setAscii(debug);
 		router.setChannel(chan);
+		router.setMacType(macType);
 		if (type.equals(NetworkType.P2P)) {
 			((PointToPointChannel) chan).setRouterA(router);
 		}

@@ -8,6 +8,8 @@ import gov.pnnl.prosser.api.gld.enums.*;
 import gov.pnnl.prosser.api.gld.lib.*;
 import gov.pnnl.prosser.api.gld.obj.*;
 import gov.pnnl.prosser.api.ns3.obj.*;
+import gov.pnnl.prosser.api.ns3.obj.csma.CsmaChannel;
+import gov.pnnl.prosser.api.ns3.obj.p2p.PointToPointChannel;
 
 import java.nio.file.*;
 import java.time.*;
@@ -70,7 +72,6 @@ public class AdaptedAEPFncsTest extends Experiment {
         }
 
         // Assign IP addresses to routers on all channels (House channels)
-        // TODO would ns3Sim.getHouseChannels() work? Backbone channel already has IPs
         for (Channel c : ns3Sim.getChannels()) {
             c.assignIPAddresses();
         }
@@ -198,28 +199,6 @@ public class AdaptedAEPFncsTest extends Experiment {
                 }
             }
         }
-    }
-
-    /**
-     *
-     * @param ns3Sim
-     *              the Ns3Simulator
-     * @param routers
-     *              a list of routers for the simulator
-     * @return a PointToPointChannel for the auction router
-     */
-    private PointToPointChannel createAuctionRouter(final Ns3Simulator ns3Sim, final List<Router> routers) {
-        PointToPointChannel auctionChannel = new PointToPointChannel("auctionChannel");
-        auctionChannel.setDataRate("1Gbps");
-        auctionChannel.setDelay("1ms");
-        ns3Sim.addChannel(auctionChannel);
-        Router auctionRouter = new Router("auctionRouter_0");
-        auctionRouter.setChannel(auctionChannel);
-        auctionChannel.setRouterA(auctionRouter);
-        routers.add(auctionRouter);
-        // Add to node container needed for FNCSApplicationHelper stuff
-        ns3Sim.addFncsNode(auctionRouter);
-        return auctionChannel;
     }
 
     private static final Random rand = new Random(13);

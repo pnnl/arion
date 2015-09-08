@@ -7,7 +7,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import gov.pnnl.prosser.api.AbstractNs3Object;
+import gov.pnnl.prosser.api.ns3.enums.MobilityModel;
 import gov.pnnl.prosser.api.ns3.enums.NetworkType;
+import gov.pnnl.prosser.api.ns3.obj.csma.CsmaChannel;
+import gov.pnnl.prosser.api.ns3.obj.csma.CsmaHelper;
+import gov.pnnl.prosser.api.ns3.obj.internet.InternetStackHelper;
+import gov.pnnl.prosser.api.ns3.obj.p2p.PointToPointChannel;
+import gov.pnnl.prosser.api.ns3.obj.p2p.PointToPointHelper;
+import gov.pnnl.prosser.api.ns3.obj.wifi.*;
 
 /**
  * @author happ546
@@ -17,10 +24,10 @@ public class Router extends AbstractNs3Object {
 	
 	private Node node;
 	private List<Channel> channels;
-
 	private boolean ipStackInstalled, ready, pcap, ascii;
-	
-	/**
+    private WifiMacType macType;
+
+    /**
 	 * Create a new Router with the given Name
 	 * @param name
 	 */
@@ -33,6 +40,7 @@ public class Router extends AbstractNs3Object {
 		ready = false;
 		pcap = false;
 		ascii = false;
+        macType = WifiMacType.Adhoc;
 		
 	}
 
@@ -90,8 +98,8 @@ public class Router extends AbstractNs3Object {
 				ready = true;
 				
 			} else {
-				System.out.println("This PointToPointChannel " + channel.getName() + " is already attached to" +
-						"this router.  Router not added to channel.");
+				System.out.println("This PointToPointChannel " + channel.getName() + " is already attached to Router " +
+						getName() + ".  Router not added to channel.");
 			}
 
 			if (pcap) {
@@ -101,6 +109,47 @@ public class Router extends AbstractNs3Object {
 				p2pHelper.enableAsciiAll(channel.getName());
 			}
 
+			// TODO get all parameters (enums/classes) from channel
+		} else if (channel.getType().equals(NetworkType.WIFI)) {
+			YansWifiChannel chan = (YansWifiChannel) channel;
+
+            WifiHelper wifiHelper = chan.getWifiHelper();
+			wifiHelper.setStandard(chan.getWifiPhyStandard());
+
+			// TODO implement parameters for these with enums or classes
+            YansWifiChannelHelper wifiChannelHelper = chan.getWifiChannelHelper();
+			wifiChannelHelper.setPropagationDelay();
+			wifiChannelHelper.addPropagationLoss();
+
+            YansWifiPhyHelper wifiPhyHelper = chan.getWifiPhyHelper();
+            wifiPhyHelper.defaultParams();
+			wifiPhyHelper.setPcapDataLinkType("YansWifiPhyHelper::DLT_IEEE802_11_RADIO"); // TODO create enums for this
+			wifiPhyHelper.setChannel(wifiChannelHelper);
+
+            NqosWifiMacHelper wifiMacHelper;
+            if (getMacType().equals(WifiMacType.Ap)) {
+                wifiMacHelper = chan.getWifiMacHelperAp();
+            } else if (getMacType().equals(WifiMacType.Sta)) {
+                wifiMacHelper = chan.getWifiMacHelperSta();
+            } else {
+                wifiMacHelper = chan.getWifiMacHelperAdhoc();
+            }
+            wifiMacHelper.defaultParams();
+			wifiMacHelper.setType(getMacType(), chan.getSsid(), false);
+
+            MobilityHelper mobilityHelper = chan.getMobilityHelper();
+			mobilityHelper.setPositionAllocator(0.0, 0.0, 0.1, 0.1, 10, "rowFirst");
+			mobilityHelper.setMobilityModel(chan.getMobilityModel());
+			mobilityHelper.install(getNode());
+
+            wifiHelper.install(wifiPhyHelper, wifiMacHelper, getNode(), chan.getDevices());
+
+            if (pcap) {
+                wifiPhyHelper.enablePcapAll(channel.getName());
+            }
+            if (ascii) {
+                wifiPhyHelper.enableAsciiAll(channel.getName());
+            }
 		}
 		
 		if (!ipStackInstalled && ready) {
@@ -125,6 +174,12 @@ public class Router extends AbstractNs3Object {
 		//channel.addDevices(devices);
 	}
 
+
+    public void setChannel(YansWifiChannel houseChannel, WifiMacType ap) {
+        setMacType(ap);
+        setChannel(houseChannel);
+    }
+
 	/**
 	 *
 	 * @param b a boolean flag to set PCAP dump on/off
@@ -138,4 +193,12 @@ public class Router extends AbstractNs3Object {
 	 * @param b a boolean flag to set ASCII tracing on/off
 	 */
 	public void setAscii(boolean b) { this.ascii = b; }
+
+    public WifiMacType getMacType() {
+        return macType;
+    }
+
+    public void setMacType(WifiMacType macType) {
+        this.macType = macType;
+    }
 }

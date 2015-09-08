@@ -7,6 +7,7 @@ import gov.pnnl.prosser.api.AbstractNs3Object;
 import gov.pnnl.prosser.api.gld.obj.AuctionObject;
 import gov.pnnl.prosser.api.gld.obj.Controller;
 import gov.pnnl.prosser.api.ns3.enums.NetworkType;
+import gov.pnnl.prosser.api.ns3.obj.internet.Ipv4AddressHelper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,7 +43,7 @@ public class Channel extends AbstractNs3Object {
 		this.controllers = new ArrayList<>();
 		this.auctions = new ArrayList<>();
 		final int num = instanceCount.incrementAndGet();
-		this.devices = new NetDeviceContainer("channelDeviceContainer" + num);
+		this.devices = new NetDeviceContainer("chanDevCont" + num);
 		this.addressHelper = null;
 
         ipBase += (num / 65534 + 1) +

@@ -8,6 +8,8 @@ import gov.pnnl.prosser.api.gld.enums.*;
 import gov.pnnl.prosser.api.gld.lib.*;
 import gov.pnnl.prosser.api.gld.obj.*;
 import gov.pnnl.prosser.api.ns3.obj.*;
+import gov.pnnl.prosser.api.ns3.obj.csma.CsmaChannel;
+import gov.pnnl.prosser.api.ns3.obj.p2p.PointToPointChannel;
 
 import java.nio.file.Paths;
 import java.time.*;
