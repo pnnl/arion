@@ -32,6 +32,8 @@ import java.util.List;
  *
  */
 public class Ns3Network {
+
+	// Hi sean
 	
 	private String gldNodePrefix;
 	private int numBackboneNodes, numChannels;
