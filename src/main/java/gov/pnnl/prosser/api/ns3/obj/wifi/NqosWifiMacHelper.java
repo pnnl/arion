@@ -14,11 +14,19 @@ import gov.pnnl.prosser.api.AbstractNs3Object;
  */
 public class NqosWifiMacHelper extends AbstractNs3Object {
 
+	private WifiMacType wifiMacType;
+
 	/**
 	 * @param name
 	 */
 	public NqosWifiMacHelper(String name) {
 		this.setName(name);
+		wifiMacType = null;
+	}
+
+	public NqosWifiMacHelper(String name, WifiMacType type) {
+		this(name);
+		wifiMacType = type;
 	}
 
 	/**
@@ -60,4 +68,11 @@ public class NqosWifiMacHelper extends AbstractNs3Object {
 		appendPrintInfo(this.getName() + ".SetType (\"" + type.toString() + "\");\n");
 	}
 
+	public WifiMacType getWifiMacType() {
+		return wifiMacType;
+	}
+
+	public void setWifiMacType(WifiMacType wifiMacType) {
+		this.wifiMacType = wifiMacType;
+	}
 }

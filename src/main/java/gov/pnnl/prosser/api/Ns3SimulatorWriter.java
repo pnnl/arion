@@ -54,15 +54,13 @@ public class Ns3SimulatorWriter {
         if (modules != null) {
             modules.forEach(m -> m.writeNs3String(sb));
         }
-		
-		String includes = "#include <cstdlib>\n" +
-				"#include <vector>\n" +
-				"#include <map>\n" +
-				"#include <iostream>\n" +
-				"#include <stdexcept>\n";
-        
-        sb.append(includes + "\n");
 
+		sb.append("#include <cstdlib>\n");
+		sb.append("#include <vector>\n");
+		sb.append("#include <map>\n");
+		sb.append("#include <iostream>\n");
+		sb.append("#include <stdexcept>\n");
+        sb.append("\n");
 
 		if (namespaces != null) {
 			namespaces.forEach(n -> n.writeNamespace(sb));
@@ -75,11 +73,11 @@ public class Ns3SimulatorWriter {
 		// Adds FNCS ns-3 application at end of ns-3 file to output string
 		ns3Simulator.setupFncsApplicationHelper();
 
-		if (objects != null && objects.size() > 0) {
-			for (int i = 0; i < objects.size(); i++) {
-				objects.get(i).writeNs3Properties(sb);
-			}
-        }
+		if (objects != null) {
+			objects.forEach(o -> {
+				o.writeNs3Properties(sb);
+			});
+		}
         
         sb.append("}\n");
         

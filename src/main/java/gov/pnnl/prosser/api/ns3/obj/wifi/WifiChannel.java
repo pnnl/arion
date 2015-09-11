@@ -5,6 +5,9 @@ import gov.pnnl.prosser.api.ns3.enums.NetworkType;
 import gov.pnnl.prosser.api.ns3.obj.Channel;
 import gov.pnnl.prosser.api.ns3.obj.MobilityHelper;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by happ546 on 9/3/2015.
  */
@@ -41,10 +44,19 @@ public class WifiChannel extends Channel {
         this.setName(name);
         this.getAsPointer();
 
-        String namePostfix = "_" + getName();
+        final String namePostfix = getName();
 
         wifiChannelHelper = new YansWifiChannelHelper("wifiChanHelper_" + namePostfix);
+        // TODO implement these as enums and create getters/setters
+        wifiChannelHelper.setPropagationDelay();
+        wifiChannelHelper.addPropagationLoss();
+
         wifiPhyHelper = new YansWifiPhyHelper("wifiPhyHelper_" + namePostfix);
+        // TODO will need to move these after wifiChannelHelper methods implemented as enums
+        wifiPhyHelper.defaultParams();
+        wifiPhyHelper.setPcapDataLinkType("YansWifiPhyHelper::DLT_IEEE802_11_RADIO"); // TODO create enums for this
+        wifiPhyHelper.setChannel(wifiChannelHelper);
+
         wifiMacHelperAdhoc = new NqosWifiMacHelper("nqosWifiMacHelperADHOC_" + namePostfix);
         wifiMacHelperAp = new NqosWifiMacHelper("nqosWifiMacHelperAP_" + namePostfix);
         wifiMacHelperSta = new NqosWifiMacHelper("nqosWifiMacHelperSTA_" + namePostfix);
@@ -58,6 +70,7 @@ public class WifiChannel extends Channel {
 
     public void setWifiPhyStandard(WifiPhyStandard phyStandard) {
         this.phyStandard = phyStandard;
+        wifiHelper.setStandard(phyStandard);
     }
 
     public WifiPhyMode getWifiPhyMode() {
@@ -67,6 +80,7 @@ public class WifiChannel extends Channel {
     // TODO check for compatibility of phyMode with phyStandard, or leave up to user?
     public void setWifiPhyMode(WifiPhyMode phyMode) {
         this.phyMode = phyMode;
+        wifiHelper.setRemoteStationManager(phyMode);
     }
 
     public Ssid getSsid() {
@@ -75,6 +89,11 @@ public class WifiChannel extends Channel {
 
     public void setSsid(String ssid) {
         this.ssid = new Ssid(ssid);
+        for (NqosWifiMacHelper wifiMacHelper :
+                new NqosWifiMacHelper[] {wifiMacHelperAdhoc, wifiMacHelperAp, wifiMacHelperSta}) {
+            wifiMacHelper.defaultParams();
+            wifiMacHelper.setType(wifiMacHelper.getWifiMacType(), this.ssid, false);
+        }
     }
 
     public MobilityModel getMobilityModel() {
@@ -83,6 +102,9 @@ public class WifiChannel extends Channel {
 
     public void setMobilityModel(MobilityModel mobilityModel) {
         this.mobilityModel = mobilityModel;
+
+        mobilityHelper.setPositionAllocator(0.0, 0.0, 0.1, 0.1, 10, "\"RowFirst\"");
+        mobilityHelper.setMobilityModel(mobilityModel);
     }
 
     public WifiHelper getWifiHelper() {

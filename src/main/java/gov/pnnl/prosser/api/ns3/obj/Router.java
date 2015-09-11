@@ -113,19 +113,6 @@ public class Router extends AbstractNs3Object {
 		} else if (channel.getType().equals(NetworkType.WIFI)) {
 			YansWifiChannel chan = (YansWifiChannel) channel;
 
-            WifiHelper wifiHelper = chan.getWifiHelper();
-			wifiHelper.setStandard(chan.getWifiPhyStandard());
-
-			// TODO implement parameters for these with enums or classes
-            YansWifiChannelHelper wifiChannelHelper = chan.getWifiChannelHelper();
-			wifiChannelHelper.setPropagationDelay();
-			wifiChannelHelper.addPropagationLoss();
-
-            YansWifiPhyHelper wifiPhyHelper = chan.getWifiPhyHelper();
-            wifiPhyHelper.defaultParams();
-			wifiPhyHelper.setPcapDataLinkType("YansWifiPhyHelper::DLT_IEEE802_11_RADIO"); // TODO create enums for this
-			wifiPhyHelper.setChannel(wifiChannelHelper);
-
             NqosWifiMacHelper wifiMacHelper;
             if (getMacType().equals(WifiMacType.Ap)) {
                 wifiMacHelper = chan.getWifiMacHelperAp();
@@ -134,15 +121,14 @@ public class Router extends AbstractNs3Object {
             } else {
                 wifiMacHelper = chan.getWifiMacHelperAdhoc();
             }
-            wifiMacHelper.defaultParams();
-			wifiMacHelper.setType(getMacType(), chan.getSsid(), false);
 
             MobilityHelper mobilityHelper = chan.getMobilityHelper();
-			mobilityHelper.setPositionAllocator(0.0, 0.0, 0.1, 0.1, 10, "rowFirst");
-			mobilityHelper.setMobilityModel(chan.getMobilityModel());
 			mobilityHelper.install(getNode());
 
-            wifiHelper.install(wifiPhyHelper, wifiMacHelper, getNode(), chan.getDevices());
+			YansWifiPhyHelper wifiPhyHelper = chan.getWifiPhyHelper();
+
+			WifiHelper wifiHelper = chan.getWifiHelper();
+			wifiHelper.install(wifiPhyHelper, wifiMacHelper, getNode(), chan.getDevices());
 
             if (pcap) {
                 wifiPhyHelper.enablePcapAll(channel.getName());

@@ -106,7 +106,7 @@ public class AdaptedAEPFncsTest extends Experiment {
         recorder0.setUsingSql(true);
 
         final Recorder recorder1 = auction1.recorder();
-        recorder1.setName("Market1_Recorder");
+        recorder1.setName("Market2_Recorder");
         recorder1.properties("capacity_reference_bid_price", "current_market.clearing_price", "current_market.clearing_quantity");
         recorder1.setLimit(100000000);
         recorder1.setInterval(300L);
