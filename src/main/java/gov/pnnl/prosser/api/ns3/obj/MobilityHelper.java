@@ -78,7 +78,6 @@ public class MobilityHelper extends AbstractNs3Object {
 
 	/**
 	 * 
-	 * @param gridPositionAllocator
 	 * @param minX the x-axis start position for the Nodes using this MobilityHelper
 	 * 				gets incremented by deltaX for each Node
 	 * @param minY the y-axis start position for the Nodes using this MobilityHelper

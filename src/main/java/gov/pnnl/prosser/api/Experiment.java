@@ -77,6 +77,8 @@ public abstract class Experiment {
     /**
      * Get a new NS-3 Simulator
      * 
+     * @param name
+     *            the name of the simulator
      * @return the simulator
      */
     public Ns3Simulator ns3Simulator(String name) {

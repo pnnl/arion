@@ -84,7 +84,7 @@ public class WifiHelper extends AbstractNs3Object {
 
 	/**
 	 * Sets the algorithm used by ns-3 to control the data rate on this WiFi network
-	 * @param remoteStationManager
+	 * @param phyMode
 	 */
 	// TODO allow for all types of station managers
 	public void setRemoteStationManager(WifiPhyMode phyMode) {

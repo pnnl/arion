@@ -431,6 +431,8 @@ public class GldSimulator {
      *
      * @param name
      *            the name to set
+     * @param config
+     *            the transformer configuration
      * @return the created object
      */
     public Transformer transformer(final String name, final TransformerConfiguration config) {

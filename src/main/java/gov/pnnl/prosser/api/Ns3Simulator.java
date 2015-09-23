@@ -170,7 +170,7 @@ public class Ns3Simulator {
 
 	/**
 	 * Adds this Channel to the network
-	 * @param channel
+	 * @param channel the Channel to add
 	 */
 	public void addChannel(Channel channel) {
 		this.network.addChannel(channel);
@@ -178,7 +178,7 @@ public class Ns3Simulator {
 
 	/**
 	 * Adds this House Channel to the network
-	 * @param houseChannel
+	 * @param houseChannel the channel to add
 	 */
 	public void addHouseChannel(Channel houseChannel) {
 		this.network.addHouseChannel(houseChannel);
@@ -189,7 +189,7 @@ public class Ns3Simulator {
 	}
 
 	/**
-	 * @param auctionChannel
+	 * @param auctionChannel the channel to use
 	 * @return a Router connected to this auctionChannel
 	 */
 	public Router auctionRouter(Channel auctionChannel) {
@@ -197,7 +197,7 @@ public class Ns3Simulator {
 	}
 
 	/**
-	 * @param auctionChannel
+	 * @param auctionChannel the channel to use
 	 * @param debug
 	 * 			set true to enable PCAP and ASCII files for this Router
 	 * @return a Router connected to this auctionChannel
@@ -207,7 +207,7 @@ public class Ns3Simulator {
 	}
 
 	/**
-	 * @param houseChannel
+	 * @param houseChannel the channel to use
 	 * @return a Router connected to this houseChannel
 	 */
 	public Router houseRouter(Channel houseChannel) {
@@ -215,7 +215,7 @@ public class Ns3Simulator {
 	}
 
 	/**
-	 * @param houseChannel
+	 * @param houseChannel the channel to use
 	 * @param debug
 	 * 			set true to enable PCAP and ASCII files for this Router
 	 * @return a Router connected to this houseChannel
@@ -229,7 +229,7 @@ public class Ns3Simulator {
 	}
 
 	/**
-	 * @param backboneChannel
+	 * @param backboneChannel the channel to use
 	 * @return a Router connected to this backboneChannel
 	 */
 	public Router backboneRouter(Channel backboneChannel) {
@@ -237,7 +237,7 @@ public class Ns3Simulator {
 	}
 
 	/**
-	 * @param backboneChannel
+	 * @param backboneChannel the channel to use
 	 * @param debug
 	 * 			set true to enable PCAP and ASCII trace files for this Router
 	 * @return a Router connected to this backboneChannel
@@ -290,21 +290,21 @@ public class Ns3Simulator {
 	}
 
     /**
-     * @param auctions
+     * @param auctions the Auction Objects to set
      */
     public void setAuctions(List<AuctionObject> auctions) {
         network.setAuctions(auctions);
     }
 
     /**
-     * @param controllers
+     * @param controllers the Controllers to set
      */
     public void setControllers(List<Controller> controllers) {
         network.setControllers(controllers);
     }
 
     /**
-     * @param controllerPrefix
+     * @param controllerPrefix the Controller prefix
      */
     public void setGldNodePrefix(String controllerPrefix) {
         network.setGldNodePrefix(controllerPrefix);

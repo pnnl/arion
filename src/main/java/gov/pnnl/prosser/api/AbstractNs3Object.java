@@ -61,7 +61,7 @@ public abstract class AbstractNs3Object {
 	 * Sets this AbstractNs3Object's name string
 	 * Used by EpsBearer, LteHelper, and other ns-3 objects that supply parameters to 
 	 * their ns-3 constructors
-	 * @param name
+	 * @param name the name to set
 	 */
 	public void setNameString(String name) {
 		this.name = name;
@@ -95,7 +95,7 @@ public abstract class AbstractNs3Object {
 
 	/**
 	 * Append characteristics of this object to given Stringbuilder
-	 * @param sb
+	 * @param sb the stringbuilder
 	 */
 	public void writeNs3Properties(StringBuilder sb) {
 		sb.append(getPrintInfo());
