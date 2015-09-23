@@ -10,6 +10,7 @@ import gov.pnnl.prosser.api.gld.lib.TriplexLineConfiguration;
 import gov.pnnl.prosser.api.gld.obj.*;
 import gov.pnnl.prosser.api.ns3.enums.MobilityModel;
 import gov.pnnl.prosser.api.ns3.obj.Channel;
+import gov.pnnl.prosser.api.ns3.obj.NodeContainer;
 import gov.pnnl.prosser.api.ns3.obj.Router;
 import gov.pnnl.prosser.api.ns3.obj.wifi.*;
 import gov.pnnl.prosser.api.ns3.obj.p2p.PointToPointChannel;
@@ -42,9 +43,6 @@ public class WifiFncsTest extends Experiment {
 
         final Ns3Simulator ns3Sim = this.ns3Simulator("ns3");
         ns3Sim.setup(numAuctions);
-
-        // List of Routers for IP address assignment
-        List<Router> routers = new ArrayList<>();
 
         // Creates Auction Channels
         final PointToPointChannel auctionChannel0 = new PointToPointChannel("auctionChannel0");
@@ -83,7 +81,8 @@ public class WifiFncsTest extends Experiment {
                 }
             }
 
-            //routers.add(backboneRouter);
+            NodeContainer houses = new NodeContainer("houses");
+            houses.create(numHousesPerBackbone);
 
             YansWifiChannel houseChannel = new YansWifiChannel("WifiHouseChannel_" + i);
             houseChannel.setSsid("Wifi1");
@@ -95,14 +94,15 @@ public class WifiFncsTest extends Experiment {
                 if ((i * numHousesPerBackbone + j) < numHouses) {
 
                     // Connects house router and a backbone router to the house channel
-                    Router houseRouter = ns3Sim.houseRouter(houseChannel, WifiMacType.Sta);
+                    //final Router houseRouter = ns3Sim.houseRouter(houseChannel, WifiMacType.Sta);
+                    Router houseRouter = houses.getRouterNoPrint(i);
+                    houseRouter.setChannel(houseChannel, WifiMacType.Sta);
                     if (backboneRouter == null) {
                         backboneRouter = ns3Sim.backboneRouter(houseChannel, WifiMacType.Ap);
                     }
                     else {
                         backboneRouter.setChannel(houseChannel, WifiMacType.Ap);
                     }
-                    routers.add(houseRouter);
                 }
             }
         }

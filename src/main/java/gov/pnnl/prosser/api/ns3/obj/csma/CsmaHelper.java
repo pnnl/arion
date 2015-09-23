@@ -32,6 +32,15 @@ public class CsmaHelper extends NetworkHelper {
 		this.channelAttributes = new HashMap<>();
 		this.deviceAttributes = new HashMap<>();
 	}
+
+	/**
+	 * @param node the Node to install the CSMA device on and connect to the channel
+	 * @param destinationContainer the NetDeviceContainer to store the CsmaNetDevice in
+	 */
+	public void install(Node node, NetDeviceContainer destinationContainer) {
+		appendPrintInfo(destinationContainer.getName() +
+				".Add (" + this.getName() + ".Install (" + node.getName() + "));\n");
+	}
 	
 	/**
 	 * @param node the Node to install the CSMA device on and connect to the channel
@@ -40,10 +49,9 @@ public class CsmaHelper extends NetworkHelper {
 	 */
 	public void install(Node node, CsmaChannel channel,
 			NetDeviceContainer destinationContainer) {
-		
 		appendPrintInfo(destinationContainer.getName() +
 				".Add (" + this.getName() + ".Install (" +
-				node.getName() + ", " + channel.getPointerName() + "));\n");
+				node.getPointerName() + ", " + channel.getPointerName() + "));\n");
 	}
 	
 	/**

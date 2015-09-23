@@ -62,7 +62,8 @@ public class Router extends AbstractNs3Object {
 		channels.add(channel);
 		
 		if (channel.getType().equals(NetworkType.CSMA)) {
-			
+
+			// TODO move network helpers to 1 per channel, then just get() here & use
 			CsmaHelper csmaHelper = new CsmaHelper("csmaHelper_" + getName() + "_" + channel.getName());
 			csmaHelper.install(getNode(), (CsmaChannel) channel, channel.getDevices());
 
@@ -92,7 +93,7 @@ public class Router extends AbstractNs3Object {
 			} else if (!((PointToPointChannel) channel).getRouterA().equals(this)) {
 				
 				p2pHelper.install(((PointToPointChannel) channel).getRouterA().getNode(),
-						this.getNode(), (PointToPointChannel) channel, channel.getDevices());
+						getNode(), (PointToPointChannel) channel, channel.getDevices());
 
 				// This router is ready for IP stack install
 				ready = true;
@@ -102,14 +103,14 @@ public class Router extends AbstractNs3Object {
 						getName() + ".  Router not added to channel.");
 			}
 
-			if (pcap) {
+			if (this.pcap) {
 				p2pHelper.enablePcapAll(channel.getName());
 			}
-			if (ascii) {
+			if (this.ascii) {
 				p2pHelper.enableAsciiAll(channel.getName());
 			}
 
-			// TODO get all parameters (enums/classes) from channel
+			// TODO allow for other types of WifiMacHelper
 		} else if (channel.getType().equals(NetworkType.WIFI)) {
 			YansWifiChannel chan = (YansWifiChannel) channel;
 
@@ -142,10 +143,10 @@ public class Router extends AbstractNs3Object {
 
 			// Create NodeContainer for InternetStackHelper.Install
 			NodeContainer nc = new NodeContainer("nodeContainerStackHelper_" + getName());
-			nc.addNode(getNode());
+			nc.addRouter(this);
 
 			if (channel.getType().equals(NetworkType.P2P)) {
-				nc.addNode(((PointToPointChannel) channel).getRouterA().getNode());
+				nc.addRouter(((PointToPointChannel) channel).getRouterA());
 			}
 
 			// Install IP stack on Router
@@ -153,37 +154,46 @@ public class Router extends AbstractNs3Object {
 			stackHelper.install(nc);
 
 			ipStackInstalled = true;
-
 		}
-
-		// FIXME change to addDevices(devices, channel)?
-		//channel.addDevices(devices);
 	}
 
-
-    public void setChannel(YansWifiChannel houseChannel, WifiMacType ap) {
-        setMacType(ap);
-        setChannel(houseChannel);
+	/**
+	 * For Wi-Fi Routers
+	 * @param channel
+	 * 		the Channel to set (attach) this Router to
+	 * @param macType
+	 * 		the WifiMacType to set this Router to
+	 */
+    public void setChannel(YansWifiChannel channel, WifiMacType macType) {
+        setMacType(macType);
+        setChannel(channel);
     }
 
 	/**
-	 *
-	 * @param b a boolean flag to set PCAP dump on/off
+	 * @param b
+	 * 		a boolean flag to set PCAP dump on/off
 	 */
 	public void setPcap(boolean b) {
-		this.pcap = b;
+		pcap = b;
 	}
 
 	/**
-	 *
-	 * @param b a boolean flag to set ASCII tracing on/off
+	 * @param b
+	 * 		a boolean flag to set ASCII tracing on/off
 	 */
-	public void setAscii(boolean b) { this.ascii = b; }
+	public void setAscii(boolean b) { ascii = b; }
 
+	/**
+	 * @return the WifiMacType of this Router (is meaningless if not a Wi-Fi Router)
+	 */
     public WifiMacType getMacType() {
         return macType;
     }
 
+	/**
+	 * @param macType
+	 * 		the WifiMacType to set this Router to (only useful for Wi-Fi Routers)
+	 */
     public void setMacType(WifiMacType macType) {
         this.macType = macType;
     }

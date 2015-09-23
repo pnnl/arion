@@ -22,7 +22,5 @@ public class YansWifiChannel extends WifiChannel {
 	 */
 	public YansWifiChannel(String name) {
 		super(name);
-		this.setName(name);
-		this.getAsPointer();
 	}
 }

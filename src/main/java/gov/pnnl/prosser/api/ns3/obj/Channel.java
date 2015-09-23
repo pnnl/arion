@@ -46,7 +46,7 @@ public class Channel extends AbstractNs3Object {
 		this.devices = new NetDeviceContainer("chanDevCont" + num);
 		this.addressHelper = null;
 
-        ipBase += (num / 65534 + 1) +
+        this.ipBase += (num / 65534 + 1) +
                 "." + (num / 254 + 1) +
                 "." + (num % 254 + 1) +
                 ".0";
@@ -168,8 +168,8 @@ public class Channel extends AbstractNs3Object {
 	 */
 	public void assignIPAddresses() {
 		Ipv4AddressHelper addressHelper = new Ipv4AddressHelper(getName() + "_addressHelper");
-		addressHelper.setBase(getIPBase(), getIPMask());
-		addressHelper.assign(devices);
+		addressHelper.setBase(this.getIPBase(), this.getIPMask());
+		addressHelper.assign(this.devices);
 	}
 
 	/**
@@ -177,8 +177,8 @@ public class Channel extends AbstractNs3Object {
 	 * previously specified base.
 	 */
 	public void newNetwork() {
-		if (addressHelper != null)
-			addressHelper.newNetwork();
+		if (this.addressHelper != null)
+			this.addressHelper.newNetwork();
 		else
 			System.out.println("Address helper for channel " + getName() +
 					" was not initialized.  Must call assignIPAddresses() before" +

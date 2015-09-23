@@ -40,9 +40,6 @@ public class AdaptedAEPFncsTest extends Experiment {
         final Ns3Simulator ns3Sim = this.ns3Simulator("ns3");
         ns3Sim.setup(numAuctions);
 
-        // List of Routers for IP address assignment
-        List<Router> routers = new ArrayList<>();
-
         // Creates Auction Channels
         final PointToPointChannel auctionChannel0 = new PointToPointChannel("auctionChannel0");
         auctionChannel0.setDataRate("1Gbps");
@@ -63,7 +60,7 @@ public class AdaptedAEPFncsTest extends Experiment {
         }
 
         // Creates the specified number of house Routers and attaches them to backbone Routers
-        createBackboneRouters(ns3Sim, routers, numHouses, numBackboneRouters,
+        createBackboneRouters(ns3Sim, numHouses, numBackboneRouters,
                 numHousesPerBackbone, backboneInterconnectChannel);
 
         // Assign IP addresses to backbone routers
@@ -136,8 +133,6 @@ public class AdaptedAEPFncsTest extends Experiment {
      *
      * @param ns3Sim
      *         the Ns3Simulator
-     * @param routers
-     *         a List of Routers for this sim
      * @param numBackboneRouters
      *         the number of backbone Routers to create
      * @param numHousesPerBackbone
@@ -145,7 +140,7 @@ public class AdaptedAEPFncsTest extends Experiment {
      * @param backboneInterconnectChannel
      *         the Channel to connect the backbone Routers
      */
-    private void createBackboneRouters(final Ns3Simulator ns3Sim, final List<Router> routers,
+    private void createBackboneRouters(final Ns3Simulator ns3Sim,
                                        final int numHouses, final int numBackboneRouters,
                                        final int numHousesPerBackbone,
                                        final CsmaChannel backboneInterconnectChannel) {
@@ -154,9 +149,6 @@ public class AdaptedAEPFncsTest extends Experiment {
 
             // Creates backbone router to connect houses and auction
             Router backboneRouter = null;
-            // Enables PCAP and ASCII debugging on backbone router
-            //backboneRouter.setPcap(true);
-            //backboneRouter.setAscii(true);
 
             List<Channel> auctionChannels = ns3Sim.getAuctionChannels();
             // Can add more than one auction channel here
@@ -174,8 +166,6 @@ public class AdaptedAEPFncsTest extends Experiment {
                 }
             }
 
-            //routers.add(backboneRouter);
-
             for (int j = 0; j < numHousesPerBackbone; j++) {
                 if ((i * numHousesPerBackbone + j) < numHouses) {
 
@@ -183,7 +173,6 @@ public class AdaptedAEPFncsTest extends Experiment {
                     houseChannel.setDataRate("100Mbps");
                     houseChannel.setDelay("10ms");
                     //houseChannel.setIPBase((i / numHousesPerBackbone + 1) + "." + (i % numHousesPerBackbone + 1) + "." + (j + 1) + ".0");
-                    //ns3Sim.addHouseChannel(houseChannel);
 
                     // Connects house router and a backbone router to the house channel
                     Router houseRouter = ns3Sim.houseRouter(houseChannel);
@@ -193,9 +182,6 @@ public class AdaptedAEPFncsTest extends Experiment {
                     else {
                         backboneRouter.setChannel(houseChannel);
                     }
-                    routers.add(houseRouter);
-                    // Add house node to node container needed for FNSCApplicationHelper stuff
-                    //ns3Sim.addFncsNode(houseRouter);
                 }
             }
         }

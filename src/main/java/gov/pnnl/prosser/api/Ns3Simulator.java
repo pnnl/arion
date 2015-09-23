@@ -89,7 +89,6 @@ public class Ns3Simulator {
 		for (int i = 0; i < numAuctions; i++) {
 			network.addAuctionName(generateAuctionPrefix());
 		}
-		
 		network.setupFncsSimulator();
 	}
 
@@ -99,7 +98,6 @@ public class Ns3Simulator {
 	public void setupFncsApplicationHelper() {
 		network.setupFncsApplicationHelper();
 	}
-
 
     /**
      * Populates global routing tables on each Router in the network
@@ -184,6 +182,11 @@ public class Ns3Simulator {
 		this.network.addHouseChannel(houseChannel);
 	}
 
+	/**
+	 * @param router
+	 * 		add this Router's Node (embedded ns-3 object) to the list of Nodes used by
+	 * 		the FNCS application
+	 */
 	public void addFncsNode(Router router) {
 		this.network.addFncsNode(router.getNode());
 	}
@@ -193,7 +196,7 @@ public class Ns3Simulator {
 	 * @return a Router connected to this auctionChannel
 	 */
 	public Router auctionRouter(Channel auctionChannel) {
-		return router(auctionChannel, "auction", false, null);
+		return router(auctionChannel, RouterType.AUCTION, false, null);
 	}
 
 	/**
@@ -203,7 +206,7 @@ public class Ns3Simulator {
 	 * @return a Router connected to this auctionChannel
 	 */
 	public Router auctionRouter(Channel auctionChannel, boolean debug) {
-		return router(auctionChannel, "auction", debug, null);
+		return router(auctionChannel, RouterType.AUCTION, debug, null);
 	}
 
 	/**
@@ -211,7 +214,7 @@ public class Ns3Simulator {
 	 * @return a Router connected to this houseChannel
 	 */
 	public Router houseRouter(Channel houseChannel) {
-		return router(houseChannel, "house", false, null);
+		return router(houseChannel, RouterType.HOUSE, false, null);
 	}
 
 	/**
@@ -221,11 +224,16 @@ public class Ns3Simulator {
 	 * @return a Router connected to this houseChannel
 	 */
 	public Router houseRouter(Channel houseChannel, boolean debug) {
-		return router(houseChannel, "house", debug, null);
+		return router(houseChannel, RouterType.HOUSE, debug, null);
 	}
 
+	/**
+	 * @param houseChannel
+	 * @param macType
+	 * @return a Router connected to this houseChannel with the specified WifiMacType
+	 */
 	public Router houseRouter(Channel houseChannel, WifiMacType macType) {
-		return router(houseChannel, "house", false, macType);
+		return router(houseChannel, RouterType.HOUSE, false, macType);
 	}
 
 	/**
@@ -233,7 +241,7 @@ public class Ns3Simulator {
 	 * @return a Router connected to this backboneChannel
 	 */
 	public Router backboneRouter(Channel backboneChannel) {
-		return router(backboneChannel, "backbone", false, null);
+		return router(backboneChannel, RouterType.BACKBONE, false, null);
 	}
 
 	/**
@@ -243,35 +251,35 @@ public class Ns3Simulator {
 	 * @return a Router connected to this backboneChannel
 	 */
 	public Router backboneRouter(Channel backboneChannel, boolean debug) {
-		return router(backboneChannel, "backbone", debug, null);
+		return router(backboneChannel, RouterType.BACKBONE, debug, null);
 	}
 
 	public Router backboneRouter(Channel backboneChannel, WifiMacType macType) {
-		return router(backboneChannel, "backbone", false, macType);
+		return router(backboneChannel, RouterType.BACKBONE, false, macType);
 	}
 
-	private Router router(Channel chan, String routerType, boolean debug, WifiMacType macType) {
+	private Router router(Channel chan, RouterType routerType, boolean debug, WifiMacType macType) {
 		NetworkType type = chan.getType();
 		String name = routerType + "Rtr_" + chan.getName();
 		// Add chan to appropriate list of Channels
-		if (routerType.equals("house")) {
+		if (routerType.equals(RouterType.HOUSE)) {
 			this.network.addHouseChannel(chan);
-		} else if (routerType.equals("auction")) {
+		} else if (routerType.equals(RouterType.AUCTION)) {
 			this.network.addAuctionChannel(chan);
 		}
-		this.network.addChannel(chan);
 		Router router = new Router(name);
 		router.setPcap(debug);
 		router.setAscii(debug);
-		router.setChannel(chan);
 		router.setMacType(macType);
+		router.setChannel(chan);
+
 		if (type.equals(NetworkType.P2P)) {
 			((PointToPointChannel) chan).setRouterA(router);
 		}
 		// Add router to node container needed for FNCSApplicationHelper stuff if
 		//  router is not a backbone node
-		if (!routerType.equals("backbone")) {
-			addFncsNode(router);
+		if (!routerType.equals(RouterType.BACKBONE)) {
+			this.addFncsNode(router);
 		}
 		return router;
 	}
@@ -309,4 +317,13 @@ public class Ns3Simulator {
     public void setGldNodePrefix(String controllerPrefix) {
         network.setGldNodePrefix(controllerPrefix);
     }
+
+	/**
+	 * An enumeration specifying the type/role of this Router
+	 */
+	private enum RouterType {
+		HOUSE,
+		BACKBONE,
+		AUCTION;
+	}
 }

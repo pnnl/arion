@@ -157,6 +157,7 @@ public class Ns3Network {
 	 */
 	public void addAuctionChannel(Channel auctionChannel) {
 		auctionChannels.add(auctionChannel);
+		addChannel(auctionChannel);
 	}
 
 	/**
@@ -220,7 +221,7 @@ public class Ns3Network {
 	 * @return the number of backbone Nodes
 	 */
 	public int getNumBackboneNodes() {
-		return this.numBackboneNodes;
+		return numBackboneNodes;
 	}
 	
 	/**
@@ -234,7 +235,7 @@ public class Ns3Network {
 	 * @param chan the Channel to add to this Ns3Network
 	 */
 	public void addChannel(Channel chan) {
-		this.channels.add(chan);
+		channels.add(chan);
 	}
 
 	/**
@@ -243,7 +244,7 @@ public class Ns3Network {
 	 *                     Ns3Network
 	 */
 	public void addHouseChannel(Channel houseChannel) {
-		this.houseChannels.add(houseChannel);
+		houseChannels.add(houseChannel);
 		addChannel(houseChannel);
 	}
 	
@@ -253,7 +254,7 @@ public class Ns3Network {
 	 * @return the Channel at index i
 	 */
 	private Channel getChannel(int i) {
-		return this.channels.get(i);
+		return channels.get(i);
 	}
 
 	/**
@@ -278,7 +279,7 @@ public class Ns3Network {
 		}
 
 		FNCSApplicationHelper fncsHelper = new FNCSApplicationHelper("fncsHelper");
-		fncsHelper.setApps(this.allNames, this.fncsNodes, marketToControllerMap, stopTime);
+		fncsHelper.setApps(allNames, fncsNodes, marketToControllerMap, stopTime);
 
 		// Run Simulator then clean up after it's done (according to FncsAps.stop(...))
 		fncsHelper.appendPrintInfo("Simulator::Run();\n");
@@ -406,7 +407,7 @@ public class Ns3Network {
 	    	// Adds the name of the Controller to the Names StringVector
 	    	names.pushBack(tempCont);
 	    	// Adds this Node to the NodeContainer of all GLD Nodes
-	    	gldNodes.addNode(nodeCont, i);
+	    	//gldNodes.addNode(nodeCont, i);
 		}
 		
 		return names;

@@ -98,7 +98,7 @@ public class MobilityHelper extends AbstractNs3Object {
 				"\"DeltaX\", DoubleValue (" + deltaX + "), " +
 				"\"DeltaY\", DoubleValue (" + deltaY + "), " +
 				"\"GridWidth\", UintegerValue (" + gridWidth + "), " +
-				"\"LayoutType\", StringValue (\"" + rowFirst + "\"));\n");
+				"\"LayoutType\", StringValue (" + rowFirst + "));\n");
 	}
 
 }

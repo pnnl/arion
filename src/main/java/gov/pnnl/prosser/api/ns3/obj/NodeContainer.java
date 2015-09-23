@@ -4,7 +4,6 @@
 package gov.pnnl.prosser.api.ns3.obj;
 
 import gov.pnnl.prosser.api.AbstractNs3Object;
-import gov.pnnl.prosser.api.c.obj.Pointer;
 
 import java.util.ArrayList;
 
@@ -19,14 +18,20 @@ import java.util.ArrayList;
 public class NodeContainer extends AbstractNs3Object {
 
 	/**
+	 * An array containing the Routers in this NodeContainer
+	 */
+	private ArrayList<Router> routers;
+
+	/**
 	 * An array containing the Nodes in this NodeContainer
 	 */
-	private ArrayList<Node> nodes;
+	public ArrayList<Node> nodes;
 	
 	/**
 	 * Creates nameless NodeContainer; used in NetDeviceContainer
 	 */
 	public NodeContainer() {
+		this.routers = new ArrayList<>();
 		this.nodes = new ArrayList<>();
 	}
 	
@@ -35,27 +40,28 @@ public class NodeContainer extends AbstractNs3Object {
 	 * @param name the string name
 	 */
 	public NodeContainer(String name) {
-		this.nodes = new ArrayList<>();
+		this();
 		this.setName(name);
 	}
 
 	/**
-	 * Creates specified number of nodes in this NodeContainer
-	 * @param numNodes the number of nodes to create
+	 * Creates specified number of routers in this NodeContainer
+	 * @param numNodes the number of routers to create
 	 */
 	public void create(int numNodes) {
 		for (int i = 0; i < numNodes; i++) {
-			String name = this.getName() + "_container_node_" + (i + 1) * Math.random();
-			this.addNode(new Node(name.replace('.', '_')));
+			String name = this.getName() + "_" + (i + 1);
+			this.addRouterNoPrint(new Router(name.replace('.', '_')));
 		}
-		appendPrintInfo(this.getName() + ".Create(" + numNodes + ");\n");
+		appendPrintInfo(this.getName() + ".Create (" + numNodes + ");\n");
 	}
 
 	/**
-	 * @param node the Node to add to this NodeContainer
+	 * @param router the Node to add to this NodeContainer
 	 */
-	public void addNode(Node node) {
-		appendPrintInfo(this.getName() + ".Add(" + node.getName() + ");\n");
+	public void addRouter(Router router) {
+		this.addRouterNoPrint(router);
+		appendPrintInfo(this.getName() + ".Add (" + router.getPointerName() + ");\n");
 	}
 	
 	/**
@@ -63,9 +69,18 @@ public class NodeContainer extends AbstractNs3Object {
 	 * @param container the NodeContainer containing the Node to add to this NodeContainer
 	 * @param index the index of the Node to be added
 	 */
-	public void addNode(NodeContainer container, int index) {
-		this.addNode(container.getNodeNoPrint(index));
-		appendPrintInfo(this.getName() + ".Add(" + container.getName() + ".Get(" + index + "));\n");
+	public void addRouter(NodeContainer container, int index) {
+		this.addRouter(container.getRouterNoPrint(index));
+		appendPrintInfo(this.getName() + ".Add (" + container.getName() + ".Get (" + index + "));\n");
+	}
+
+	public void addRouterNoPrint(Router router) {
+		this.routers.add(router);
+	}
+
+	public void addNode(Node node) {
+		this.nodes.add(node);
+		appendPrintInfo(this.getName() + ".Add (" + node.getName() + ");\n");
 	}
 	
 	/**
@@ -74,9 +89,9 @@ public class NodeContainer extends AbstractNs3Object {
 	 */
 	public void addNodeContainer(NodeContainer sourceNodes) {
 		for (int i = 0; i < sourceNodes.getNumNodes(); i++) {
-			this.nodes.add(sourceNodes.getNodeNoPrint(i));
+			this.routers.add(sourceNodes.getRouterNoPrint(i));
 		}
-		appendPrintInfo(this.getName() + ".Add(" + sourceNodes.getName() + ");\n");
+		appendPrintInfo(this.getName() + ".Add (" + sourceNodes.getName() + ");\n");
 	}
 	
 	/**
@@ -85,17 +100,13 @@ public class NodeContainer extends AbstractNs3Object {
 	 */
 	public void addNodeContainerNoPrint(NodeContainer sourceNodes) {
 		for (int i = 0; i < sourceNodes.getNumNodes(); i++) {
-			this.nodes.add(sourceNodes.getNodeNoPrint(i));
+			this.routers.add(sourceNodes.getRouterNoPrint(i));
 		}
 	}
-	
-	/**
-	 * 
-	 * @param sourceDevs the NodeContainer to append to this NodeContainer
-	 */
-	public void addNetDeviceContainerNoPrint(NetDeviceContainer sourceDevs) {
-		for (int i = 0; i < sourceDevs.getNumDevices(); i++) {
-			this.nodes.add(sourceDevs.getDevice(i));
+
+	public void addNetDeviceContainerNoPrint(NetDeviceContainer devs) {
+		for (int i = 0; i < devs.getNumDevices(); i++) {
+			this.nodes.add(devs.getDevice(i));
 		}
 	}
 
@@ -103,24 +114,22 @@ public class NodeContainer extends AbstractNs3Object {
 	 * @return the number of Nodes in this NodeContainer
 	 */
 	public int getNumNodes() {
-		return this.nodes.size();
-	}
-	
-	/**
-	 * @param index the index of the node to get
-	 * @param backboneRouterPtr the Pointer&lt;Node&gt; to add the node at index to
-	 */
-	public void getNode(int index, Pointer<Node> backboneRouterPtr) {
-		appendPrintInfo(backboneRouterPtr.getName() + " = " + this.getName()
-				+ ".Get(" + index + ");\n");
+		return this.routers.size();
 	}
 
 	/**
-	 * Returns the Node at the given index without outputting any text to the C++ output file
+	 * Returns the Router at the given index without outputting any text to the C++ output file
 	 * 
 	 * @param index the integer index of the Node to retrieve from the NodeContainer
-	 * @return the Node at the given index or null if there is no node at that index
+	 * @return the Router at the given index or null if there is no node at that index
 	 */
+	public Router getRouterNoPrint(int index) {
+		if (index >= this.routers.size() || this.routers.get(index) == null) {
+			return null;
+		}
+		return routers.get(index);
+	}
+
 	public Node getNodeNoPrint(int index) {
 		if (index >= this.nodes.size() || this.nodes.get(index) == null) {
 			return null;

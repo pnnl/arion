@@ -46,6 +46,8 @@ public class WifiChannel extends Channel {
 
         final String namePostfix = getName();
 
+        ssid = new Ssid("ssid_" + name);
+
         wifiChannelHelper = new YansWifiChannelHelper("wifiChanHelper_" + namePostfix);
         // TODO implement these as enums and create getters/setters
         wifiChannelHelper.setPropagationDelay();
@@ -57,9 +59,10 @@ public class WifiChannel extends Channel {
         wifiPhyHelper.setPcapDataLinkType("YansWifiPhyHelper::DLT_IEEE802_11_RADIO"); // TODO create enums for this
         wifiPhyHelper.setChannel(wifiChannelHelper);
 
-        wifiMacHelperAdhoc = new NqosWifiMacHelper("nqosWifiMacHelperADHOC_" + namePostfix);
-        wifiMacHelperAp = new NqosWifiMacHelper("nqosWifiMacHelperAP_" + namePostfix);
-        wifiMacHelperSta = new NqosWifiMacHelper("nqosWifiMacHelperSTA_" + namePostfix);
+        wifiMacHelperAdhoc = new NqosWifiMacHelper("nqosWifiMacHelperADHOC_" + namePostfix, WifiMacType.Adhoc);
+        wifiMacHelperAp = new NqosWifiMacHelper("nqosWifiMacHelperAP_" + namePostfix, WifiMacType.Ap);
+        wifiMacHelperSta = new NqosWifiMacHelper("nqosWifiMacHelperSTA_" + namePostfix, WifiMacType.Sta);
+
         mobilityHelper = new MobilityHelper("mobilityHelper_" + namePostfix);
         wifiHelper = new WifiHelper("wifiHelper_" + namePostfix);
     }
@@ -88,7 +91,7 @@ public class WifiChannel extends Channel {
     }
 
     public void setSsid(String ssid) {
-        this.ssid = new Ssid(ssid);
+        this.ssid.setSsid(ssid);
         for (NqosWifiMacHelper wifiMacHelper :
                 new NqosWifiMacHelper[] {wifiMacHelperAdhoc, wifiMacHelperAp, wifiMacHelperSta}) {
             wifiMacHelper.defaultParams();
