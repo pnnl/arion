@@ -427,7 +427,7 @@ public class AuctionObject extends AbstractGldObject implements NetworkCapable {
      */
     public String setFncsControllerPrefix() {
     	UUID myUUID = UUID.randomUUID();
-		final String fncsPrefix = myUUID.toString() + "NI";
+		final String fncsPrefix = myUUID.toString().replace("-", "") + "NI";
     	setFncsControllerPrefix(fncsPrefix);
     	return fncsPrefix;
     }
