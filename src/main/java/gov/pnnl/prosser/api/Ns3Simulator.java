@@ -67,7 +67,7 @@ public class Ns3Simulator {
 	private String generateAuctionPrefix() {
 		
 		UUID myUUID = UUID.randomUUID();
-		String s = myUUID.toString().replace("-", "");
+		String s = "prefix_" + myUUID.toString().replace("-", "");
 		return s;
 	}
 	
