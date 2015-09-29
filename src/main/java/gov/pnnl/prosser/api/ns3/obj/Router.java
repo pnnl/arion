@@ -12,6 +12,7 @@ import gov.pnnl.prosser.api.ns3.enums.NetworkType;
 import gov.pnnl.prosser.api.ns3.obj.csma.CsmaChannel;
 import gov.pnnl.prosser.api.ns3.obj.csma.CsmaHelper;
 import gov.pnnl.prosser.api.ns3.obj.internet.InternetStackHelper;
+import gov.pnnl.prosser.api.ns3.obj.internet.Ipv4;
 import gov.pnnl.prosser.api.ns3.obj.p2p.PointToPointChannel;
 import gov.pnnl.prosser.api.ns3.obj.p2p.PointToPointHelper;
 import gov.pnnl.prosser.api.ns3.obj.wifi.*;
@@ -31,8 +32,8 @@ public class Router extends AbstractNs3Object {
 	 * Create a new Router with the given Name
 	 * @param name
 	 */
-	public Router(String name) {
-		
+	public Router(String name) 
+	{	
 		setNameString(name);
 		node = new Node(name);
 		channels = new ArrayList<>();
@@ -41,7 +42,6 @@ public class Router extends AbstractNs3Object {
 		pcap = false;
 		ascii = false;
         macType = WifiMacType.Adhoc;
-		
 	}
 
 	/**
@@ -52,6 +52,30 @@ public class Router extends AbstractNs3Object {
 		return this.node;
 	}
 
+	public void AddStaticRoute(String dest, String hop, int interFace) {
+		this.AddStaticRoute(dest, hop, interFace, 0);
+	}
+	
+	public void AddStaticRoute(String dest, String hop, int interFace, int metric) {
+		Node myNode = this.getNode();
+		String Ipv4Object 
+			= "Ipv4_" + java.util.UUID.randomUUID().toString().replace("-", "");
+		String Ipv4StaticRoutingHelperObject 
+			= "Ipv4StaticRoutingHelper_" + java.util.UUID.randomUUID().toString().replace("-", "");
+		String Ipv4StaticRoutingObject 
+			= "Ipv4StaticRouting_" + java.util.UUID.randomUUID().toString().replace("-", "");
+	
+		appendPrintInfo("Ptr<Ipv4> " + Ipv4Object + " = " +	myNode.getName() + "->GetObject<Ipv4> ();\n");
+		appendPrintInfo("Ipv4StaticRoutingHelper " + Ipv4StaticRoutingHelperObject + ";\n");
+		appendPrintInfo("Ptr<Ipv4StaticRouting> " + Ipv4StaticRoutingObject 
+				+ " = " +  Ipv4StaticRoutingHelperObject + ".GetStaticRouting(" + Ipv4Object + ");\n");
+		appendPrintInfo(Ipv4StaticRoutingObject + "->AddHostRouteTo( "
+				+ "Ipv4Address(\"" + dest + "\"), "
+				+ "Ipv4Address(\"" + hop + "\"), "
+				+ interFace + ", " + metric + ");\n" );
+	}
+	
+	
 	/**
 	 * Stores the given Channel on this Node and
 	 * installs the protocols specified by the Channel type
