@@ -73,8 +73,10 @@ public abstract class AbstractNs3Object {
 	 * 			the text to append to this object's printInfo string for the
 	 * 			ns-3 output file
 	 */
+	
 	public void appendPrintInfo(String text) {
-		this.setPrintInfo(this.getPrintInfo() + "  " + text);
+		Ns3SimulatorWriter.getInstance().appendPrintInfo(text);
+		//this.setPrintInfo(this.getPrintInfo() + "  " + text);
 	}
 
 	/**
@@ -82,7 +84,8 @@ public abstract class AbstractNs3Object {
 	 * 			the text to set this object's printInfo string
 	 */
 	public void setPrintInfo(String text) {
-		this.printInfo = text;
+		Ns3SimulatorWriter.getInstance().appendPrintInfo(text);
+		//this.printInfo = text;
 	}
 
 	/**

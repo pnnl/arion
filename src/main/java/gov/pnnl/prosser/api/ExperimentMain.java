@@ -73,7 +73,8 @@ public abstract class ExperimentMain {
         }
 
         final String ns3Name = experiment.getNs3Simulator().getName() + ".cc";
-        Ns3SimulatorWriter.writeNs3Simulator(outPath.resolve(ns3Name), experiment.getNs3Simulator());
+        //Ns3SimulatorWriter.writeNs3Simulator(outPath.resolve(ns3Name), experiment.getNs3Simulator());
+        Ns3SimulatorWriter.getInstance().writeNs3Simulator(outPath.resolve(ns3Name), experiment.getNs3Simulator());
         experiment.getExtraExperimentFiles().forEach((f) -> {
             try {
                 Files.copy(f, outPath.resolve(f.getFileName()), StandardCopyOption.REPLACE_EXISTING);
@@ -81,10 +82,10 @@ public abstract class ExperimentMain {
                 throw new RuntimeException("Unable to copy extra files", e);
             }
         });
-        if (experiment.getFncsSimulator() != null) {
-            FncsSimulatorWriter.writeSimulator(outPath, experiment.getFncsSimulator(), experiment.getGldSimulators().size());
+        if (experiment.fncsSimulator() != null) {
+            FncsSimulatorWriter.writeSimulator(outPath, experiment.fncsSimulator(), experiment.getGldSimulators().size());
         }
-        HeatTemplateWriter.writeHeatTemplate(outPath, experiment.getGldSimulators(), experiment.getNs3Simulator(), experiment.getFncsSimulator());
+        HeatTemplateWriter.writeHeatTemplate(outPath, experiment.getGldSimulators(), experiment.getNs3Simulator(), experiment.fncsSimulator());
         // TODO FNCS simulator writer
         System.out.println("Written!");
     }

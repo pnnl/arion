@@ -53,7 +53,7 @@ public class Ns3ExperimentMain {
         final Class<? extends Ns3Simulator> ns3SimulatorClass = compiledClass.asSubclass(Ns3Simulator.class);
         final Ns3Simulator ns3Simulator = ns3SimulatorClass.getConstructor().newInstance();
 
-        Ns3SimulatorWriter.writeNs3Simulator(outPath.resolve("ns3.cc"), ns3Simulator);
+        Ns3SimulatorWriter.getInstance().writeNs3Simulator(outPath.resolve("ns3.cc"), ns3Simulator);
         System.out.println("Written!");
 		
 	}

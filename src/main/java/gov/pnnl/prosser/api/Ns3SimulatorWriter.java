@@ -25,7 +25,26 @@ public class Ns3SimulatorWriter {
 	 * @param ns3Simulator the Ns3Simulator
 	 * @throws IOException on IO errors
 	 */
-	public static void writeNs3Simulator(final Path path, final Ns3Simulator ns3Simulator) throws IOException {
+	
+	private static volatile Ns3SimulatorWriter instance = new Ns3SimulatorWriter();
+    private StringBuilder instanceSb;
+	
+	private Ns3SimulatorWriter() {
+		instanceSb = new StringBuilder();
+	}
+	
+	public static Ns3SimulatorWriter getInstance() {
+        return instance;
+    }
+	
+	public void appendPrintInfo(String text) {
+		this.instanceSb.append(text);
+	}
+	
+	public void writeNs3Simulator(final Path path, final Ns3Simulator ns3Simulator) throws IOException {
+		
+		// Adds FNCS ns-3 application at end of ns-3 file to output string
+		ns3Simulator.setupFncsApplicationHelper();
 		
 		final List<Module> modules = ns3Simulator.getModules();
 		final List<Namespace> namespaces = ns3Simulator.getNamespaces();
@@ -70,14 +89,16 @@ public class Ns3SimulatorWriter {
         sb.append("main (int argc, char *argv[])\n");
         sb.append("{\n");
 
-		// Adds FNCS ns-3 application at end of ns-3 file to output string
-		ns3Simulator.setupFncsApplicationHelper();
-
+		sb.append(instanceSb.toString());
+		 
+		/*
 		if (objects != null) {
 			objects.forEach(o -> {
 				o.writeNs3Properties(sb);
 			});
 		}
+		
+		//*/
         
         sb.append("}\n");
         
