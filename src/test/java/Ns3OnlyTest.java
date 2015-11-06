@@ -9,6 +9,7 @@ import gov.pnnl.prosser.api.gld.lib.*;
 import gov.pnnl.prosser.api.gld.obj.*;
 import gov.pnnl.prosser.api.ns3.obj.*;
 import gov.pnnl.prosser.api.ns3.obj.csma.CsmaChannel;
+import gov.pnnl.prosser.api.ns3.obj.internet.Ipv4StaticRoutingHelper;
 import gov.pnnl.prosser.api.ns3.obj.p2p.PointToPointChannel;
 
 import java.nio.file.*;
@@ -66,7 +67,8 @@ public class Ns3OnlyTest extends Experiment {
                     CsmaChannel houseChannel = new CsmaChannel("csmaHouseChannel_" + i + "_" + j);
                     houseChannel.setDataRate("100Mbps");
                     houseChannel.setDelay("10ms");
-                    //houseChannel.setIPBase((i / numHousesPerBackbone + 1) + "." + (i % numHousesPerBackbone + 1) + "." + (j + 1) + ".0");
+                    houseChannel.setIPBase("10.1.1.0");
+                    houseChannel.setIPMask("255.255.255.0");//(i / numHousesPerBackbone + 1) + "." + (i % numHousesPerBackbone + 1) + "." + (j + 1) + ".0");
 
                     // Connects house router and a backbone router to the house channel
                     Router houseRouter = ns3Sim.houseRouter(houseChannel);
@@ -76,6 +78,11 @@ public class Ns3OnlyTest extends Experiment {
                     else {
                         backboneRouter.setChannel(houseChannel);
                     }
+                    // Assign IP address
+                    houseChannel.assignIPAddresses();
+                    // Create static routes
+                    Ipv4StaticRoutingHelper staticRtHelper = new Ipv4StaticRoutingHelper("staticRtHelper");
+
                 }
             }
         }
