@@ -17,6 +17,7 @@ import gov.pnnl.prosser.api.ns3.obj.p2p.PointToPointChannel;
 import gov.pnnl.prosser.api.ns3.obj.p2p.PointToPointHelper;
 import gov.pnnl.prosser.api.ns3.obj.wifi.*;
 
+
 /**
  * @author happ546
  *
@@ -58,12 +59,19 @@ public class Router extends AbstractNs3Object {
 	
 	public void AddStaticRoute(String dest, String hop, int interFace, int metric) {
 		Node myNode = this.getNode();
+		
 		String Ipv4Object 
-			= "Ipv4_" + java.util.UUID.randomUUID().toString().replace("-", "");
+			= "Ipv4_" 
+			+ java.util.UUID.randomUUID().toString().replace("-", "");
+		
 		String Ipv4StaticRoutingHelperObject 
-			= "Ipv4StaticRoutingHelper_" + java.util.UUID.randomUUID().toString().replace("-", "");
+			= "Ipv4StaticRoutingHelper_" 
+			+ java.util.UUID.randomUUID().toString().replace("-", "");
+		
 		String Ipv4StaticRoutingObject 
-			= "Ipv4StaticRouting_" + java.util.UUID.randomUUID().toString().replace("-", "");
+			= "Ipv4StaticRouting_" 
+			+ java.util.UUID.randomUUID().toString().replace("-", "");
+		
 	
 		appendPrintInfo("Ptr<Ipv4> " + Ipv4Object + " = " +	myNode.getName() + "->GetObject<Ipv4> ();\n");
 		appendPrintInfo("Ipv4StaticRoutingHelper " + Ipv4StaticRoutingHelperObject + ";\n");
@@ -75,6 +83,26 @@ public class Router extends AbstractNs3Object {
 				+ interFace + ", " + metric + ");\n" );
 	}
 	
+	
+	/**
+	 *  returns a string with the c++ variable name that represents an Ipv4Address Object 
+	 */
+	public String getIp4Addr() 
+	{
+		Node myNode = this.getNode();
+		NetDevice myNetDevice = myNode.getDevice(0);
+		String ifIndex = myNetDevice.getInterface();
+		
+		Ipv4 myIpv4 = myNode.getObjectIpv4();
+		
+		String varName
+		= "Ipv4Address_" + java.util.UUID.randomUUID().toString().replace("-", "");
+		
+		appendPrintInfo("Ipv4Address " + varName + " = " 
+					+ myIpv4.getPointerName() + "->GetAddress(" + ifIndex  + ", 0).GetLocal().Get();\n");
+		
+		return varName;
+	}
 	
 	/**
 	 * Stores the given Channel on this Node and

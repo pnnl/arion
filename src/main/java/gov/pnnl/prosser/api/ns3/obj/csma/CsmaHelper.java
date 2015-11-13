@@ -89,4 +89,19 @@ public class CsmaHelper extends NetworkHelper {
 				"\", StringValue (\"" + value + "\"));\n");
 	}
 
+	/**
+	 * This method creates an ns3::CsmaChannel with the attributes configured by CsmaHelper::SetChannelAttribute, an ns3::CsmaNetDevice with the attributes configured by CsmaHelper::SetDeviceAttribute and then adds the device to the node and attaches the channel to the device.
+	 * 
+	 * @param node the node to install the device in
+	 * @return NetDevicecontainer A container holding the added net device.
+	 */
+	public NetDeviceContainer install(Node node) 
+	{
+		String varName = this.getClass().getSimpleName() + "_" + java.util.UUID.randomUUID().toString().replace("-", "");
+		NetDeviceContainer temp = new NetDeviceContainer(varName);
+		appendPrintInfo(varName + " = " + this.getName() + ".Install (" +  node.getName() + ");\n");
+		
+		return temp;
+	}
+
 }

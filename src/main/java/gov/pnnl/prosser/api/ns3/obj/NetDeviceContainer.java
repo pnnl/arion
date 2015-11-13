@@ -74,6 +74,7 @@ public class NetDeviceContainer extends AbstractNs3Object {
 		return this.nodes.getNodeNoPrint(index);
 	}
 	
+	
 	/**
 	 * 
 	 * @return the number of devices in this NetDeviceContainer
@@ -81,5 +82,7 @@ public class NetDeviceContainer extends AbstractNs3Object {
 	public int getNumDevices() {
 		return this.nodes.getNumNodes();
 	}
+	
+	
 	
 }

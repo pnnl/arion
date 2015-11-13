@@ -20,5 +20,4 @@ public class CsmaNetDevice extends NetDevice {
 	public CsmaNetDevice(String name) {
 		this.setName(name);
 	}
-
 }

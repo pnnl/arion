@@ -8,7 +8,10 @@ import gov.pnnl.prosser.api.gld.enums.*;
 import gov.pnnl.prosser.api.gld.lib.*;
 import gov.pnnl.prosser.api.gld.obj.*;
 import gov.pnnl.prosser.api.ns3.obj.*;
+import gov.pnnl.prosser.api.ns3.obj.Node;
 import gov.pnnl.prosser.api.ns3.obj.csma.CsmaChannel;
+import gov.pnnl.prosser.api.ns3.obj.internet.Ipv4;
+import gov.pnnl.prosser.api.ns3.obj.internet.Ipv4StaticRouting;
 import gov.pnnl.prosser.api.ns3.obj.internet.Ipv4StaticRoutingHelper;
 import gov.pnnl.prosser.api.ns3.obj.p2p.PointToPointChannel;
 
@@ -29,8 +32,52 @@ public class Ns3OnlyTest extends Experiment {
      */
     @Override
     public void experiment() {
-
-        // This is example of how network setup could be automated somewhat by user
+    	        
+        Router a = new Router("router_a");
+		Router b = new Router("router_b");
+		Router c = new Router("router_c");
+		
+		Channel a2b = new CsmaChannel("a2b");
+		Channel b2c = new CsmaChannel("b2c");
+		
+		a.setChannel(a2b);
+		b.setChannel(a2b);
+		
+		b.setChannel(b2c);
+		c.setChannel(b2c);
+		
+		a.AddStaticRoute(dest, hop, interFace);
+		
+		Node na = a.getNode();
+		Node nb = b.getNode();
+		Node nc = c.getNode();
+		
+		NetDevice aDevice = na.getDevice(0);
+		NetDevice bDevice = nb.getDevice(0);
+		NetDevice cDevice = nc.getDevice(0);
+		
+		
+		//get NetDevice, from NetDevice, get Interface, give the interface# to the ipv4 object to get the address
+		
+		Ipv4 ia = na.getObjectIpv4();
+		Ipv4 ib = nb.getObjectIpv4();
+		Ipv4 ic = nc.getObjectIpv4();
+		
+		
+		
+		Ipv4StaticRoutingHelper staticHelper = new Ipv4StaticRoutingHelper("staticHelper");
+		Ipv4StaticRouting isrA = staticHelper.GetStaticRouting(ia);
+		Ipv4StaticRouting isrB = staticHelper.GetStaticRouting(ib);
+		Ipv4StaticRouting isrC = staticHelper.GetStaticRouting(ic);
+		
+		isrA->AddHostRouteTo (, Ipv4Address ("10.1.1.2"), 1);
+		
+		
+		
+		
+		
+		
+		// This is example of how network setup could be automated somewhat by user
         // Equal number of houses per backbone router not hardcoded into Prosser
         final int numHouses = 1;
         final int numHousesPerBackbone = 1;
@@ -39,7 +86,7 @@ public class Ns3OnlyTest extends Experiment {
 
         final Ns3Simulator ns3Sim = this.ns3Simulator("ns3");
         ns3Sim.setup(numAuctions);
-
+		
         // Creates Auction Channels
         final PointToPointChannel auctionChannel0 = new PointToPointChannel("auctionChannel0");
         auctionChannel0.setDataRate("1Gbps");
@@ -79,9 +126,9 @@ public class Ns3OnlyTest extends Experiment {
                         backboneRouter.setChannel(houseChannel);
                     }
                     // Assign IP address
-                    houseChannel.assignIPAddresses();
+                    //houseChannel.assignIPAddresses();
                     // Create static routes
-                    Ipv4StaticRoutingHelper staticRtHelper = new Ipv4StaticRoutingHelper("staticRtHelper");
+                    
 
                 }
             }

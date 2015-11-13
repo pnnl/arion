@@ -38,8 +38,10 @@ public class Ipv4AddressHelper extends AbstractNs3Object {
 	 * @param devices the net devices to assign IP addresses to
 	 */
 	public void assign(NetDeviceContainer devices) {
-		long time = System.nanoTime() % 100000;
-		String contName = "ipv4IntCont_" + this.getName() + time;
+		
+		String appendedUUID = java.util.UUID.randomUUID().toString().replace("-", "");
+		String contName = "ipv4IntCont_" + this.getName() + appendedUUID;
+		
 		appendPrintInfo("Ipv4InterfaceContainer " + contName +
 				" = " + this.getName() + ".Assign (" + devices.getName() + ");\n");
 
@@ -60,7 +62,8 @@ public class Ipv4AddressHelper extends AbstractNs3Object {
 	 * 			hold the IPv4 net devices
 	 */
 	public void assign(NetDeviceContainer devices, 
-			Ipv4InterfaceContainer destinationInterface) {
+			Ipv4InterfaceContainer destinationInterface) 
+	{
 		appendPrintInfo(destinationInterface.getName() + " = " + this.getName() +
 				".Assign (" + devices.getName() + ");\n");
 	}
