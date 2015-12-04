@@ -95,16 +95,12 @@ public class AdaptedAEPFncsTest extends Experiment {
         climate.addCsvReader("CSVREADER");
 
         // Add a recorder to the auction for some of the properties on the auction
-        final Recorder recorder0 = auction0.recorder();
-        recorder0.setName("Market1_Recorder");
-        recorder0.properties("capacity_reference_bid_price", "current_market.clearing_price", "current_market.clearing_quantity");
+        final Recorder recorder0 = auction0.recorder("capacity_reference_bid_price", "current_market.clearing_price", "current_market.clearing_quantity");
         recorder0.setLimit(100000000);
         recorder0.setInterval(300L);
         recorder0.setUsingSql(true);
 
-        final Recorder recorder1 = auction1.recorder();
-        recorder1.setName("Market2_Recorder");
-        recorder1.properties("capacity_reference_bid_price", "current_market.clearing_price", "current_market.clearing_quantity");
+        final Recorder recorder1 = auction1.recorder("capacity_reference_bid_price", "current_market.clearing_price", "current_market.clearing_quantity");
         recorder1.setLimit(100000000);
         recorder1.setInterval(300L);
         recorder1.setUsingSql(true);

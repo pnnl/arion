@@ -259,8 +259,7 @@ public class ExperimentFncsTest extends Experiment {
         // TODO: Need to add code for writing SQL commands for generating tables to collect data from all simulator data generating objects
         // TODO: For instance GridLAB-D has an odbc recorder, processor needs to write the appropirate connection info in the glm and the sql
         // TODO: to create a table in the database to accept the comunication from gld.
-        final Recorder recorder = auction.recorder();
-        recorder.properties("capacity_reference_bid_price", "current_market.clearing_price", "current_market.clearing_quantity");
+        final Recorder recorder = auction.recorder("capacity_reference_bid_price", "current_market.clearing_price", "current_market.clearing_quantity");
         recorder.setLimit(100000000);
         recorder.setInterval(300L);
         recorder.setFile("baseprice_clearedprice_clearedquantity_" + sim.getName() + ".csv");

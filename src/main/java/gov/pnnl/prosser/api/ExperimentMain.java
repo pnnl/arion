@@ -72,16 +72,18 @@ public abstract class ExperimentMain {
             GldSimulatorWriter.writeGldSimulator(outPath, sim);
         }
 
-        final String ns3Name = experiment.getNs3Simulator().getName() + ".cc";
-        //Ns3SimulatorWriter.writeNs3Simulator(outPath.resolve(ns3Name), experiment.getNs3Simulator());
-        Ns3SimulatorWriter.getInstance().writeNs3Simulator(outPath.resolve(ns3Name), experiment.getNs3Simulator());
-        experiment.getExtraExperimentFiles().forEach((f) -> {
-            try {
-                Files.copy(f, outPath.resolve(f.getFileName()), StandardCopyOption.REPLACE_EXISTING);
-            } catch (IOException e) {
-                throw new RuntimeException("Unable to copy extra files", e);
-            }
-        });
+        if (experiment.getNs3Simulator() != null) {
+            final String ns3Name = experiment.getNs3Simulator().getName() + ".cc";
+            // Ns3SimulatorWriter.writeNs3Simulator(outPath.resolve(ns3Name), experiment.getNs3Simulator());
+            Ns3SimulatorWriter.getInstance().writeNs3Simulator(outPath.resolve(ns3Name), experiment.getNs3Simulator());
+            experiment.getExtraExperimentFiles().forEach((f) -> {
+                try {
+                    Files.copy(f, outPath.resolve(f.getFileName()), StandardCopyOption.REPLACE_EXISTING);
+                } catch (IOException e) {
+                    throw new RuntimeException("Unable to copy extra files", e);
+                }
+            });
+        }
         if (experiment.fncsSimulator() != null) {
             FncsSimulatorWriter.writeSimulator(outPath, experiment.fncsSimulator(), experiment.getGldSimulators().size());
         }

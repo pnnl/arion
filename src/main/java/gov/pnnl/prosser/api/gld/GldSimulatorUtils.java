@@ -181,8 +181,7 @@ public abstract class GldSimulatorUtils {
 
         // If we want to track this item, add a recorder
         if (track) {
-            final Recorder recorder = house.recorder();
-            recorder.properties("cooling_setpoint", "air_temperature");
+            final Recorder recorder = house.recorder("cooling_setpoint", "air_temperature");
             recorder.setLimit(100000000);
             recorder.setInterval(300L);
             recorder.setFile("F1_house" + id + "_details.csv");

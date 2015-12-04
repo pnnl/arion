@@ -62,11 +62,6 @@ public class AuctionObject extends AbstractGldObject implements NetworkCapable {
     private SpecialMode specialMode;
 
     /**
-     * attached recorder for the Auction
-     */
-    private Recorder recorder;
-
-    /**
      * initial price
      */
     private Double initPrice;
@@ -253,15 +248,6 @@ public class AuctionObject extends AbstractGldObject implements NetworkCapable {
      */
     public void setSpecialMode(final SpecialMode specialMode) {
         this.specialMode = specialMode;
-    }
-
-    /**
-     * Get the attached recorder for the Auction
-     * 
-     * @return the recorder
-     */
-    public Recorder getRecorder() {
-        return recorder;
     }
 
     /**
@@ -486,13 +472,6 @@ public class AuctionObject extends AbstractGldObject implements NetworkCapable {
         this.player.writeExternalFiles(path);
     }
 
-    @Override
-    public void createSqlObjects(SqlFile file) {
-        if (this.recorder != null) {
-            this.recorder.createSqlObjects(file);
-        }
-    }
-
     /**
      * Create, set and return a player object
      * 
@@ -501,16 +480,6 @@ public class AuctionObject extends AbstractGldObject implements NetworkCapable {
     public PlayerObject player() {
         this.player = new PlayerObject(this.simulator);
         return player;
-    }
-
-    /**
-     * Create, set and return a recorder object
-     * 
-     * @return the recorder
-     */
-    public Recorder recorder() {
-        this.recorder = new Recorder(this.simulator);
-        return recorder;
     }
 
 }

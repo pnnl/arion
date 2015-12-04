@@ -89,9 +89,7 @@ public class IntegratedDemo extends Experiment {
         climate.addCsvReader("CSVREADER");
 
         // Add a recorder to the auction for some of the properties on the auction
-        final Recorder recorder = auction.recorder();
-        recorder.setName("Market1_Recorder");
-        recorder.properties("capacity_reference_bid_price", "current_market.clearing_price", "current_market.clearing_quantity");
+        final Recorder recorder = auction.recorder("capacity_reference_bid_price", "current_market.clearing_price", "current_market.clearing_quantity");
         recorder.setLimit(100000000);
         recorder.setInterval(300L);
         recorder.setUsingSql(true);

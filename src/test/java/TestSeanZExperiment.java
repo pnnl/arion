@@ -172,11 +172,9 @@ public class TestSeanZExperiment extends Experiment {
         zipLoad.setCurrentFraction(0.25);
         zipLoad.setImpedancePf(1);
         zipLoad.setImpedanceFraction(.5);
-
-        final Recorder recorder = sim.recorder();
+        
+        final Recorder recorder = house.recorder("air_temperature");
         recorder.setInterval(1800L);
         recorder.setFile("test_outputs.csv");
-        recorder.property("air_temperature");
-        recorder.setParent(house);
     }
 }

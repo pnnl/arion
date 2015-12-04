@@ -148,11 +148,6 @@ public class House extends ResidentialEnduse {
     private Controller controller;
 
     /**
-     * Recorder to record properties of this house and output to file
-     */
-    private Recorder recorder;
-
-    /**
      * the loads on the house (lights, etc.)
      */
     private final List<ZIPLoad> loads = new ArrayList<>();
@@ -641,15 +636,6 @@ public class House extends ResidentialEnduse {
     }
 
     /**
-     * Get the Recorder
-     * 
-     * @return the recorder
-     */
-    public Recorder getRecorder() {
-        return recorder;
-    }
-
-    /**
      * Add a ZIPLoad to this House
      * 
      * @param load
@@ -681,16 +667,6 @@ public class House extends ResidentialEnduse {
         this.controller = new Controller(this.simulator);
         controller.setName(name);
         return controller;
-    }
-
-    /**
-     * Create and set the recorder on this house
-     * 
-     * @return the recorder
-     */
-    public Recorder recorder() {
-        this.recorder = new Recorder(this.simulator);
-        return recorder;
     }
 
     /**
@@ -738,11 +714,6 @@ public class House extends ResidentialEnduse {
         if (controller != null) {
             controller.writeGldString(sb);
         }
-        if (recorder != null) {
-            recorder.writeGldString(sb);
-        }
-        // Handle special case since we need a semicolon here
-        sb.insert(sb.length() - 1, ';');
         for (final ZIPLoad load : loads) {
             load.writeGldString(sb);
             // Handle special case since we need a semicolon here

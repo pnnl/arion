@@ -4,6 +4,8 @@
 package gov.pnnl.prosser.api.gld;
 
 import gov.pnnl.prosser.api.GldSimulator;
+import gov.pnnl.prosser.api.gld.obj.Recorder;
+import gov.pnnl.prosser.api.sql.SqlFile;
 
 import java.text.DecimalFormat;
 import java.util.Objects;
@@ -38,6 +40,8 @@ public abstract class AbstractGldObject implements GldSerializable {
      * Object groupid referenced in files
      */
     private String groupId;
+    
+    private Recorder recorder;
 
     /**
      * Simulator reference
@@ -65,6 +69,9 @@ public abstract class AbstractGldObject implements GldSerializable {
      */
     public void setName(final String name) {
         this.name = name;
+        if(this.recorder != null) {
+            this.recorder.setName(this.name + "_recorder");
+        }
     }
 
     /**
@@ -86,9 +93,37 @@ public abstract class AbstractGldObject implements GldSerializable {
         this.groupId = groupId;
     }
 
+    /**
+     * Get the Recorder
+     * 
+     * @return the recorder
+     */
+    public Recorder getRecorder() {
+        return recorder;
+    }
+
+    /**
+     * Create and set the recorder on this object
+     * 
+     * @return the recorder
+     */
+    public Recorder recorder(String... properties) {
+        this.recorder = new Recorder(this.simulator);
+        this.recorder.properties(properties);
+        this.recorder.setName(this.name + "_recorder");
+        return recorder;
+    }
+    
+    @Override
+    public void createSqlObjects(SqlFile file) {
+        if (this.recorder != null) {
+            this.recorder.createSqlObjects(file);
+        }
+    }
+
     @Override
     public int hashCode() {
-        return Objects.hash(this.name, this.groupId);
+        return Objects.hash(this.name, this.groupId, this.recorder);
     }
 
     @Override
@@ -104,7 +139,8 @@ public abstract class AbstractGldObject implements GldSerializable {
         }
         final AbstractGldObject other = (AbstractGldObject) obj;
         return Objects.equals(this.name, other.name)
-                && Objects.equals(this.groupId, other.groupId);
+                && Objects.equals(this.groupId, other.groupId)
+                && Objects.equals(this.recorder, other.recorder);
     }
 
     /**
@@ -120,6 +156,11 @@ public abstract class AbstractGldObject implements GldSerializable {
         writeProperty(sb, "name", this.name);
         writeProperty(sb, "groupid", this.groupId);
         this.writeGldProperties(sb);
+        if (recorder != null) {
+            recorder.writeGldString(sb);
+            // Handle special case since we need a semicolon here
+            sb.insert(sb.length() - 1, ';');
+        }
         sb.append("}\n");
     }
 
