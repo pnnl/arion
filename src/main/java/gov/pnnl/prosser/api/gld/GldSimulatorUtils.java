@@ -90,9 +90,9 @@ public abstract class GldSimulatorUtils {
      *            Random number generator object, normally you would create one of these when you start to configure Prosser
      *            and re-use it to produce repeatable randomness when you control the seed
      */
-    public static void generateHouse(final GldSimulator sim, final int id, final TriplexMeter meter,
+    public static House generateHouse(final GldSimulator sim, final int id, final TriplexMeter meter,
             final TriplexLineConfiguration tripLineConf, final AuctionObject auction, final PhaseCode phase,
-            final String controllerNIPrefix, final Channel channel, final boolean track, final Random rand) {
+            final boolean track, final Random rand) {
         // Select the phases for our meters
         final EnumSet<PhaseCode> phases;
         switch (phase) {
@@ -170,11 +170,10 @@ public abstract class GldSimulatorUtils {
         final Controller controller = house.controller("F1_controller_" + phase.name() + id);
         controller.setAuction(auction);
         controller.setScheduleSkew(scheduleSkew);
-        controller.setNetworkInterfaceName(controllerNIPrefix + id);
+        controller.setNetworkInterfaceName(auction.getFncsControllerPrefix() + id);
         controller.setAverageTarget(auction.getNetworkAveragePriceProperty());
         controller.setStandardDeviationTarget(auction.getNetworkStdevPriceProperty());
         controller.setPeriod((double) auction.getPeriod());
-        channel.addController(controller);
         // Setup the controller and loads
         setupController(house, controller, rand);
         setupLoads(house, houseType, applianceScalar, rand);
@@ -186,6 +185,7 @@ public abstract class GldSimulatorUtils {
             recorder.setInterval(300L);
             recorder.setFile("F1_house" + id + "_details.csv");
         }
+        return house;
     }
 
     private static void setHouseInfo(final House house, final HouseType houseType, final Random rand) {
