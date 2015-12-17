@@ -5,6 +5,7 @@ package gov.pnnl.prosser.api;
 
 import gov.pnnl.prosser.api.gld.obj.AuctionObject;
 import gov.pnnl.prosser.api.gld.obj.Controller;
+import gov.pnnl.prosser.api.ns3.AbstractNs3Object;
 import gov.pnnl.prosser.api.ns3.enums.NetworkType;
 import gov.pnnl.prosser.api.ns3.module.Module;
 import gov.pnnl.prosser.api.ns3.module.Namespace;

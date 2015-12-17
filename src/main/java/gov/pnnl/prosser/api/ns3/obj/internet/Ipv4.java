@@ -1,7 +1,7 @@
 
 package gov.pnnl.prosser.api.ns3.obj.internet;
 
-import gov.pnnl.prosser.api.AbstractNs3Object;
+import gov.pnnl.prosser.api.ns3.AbstractNs3Object;
 import gov.pnnl.prosser.api.ns3.obj.NetDevice;
 
 /**

@@ -3,7 +3,7 @@
  */
 package gov.pnnl.prosser.api.ns3.obj.wifi;
 
-import gov.pnnl.prosser.api.AbstractNs3Object;
+import gov.pnnl.prosser.api.ns3.AbstractNs3Object;
 import gov.pnnl.prosser.api.ns3.obj.NetDeviceContainer;
 import gov.pnnl.prosser.api.ns3.obj.NetworkHelper;
 import gov.pnnl.prosser.api.ns3.obj.Node;

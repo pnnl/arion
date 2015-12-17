@@ -3,7 +3,7 @@
  */
 package gov.pnnl.prosser.api.ns3.obj;
 
-import gov.pnnl.prosser.api.AbstractNs3Object;
+import gov.pnnl.prosser.api.ns3.AbstractNs3Object;
 
 /**
  * @author happ546

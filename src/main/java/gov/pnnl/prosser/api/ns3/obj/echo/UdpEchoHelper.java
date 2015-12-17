@@ -3,7 +3,7 @@
  */
 package gov.pnnl.prosser.api.ns3.obj.echo;
 
-import gov.pnnl.prosser.api.AbstractNs3Object;
+import gov.pnnl.prosser.api.ns3.AbstractNs3Object;
 
 /** 
  * The UdpEchoHelper is a base helper class to simplify the setup of 

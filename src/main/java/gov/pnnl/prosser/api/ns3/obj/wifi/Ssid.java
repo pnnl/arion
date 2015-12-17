@@ -3,7 +3,7 @@
  */
 package gov.pnnl.prosser.api.ns3.obj.wifi;
 
-import gov.pnnl.prosser.api.AbstractNs3Object;
+import gov.pnnl.prosser.api.ns3.AbstractNs3Object;
 
 /**
  * The Ssid (Service Set IDentifer) is used as a name for Wi-Fi networks.

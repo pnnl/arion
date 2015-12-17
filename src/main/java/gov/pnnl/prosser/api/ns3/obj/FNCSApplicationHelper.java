@@ -3,9 +3,9 @@
  */
 package gov.pnnl.prosser.api.ns3.obj;
 
-import gov.pnnl.prosser.api.AbstractNs3Object;
 import gov.pnnl.prosser.api.c.obj.StringMap;
 import gov.pnnl.prosser.api.c.obj.Vector;
+import gov.pnnl.prosser.api.ns3.AbstractNs3Object;
 
 /**
  * This class is used to connect the ns-3 simulator to the FNCS instance to allow 

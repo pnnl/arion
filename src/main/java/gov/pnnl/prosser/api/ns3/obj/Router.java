@@ -6,7 +6,7 @@ package gov.pnnl.prosser.api.ns3.obj;
 import java.util.ArrayList;
 import java.util.List;
 
-import gov.pnnl.prosser.api.AbstractNs3Object;
+import gov.pnnl.prosser.api.ns3.AbstractNs3Object;
 import gov.pnnl.prosser.api.ns3.enums.MobilityModel;
 import gov.pnnl.prosser.api.ns3.enums.NetworkType;
 import gov.pnnl.prosser.api.ns3.obj.csma.CsmaChannel;

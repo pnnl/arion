@@ -3,8 +3,8 @@
  */
 package gov.pnnl.prosser.api.c.obj;
 
-import gov.pnnl.prosser.api.AbstractNs3Object;
 import gov.pnnl.prosser.api.NetworkCapable;
+import gov.pnnl.prosser.api.ns3.AbstractNs3Object;
 import gov.pnnl.prosser.api.ns3.obj.NodeContainer;
 
 import java.util.ArrayList;

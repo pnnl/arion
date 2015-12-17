@@ -3,9 +3,9 @@
  */
 package gov.pnnl.prosser.api.ns3.obj;
 
-import gov.pnnl.prosser.api.AbstractNs3Object;
-
 import java.util.ArrayList;
+
+import gov.pnnl.prosser.api.ns3.AbstractNs3Object;
 
 /**
  * This class provides a structure to efficiently hold Nodes in 

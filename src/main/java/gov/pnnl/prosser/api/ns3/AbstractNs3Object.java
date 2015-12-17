@@ -1,9 +1,12 @@
 /**
  * 
  */
-package gov.pnnl.prosser.api;
+package gov.pnnl.prosser.api.ns3;
 
 import java.util.Objects;
+
+import gov.pnnl.prosser.api.Ns3Simulator;
+import gov.pnnl.prosser.api.Ns3SimulatorWriter;
 
 /**
  * @author happ546

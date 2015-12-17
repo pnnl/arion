@@ -3,7 +3,7 @@
  */
 package gov.pnnl.prosser.api.ns3.obj.lte;
 
-import gov.pnnl.prosser.api.AbstractNs3Object;
+import gov.pnnl.prosser.api.ns3.AbstractNs3Object;
 
 /**
  * This class is used in the setup of LTE wireless networks.
