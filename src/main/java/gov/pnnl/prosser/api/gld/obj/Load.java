@@ -13,11 +13,6 @@ import gov.pnnl.prosser.api.GldSimulator;
 public class Load extends Node {
 
     /**
-     * the parent node to apply this load to
-     */
-    private Node parent;
-
-    /**
      * constant power load on phase A, real only, specified as W
      */
     private String phaseAConstantReal;
@@ -34,25 +29,6 @@ public class Load extends Node {
 
     public Load(final GldSimulator simulator) {
         super(simulator);
-    }
-
-    /**
-     * Get the parent node to apply this load to
-     * 
-     * @return the parent
-     */
-    public Node getParent() {
-        return parent;
-    }
-
-    /**
-     * Set the parent node to apply this load to
-     * 
-     * @param parent
-     *            the parent to set
-     */
-    public void setParent(final Node parent) {
-        this.parent = parent;
     }
 
     /**
@@ -126,7 +102,6 @@ public class Load extends Node {
     @Override
     protected void writeGldProperties(final StringBuilder sb) {
         super.writeGldProperties(sb);
-        writeProperty(sb, "parent", this.parent);
         writeProperty(sb, "constant_power_A_real", this.phaseAConstantReal);
         writeProperty(sb, "constant_power_B_real", this.phaseBConstantReal);
         writeProperty(sb, "constant_power_C_real", this.phaseCConstantReal);

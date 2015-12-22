@@ -21,11 +21,6 @@ import java.util.List;
 public class House extends ResidentialEnduse {
 
     /**
-     * parent node
-     */
-    private Node parent;
-
-    /**
      * roof R-value (degF.sf.h/Btu)
      */
     private Double Rroof;
@@ -154,25 +149,6 @@ public class House extends ResidentialEnduse {
 
     public House(final GldSimulator simulator) {
         super(simulator);
-    }
-
-    /**
-     * Get the parent node
-     * 
-     * @return the parent
-     */
-    public Node getParent() {
-        return parent;
-    }
-
-    /**
-     * Set the parent node
-     * 
-     * @param parent
-     *            the parent to set
-     */
-    public void setParent(final Node parent) {
-        this.parent = parent;
     }
 
     /**
@@ -683,7 +659,6 @@ public class House extends ResidentialEnduse {
     @Override
     protected void writeGldProperties(final StringBuilder sb) {
         super.writeGldProperties(sb);
-        writeProperty(sb, "parent", this.parent);
         writeProperty(sb, "Rroof", this.Rroof);
         writeProperty(sb, "Rwall", this.Rwall);
         writeProperty(sb, "Rfloor", this.Rfloor);

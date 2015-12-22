@@ -42,6 +42,11 @@ public abstract class AbstractGldObject implements GldSerializable {
     private String groupId;
     
     private Recorder recorder;
+    
+    /**
+     * the target (parent) that is referenced
+     */
+    private AbstractGldObject parent;
 
     /**
      * Simulator reference
@@ -114,6 +119,25 @@ public abstract class AbstractGldObject implements GldSerializable {
         return recorder;
     }
     
+    /**
+     * Get the target (parent) that is referenced
+     * 
+     * @return the parent
+     */
+    public AbstractGldObject getParent() {
+        return parent;
+    }
+
+    /**
+     * Set the target (parent) that is referenced
+     * 
+     * @param parent
+     *            the parent to set
+     */
+    public void setParent(final AbstractGldObject parent) {
+        this.parent = parent;
+    }
+    
     @Override
     public void createSqlObjects(SqlFile file) {
         if (this.recorder != null) {
@@ -123,7 +147,7 @@ public abstract class AbstractGldObject implements GldSerializable {
 
     @Override
     public int hashCode() {
-        return Objects.hash(this.name, this.groupId, this.recorder);
+        return Objects.hash(this.name, this.groupId, this.recorder, this.parent);
     }
 
     @Override
@@ -140,7 +164,8 @@ public abstract class AbstractGldObject implements GldSerializable {
         final AbstractGldObject other = (AbstractGldObject) obj;
         return Objects.equals(this.name, other.name)
                 && Objects.equals(this.groupId, other.groupId)
-                && Objects.equals(this.recorder, other.recorder);
+                && Objects.equals(this.recorder, other.recorder)
+                && Objects.equals(this.parent, other.parent);
     }
 
     /**
@@ -155,6 +180,7 @@ public abstract class AbstractGldObject implements GldSerializable {
         sb.append("object ").append(getGldObjectType()).append(" {\n");
         writeProperty(sb, "name", this.name);
         writeProperty(sb, "groupid", this.groupId);
+        writeProperty(sb, "parent", this.parent);
         this.writeGldProperties(sb);
         if (recorder != null) {
             recorder.writeGldString(sb);

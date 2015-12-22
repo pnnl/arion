@@ -12,32 +12,8 @@ import gov.pnnl.prosser.api.GldSimulator;
  */
 public class TriplexMeter extends TriplexNode {
 
-    /**
-     * the parent node this meter is attached to
-     */
-    private Node parent;
-
     public TriplexMeter(final GldSimulator simulator) {
         super(simulator);
-    }
-
-    /**
-     * Get the parent node this meter is attached to
-     * 
-     * @return the parent
-     */
-    public Node getParent() {
-        return parent;
-    }
-
-    /**
-     * Set the parent node this meter is attached to
-     * 
-     * @param parent
-     *            the parent to set
-     */
-    public void setParent(final Node parent) {
-        this.parent = parent;
     }
 
     /**
@@ -54,7 +30,6 @@ public class TriplexMeter extends TriplexNode {
     @Override
     protected void writeGldProperties(final StringBuilder sb) {
         super.writeGldProperties(sb);
-        writeProperty(sb, "parent", this.parent);
     }
 
 }

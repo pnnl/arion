@@ -36,11 +36,6 @@ public class Recorder extends AbstractGldObject {
     private final List<String> properties = new ArrayList<>();
 
     /**
-     * the target (parent) that is read from
-     */
-    private AbstractGldObject parent;
-
-    /**
      * the maximum length limit for the number of samples taken
      */
     private Integer limit;
@@ -119,24 +114,7 @@ public class Recorder extends AbstractGldObject {
         this.properties.add(property);
     }
 
-    /**
-     * Get the target (parent) that is read from
-     * 
-     * @return the parent
-     */
-    public AbstractGldObject getParent() {
-        return parent;
-    }
-
-    /**
-     * Set the target (parent) that is read from
-     * 
-     * @param parent
-     *            the parent to set
-     */
-    public void setParent(final AbstractGldObject parent) {
-        this.parent = parent;
-    }
+    
 
     /**
      * Get the maximum length limit for the number of samples taken
@@ -174,7 +152,7 @@ public class Recorder extends AbstractGldObject {
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), this.file, this.interval, this.parent, this.properties, this.limit, this.usingSql);
+        return Objects.hash(super.hashCode(), this.file, this.interval, this.properties, this.limit, this.usingSql);
     }
 
     @Override
@@ -191,7 +169,6 @@ public class Recorder extends AbstractGldObject {
         final Recorder other = (Recorder) obj;
         return Objects.equals(this.file, other.file)
                 && Objects.equals(this.interval, other.interval)
-                && Objects.equals(this.parent, other.parent)
                 && Objects.equals(this.properties, other.properties)
                 && Objects.equals(this.limit, other.limit)
                 && Objects.equals(this.usingSql, other.usingSql);
@@ -213,7 +190,6 @@ public class Recorder extends AbstractGldObject {
         writeProperty(sb, "interval", this.interval, "s");
         writeProperty(sb, "file", this.file);
         writeProperty(sb, "property", String.join(", ", this.properties));
-        writeProperty(sb, "parent", this.parent);
         writeProperty(sb, "limit", this.limit);
     }
 
