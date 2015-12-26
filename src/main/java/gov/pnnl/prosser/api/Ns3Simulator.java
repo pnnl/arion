@@ -47,6 +47,10 @@ public class Ns3Simulator {
 	 *               list of ns-3 objects
 	 */
 	public static void addObject(AbstractNs3Object object) {
+		// DEBUGGING
+		if (ns3Objects == null) {
+			ns3Objects = new ArrayList<>();
+		}
 		ns3Objects.add(object);
 	}
 
@@ -68,7 +72,7 @@ public class Ns3Simulator {
 	private String generateAuctionPrefix() {
 		
 		UUID myUUID = UUID.randomUUID();
-		String s = "prefix_" + myUUID.toString().replace("-", "");
+		String s = "auction_" + myUUID.toString().replace("-", "");
 		return s;
 	}
 	

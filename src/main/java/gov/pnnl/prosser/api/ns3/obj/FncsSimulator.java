@@ -33,7 +33,7 @@ public class FncsSimulator extends AbstractNs3Object {
 	@Override
 	public void setName(String name) {
 		super.setNameString(name);
-		appendPrintInfo(this.getClass().getSimpleName() + " *"
+		appendConstructorInfo(this.getClass().getSimpleName() + " *"
 				+ this.getName() + " = new FncsSimulator();\n");
 	}
 	
@@ -41,7 +41,7 @@ public class FncsSimulator extends AbstractNs3Object {
      * Sets the implementation of this simulator
      */
 	public void setImplementation() {
-		appendPrintInfo("Simulator::SetImplementation(hb2);\n");
+		appendConstructorInfo("Simulator::SetImplementation(hb2);\n");
 	}
 	
 	/**
@@ -49,13 +49,13 @@ public class FncsSimulator extends AbstractNs3Object {
 	 * Decrements the Pointer's internal reference count
 	 */
 	public void unref() {
-		appendPrintInfo(this.getName() + "->Unref();\n");
+		appendConstructorInfo(this.getName() + "->Unref();\n");
 	}
 
 	/**
 	 * Wraps this simulator in a pointer
 	 */
 	public void pointerize() {
-		appendPrintInfo("Ptr<FncsSimulator> hb2 (" + getName() + ");\n");
+		appendConstructorInfo("Ptr<FncsSimulator> hb2 (" + getName() + ");\n");
 	}
 }

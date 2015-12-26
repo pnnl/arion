@@ -116,6 +116,7 @@ public class Router extends AbstractNs3Object {
 		if (channel.getType().equals(NetworkType.CSMA)) {
 
 			// TODO move network helpers to 1 per channel, then just get() here & use
+			//  need to worry about order (helpers can't be created before ALL nodes/routers for them)
 			CsmaHelper csmaHelper = new CsmaHelper("csmaHelper_" + getName() + "_" + channel.getName());
 			csmaHelper.install(getNode(), (CsmaChannel) channel, channel.getDevices());
 

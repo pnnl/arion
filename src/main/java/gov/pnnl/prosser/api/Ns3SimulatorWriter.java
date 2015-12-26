@@ -37,7 +37,8 @@ public class Ns3SimulatorWriter {
 	public static Ns3SimulatorWriter getInstance() {
         return instance;
     }
-	
+
+	// Append print info doesn't print constructor info (that's set print info)?
 	public void appendPrintInfo(String text) {
 		this.instanceSb.append(text);
 	}
@@ -92,14 +93,20 @@ public class Ns3SimulatorWriter {
 
 		sb.append(instanceSb.toString());
 		 
-		/*
+		// Output object constructor/declaration strings to ns-3 file
 		if (objects != null) {
 			objects.forEach(o -> {
-				o.writeNs3Properties(sb);
+				//o.writeNs3Constructors(sb);
+			});
+		}
+		// Output object method/usage strings to ns-3 file
+		if (objects != null) {
+			objects.forEach(o -> {
+				//o.writeNs3Properties(sb);
 			});
 		}
 		
-		//*/
+		//
         
         sb.append("}\n");
         

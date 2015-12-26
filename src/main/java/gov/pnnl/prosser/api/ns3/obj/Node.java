@@ -17,12 +17,17 @@ import gov.pnnl.prosser.api.ns3.obj.internet.Ipv4;
  */
 public class Node extends AbstractNs3Object {
 
+	private static int ID = 0;
+	private int thisID;
+
 	/**
 	 * Create a nameless Node.
 	 */
 	public Node() 
 	{
 		super();
+		thisID = ID;
+		ID++;
 	}
 	
 	/**
@@ -33,6 +38,8 @@ public class Node extends AbstractNs3Object {
 	{
 		setNameString(name);
 		getAsPointer();
+		thisID = ID;
+		ID++;
 	}
 
 	/**
@@ -53,7 +60,7 @@ public class Node extends AbstractNs3Object {
 	
 	public void addDevice(NetDevice device)
 	{
-		appendPrintInfo(this.getName() + "->AddDevice(" + device.getName() + ");\n");
+		appendPrintInfo(this.getName() + "->AddDevice (" + device.getName() + ");\n");
 	}
 	
 	
@@ -77,10 +84,16 @@ public class Node extends AbstractNs3Object {
 	{
 		String varName = "NetDevice_" + java.util.UUID.randomUUID().toString().replace("-", "");
 		NetDevice temp = new NetDevice(varName);
-		
-		
-		appendPrintInfo(varName + " = " + this.getName() + "->GetDevice(" + index + ");\n");
+		appendPrintInfo(varName + " = " + this.getName() + "->GetDevice (" + index + ");\n");
 		return temp;
+	}
+
+	/**
+	 * Gets the unique ID of this Node, which also is its index in the ns-3 NodeList.
+	 */
+	public int getId() {
+		appendPrintInfo(getName() + "->GetId ();\n");
+		return thisID;
 	}
 	
 }

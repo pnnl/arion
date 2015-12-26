@@ -46,7 +46,7 @@ public class Ns3OnlyTest extends Experiment {
 		b.setChannel(b2c);
 		c.setChannel(b2c);
 		
-		a.AddStaticRoute(dest, hop, interFace);
+		//a.AddStaticRoute(dest, hop, interFace);
 		
 		Node na = a.getNode();
 		Node nb = b.getNode();
@@ -70,7 +70,7 @@ public class Ns3OnlyTest extends Experiment {
 		Ipv4StaticRouting isrB = staticHelper.GetStaticRouting(ib);
 		Ipv4StaticRouting isrC = staticHelper.GetStaticRouting(ic);
 		
-		isrA->AddHostRouteTo (, Ipv4Address ("10.1.1.2"), 1);
+		//isrA->AddHostRouteTo (, Ipv4Address ("10.1.1.2"), 1);
 		
 		
 		
@@ -135,8 +135,8 @@ public class Ns3OnlyTest extends Experiment {
         }
 
         // Assign IP addresses to routers on all channels (House channels)
-        for (Channel c : ns3Sim.getChannels()) {
-            c.assignIPAddresses();
+        for (Channel chan : ns3Sim.getChannels()) {
+            chan.assignIPAddresses();
         }
 
         // Sets up global IPv4 routing tables on each Router
