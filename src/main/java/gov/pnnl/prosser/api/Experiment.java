@@ -8,6 +8,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import gov.pnnl.prosser.api.ns3.Ns3Simulator2;
+
 /**
  * Prosser Experiment comprising multiple GLD simulators and an NS-3 and FNCS Simulator
  *
@@ -19,6 +21,8 @@ public abstract class Experiment {
     private final List<GldSimulator> gldSimulators = new ArrayList<>();
 
     private Ns3Simulator ns3Simulator = null;
+    
+    private Ns3Simulator2 ns3Simulator2 = null;
 
     private FncsSimulator fncsSimulator = null;
 
@@ -40,7 +44,16 @@ public abstract class Experiment {
     */
     public Ns3Simulator getNs3Simulator() {
         return this.ns3Simulator;
-    } 
+    }
+    
+    /**
+     * Get the NS-3 Simulators
+     * 
+     * @return the simulators
+    */
+    public Ns3Simulator2 getNs3Simulator2() {
+        return this.ns3Simulator2;
+    }
 
     /**
      * Get the FNCS Simulators
@@ -85,6 +98,19 @@ public abstract class Experiment {
         this.ns3Simulator = new Ns3Simulator(name);
         this.ensureFncs();
         return this.ns3Simulator;
+    }
+    
+    /**
+     * Get a new NS-3 Simulator
+     * 
+     * @param name
+     *            the name of the simulator
+     * @return the simulator
+     */
+    public Ns3Simulator2 ns3Simulator2() {
+        this.ns3Simulator2 = new Ns3Simulator2();
+        this.ensureFncs();
+        return this.ns3Simulator2;
     }
 
     /**

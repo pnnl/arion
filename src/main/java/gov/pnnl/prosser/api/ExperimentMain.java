@@ -77,6 +77,9 @@ public abstract class ExperimentMain {
             // Ns3SimulatorWriter.writeNs3Simulator(outPath.resolve(ns3Name), experiment.getNs3Simulator());
             Ns3SimulatorWriter.getInstance().writeNs3Simulator(outPath.resolve(ns3Name), experiment.getNs3Simulator());
         }
+        if(experiment.getNs3Simulator2() != null) {
+            experiment.getNs3Simulator2().writeSimulator(outPath);
+        }
         experiment.getExtraExperimentFiles().forEach((f) -> {
             try {
                 Files.copy(f, outPath.resolve(f.getFileName()), StandardCopyOption.REPLACE_EXISTING);
