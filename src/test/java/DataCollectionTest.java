@@ -59,7 +59,10 @@ public class DataCollectionTest extends Experiment {
 
         // Creates the specified number of house Routers and attaches them to backbone Routers
         // Creates backbone router to connect houses and auction
-        Router backboneRouter = ns3Sim.backboneRouter(auctionChannel);
+        Router backboneRouter = ns3Sim.backboneRouter(auctionChannel, true);
+
+        // Connect auction router to backbone router
+        //backboneRouter.setChannel(auctionChannel);
 
         // Create house 0
         CsmaChannel houseChannel0 = new CsmaChannel("csmaHouseChannel_0");
@@ -132,7 +135,7 @@ public class DataCollectionTest extends Experiment {
         // Setup GnuplotHelper
         GnuplotHelper plotHelper = new GnuplotHelper("plotHelper");
         plotHelper.configurePlot("byte-count", "Packet Byte Count vs Time",
-                                "Time (s)", "Packet Byte Count");
+                                "Time (Seconds)", "Packet Byte Count");
         plotHelper.plotProbe(probe, "Packet Byte Count", KeyLocation.KEY_BELOW);
 
         // Setup FileHelper
