@@ -86,6 +86,16 @@ public abstract class AbstractNs3Object {
 	}
 
 	/**
+	 *
+	 * @param text
+	 * 			the String to append to the end (after Simulator::Run() is called)
+	 * 			of the ns-3 simulation. Used for file outputting.
+     */
+	public void appendPostSimInfo(String text) {
+		Ns3SimulatorWriter.getInstance().appendPostSimInfo(text);
+	}
+
+	/**
 	 * @param text
 	 * 			the text to set this object's printInfo string
 	 */

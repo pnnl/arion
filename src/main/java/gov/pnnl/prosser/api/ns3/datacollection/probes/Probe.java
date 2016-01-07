@@ -11,7 +11,7 @@ public abstract class Probe extends AbstractNs3Object {
 
     private final String type;
     private String path;
-    private TraceSource source;
+    private TraceSource source, probeSource;
 
     public Probe(String name) {
         setNameString(name);
@@ -36,6 +36,14 @@ public abstract class Probe extends AbstractNs3Object {
         appendPrintInfo(getName() + "->ConnectByObject (\"" +
                         source.toString() + "\", " +
                         router.getNode().getName() + ");\n");
+    }
+
+    /**
+     * Sets the Probe output source to the given TraceSource
+     * @param source
+     */
+    protected void setProbeSource(TraceSource source) {
+        this.probeSource = source;
     }
 
     /**
@@ -80,5 +88,12 @@ public abstract class Probe extends AbstractNs3Object {
         return source.toString();
     }
 
+    /**
+     *
+     * @return the name of the TraceSource of this Probe's output
+     */
+    public String getProbeSource() {
+        return probeSource.toString();
+    }
 
 }

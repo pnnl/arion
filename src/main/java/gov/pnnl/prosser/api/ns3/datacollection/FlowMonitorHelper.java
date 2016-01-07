@@ -12,7 +12,7 @@ public class FlowMonitorHelper extends AbstractNs3Object {
     private final String flowMonitorName;
     private static int instanceCount;
 
-    public FlowMonitorHelper(String name) throws InstantiationException {
+    public FlowMonitorHelper(String name) {
         if (instanceCount == 0) {
             instanceCount++;
         } else if (instanceCount > 1) {
@@ -25,7 +25,7 @@ public class FlowMonitorHelper extends AbstractNs3Object {
         }
         setName(name);
         flowMonitorName = "flowMonitor";
-        appendPrintInfo("Ptr<FlowMonitor> " + flowMonitorName + ";");
+        appendPrintInfo("Ptr<FlowMonitor> " + flowMonitorName + ";\n");
     }
 
     /**
@@ -53,8 +53,8 @@ public class FlowMonitorHelper extends AbstractNs3Object {
 
     // TODO implement way to append this AFTER Simulator::Run()
     public void serializeToXmlFile(String fileName, boolean enableHist, boolean enableProbes) {
-        appendPostSimInfo(flowMonitorName + "->" + ".SerializeToXmlFile ("
-                            + fileName + ", "
+        appendPostSimInfo(flowMonitorName + "->" + "SerializeToXmlFile (\""
+                            + fileName + "\", "
                             + enableHist + ", "
                             + enableProbes + ");\n");
     }

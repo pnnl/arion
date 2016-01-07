@@ -29,18 +29,23 @@ public class Ns3SimulatorWriter {
 	
 	private static volatile Ns3SimulatorWriter instance = new Ns3SimulatorWriter();
     private StringBuilder instanceSb;
-	
+	private StringBuilder postSimSb;
+
 	private Ns3SimulatorWriter() {
 		instanceSb = new StringBuilder();
+		postSimSb = new StringBuilder();
 	}
 	
 	public static Ns3SimulatorWriter getInstance() {
         return instance;
     }
 
-	// Append print info doesn't print constructor info (that's set print info)?
 	public void appendPrintInfo(String text) {
 		this.instanceSb.append(text);
+	}
+
+	public void appendPostSimInfo(String text) {
+		this.postSimSb.append(text);
 	}
 	
 	public void writeNs3Simulator(final Path path, final Ns3Simulator ns3Simulator) throws IOException {
@@ -91,6 +96,7 @@ public class Ns3SimulatorWriter {
         sb.append("main (int argc, char *argv[])\n");
         sb.append("{\n");
 
+		// Print out all objects' info
 		sb.append(instanceSb.toString());
 		 
 		// Output object constructor/declaration strings to ns-3 file
@@ -105,8 +111,12 @@ public class Ns3SimulatorWriter {
 				//o.writeNs3Properties(sb);
 			});
 		}
-		
-		//
+
+		sb.append("Simulator::Run();\n");
+		// Append post-simulation text
+		sb.append(postSimSb);
+		sb.append("Simulator::Destroy();\n");
+		sb.append("return 0;\n");
         
         sb.append("}\n");
         

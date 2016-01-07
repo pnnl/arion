@@ -9,6 +9,7 @@ import gov.pnnl.prosser.api.gld.lib.TriplexLineConductor;
 import gov.pnnl.prosser.api.gld.lib.TriplexLineConfiguration;
 import gov.pnnl.prosser.api.gld.obj.*;
 import gov.pnnl.prosser.api.ns3.datacollection.FileHelper;
+import gov.pnnl.prosser.api.ns3.datacollection.FlowMonitorHelper;
 import gov.pnnl.prosser.api.ns3.datacollection.GnuplotHelper;
 import gov.pnnl.prosser.api.ns3.datacollection.probes.Ipv4PacketProbe;
 import gov.pnnl.prosser.api.ns3.datacollection.probes.Probe;
@@ -59,7 +60,7 @@ public class DataCollectionTest extends Experiment {
 
         // Creates the specified number of house Routers and attaches them to backbone Routers
         // Creates backbone router to connect houses and auction
-        Router backboneRouter = ns3Sim.backboneRouter(auctionChannel, true);
+        Router backboneRouter = ns3Sim.backboneRouter(auctionChannel);
 
         // Connect auction router to backbone router
         //backboneRouter.setChannel(auctionChannel);
@@ -129,8 +130,8 @@ public class DataCollectionTest extends Experiment {
 
         // Setup Probe
         Probe probe = new Ipv4PacketProbe("probe");
-//        probe.setSource(auctionRouter0, Ipv4L3Protocol.Tx);
-        probe.setSource(auctionRouter0, MacSources.MacPromiscRx);
+        probe.setSource(auctionRouter0, Ipv4L3Protocol.Tx);
+//        probe.setSource(auctionRouter0, MacSources.MacPromiscRx);
 
         // Setup GnuplotHelper
         GnuplotHelper plotHelper = new GnuplotHelper("plotHelper");
@@ -143,6 +144,11 @@ public class DataCollectionTest extends Experiment {
         fileHelper.configureFile("data-collection", FileFormat.FORMATTED);
         fileHelper.setFormat("Time (Seconds) = %.3e\\tPacket Byte Count = %.0f");
         fileHelper.writeProbe(probe);
+
+        // Setup FlowMonitor
+        FlowMonitorHelper flowHelper = new FlowMonitorHelper("flowHelper");
+        flowHelper.installAll();
+        flowHelper.serializeToXmlFile("flow", true, true);
 
 
         // Extra GLD files

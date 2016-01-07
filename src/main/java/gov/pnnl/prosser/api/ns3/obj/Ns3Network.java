@@ -11,15 +11,11 @@ import gov.pnnl.prosser.api.gld.obj.Controller;
 import gov.pnnl.prosser.api.ns3.obj.lte.Qci;
 import gov.pnnl.prosser.api.ns3.AbstractNs3Object;
 import gov.pnnl.prosser.api.ns3.module.*;
-import gov.pnnl.prosser.api.ns3.obj.csma.CsmaChannel;
-import gov.pnnl.prosser.api.ns3.obj.csma.CsmaHelper;
 import gov.pnnl.prosser.api.ns3.obj.internet.*;
 import gov.pnnl.prosser.api.ns3.obj.lte.EpsBearer;
 import gov.pnnl.prosser.api.ns3.obj.lte.LteHelper;
 import gov.pnnl.prosser.api.ns3.obj.lte.PointToPointEpcHelper;
-import gov.pnnl.prosser.api.ns3.obj.p2p.PointToPointChannel;
 import gov.pnnl.prosser.api.ns3.obj.p2p.PointToPointHelper;
-import gov.pnnl.prosser.api.ns3.obj.wifi.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -282,9 +278,10 @@ public class Ns3Network {
 		fncsHelper.setApps(allNames, fncsNodes, marketToControllerMap, stopTime);
 
 		// Run Simulator then clean up after it's done (according to FncsAps.stop(...))
-		fncsHelper.appendPrintInfo("Simulator::Run();\n");
+		// TODO moved these to Ns3SimulatorWriter
+/*		fncsHelper.appendPrintInfo("Simulator::Run();\n");
 		fncsHelper.appendPrintInfo("Simulator::Destroy();\n");
-		fncsHelper.appendPrintInfo("return 0;\n");
+		fncsHelper.appendPrintInfo("return 0;\n");*/
 	}
 
 	/**
@@ -374,6 +371,7 @@ public class Ns3Network {
 		this.addModule(new Fncs());
 		this.addModule(new FncsApplication());
 		this.addModule(new Stats());
+		this.addModule(new FlowMonitorHelper());
 
 		// Instantiates global NodeContainer allNodes for use by FNCSApplicationHelper
 		fncsNodes = new NodeContainer("fncsNodes");

@@ -11,6 +11,6 @@ public enum Ipv4L3Protocol implements TraceSource {
     Drop, // Drop IPv6 packet
     SendOutgoing, // A newly-generated packet by this node is about to be queued for transmission
     UnicastForward, // A unicast IPv6 packet was received by this node and is being forwarded to another node
-    LocalDeliver, // An IPv6 packet was received by/for this node, and it is being forward up the stack
+    LocalDeliver; // An IPv6 packet was received by/for this node, and it is being forward up the stack
 
 }

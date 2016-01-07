@@ -40,7 +40,7 @@ public class GnuplotHelper extends AbstractNs3Object {
         appendPrintInfo(getName() + ".PlotProbe (\"" +
                 probe.getType() + "\", \"" +
                 probe.getPath() + "\", \"" +
-                probe.getSource() + "\", \"" +
+                probe.getProbeSource() + "\", \"" +
                 label + "\");\n");
         //plotProbe(probe, "KEY_INSIDE");
     }
@@ -61,7 +61,7 @@ public class GnuplotHelper extends AbstractNs3Object {
         appendPrintInfo(getName() + ".PlotProbe (\"" +
                         probe.getType() + "\", \"" +
                         probe.getPath() + "\", \"" +
-                        probe.getSource() + "\", \"" +
+                        probe.getProbeSource() + "\", \"" +
                         label + "\", " +
                         "GnuplotAggregator::" + keyLoc.toString() + ");\n");
     }

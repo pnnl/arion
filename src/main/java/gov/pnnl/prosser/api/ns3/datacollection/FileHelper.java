@@ -31,7 +31,7 @@ public class FileHelper extends AbstractNs3Object {
      */
     public void setFormat(String s) {
         String[] split = s.split("\t");
-        int n = split.length;
+        int n = split.length + 1;
         if (n > 10) {
             throw new IllegalArgumentException("Only 10 data dimensions accepted.");
         }
@@ -58,6 +58,6 @@ public class FileHelper extends AbstractNs3Object {
         appendPrintInfo(getName() + ".WriteProbe (\"" +
                         probe.getType() + "\", \"" +
                         probe.getPath() + "\", \"" +
-                        probe.getSource() + "\");\n");
+                        probe.getProbeSource() + "\");\n");
     }
 }
