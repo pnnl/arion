@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <launchConfiguration type="org.eclipse.jdt.launching.localJavaApplication">
 <listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_PATHS">
-<listEntry value="/prosser-api/src/main/java/gov/pnnl/prosser/api/ExperimentMain.java"/>
+<listEntry value="/arion-api/src/main/java/gov/pnnl/prosser/api/ExperimentMain.java"/>
 </listAttribute>
 <listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_TYPES">
 <listEntry value="1"/>
@@ -10,6 +10,6 @@
 <stringAttribute key="org.eclipse.jdt.launching.CLASSPATH_PROVIDER" value="org.eclipse.m2e.launchconfig.classpathProvider"/>
 <stringAttribute key="org.eclipse.jdt.launching.MAIN_TYPE" value="gov.pnnl.prosser.api.ExperimentMain"/>
 <stringAttribute key="org.eclipse.jdt.launching.PROGRAM_ARGUMENTS" value="src/test/java/AdaptedAEPFncsTest.java out"/>
-<stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="prosser-api"/>
+<stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="arion-api"/>
 <stringAttribute key="org.eclipse.jdt.launching.SOURCE_PATH_PROVIDER" value="org.eclipse.m2e.launchconfig.sourcepathProvider"/>
 </launchConfiguration>
