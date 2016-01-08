@@ -41,7 +41,7 @@ public class Ipv4 extends AbstractNs3Object {
 	/**
 	 * 
 	 * @param interfaceIndex Interface number of an Ipv4 interface
-	 * @param adddress Ipv4InterfaceAddress address to associate with the underlying Ipv4 interface
+	 * @param address Ipv4InterfaceAddress address to associate with the underlying Ipv4 interface
 	 */
 	public void addAddress(String interfaceIndex, Ipv4InterfaceAddress address)
 	{

@@ -80,10 +80,6 @@ public abstract class GldSimulatorUtils {
      *            the configured auction object from GLD
      * @param phase
      *            the base phase to use, supports A, B, or C and will be converted to AS, BS, or CS respectively
-     * @param controllerNIPrefix
-     *            the prefix to use when naming the controller network interface in GLD to support FNCS
-     * @param channel
-     *            the channel to use when connecting this controller network interface
      * @param track
      *            track this house's properties with a recorder
      * @param rand

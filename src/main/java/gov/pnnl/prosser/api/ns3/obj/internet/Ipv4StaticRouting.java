@@ -31,7 +31,7 @@ public class Ipv4StaticRouting extends AbstractNs3Object {
 	 * 
 	 * @param dest The Ipv4Address destination for this route.
 	 * @param nextHop The Ipv4Address of the next hop in the route.
-	 * @param interface The network interface index used to send packets to the destination
+	 * @param interFace The network interface index used to send packets to the destination
 	 * @param metric Metric of route in case of multiple routes to same destination
 	 */
 	public void AddHostRouteTo (Ipv4Address dest, Ipv4Address nextHop, int interFace, int metric)
@@ -49,7 +49,7 @@ public class Ipv4StaticRouting extends AbstractNs3Object {
 	 * 
 	 * @param dest The Ipv4Address destination for this route.
 	 * @param nextHop The Ipv4Address of the next hop in the route.
-	 * @param interface The network interface index used to send packets to the destination
+	 * @param interFace The network interface index used to send packets to the destination
 	 */
 	public void AddHostRouteTo (Ipv4Address dest, Ipv4Address nextHop, int interFace)
 	{
@@ -60,7 +60,7 @@ public class Ipv4StaticRouting extends AbstractNs3Object {
 	 * Add a host route to the static routing table.
 	 * 
 	 * @param dest The Ipv4Address destination for this route.
-	 * @param interface The network interface index used to send packets to the destination
+	 * @param interFace The network interface index used to send packets to the destination
 	 * @param metric Metric of route in case of multiple routes to same destination
 	 */
 	public void AddHostRouteTo (Ipv4Address dest, int interFace, int metric)
@@ -76,7 +76,7 @@ public class Ipv4StaticRouting extends AbstractNs3Object {
 	 * Add a host route to the static routing table.
 	 * 
 	 * @param dest The Ipv4Address destination for this route.
-	 * @param interface The network interface index used to send packets to the destination
+	 * @param interFace The network interface index used to send packets to the destination
 	 */
 	public void AddHostRouteTo (Ipv4Address dest, int interFace)
 	{
