@@ -217,7 +217,6 @@ public class DataCollectionTest extends Experiment {
         auction.setCurveLogInfo(CurveOutput.EXTRA);
         auction.setNetworkAveragePriceProperty(marketMean);
         auction.setNetworkStdevPriceProperty(marketStdev);
-        auction.setNetworkAdjustPriceProperty("adjust_price");
 
         // Add a player to the auction for one of its values
         final PlayerObject player = auction.player();
@@ -400,6 +399,6 @@ public class DataCollectionTest extends Experiment {
                 throw new RuntimeException("Invalid random number");
         }
 
-        return GldSimulatorUtils.generateHouse(sim, id, meter, tripLineConf, auction, phase, false, rand);
+        return GldSimulatorUtils.generateHouse(sim, id, meter, tripLineConf, auction, phase, false, rand, auction.getFncsControllerPrefix());
     }
 }

@@ -4,6 +4,7 @@
 
 import gov.pnnl.prosser.api.*;
 import gov.pnnl.prosser.api.FncsSimulator;
+import gov.pnnl.prosser.api.gld.GldSimulatorUtils;
 import gov.pnnl.prosser.api.gld.enums.*;
 import gov.pnnl.prosser.api.gld.lib.*;
 import gov.pnnl.prosser.api.gld.obj.*;
@@ -243,7 +244,6 @@ public class ExperimentFncsTest extends Experiment {
         auction.setCurveLogInfo(CurveOutput.EXTRA);
         auction.setNetworkAveragePriceProperty(marketMean);
         auction.setNetworkStdevPriceProperty(marketStdev);
-        auction.setNetworkAdjustPriceProperty("adjust_price");
         auction.setFncsControllerPrefix(controllerNIPrefix);
         channels.get(0).addAuction(auction);
 
@@ -384,7 +384,7 @@ public class ExperimentFncsTest extends Experiment {
             }
             // distributes houses to channels, 20 per channel (1-n)
             int channelId = ((i - 1) / 20) + 1;
-            generateHouse(sim, i, meter, tripLineConf, auction, phase, controllerNIPrefix, channels.get(channelId));
+            GldSimulatorUtils.generateHouse(sim, i, meter, tripLineConf, auction, phase, false, rand, auction.getFncsControllerPrefix());
         }
     }
 
@@ -401,270 +401,6 @@ public class ExperimentFncsTest extends Experiment {
         config.setSecondaryVoltage(124);
         config.setPowerRating(numHouses * 5.0);
         config.setImpedance(0.015, 0.0675);
-    }
-
-    /**
-     * Generate a house to attach to the grid
-     *
-     * @param sim
-     *            Gld simulator reference
-     * @param id
-     *            The id of this house
-     * @param tripMeterA
-     *            The meter to connect to
-     * @param tripLineConf
-     *            The line configuration to use
-     * @param auction
-     *            the Auction to connect the controller to
-     */
-    private static void generateHouse(final GldSimulator sim, final int id, final TriplexMeter tripMeterA,
-            final TriplexLineConfiguration tripLineConf, final AuctionObject auction, final PhaseCode phase, final String controllerNIPrefix, final Channel channel) {
-        final EnumSet<PhaseCode> phases;
-        switch (phase) {
-            case A:
-                phases = PhaseCode.AS;
-                break;
-            case B:
-                phases = PhaseCode.BS;
-                break;
-            case C:
-                phases = PhaseCode.CS;
-                break;
-            default:
-                throw new RuntimeException("Phase code unsupported " + phase);
-        }
-        // Create the flatrate meter
-        // TODO what is a flatrate meter?
-        final TriplexMeter tripMeterFlatrate = sim.triplexMeter("F1_tpm_flatrate_" + phase.name() + id);
-        tripMeterFlatrate.setNominalVoltage(124.0);
-        tripMeterFlatrate.setPhases(phases);
-        tripMeterFlatrate.setGroupId("F1_flatrate_meter");
-
-        // Create the line from the transformer
-        final TriplexLine tripLine = sim.triplexLine(null);
-        tripLine.setFrom(tripMeterA);
-        tripLine.setTo(tripMeterFlatrate);
-        tripLine.setGroupId("F1_Triplex_Line");
-        tripLine.setPhases(phases);
-        tripLine.setLength(10);
-        tripLine.setConfiguration(tripLineConf);
-
-        // Create the rt meter
-        // TODO what is an rt meter?
-        final TriplexMeter tripMeterRt = sim.triplexMeter("F1_tpm_rt_" + phase.name() + id);
-        tripMeterRt.setNominalVoltage(124.0);
-        tripMeterRt.setPhases(phases);
-        tripMeterRt.setGroupId("F1_rt_meter");
-        tripMeterRt.setParent(tripMeterFlatrate);
-
-        final long scheduleSkew = -685L;
-
-        // Create the house
-        final House house = sim.house("F1_house_" + phase.name() + id);
-        house.setParent(tripMeterRt);
-        house.setScheduleSkew(scheduleSkew);
-        house.setRroof(33.69);
-        house.setRwall(17.71);
-        house.setRfloor(17.02);
-        house.setRdoors(5.0);
-        house.setRwindows(1.81);
-        house.setAirchangePerHour(0.80);
-        house.setHvacPowerFactor(0.97);
-        house.setCoolingSystemType(CoolingSystemType.ELECTRIC);
-        house.setHeatingSystemType(HeatingSystemType.GAS);
-        house.setFanType(FanType.ONE_SPEED);
-        house.setHvacBreakerRating(200.0);
-        house.setTotalThermalMassPerFloorArea(3.01);
-        house.setMotorEfficiency(MotorEfficiency.AVERAGE);
-        house.setMotorModel(MotorModel.BASIC);
-        house.setCoolingCop(3.90);
-        house.setFloorArea(1040.0);
-        house.setNumberOfDoors(2.0);
-        house.setHeatingSetpointFn("heating7*1.017+2.41");
-
-        // Create the controller
-        final Controller controller = house.controller("F1_controller_" + phase.name() + id);
-        controller.setUseOverride(UseOverride.ON);
-        controller.setOverride("override");
-        controller.setAuction(auction);
-        controller.setScheduleSkew(scheduleSkew);
-        controller.setBidMode(BidMode.PROXY);
-        controller.setProxyDelay(10);
-        controller.setControlMode(ControlMode.RAMP);
-        controller.setBaseSetpointFn("cooling8*0.977+3.56");
-        controller.setSetpoint("cooling_setpoint");
-        controller.setTarget("air_temperature");
-        controller.setDeadband("thermostat_deadband");
-        controller.setUsePredictiveBidding(true);
-        controller.setAverageTarget("current_price_mean_24h");
-        controller.setStandardDeviationTarget("current_price_stdev_24h");
-        controller.setPeriod(300.0);
-        controller.setDemand("last_cooling_load");
-        controller.setRangeHigh(4.000);
-        controller.setRangeLow(-2.000);
-        controller.setRampHigh(2.600);
-        controller.setRampLow(2.600);
-        controller.setTotal("total_load");
-        controller.setLoad("hvac_load");
-        controller.setState("power_state");
-        controller.setNetworkInterfaceName(controllerNIPrefix + id);
-        channel.addController(controller);
-
-        // Generate the loads on the house
-        generateLightsLoad(house, scheduleSkew);
-        generateClothesWasherLoad(house, scheduleSkew);
-        generateRefrigeratorLoad(house, scheduleSkew);
-        generateDryerLoad(house, scheduleSkew);
-        generateFreezerLoad(house, scheduleSkew);
-        generateRangeLoad(house, scheduleSkew);
-        generateMicrowaveLoad(house, scheduleSkew);
-    }
-
-    /**
-     * Generate load on a house for lights
-     *
-     * @param house
-     *            the house reference
-     * @param scheduleSkew
-     *            the schedule skew
-     */
-    private static void generateLightsLoad(final House house, final long scheduleSkew) {
-        final ZIPLoad load = house.addLoad();
-        load.setScheduleSkew(scheduleSkew);
-        load.setBasePowerFn("LIGHTS*1.8752");
-        load.setPowerFraction(0.600000);
-        load.setImpedanceFraction(0.400000);
-        load.setCurrentFraction(0.000000);
-        load.setPowerPf(-0.780);
-        load.setCurrentPf(0.420);
-        load.setImpedancePf(-0.880);
-        load.setHeatFraction(0.91);
-    }
-
-    /**
-     * Generate load on a house for clothes washer
-     *
-     * @param house
-     *            the house reference
-     * @param scheduleSkew
-     *            the schedule skew
-     */
-    private static void generateClothesWasherLoad(final House house, final long scheduleSkew) {
-        final ZIPLoad load = house.addLoad();
-        load.setScheduleSkew(scheduleSkew);
-        load.setBasePowerFn("CLOTHESWASHER*0.4354");
-        load.setPowerFraction(1.000000);
-        load.setImpedanceFraction(0.000000);
-        load.setCurrentFraction(0.000000);
-        load.setPowerPf(0.970);
-        load.setCurrentPf(0.970);
-        load.setImpedancePf(0.970);
-        load.setHeatFraction(0.70);
-    }
-
-    /**
-     * Generate load on a house for refrigerator
-     *
-     * @param house
-     *            the house reference
-     * @param scheduleSkew
-     *            the schedule skew
-     */
-    private static void generateRefrigeratorLoad(final House house, final long scheduleSkew) {
-        final ZIPLoad load = house.addLoad();
-        load.setScheduleSkew(scheduleSkew);
-        load.setBasePowerFn("REFRIGERATOR*0.7763");
-        load.setPowerFraction(1.000000);
-        load.setImpedanceFraction(0.000000);
-        load.setCurrentFraction(0.000000);
-        load.setPowerPf(0.970);
-        load.setCurrentPf(0.970);
-        load.setImpedancePf(0.970);
-        load.setHeatFraction(0.86);
-    }
-
-    /**
-     * Generate load on a house for dryer
-     *
-     * @param house
-     *            the house reference
-     * @param scheduleSkew
-     *            the schedule skew
-     */
-    private static void generateDryerLoad(final House house, final long scheduleSkew) {
-        final ZIPLoad load = house.addLoad();
-        load.setScheduleSkew(scheduleSkew);
-        load.setBasePowerFn("DRYER*1.0019");
-        load.setPowerFraction(0.100000);
-        load.setImpedanceFraction(0.800000);
-        load.setCurrentFraction(0.100000);
-        load.setPowerPf(0.900);
-        load.setCurrentPf(0.900);
-        load.setImpedancePf(1.000);
-        load.setHeatFraction(0.77);
-    }
-
-    /**
-     * Generate load on a house for freezer
-     *
-     * @param house
-     *            the house reference
-     * @param scheduleSkew
-     *            the schedule skew
-     */
-    private static void generateFreezerLoad(final House house, final long scheduleSkew) {
-        final ZIPLoad load = house.addLoad();
-        load.setScheduleSkew(scheduleSkew);
-        load.setBasePowerFn("FREEZER*0.9110");
-        load.setPowerFraction(1.000000);
-        load.setImpedanceFraction(0.000000);
-        load.setCurrentFraction(0.000000);
-        load.setPowerPf(0.970);
-        load.setCurrentPf(0.970);
-        load.setImpedancePf(0.970);
-        load.setHeatFraction(0.80);
-    }
-
-    /**
-     * Generate load on a house for range
-     *
-     * @param house
-     *            the house reference
-     * @param scheduleSkew
-     *            the schedule skew
-     */
-    private static void generateRangeLoad(final House house, final long scheduleSkew) {
-        final ZIPLoad load = house.addLoad();
-        load.setScheduleSkew(scheduleSkew);
-        load.setBasePowerFn("RANGE*1.0590");
-        load.setPowerFraction(0.000000);
-        load.setImpedanceFraction(1.000000);
-        load.setCurrentFraction(0.000000);
-        load.setPowerPf(0.000);
-        load.setCurrentPf(0.000);
-        load.setImpedancePf(1.000);
-        load.setHeatFraction(0.86);
-    }
-
-    /**
-     * Generate load on a house for microwave
-     *
-     * @param house
-     *            the house reference
-     * @param scheduleSkew
-     *            the schedule skew
-     */
-    private static void generateMicrowaveLoad(final House house, final long scheduleSkew) {
-        final ZIPLoad load = house.addLoad();
-        load.setScheduleSkew(scheduleSkew);
-        load.setBasePowerFn("MICROWAVE*0.6381");
-        load.setPowerFraction(1.000000);
-        load.setImpedanceFraction(0.000000);
-        load.setCurrentFraction(0.000000);
-        load.setPowerPf(0.970);
-        load.setCurrentPf(0.970);
-        load.setImpedancePf(0.970);
-        load.setHeatFraction(0.94);
     }
 
 }
