@@ -7,6 +7,7 @@ import gov.pnnl.prosser.api.gld.AbstractGldObject;
 import gov.pnnl.prosser.api.gld.lib.GldClock;
 import gov.pnnl.prosser.api.gld.module.Module;
 import gov.pnnl.prosser.api.gld.obj.AbstractGldClass;
+import gov.pnnl.prosser.api.gld.obj.FncsMsg;
 import gov.pnnl.prosser.api.sql.SqlFile;
 
 import java.io.BufferedWriter;
@@ -48,6 +49,7 @@ public abstract class GldSimulatorWriter {
         final List<AbstractGldClass> classes = gldSimulator.getClasses();
         final List<AbstractGldObject> objects = gldSimulator.getObjects();
         final StringBuilder sb = new StringBuilder();
+        final StringBuilder gldFncsConfig = new StringBuilder();
         sb.append("//\n");
         sb.append("// BEGIN\n");
         sb.append("//\n\n");
@@ -76,16 +78,41 @@ public abstract class GldSimulatorWriter {
         sb.append('\n');
         if (objects != null) {
             final SqlFile sqlFile = new SqlFile(gldSimulator.getName());
-            objects.forEach(o -> {
-                sb.append('\n');
-                o.writeGldString(sb);
-                o.createSqlObjects(sqlFile);
-                try {
-                    o.writeExternalFiles(path);
-                } catch (Exception e) {
-                    throw new RuntimeException("Unable to copy object file source to destination", e);
-                }
-            });
+            for (AbstractGldObject o : objects) {
+	            sb.append('\n');
+	            o.writeGldString(sb);
+	            o.createSqlObjects(sqlFile);
+	            if (o instanceof FncsMsg){
+	            	FncsMsg fMsg = (FncsMsg)o;
+	            	final List<String> publish = fMsg.getPublish();
+	            	final List<String> route = fMsg.getRoute();
+	            	final List<String> subscribe = fMsg.getSubscribe();
+	            	final List<String> configure = fMsg.getConfigure();
+	            	if (publish.size() > 0) {
+	            		for (String pubTopic : publish) {
+	            			gldFncsConfig.append(pubTopic + '\n');
+	            		}
+	            	}
+	            	if (route.size() > 0) {
+	            		for (String rTopic : route) {
+	            			gldFncsConfig.append(rTopic + '\n');
+	            		}
+	            	}
+	            	if (subscribe.size() > 0) {
+	            		for (String subTopic : subscribe) {
+	            			gldFncsConfig.append(subTopic + '\n');
+	            		}
+	            	}
+	            	try (final BufferedWriter confWriter = Files.newBufferedWriter(path.resolve(configure.get(0)), StandardCharsets.UTF_8)) {
+	            		confWriter.write(gldFncsConfig.toString());
+	            	}
+	            }
+	            try {
+	                o.writeExternalFiles(path);
+	            } catch (Exception e) {
+	                throw new RuntimeException("Unable to copy object file source to destination", e);
+	            }
+            }
             if (!sqlFile.getSqlTableDefs().isEmpty()) {
                 final StringBuilder sql = new StringBuilder();
                 sql.append("CREATE DATABASE \"" + sqlFile.getDatabaseName() + "\";\n");

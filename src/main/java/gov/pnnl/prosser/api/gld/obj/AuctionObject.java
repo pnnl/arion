@@ -19,7 +19,7 @@ import java.util.UUID;
  * 
  * @author nord229
  */
-public class AuctionObject extends AbstractGldObject implements NetworkCapable {
+public class AuctionObject extends AbstractGldObject {
 
     /**
      * unit of quantity
@@ -94,7 +94,7 @@ public class AuctionObject extends AbstractGldObject implements NetworkCapable {
     /**
      * market network interface adjust price property
      */
-    private String networkAdjustPriceProperty;
+//    private String networkAdjustPriceProperty;
 
     /**
      * controller prefix for FNCS
@@ -105,7 +105,8 @@ public class AuctionObject extends AbstractGldObject implements NetworkCapable {
     public AuctionObject(final GldSimulator simulator) {
         super(simulator);
         simulator.ensureMarketModule();
-        simulator.ensureCommModule();
+//        simulator.ensureCommModule();
+//        simulator.ensureConnectionModule();
     }
 
     /**
@@ -364,24 +365,24 @@ public class AuctionObject extends AbstractGldObject implements NetworkCapable {
         this.networkStdevPriceProperty = networkStdevPriceProperty;
     }
 
-    /**
-     * Get the market network interface adjust price property
-     * 
-     * @return the networkAdjustPriceProperty
-     */
-    public String getNetworkAdjustPriceProperty() {
-        return networkAdjustPriceProperty;
-    }
+//    /**
+//     * Get the market network interface adjust price property
+//     * 
+//     * @return the networkAdjustPriceProperty
+//     */
+//    public String getNetworkAdjustPriceProperty() {
+//        return networkAdjustPriceProperty;
+//    }
 
-    /**
-     * Set the market network interface adjust price property
-     * 
-     * @param networkAdjustPriceProperty
-     *            the networkAdjustPriceProperty to set
-     */
-    public void setNetworkAdjustPriceProperty(final String networkAdjustPriceProperty) {
-        this.networkAdjustPriceProperty = networkAdjustPriceProperty;
-    }
+//    /**
+//     * Set the market network interface adjust price property
+//     * 
+//     * @param networkAdjustPriceProperty
+//     *            the networkAdjustPriceProperty to set
+//     */
+//    public void setNetworkAdjustPriceProperty(final String networkAdjustPriceProperty) {
+//        this.networkAdjustPriceProperty = networkAdjustPriceProperty;
+//    }
 
     /**
      * Get the controller prefix for FNCS
@@ -419,13 +420,13 @@ public class AuctionObject extends AbstractGldObject implements NetworkCapable {
     }
     
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public String getNetworkInterfaceName() {
-        return this.getName() + "NI";
-    }
+//    /**
+//     * {@inheritDoc}
+//     */
+//    @Override
+//    public String getNetworkInterfaceName() {
+//        return this.getName() + "NI";
+//    }
 
     /**
      * {@inheritDoc}
@@ -447,16 +448,16 @@ public class AuctionObject extends AbstractGldObject implements NetworkCapable {
         writeProperty(sb, "curve_log_file", curveLogFile);
         writeProperty(sb, "curve_log_info", curveLogInfo);
 
-        // Market Network Interface
-        sb.append("    object market_network_interface {\n    ");
-        writeProperty(sb, "name", getNetworkInterfaceName());
-        sb.append("    ");
-        writeProperty(sb, "average_price_prop", networkAveragePriceProperty);
-        sb.append("    ");
-        writeProperty(sb, "stdev_price_prop", networkStdevPriceProperty);
-        sb.append("    ");
-        writeProperty(sb, "adjust_price_prop", networkAdjustPriceProperty);
-        sb.append("    };\n");
+//        // Market Network Interface
+//        sb.append("    object market_network_interface {\n    ");
+//        writeProperty(sb, "name", getNetworkInterfaceName());
+//        sb.append("    ");
+//        writeProperty(sb, "average_price_prop", networkAveragePriceProperty);
+//        sb.append("    ");
+//        writeProperty(sb, "stdev_price_prop", networkStdevPriceProperty);
+//        sb.append("    ");
+//        writeProperty(sb, "adjust_price_prop", networkAdjustPriceProperty);
+//        sb.append("    };\n");
 
         // FIXME INSERT PLAYER
         writeProperty(sb, "special_mode", specialMode);

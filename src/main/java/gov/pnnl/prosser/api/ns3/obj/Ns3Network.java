@@ -271,7 +271,7 @@ public class Ns3Network {
 		for (Channel chan : auctionChannels) {
 			AuctionObject auction = chan.getAuctions().get(0);
 			// Maps the Auction NetworkInterfaceName to the GldNodePrefix
-			marketToControllerMap.put(auction.getNetworkInterfaceName(), auction.getFncsControllerPrefix());
+			marketToControllerMap.put(auction.getName(), auction.getFncsControllerPrefix());
 		}
 
 		FNCSApplicationHelper fncsHelper = new FNCSApplicationHelper("fncsHelper");
@@ -305,7 +305,7 @@ public class Ns3Network {
 	public void addControllerNames() {
 		for (Channel chan : getHouseChannels()) {
 			Controller controller = chan.getControllers().get(0);
-			String controllerNIName = controller.getNetworkInterfaceName();
+			String controllerNIName = controller.getName();
 			allNames.addName(controllerNIName);
 		}
 	}
@@ -396,7 +396,7 @@ public class Ns3Network {
 	    // Installs market on 1st (0th) node of nodeCont
 	    Node firstNode = nodeCont.getNodeNoPrint(0);
 	    gldNodes.addNodeContainer(nodeCont);
-	    names.pushBack(auction);
+	    names.pushBack(auction.getName());
 		
 		for (int i = 0; i < nodeContSize; i++) {
 			// Adds each node to global List of Nodes
@@ -404,7 +404,7 @@ public class Ns3Network {
 			// Gets the Controller at the index i offset by the current auctionIndex multiplied by the number of allNodes in nodeCont
 	    	Controller tempCont = this.getControllers().get(auctionIndex*nodeContSize + i);
 	    	// Adds the name of the Controller to the Names StringVector
-	    	names.pushBack(tempCont);
+	    	names.pushBack(tempCont.getName());
 	    	// Adds this Node to the NodeContainer of all GLD Nodes
 	    	//gldNodes.addNode(nodeCont, i);
 		}
@@ -560,7 +560,7 @@ public class Ns3Network {
 	
 			}
 			
-			marketToControllerMap.put(this.getAuctions().get(i).getNetworkInterfaceName(), this.getGldNodePrefix());
+			marketToControllerMap.put(this.getAuctions().get(i).getName(), this.getGldNodePrefix());
 		}
 		
 		return ns3Objects;

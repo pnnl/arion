@@ -15,6 +15,7 @@ import gov.pnnl.prosser.api.gld.lib.TriplexLineConductor;
 import gov.pnnl.prosser.api.gld.lib.TriplexLineConfiguration;
 import gov.pnnl.prosser.api.gld.module.ClimateModule;
 import gov.pnnl.prosser.api.gld.module.Comm;
+import gov.pnnl.prosser.api.gld.module.Connection;
 import gov.pnnl.prosser.api.gld.module.Market;
 import gov.pnnl.prosser.api.gld.module.Module;
 import gov.pnnl.prosser.api.gld.module.PowerflowModule;
@@ -25,6 +26,7 @@ import gov.pnnl.prosser.api.gld.obj.AuctionClass;
 import gov.pnnl.prosser.api.gld.obj.AuctionObject;
 import gov.pnnl.prosser.api.gld.obj.ClimateObject;
 import gov.pnnl.prosser.api.gld.obj.CsvReader;
+import gov.pnnl.prosser.api.gld.obj.FncsMsg;
 import gov.pnnl.prosser.api.gld.obj.House;
 import gov.pnnl.prosser.api.gld.obj.Load;
 import gov.pnnl.prosser.api.gld.obj.Meter;
@@ -184,7 +186,21 @@ public class GldSimulator {
     }
 
     /**
-     * Add the comm module to this simulator
+     * Add the connection module to this simulator. Only exist for FNCS 2.0
+     */
+    public void connnectionModule() {
+        this.modules.put(Connection.class, new Connection());
+    }
+    
+    /**
+     * Add default connection module if it does not exist
+     */
+    public void ensureConnectionModule() {
+        this.modules.computeIfAbsent(Connection.class, k -> new Connection());
+    }
+    
+    /**
+     * Add the comm module to this simulator. Only exist for FNCS 1.0
      */
     public void commModule() {
         this.modules.put(Comm.class, new Comm());
@@ -357,6 +373,19 @@ public class GldSimulator {
      */
     public AuctionObject auctionObject(final String name) {
         return setupObject(new AuctionObject(this), name);
+    }
+    
+    /**
+     * Create a fncs msg
+     * this will add it to the internal objects list, set the name
+     * and set the simulator reference to this simulator
+     * 
+     * @param name 
+     * 			the name to set
+     * @return the created object
+     */
+    public FncsMsg fncsMsg(final String name) {
+    	return setupObject(new FncsMsg(this), name);
     }
 
     /**

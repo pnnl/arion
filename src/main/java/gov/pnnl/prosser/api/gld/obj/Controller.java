@@ -15,690 +15,455 @@ import gov.pnnl.prosser.api.gld.enums.UseOverride;
  * 
  * @author nord229
  */
-public class Controller extends AbstractGldObject implements NetworkCapable {
-
-    /**
-     * use override
-     */
-    private UseOverride useOverride;
-
-    /**
-     * override property
-     */
-    private String override;
-
-    /**
-     * connected auction
-     */
-    private AuctionObject auction;
-
-    /**
-     * time skew applied to schedule operations involving this object
-     */
-    private Long scheduleSkew;
-
-    /**
-     * bid mode
-     */
-    private BidMode bidMode;
-
-    /**
-     * proxy delay
-     */
-    private Integer proxyDelay;
-
-    /**
-     * the control mode to use for determining controller action
-     */
-    private ControlMode controlMode;
-
-    /**
-     * the base setpoint to base control off of
-     */
-    private Double baseSetpoint;
-
-    /**
-     * the base setpoint to base control off of function
-     * if the base setpoint is a function of another property set that here
-     */
-    private String baseSetpointFn;
-
-    /**
-     * the controlled property (e.g., heating setpoint)
-     */
-    private String setpoint;
-
-    /**
-     * the observed property (e.g., air temperature)
-     */
-    private String target;
-
-    /**
-     * deadband
-     */
-    private String deadband;
-
-    /**
-     * should use predictive bidding
-     */
-    private Boolean usePredictiveBidding;
-
-    /**
-     * average target
-     */
-    private String averageTarget;
-
-    /**
-     * standard deviation target
-     */
-    private String standardDeviationTarget;
-
-    /**
-     * interval of time between market clearings (s)
-     */
-    private Double period;
-
-    /**
-     * the controlled load when on
-     */
-    private String demand;
-
-    /**
-     * the setpoint limit on the high side
-     */
-    private Double rangeHigh;
-
-    /**
-     * the setpoint limit on the low side
-     */
-    private Double rangeLow;
-
-    /**
-     * the comfort response above the setpoint (degF)
-     */
-    private Double rampHigh;
-
-    /**
-     * the comfort response below the setpoint (degF)
-     */
-    private Double rampLow;
-
-    /**
-     * the uncontrolled load (if any)
-     */
-    private String total;
-
-    /**
-     * the current controlled load
-     */
-    private String load;
-
-    /**
-     * the state property of the controlled load
-     */
-    private String state;
-
-    /**
-     * the slider setting
-     */
-    private Double sliderSetting;
-
-    /**
-     * controller network interface name
-     */
-    private String networkInterfaceName;
-
-    public Controller(final GldSimulator simulator) {
-        super(simulator);
-        simulator.ensureMarketModule();
-        simulator.ensureCommModule();
-    }
-
-    /**
-     * Get if using override
-     * 
-     * @return the useOverride
-     */
-    public UseOverride getUseOverride() {
-        return useOverride;
-    }
-
-    /**
-     * Set if using override
-     * 
-     * @param useOverride
-     *            the useOverride to set
-     */
-    public void setUseOverride(final UseOverride useOverride) {
-        this.useOverride = useOverride;
-    }
-
-    /**
-     * Get the override property
-     * 
-     * @return the override
-     */
-    public String getOverride() {
-        return override;
-    }
-
-    /**
-     * Set the override property
-     * 
-     * @param override
-     *            the override to set
-     */
-    public void setOverride(final String override) {
-        this.override = override;
-    }
-
-    /**
-     * Get the connected auction
-     * 
-     * @return the auction
-     */
-    public AuctionObject getAuction() {
-        return auction;
-    }
-
-    /**
-     * Set the connected auction
-     * 
-     * @param auction
-     *            the auction to set
-     */
-    public void setAuction(final AuctionObject auction) {
-        this.auction = auction;
-    }
-
-    /**
-     * Get the time skew applied to schedule operations involving this object
-     * 
-     * @return the scheduleSkew
-     */
-    public Long getScheduleSkew() {
-        return scheduleSkew;
-    }
-
-    /**
-     * Set the time skew applied to schedule operations involving this object
-     * 
-     * @param scheduleSkew
-     *            the scheduleSkew to set
-     */
-    public void setScheduleSkew(final Long scheduleSkew) {
-        this.scheduleSkew = scheduleSkew;
-    }
-
-    /**
-     * Get the bid mode
-     * 
-     * @return the bidMode
-     */
-    public BidMode getBidMode() {
-        return bidMode;
-    }
-
-    /**
-     * Set the bid mode
-     * 
-     * @param bidMode
-     *            the bidMode to set
-     */
-    public void setBidMode(final BidMode bidMode) {
-        this.bidMode = bidMode;
-    }
-
-    /**
-     * Get the proxy delay
-     * 
-     * @return the proxyDelay
-     */
-    public Integer getProxyDelay() {
-        return proxyDelay;
-    }
-
-    /**
-     * Set the proxy delay
-     * 
-     * @param proxyDelay
-     *            the proxyDelay to set
-     */
-    public void setProxyDelay(final Integer proxyDelay) {
-        this.proxyDelay = proxyDelay;
-    }
-
-    /**
-     * Get the control mode to use for determining controller action
-     * 
-     * @return the controlMode
-     */
-    public ControlMode getControlMode() {
-        return controlMode;
-    }
-
-    /**
-     * Set the control mode to use for determining controller action
-     * 
-     * @param controlMode
-     *            the controlMode to set
-     */
-    public void setControlMode(final ControlMode controlMode) {
-        this.controlMode = controlMode;
-    }
-
-    /**
-     * Get the base setpoint to base control off of
-     * 
-     * @return the baseSetpoint
-     */
-    public Double getBaseSetpoint() {
-        return baseSetpoint;
-    }
-
-    /**
-     * Set the base setpoint to base control off of
-     * 
-     * @param baseSetpoint
-     *            the baseSetpoint to set
-     */
-    public void setBaseSetpoint(final Double baseSetpoint) {
-        this.baseSetpoint = baseSetpoint;
-    }
-
-    /**
-     * Get the base setpoint to base control off of function
-     * if the base setpoint is a function of another property set that here
-     * 
-     * @return the baseSetpointFn
-     */
-    public String getBaseSetpointFn() {
-        return baseSetpointFn;
-    }
-
-    /**
-     * Set the base setpoint to base control off of function
-     * if the base setpoint is a function of another property set that here
-     * 
-     * @param baseSetpointFn
-     *            the baseSetpointFn to set
-     */
-    public void setBaseSetpointFn(final String baseSetpointFn) {
-        this.baseSetpointFn = baseSetpointFn;
-    }
-
-    /**
-     * Get the controlled property (e.g., heating setpoint)
-     * 
-     * @return the setpoint
-     */
-    public String getSetpoint() {
-        return setpoint;
-    }
-
-    /**
-     * Set the controlled property (e.g., heating setpoint)
-     * 
-     * @param setpoint
-     *            the setpoint to set
-     */
-    public void setSetpoint(final String setpoint) {
-        this.setpoint = setpoint;
-    }
-
-    /**
-     * Get the observed property (e.g., air temperature)
-     * 
-     * @return the target
-     */
-    public String getTarget() {
-        return target;
-    }
-
-    /**
-     * Set the observed property (e.g., air temperature)
-     * 
-     * @param target
-     *            the target to set
-     */
-    public void setTarget(final String target) {
-        this.target = target;
-    }
-
-    /**
-     * Get the deadband
-     * 
-     * @return the deadband
-     */
-    public String getDeadband() {
-        return deadband;
-    }
-
-    /**
-     * Set the deadband
-     * 
-     * @param deadband
-     *            the deadband to set
-     */
-    public void setDeadband(final String deadband) {
-        this.deadband = deadband;
-    }
-
-    /**
-     * Get if should use predictive bidding
-     * 
-     * @return the usePredictiveBidding
-     */
-    public Boolean getUsePredictiveBidding() {
-        return usePredictiveBidding;
-    }
-
-    /**
-     * Set if should use predictive bidding
-     * 
-     * @param usePredictiveBidding
-     *            the usePredictiveBidding to set
-     */
-    public void setUsePredictiveBidding(final Boolean usePredictiveBidding) {
-        this.usePredictiveBidding = usePredictiveBidding;
-    }
-
-    /**
-     * Get the average target
-     * 
-     * @return the averageTarget
-     */
-    public String getAverageTarget() {
-        return averageTarget;
-    }
-
-    /**
-     * Set the average target
-     * 
-     * @param averageTarget
-     *            the averageTarget to set
-     */
-    public void setAverageTarget(final String averageTarget) {
-        this.averageTarget = averageTarget;
-    }
-
-    /**
-     * Get the standard deviation target
-     * 
-     * @return the standardDeviationTarget
-     */
-    public String getStandardDeviationTarget() {
-        return standardDeviationTarget;
-    }
-
-    /**
-     * Set the standard deviation target
-     * 
-     * @param standardDeviationTarget
-     *            the standardDeviationTarget to set
-     */
-    public void setStandardDeviationTarget(final String standardDeviationTarget) {
-        this.standardDeviationTarget = standardDeviationTarget;
-    }
-
-    /**
-     * Get the interval of time between market clearings (s)
-     * 
-     * @return the period
-     */
-    public Double getPeriod() {
-        return period;
-    }
-
-    /**
-     * Set the interval of time between market clearings (s)
-     * 
-     * @param period
-     *            the period to set
-     */
-    public void setPeriod(final Double period) {
-        this.period = period;
-    }
-
-    /**
-     * Get the the controlled load when on
-     * 
-     * @return the demand
-     */
-    public String getDemand() {
-        return demand;
-    }
-
-    /**
-     * Set the the controlled load when on
-     * 
-     * @param demand
-     *            the demand to set
-     */
-    public void setDemand(final String demand) {
-        this.demand = demand;
-    }
-
-    /**
-     * Get the setpoint limit on the high side
-     * 
-     * @return the rangeHigh
-     */
-    public Double getRangeHigh() {
-        return rangeHigh;
-    }
-
-    /**
-     * Set the setpoint limit on the high side
-     * 
-     * @param rangeHigh
-     *            the rangeHigh to set
-     */
-    public void setRangeHigh(final Double rangeHigh) {
-        this.rangeHigh = rangeHigh;
-    }
-
-    /**
-     * Get the setpoint limit on the low side
-     * 
-     * @return the rangeLow
-     */
-    public Double getRangeLow() {
-        return rangeLow;
-    }
-
-    /**
-     * Set the setpoint limit on the low side
-     * 
-     * @param rangeLow
-     *            the rangeLow to set
-     */
-    public void setRangeLow(final Double rangeLow) {
-        this.rangeLow = rangeLow;
-    }
-
-    /**
-     * Get the comfort response above the setpoint (degF)
-     * 
-     * @return the rampHigh
-     */
-    public Double getRampHigh() {
-        return rampHigh;
-    }
-
-    /**
-     * Set the comfort response above the setpoint (degF)
-     * 
-     * @param rampHigh
-     *            the rampHigh to set
-     */
-    public void setRampHigh(final Double rampHigh) {
-        this.rampHigh = rampHigh;
-    }
-
-    /**
-     * Get the comfort response below the setpoint (degF)
-     * 
-     * @return the rampLow
-     */
-    public Double getRampLow() {
-        return rampLow;
-    }
-
-    /**
-     * Set the comfort response below the setpoint (degF)
-     * 
-     * @param rampLow
-     *            the rampLow to set
-     */
-    public void setRampLow(final Double rampLow) {
-        this.rampLow = rampLow;
-    }
-
-    /**
-     * Get the uncontrolled load (if any)
-     * 
-     * @return the total
-     */
-    public String getTotal() {
-        return total;
-    }
-
-    /**
-     * Set the uncontrolled load (if any)
-     * 
-     * @param total
-     *            the total to set
-     */
-    public void setTotal(final String total) {
-        this.total = total;
-    }
-
-    /**
-     * Get the current controlled load
-     * 
-     * @return the load
-     */
-    public String getLoad() {
-        return load;
-    }
-
-    /**
-     * Set the current controlled load
-     * 
-     * @param load
-     *            the load to set
-     */
-    public void setLoad(final String load) {
-        this.load = load;
-    }
-
-    /**
-     * Get the state property of the controlled load
-     * 
-     * @return the state
-     */
-    public String getState() {
-        return state;
-    }
-
-    /**
-     * Set the state property of the controlled load
-     * 
-     * @param state
-     *            the state to set
-     */
-    public void setState(final String state) {
-        this.state = state;
-    }
-
-    /**
-     * Get the slider setting
-     * 
-     * @return the sliderSetting
-     */
-    public Double getSliderSetting() {
-        return sliderSetting;
-    }
-
-    /**
-     * Set the slider setting
-     * 
-     * @param sliderSetting
-     *            the sliderSetting to set
-     */
-    public void setSliderSetting(Double sliderSetting) {
-        this.sliderSetting = sliderSetting;
-    }
-
-    /**
-     * {@inheritDoc}
-     * 
-     * Get the controller network interface name
-     */
-    @Override
-    public String getNetworkInterfaceName() {
-        return this.networkInterfaceName;
-    }
-
-    /**
-     * Set the controller network interface name
-     * 
-     * @param networkInterfaceName
-     *            the name to set
-     */
-    public void setNetworkInterfaceName(final String networkInterfaceName) {
-        this.networkInterfaceName = networkInterfaceName;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    protected String getGldObjectType() {
-        return "controller";
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    protected void writeGldProperties(final StringBuilder sb) {
-        writeProperty(sb, "use_override", useOverride);
-        writeProperty(sb, "override", override);
-        writeProperty(sb, "market", auction);
-        writeProperty(sb, "schedule_skew", scheduleSkew);
-        writeProperty(sb, "bid_mode", bidMode);
-        writeProperty(sb, "proxy_delay", proxyDelay);
-
-        // Controller Network Interface
-        sb.append("    object controller_network_interface {\n    ");
-        writeProperty(sb, "name", getNetworkInterfaceName());
-        sb.append("    ");
-        writeProperty(sb, "destination", auction.getNetworkInterfaceName());
-        sb.append("    };\n");
-
-        writeProperty(sb, "control_mode", controlMode);
-        if (baseSetpointFn != null) {
-            writeProperty(sb, "base_setpoint", baseSetpointFn);
-        } else {
-            writeProperty(sb, "base_setpoint", baseSetpoint);
-        }
-        writeProperty(sb, "setpoint", setpoint);
-        writeProperty(sb, "target", target);
-        writeProperty(sb, "deadband", deadband);
-        writeProperty(sb, "use_predictive_bidding", usePredictiveBidding);
-        writeProperty(sb, "average_target", averageTarget);
-        writeProperty(sb, "period", period);
-        writeProperty(sb, "demand", demand);
-        writeProperty(sb, "range_high", rangeHigh);
-        writeProperty(sb, "range_low", rangeLow);
-        writeProperty(sb, "ramp_high", rampHigh);
-        writeProperty(sb, "ramp_low", rampLow);
-        writeProperty(sb, "total", total);
-        writeProperty(sb, "load", load);
-        writeProperty(sb, "state", state);
-        writeProperty(sb, "slider_setting", sliderSetting);
-    }
-
+public class Controller extends AbstractGldObject {
+	/**
+	 * Enabling fncs ns3 communication
+	 */
+	private boolean useFncs;
+	
+	/**
+	 * The auction market to comunicate with
+	 */
+	private AuctionObject auction;
+	
+	/**
+	 * The bid_mode to use
+	 */
+	private BidMode bidMode;
+	
+	/**
+	 * The bid delay to use
+	 */
+	private Integer bidDelay;
+	
+	/**
+	 * The control mode to use
+	 */
+	private ControlMode controlMode;
+	
+	/**
+	 * The base set point if using a schedule
+	 */
+	private String baseSetpoint;
+	
+	/**
+	 * The set point property inside the house
+	 */
+	private String setPoint;
+	
+	/**
+	 * The target property inside the house
+	 */
+	private String target;
+	
+	/**
+	 * the dead band property inside the house
+	 */
+	private String deadBand;
+	
+	/**
+	 * boolean for using predictive bidding
+	 */
+	private Boolean usePredictiveBidding;
+	
+	/**
+	 * average property in the market
+	 */
+	private String averageTarget;
+	
+	/**
+	 * standard deviation property in the market
+	 */
+	private String standardDeviationTarget;
+	
+	
+	/**
+	 * The demand property in the house
+	 */
+	private String demand;
+	
+	/**
+	 * The range high property
+	 */
+	private Double rangeHigh;
+	
+	/**
+	 * The range low property
+	 */
+	private Double rangeLow;
+	
+	/**
+	 * The ramp high property
+	 */
+	private Double rampHigh;
+	
+	/**
+	 * The ramp low property
+	 */
+	private Double rampLow;
+	
+	/**
+	 * the total property in the house
+	 */
+	private String total;
+	
+	/**
+	 * the load property in the house
+	 */
+	private String load;
+	
+	/**
+	 * The state property in the house
+	 */
+	private String state;
+	
+	/**
+	 * The schedule skew
+	 */
+	private Long scheduleSkew;
+
+	/**
+	 * @return the useFncs
+	 */
+	public boolean isUseFncs() {
+		return useFncs;
+	}
+
+	/**
+	 * @param useFncs the useFncs to set
+	 */
+	public void setUseFncs(boolean useFncs) {
+		this.useFncs = useFncs;
+	}
+
+	/**
+	 * @return the auction
+	 */
+	public AuctionObject getAuction() {
+		return auction;
+	}
+
+	/**
+	 * @param auction the auction to set
+	 */
+	public void setAuction(AuctionObject auction) {
+		this.auction = auction;
+	}
+
+	/**
+	 * @return the bidMode
+	 */
+	public BidMode getBidMode() {
+		return bidMode;
+	}
+
+	/**
+	 * @param bidMode the bidMode to set
+	 */
+	public void setBidMode(BidMode bidMode) {
+		this.bidMode = bidMode;
+	}
+
+	/**
+	 * @return the bidDelay
+	 */
+	public Integer getBidDelay() {
+		return bidDelay;
+	}
+
+	/**
+	 * @param bidDelay the bidDelay to set
+	 */
+	public void setBidDelay(Integer bidDelay) {
+		this.bidDelay = bidDelay;
+	}
+
+	/**
+	 * @return the controlMode
+	 */
+	public ControlMode getControlMode() {
+		return controlMode;
+	}
+
+	/**
+	 * @param controlMode the controlMode to set
+	 */
+	public void setControlMode(ControlMode controlMode) {
+		this.controlMode = controlMode;
+	}
+
+	/**
+	 * @return the baseSetpoint
+	 */
+	public String getBaseSetpoint() {
+		return baseSetpoint;
+	}
+
+	/**
+	 * @param baseSetpoint the baseSetpoint to set
+	 */
+	public void setBaseSetpoint(String baseSetpoint) {
+		this.baseSetpoint = baseSetpoint;
+	}
+
+	/**
+	 * @return the setPoint
+	 */
+	public String getSetPoint() {
+		return setPoint;
+	}
+
+	/**
+	 * @param setPoint the setPoint to set
+	 */
+	public void setSetPoint(String setPoint) {
+		this.setPoint = setPoint;
+	}
+
+	/**
+	 * @return the target
+	 */
+	public String getTarget() {
+		return target;
+	}
+
+	/**
+	 * @param target the target to set
+	 */
+	public void setTarget(String target) {
+		this.target = target;
+	}
+
+	/**
+	 * @return the deadBand
+	 */
+	public String getDeadBand() {
+		return deadBand;
+	}
+
+	/**
+	 * @param deadBand the deadBand to set
+	 */
+	public void setDeadBand(String deadBand) {
+		this.deadBand = deadBand;
+	}
+
+	/**
+	 * @return the usePredictiveBidding
+	 */
+	public Boolean getUsePredictiveBidding() {
+		return usePredictiveBidding;
+	}
+
+	/**
+	 * @param usePredictiveBidding the usePredictiveBidding to set
+	 */
+	public void setUsePredictiveBidding(Boolean usePredictiveBidding) {
+		this.usePredictiveBidding = usePredictiveBidding;
+	}
+
+	/**
+	 * @return the averageTarget
+	 */
+	public String getAverageTarget() {
+		return averageTarget;
+	}
+
+	/**
+	 * @param averageTarget the averageTarget to set
+	 */
+	public void setAverageTarget(String averageTarget) {
+		this.averageTarget = averageTarget;
+	}
+
+	/**
+	 * @return the standardDeviationTarget
+	 */
+	public String getStandardDeviationTarget() {
+		return standardDeviationTarget;
+	}
+
+	/**
+	 * @param standardDeviationTarget the standardDeviationTarget to set
+	 */
+	public void setStandardDeviationTarget(String standardDeviationTarget) {
+		this.standardDeviationTarget = standardDeviationTarget;
+	}
+
+	/**
+	 * @return the demand
+	 */
+	public String getDemand() {
+		return demand;
+	}
+
+	/**
+	 * @param demand the demand to set
+	 */
+	public void setDemand(String demand) {
+		this.demand = demand;
+	}
+
+	/**
+	 * @return the rangeHigh
+	 */
+	public Double getRangeHigh() {
+		return rangeHigh;
+	}
+
+	/**
+	 * @param rangeHigh the rangeHigh to set
+	 */
+	public void setRangeHigh(Double rangeHigh) {
+		this.rangeHigh = rangeHigh;
+	}
+
+	/**
+	 * @return the rangeLow
+	 */
+	public Double getRangeLow() {
+		return rangeLow;
+	}
+
+	/**
+	 * @param rangeLow the rangeLow to set
+	 */
+	public void setRangeLow(Double rangeLow) {
+		this.rangeLow = rangeLow;
+	}
+
+	/**
+	 * @return the rampHigh
+	 */
+	public Double getRampHigh() {
+		return rampHigh;
+	}
+
+	/**
+	 * @param rampHigh the rampHigh to set
+	 */
+	public void setRampHigh(Double rampHigh) {
+		this.rampHigh = rampHigh;
+	}
+
+	/**
+	 * @return the rampLow
+	 */
+	public Double getRampLow() {
+		return rampLow;
+	}
+
+	/**
+	 * @param rampLow the rampLow to set
+	 */
+	public void setRampLow(Double rampLow) {
+		this.rampLow = rampLow;
+	}
+
+	/**
+	 * @return the total
+	 */
+	public String getTotal() {
+		return total;
+	}
+
+	/**
+	 * @param total the total to set
+	 */
+	public void setTotal(String total) {
+		this.total = total;
+	}
+
+	/**
+	 * @return the load
+	 */
+	public String getLoad() {
+		return load;
+	}
+
+	/**
+	 * @param load the load to set
+	 */
+	public void setLoad(String load) {
+		this.load = load;
+	}
+
+	/**
+	 * @return the state
+	 */
+	public String getState() {
+		return state;
+	}
+
+	/**
+	 * @param state the state to set
+	 */
+	public void setState(String state) {
+		this.state = state;
+	}
+	
+	public Controller(final GldSimulator simulator) {
+		super(simulator);
+		simulator.ensureMarketModule();
+	}
+	
+	
+
+	/**
+	 * @return the scheduleSkew
+	 */
+	public Long getScheduleSkew() {
+		return scheduleSkew;
+	}
+
+	/**
+	 * @param scheduleSkew the scheduleSkew to set
+	 */
+	public void setScheduleSkew(Long scheduleSkew) {
+		this.scheduleSkew = scheduleSkew;
+	}
+
+	/* (non-Javadoc)
+	 * @see gov.pnnl.prosser.api.gld.AbstractGldObject#getGldObjectType()
+	 */
+	@Override
+	protected String getGldObjectType() {
+		return "controller";
+	}
+
+	/* (non-Javadoc)
+	 * @see gov.pnnl.prosser.api.gld.AbstractGldObject#writeGldProperties(java.lang.StringBuilder)
+	 */
+	@Override
+	protected void writeGldProperties(StringBuilder sb) {
+		writeProperty(sb, "market", auction.getName());
+		writeProperty(sb, "period", auction.getPeriod());
+		if(useFncs){
+			writeProperty(sb, "bid_mode", bidMode);
+			writeProperty(sb, "proxy_average", auction.getInitPrice());
+			writeProperty(sb, "proxy_standard_deviation", auction.getInitStdev());
+			writeProperty(sb, "proxy_market_id", "1");
+			writeProperty(sb, "proxy_clear_price", auction.getInitPrice());
+			writeProperty(sb, "proxy_price_cap", auction.getPriceCap());
+			writeProperty(sb, "proxy_unit", auction.getUnit());
+		}
+		writeProperty(sb, "control_mode", controlMode);
+		writeProperty(sb, "bid_delay", bidDelay);
+		writeProperty(sb, "base_setpoint", baseSetpoint);
+		writeProperty(sb, "setpoint", setPoint);
+		writeProperty(sb, "target", target);
+		writeProperty(sb, "deadband", deadBand);
+		writeProperty(sb, "target", target);
+		writeProperty(sb, "average_target", averageTarget);
+		writeProperty(sb, "standard_deviation_target", standardDeviationTarget);
+		writeProperty(sb, "demand", demand);
+		writeProperty(sb, "total", total);
+		writeProperty(sb, "load", load);
+		writeProperty(sb, "state", state);
+		writeProperty(sb, "use_predictive_bidding", usePredictiveBidding);
+		writeProperty(sb, "range_high", rangeHigh);
+		writeProperty(sb, "range_low", rangeLow);
+		writeProperty(sb, "ramp_high", rampHigh);
+		writeProperty(sb, "ramp_low", rampLow);
+	}
 }

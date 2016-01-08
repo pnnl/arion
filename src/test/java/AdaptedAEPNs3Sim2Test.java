@@ -46,9 +46,10 @@ public class AdaptedAEPNs3Sim2Test extends Experiment {
         auction1.setFncsControllerPrefix();
         
         final Ns3Simulator2 ns3Sim2 = this.ns3Simulator2();
-        ns3Sim2.addNetwork(20, auction0.getNetworkInterfaceName(), auction0.getFncsControllerPrefix());
-        ns3Sim2.addNetwork(20, auction1.getNetworkInterfaceName(), auction1.getFncsControllerPrefix());
-
+        ns3Sim2.addNetwork(20, auction0.getName(), auction0.getFncsControllerPrefix());
+        ns3Sim2.addNetwork(20, auction1.getName(), auction1.getFncsControllerPrefix());
+        
+        createFncsMsg(gldSim, auction0, numHouses, gldSim.getName() + String.format("_C%d_", numHouses), "ns3Sim");
         // Specify the climate information
         final ClimateObject climate = gldSim.climateObject("Columbus OH");
         climate.setTmyFile(Paths.get("res/ColumbusWeather2009_2a.csv"));
@@ -70,12 +71,14 @@ public class AdaptedAEPNs3Sim2Test extends Experiment {
         for (int i = 0; i < numHouses; i++) {
             final House house;
             if (i <= 20) {
-                house = createHouse(gldSim, i, auction0);
+                house = createHouse(gldSim, i, auction0, gldSim.getName() + String.format("_C%d_", numHouses));
             } else {
-                house = createHouse(gldSim, i, auction1);
+                house = createHouse(gldSim, i, auction1, gldSim.getName() + String.format("_C%d_", numHouses));
             }
 
         }
+        
+        
 
         // Extra GLD files
 //        this.addExtraFiles(Paths.get("res/heat.yaml"));
@@ -128,8 +131,8 @@ public class AdaptedAEPNs3Sim2Test extends Experiment {
 
         // Add a auction class def to allow references to more fields from other objects
         final AuctionClass auctionClass = sim.auctionClass();
-        auctionClass.addField("day_ahead_average", "double");
-        auctionClass.addField("day_ahead_std", "double");
+//        auctionClass.addField("day_ahead_average", "double");
+//        auctionClass.addField("day_ahead_std", "double");
         auctionClass.addField(marketMean, "double");
         auctionClass.addField(marketStdev, "double");
 
@@ -143,7 +146,6 @@ public class AdaptedAEPNs3Sim2Test extends Experiment {
         auction.setCurveLogInfo(CurveOutput.EXTRA);
         auction.setNetworkAveragePriceProperty(marketMean);
         auction.setNetworkStdevPriceProperty(marketStdev);
-        auction.setNetworkAdjustPriceProperty("adjust_price");
 
         // Add a player to the auction for one of its values
         final PlayerObject player = auction.player();
@@ -159,8 +161,26 @@ public class AdaptedAEPNs3Sim2Test extends Experiment {
         auction.setWarmup(0);
         
         auction.setFncsControllerPrefix();
-        
         return auction;
+    }
+    
+    private void createFncsMsg(final GldSimulator sim, AuctionObject pObj, final int numHouses, final String controllerPrefix, final String ns3SimName) {
+    	final FncsMsg fMsg = sim.fncsMsg(sim.getName());
+    	fMsg.setParent(pObj);
+    	fMsg.addRoute("\"function:controller/submit_bid_state -> auction/submit_bit_state\";");
+    	fMsg.addOption("\"transport:hostname localhost, port 5570\";");
+    	fMsg.addConfigure(sim.getName() + ".txt");
+    	for(int i = 0; i < numHouses; i++) {
+    		fMsg.addRoute(String.format("\"presync:%s.clearingPrice -> %s%d/clearPrice;0\";", pObj.getName(), controllerPrefix, i));
+    		fMsg.addRoute(String.format("\"presync:%s.market_id -> %s%d/mktID;0\";", pObj.getName(), controllerPrefix, i));
+    		fMsg.addRoute(String.format("\"presync:%s.%s -> %s%d/avgPrice;0\";", pObj.getName(), pObj.getNetworkAveragePriceProperty(), controllerPrefix, i));
+    		fMsg.addRoute(String.format("\"presync:%s.%s -> %s%d/stdevPrice;0\";", pObj.getName(), pObj.getNetworkStdevPriceProperty(), controllerPrefix, i));
+    		fMsg.addSubscribe(String.format("\"function:auction/submit_bid_state <- %s/%s/%s%d@%s/submit_bid_state\";", ns3SimName, sim.getName(), controllerPrefix, i, pObj.getName()));
+    		fMsg.addSubscribe(String.format("\"presync:%s/proxy_clear_price <- %s/%s/%s@%s%d/clearPrice\";", ns3SimName, sim.getName(), pObj.getName(), controllerPrefix, i));
+    		fMsg.addSubscribe(String.format("\"presync:%s/proxy_market_id <- %s/%s/%s@%s%d/mktID\";", ns3SimName, sim.getName(), pObj.getName(), controllerPrefix, i));
+    		fMsg.addSubscribe(String.format("\"presync:%s/proxy_average <- %s/%s/%s@%s%d/avgPrice\";", ns3SimName, sim.getName(), pObj.getName(), controllerPrefix, i));
+    		fMsg.addSubscribe(String.format("\"presync:%s/proxy_standard_deviation <- %s/%s/%s@%s%d/stdevPrice\";", ns3SimName, sim.getName(), pObj.getName(), controllerPrefix, i));
+    	}
     }
 
     private void createTriplex(final GldSimulator sim, final int numHouses) {
@@ -308,7 +328,7 @@ public class AdaptedAEPNs3Sim2Test extends Experiment {
      * @param auction
      *            the Auction to connect the controller to
      */
-    private House createHouse(final GldSimulator sim, final int id, final AuctionObject auction) {
+    private House createHouse(final GldSimulator sim, final int id, final AuctionObject auction, final String contPrefix) {
         // Select the phases for our meters
         final int r = rand.nextInt(3);
         final PhaseCode phase;
@@ -330,6 +350,6 @@ public class AdaptedAEPNs3Sim2Test extends Experiment {
                 throw new RuntimeException("Invalid random number");
         }
         
-        return GldSimulatorUtils.generateHouse(sim, id, meter, tripLineConf, auction, phase, false, rand);
+        return GldSimulatorUtils.generateHouse(sim, id, meter, tripLineConf, auction, phase, false, rand, contPrefix);
     }
 }

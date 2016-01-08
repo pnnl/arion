@@ -92,7 +92,7 @@ public abstract class GldSimulatorUtils {
      */
     public static House generateHouse(final GldSimulator sim, final int id, final TriplexMeter meter,
             final TriplexLineConfiguration tripLineConf, final AuctionObject auction, final PhaseCode phase,
-            final boolean track, final Random rand) {
+            final boolean track, final Random rand, final String controllerPrefix) {
         // Select the phases for our meters
         final EnumSet<PhaseCode> phases;
         switch (phase) {
@@ -167,13 +167,12 @@ public abstract class GldSimulatorUtils {
         setHouseInfo(house, houseType, rand);
 
         // Create the base controller
-        final Controller controller = house.controller("F1_controller_" + phase.name() + id);
+        final Controller controller = house.controller(controllerPrefix + id);
         controller.setAuction(auction);
         controller.setScheduleSkew(scheduleSkew);
-        controller.setNetworkInterfaceName(auction.getFncsControllerPrefix() + id);
         controller.setAverageTarget(auction.getNetworkAveragePriceProperty());
         controller.setStandardDeviationTarget(auction.getNetworkStdevPriceProperty());
-        controller.setPeriod((double) auction.getPeriod());
+        controller.setUseFncs(true);
         // Setup the controller and loads
         setupController(house, controller, rand);
         setupLoads(house, houseType, applianceScalar, rand);
@@ -355,19 +354,19 @@ public abstract class GldSimulatorUtils {
         }
         // marketTest = marketTest / 100;
 
-        controller.setUseOverride(UseOverride.ON);
-        controller.setOverride("override");
+//        controller.setUseOverride(UseOverride.ON);
+//        controller.setOverride("override");
         controller.setBidMode(BidMode.PROXY);
-        controller.setProxyDelay(10);
+//        controller.setProxyDelay(10);
         controller.setControlMode(ControlMode.RAMP);
 
         // FIXME Bid delay does not apper in our output files?
         // controller.setBidDelay(bidDelay);
 
-        controller.setBaseSetpointFn(String.format("cooling%d*%1.3f+%2.2f", scheduleCool, coolTemp, coolOffset));
-        controller.setSetpoint("cooling_setpoint");
+        controller.setBaseSetpoint(String.format("cooling%d*%1.3f+%2.2f", scheduleCool, coolTemp, coolOffset));
+        controller.setSetPoint("cooling_setpoint");
         controller.setTarget("air_temperature");
-        controller.setDeadband("thermostat_deadband");
+        controller.setDeadBand("thermostat_deadband");
         controller.setUsePredictiveBidding(true);
         controller.setDemand("last_cooling_load");
         if (sigmaTstat > 0) {
@@ -381,7 +380,7 @@ public abstract class GldSimulatorUtils {
             controller.setRampHigh(crh2);
             controller.setRampLow(crl2);
         } else {
-            controller.setSliderSetting(coolSlider);
+//            controller.setSliderSetting(coolSlider);
             controller.setRangeHigh(5.0);
             controller.setRangeLow(-3.0);
         }
