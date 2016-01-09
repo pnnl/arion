@@ -45,11 +45,11 @@ public class AdaptedAEPNs3Sim2Test extends Experiment {
         final AuctionObject auction1 = createMarket(gldSim, UUID.randomUUID().toString());
         auction1.setFncsControllerPrefix();
         
-        final Ns3Simulator2 ns3Sim2 = this.ns3Simulator2();
-        ns3Sim2.addNetwork(20, auction0.getName(), auction0.getFncsControllerPrefix());
-        ns3Sim2.addNetwork(20, auction1.getName(), auction1.getFncsControllerPrefix());
+        final Ns3Simulator2 ns3Sim2 = this.ns3Simulator2("ns3Sim");
+        ns3Sim2.addNetwork(gldSim.getName(), 20, auction0.getName(), auction0.getFncsControllerPrefix());
+        ns3Sim2.addNetwork(gldSim.getName(), 20, auction1.getName(), auction1.getFncsControllerPrefix());
         
-        createFncsMsg(gldSim, auction0, numHouses, gldSim.getName() + String.format("_C%d_", numHouses), "ns3Sim");
+        createFncsMsg(gldSim, auction0, numHouses, gldSim.getName() + String.format("_C%d_", numHouses), ns3Sim2.getName());
         // Specify the climate information
         final ClimateObject climate = gldSim.climateObject("Columbus OH");
         climate.setTmyFile(Paths.get("res/ColumbusWeather2009_2a.csv"));
@@ -176,10 +176,10 @@ public class AdaptedAEPNs3Sim2Test extends Experiment {
     		fMsg.addRoute(String.format("\"presync:%s.%s -> %s%d/avgPrice;0\";", pObj.getName(), pObj.getNetworkAveragePriceProperty(), controllerPrefix, i));
     		fMsg.addRoute(String.format("\"presync:%s.%s -> %s%d/stdevPrice;0\";", pObj.getName(), pObj.getNetworkStdevPriceProperty(), controllerPrefix, i));
     		fMsg.addSubscribe(String.format("\"function:auction/submit_bid_state <- %s/%s/%s%d@%s/submit_bid_state\";", ns3SimName, sim.getName(), controllerPrefix, i, pObj.getName()));
-    		fMsg.addSubscribe(String.format("\"presync:%s/proxy_clear_price <- %s/%s/%s@%s%d/clearPrice\";", ns3SimName, sim.getName(), pObj.getName(), controllerPrefix, i));
-    		fMsg.addSubscribe(String.format("\"presync:%s/proxy_market_id <- %s/%s/%s@%s%d/mktID\";", ns3SimName, sim.getName(), pObj.getName(), controllerPrefix, i));
-    		fMsg.addSubscribe(String.format("\"presync:%s/proxy_average <- %s/%s/%s@%s%d/avgPrice\";", ns3SimName, sim.getName(), pObj.getName(), controllerPrefix, i));
-    		fMsg.addSubscribe(String.format("\"presync:%s/proxy_standard_deviation <- %s/%s/%s@%s%d/stdevPrice\";", ns3SimName, sim.getName(), pObj.getName(), controllerPrefix, i));
+    		fMsg.addSubscribe(String.format("\"presync:%s%d/proxy_clear_price <- %s/%s/%s@%s%d/clearPrice\";", controllerPrefix, i, ns3SimName, sim.getName(), pObj.getName(), controllerPrefix, i));
+    		fMsg.addSubscribe(String.format("\"presync:%s%d/proxy_market_id <- %s/%s/%s@%s%d/mktID\";", controllerPrefix, i, ns3SimName, sim.getName(), pObj.getName(), controllerPrefix, i));
+    		fMsg.addSubscribe(String.format("\"presync:%s%d/proxy_average <- %s/%s/%s@%s%d/avgPrice\";", controllerPrefix, i, ns3SimName, sim.getName(), pObj.getName(), controllerPrefix, i));
+    		fMsg.addSubscribe(String.format("\"presync:%s%d/proxy_standard_deviation <- %s/%s/%s@%s%d/stdevPrice\";", controllerPrefix, i, ns3SimName, sim.getName(), pObj.getName(), controllerPrefix, i));
     	}
     }
 

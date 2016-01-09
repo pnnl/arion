@@ -105,8 +105,8 @@ public abstract class Experiment {
      * 
      * @return the simulator
      */
-    public Ns3Simulator2 ns3Simulator2() {
-        this.ns3Simulator2 = new Ns3Simulator2();
+    public Ns3Simulator2 ns3Simulator2(final String name) {
+        this.ns3Simulator2 = new Ns3Simulator2(name);
         this.ensureFncs();
         return this.ns3Simulator2;
     }

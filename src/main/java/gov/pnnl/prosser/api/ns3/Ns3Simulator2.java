@@ -19,6 +19,10 @@ import java.util.List;
  * @author nord229
  */
 public class Ns3Simulator2 {
+    
+    private final String name;
+    
+    private String broker;
 
     private Path ccFile;
     
@@ -26,16 +30,26 @@ public class Ns3Simulator2 {
     
     public static class AuctionNetwork {
         
+        private final String gldSimName;
+        
         private final int numHouses;
         
         private final String marketName;
         
         private final String housePrefix;
         
-        public AuctionNetwork(int numHouses, String marketName, String housePrefix) {
+        public AuctionNetwork(String gldSimName, int numHouses, String marketName, String housePrefix) {
+            this.gldSimName = gldSimName;
             this.numHouses = numHouses;
             this.marketName = marketName;
             this.housePrefix = housePrefix;
+        }
+        
+        /**
+         * @return the gldSimName
+         */
+        public String getGldSimName() {
+            return gldSimName;
         }
 
         /**
@@ -61,8 +75,31 @@ public class Ns3Simulator2 {
 
     }
     
-    public Ns3Simulator2() {
+    public Ns3Simulator2(final String name) {
+        this.name = name;
         this.ccFile = Paths.get("res/firstN.cc");
+        this.broker = "tcp://localhost:5570";
+    }
+    
+    /**
+     * @return the name
+     */
+    public String getName() {
+        return name;
+    }
+
+    /**
+     * @return the broker
+     */
+    public String getBroker() {
+        return broker;
+    }
+
+    /**
+     * @param broker the broker to set
+     */
+    public void setBroker(String broker) {
+        this.broker = broker;
     }
 
     /**
@@ -79,8 +116,8 @@ public class Ns3Simulator2 {
         this.ccFile = ccFile;
     }
     
-    public void addNetwork(int numHouses, String marketName, String housePrefix) {
-        this.networks.add(new AuctionNetwork(numHouses, marketName, housePrefix));
+    public void addNetwork(String gldSimName, int numHouses, String marketName, String housePrefix) {
+        this.networks.add(new AuctionNetwork(gldSimName, numHouses, marketName, housePrefix));
     }
     
     public void writeSimulator(Path outDir) throws IOException {
@@ -90,6 +127,53 @@ public class Ns3Simulator2 {
                 writer.write(String.format("%d %s %s%n", network.getNumHouses(), network.getMarketName(), network.getHousePrefix()));
             }
         }
+        try (BufferedWriter writer = Files.newBufferedWriter(outDir.resolve(this.getName() + ".zpl"), StandardCharsets.UTF_8)) {
+            final StringBuilder sb = new StringBuilder();
+            sb.append("name = ");
+            sb.append(this.getName());
+            sb.append('\n');
+            sb.append("time_delta = 1ns\n");
+            sb.append("broker = ");
+            sb.append(this.getBroker());
+            sb.append('\n');
+            sb.append("values\n");
+            for(final AuctionNetwork network: this.networks) {
+                for(int i = 1; i <= network.getNumHouses(); i++) {
+                    writeMarketToControllerVar(sb, network, i, "var1");
+                    writeMarketToControllerVar(sb, network, i, "var2");
+                    writeMarketToControllerVar(sb, network, i, "var3");
+                    writeMarketToControllerVar(sb, network, i, "var4");
+                    writeControllerToMarketVar(sb, network, i, "submit_bid_state");
+                }
+            }
+            writer.write(sb.toString());
+        }
     }
-
+    
+    private static void writeMarketToControllerVar(StringBuilder sb, AuctionNetwork network, int i, String var) {
+        sb.append("    ");
+        sb.append(network.getGldSimName());
+        sb.append('/');
+        sb.append(network.getMarketName());
+        sb.append('@');
+        sb.append(network.getHousePrefix());
+        sb.append(i);
+        sb.append('/');
+        sb.append(var);
+        sb.append('\n');
+    }
+    
+    private static void writeControllerToMarketVar(StringBuilder sb, AuctionNetwork network, int i, String var) {
+        sb.append("    ");
+        sb.append(network.getGldSimName());
+        sb.append('/');
+        sb.append(network.getHousePrefix());
+        sb.append(i);
+        sb.append('@');
+        sb.append(network.getMarketName());
+        sb.append('/');
+        sb.append(var);
+        sb.append('\n');
+    }
+    
 }

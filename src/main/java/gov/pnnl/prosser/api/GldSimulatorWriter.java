@@ -90,17 +90,23 @@ public abstract class GldSimulatorWriter {
 	            	final List<String> configure = fMsg.getConfigure();
 	            	if (publish.size() > 0) {
 	            		for (String pubTopic : publish) {
-	            			gldFncsConfig.append(pubTopic + '\n');
+	            		    gldFncsConfig.append("publish ");
+	            			gldFncsConfig.append(pubTopic);
+	            		    gldFncsConfig.append('\n');
 	            		}
 	            	}
 	            	if (route.size() > 0) {
 	            		for (String rTopic : route) {
-	            			gldFncsConfig.append(rTopic + '\n');
+	            		    gldFncsConfig.append("route ");
+                            gldFncsConfig.append(rTopic);
+                            gldFncsConfig.append('\n');
 	            		}
 	            	}
 	            	if (subscribe.size() > 0) {
 	            		for (String subTopic : subscribe) {
-	            			gldFncsConfig.append(subTopic + '\n');
+	            		    gldFncsConfig.append("subscribe ");
+                            gldFncsConfig.append(subTopic);
+                            gldFncsConfig.append('\n');
 	            		}
 	            	}
 	            	try (final BufferedWriter confWriter = Files.newBufferedWriter(path.resolve(configure.get(0)), StandardCharsets.UTF_8)) {
