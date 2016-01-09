@@ -33,5 +33,8 @@
 		<file>
 			<source>src/test/java/AdaptedAEPFncsTest.java</source>
 		</file>
+		<file>
+			<source>src/test/java/AdaptedAEPNs3Sim2Test.java</source>
+		</file>
 	</files>
 </assembly>
