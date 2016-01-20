@@ -39,10 +39,10 @@ public class AdaptedAEPNs3Sim2Test extends Experiment {
 
         final GldSimulator gldSim = this.gldSimulator("fncs_GLD_1node_Feeder_1");
 
-        final AuctionObject auction0 = createMarket(gldSim, UUID.randomUUID().toString());
+        final AuctionObject auction0 = createMarket(gldSim, "Market1");
         auction0.setFncsControllerPrefix();
 
-        final AuctionObject auction1 = createMarket(gldSim, UUID.randomUUID().toString());
+        final AuctionObject auction1 = createMarket(gldSim, "Market2");
         auction1.setFncsControllerPrefix();
         
         final Ns3Simulator2 ns3Sim2 = this.ns3Simulator2("ns3Sim");
@@ -176,10 +176,10 @@ public class AdaptedAEPNs3Sim2Test extends Experiment {
     		fMsg.addRoute(String.format("\"presync:%s.%s -> %s%d/avgPrice;0\";", pObj.getName(), pObj.getNetworkAveragePriceProperty(), controllerPrefix, i));
     		fMsg.addRoute(String.format("\"presync:%s.%s -> %s%d/stdevPrice;0\";", pObj.getName(), pObj.getNetworkStdevPriceProperty(), controllerPrefix, i));
     		fMsg.addSubscribe(String.format("\"function:auction/submit_bid_state <- %s/%s/%s%d@%s/submit_bid_state\";", ns3SimName, sim.getName(), controllerPrefix, i, pObj.getName()));
-    		fMsg.addSubscribe(String.format("\"presync:%s%d/proxy_clear_price <- %s/%s/%s@%s%d/clearPrice\";", controllerPrefix, i, ns3SimName, sim.getName(), pObj.getName(), controllerPrefix, i));
-    		fMsg.addSubscribe(String.format("\"presync:%s%d/proxy_market_id <- %s/%s/%s@%s%d/mktID\";", controllerPrefix, i, ns3SimName, sim.getName(), pObj.getName(), controllerPrefix, i));
-    		fMsg.addSubscribe(String.format("\"presync:%s%d/proxy_average <- %s/%s/%s@%s%d/avgPrice\";", controllerPrefix, i, ns3SimName, sim.getName(), pObj.getName(), controllerPrefix, i));
-    		fMsg.addSubscribe(String.format("\"presync:%s%d/proxy_standard_deviation <- %s/%s/%s@%s%d/stdevPrice\";", controllerPrefix, i, ns3SimName, sim.getName(), pObj.getName(), controllerPrefix, i));
+    		fMsg.addSubscribe(String.format("\"presync:%s%d.proxy_clear_price <- %s/%s/%s@%s%d/clearPrice\";", controllerPrefix, i, ns3SimName, sim.getName(), pObj.getName(), controllerPrefix, i));
+    		fMsg.addSubscribe(String.format("\"presync:%s%d.proxy_market_id <- %s/%s/%s@%s%d/mktID\";", controllerPrefix, i, ns3SimName, sim.getName(), pObj.getName(), controllerPrefix, i));
+    		fMsg.addSubscribe(String.format("\"presync:%s%d.proxy_average <- %s/%s/%s@%s%d/avgPrice\";", controllerPrefix, i, ns3SimName, sim.getName(), pObj.getName(), controllerPrefix, i));
+    		fMsg.addSubscribe(String.format("\"presync:%s%d.proxy_standard_deviation <- %s/%s/%s@%s%d/stdevPrice\";", controllerPrefix, i, ns3SimName, sim.getName(), pObj.getName(), controllerPrefix, i));
     	}
     }
 
