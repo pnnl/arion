@@ -49,7 +49,8 @@ public class AdaptedAEPNs3Sim2Test extends Experiment {
         ns3Sim2.addNetwork(gldSim.getName(), 20, auction0.getName(), auction0.getFncsControllerPrefix());
         ns3Sim2.addNetwork(gldSim.getName(), 20, auction1.getName(), auction1.getFncsControllerPrefix());
         
-        createFncsMsg(gldSim, auction0, numHouses, gldSim.getName() + String.format("_C%d_", numHouses), ns3Sim2.getName());
+        final FncsMsg fMsg = gldSim.fncsMsg(gldSim.getName());
+        fMsg.setParent(auction1);
         // Specify the climate information
         final ClimateObject climate = gldSim.climateObject("Columbus OH");
         climate.setTmyFile(Paths.get("res/ColumbusWeather2009_2a.csv"));
@@ -164,25 +165,6 @@ public class AdaptedAEPNs3Sim2Test extends Experiment {
         return auction;
     }
     
-    private void createFncsMsg(final GldSimulator sim, AuctionObject pObj, final int numHouses, final String controllerPrefix, final String ns3SimName) {
-    	final FncsMsg fMsg = sim.fncsMsg(sim.getName());
-    	fMsg.setParent(pObj);
-    	fMsg.addRoute("\"function:controller/submit_bid_state -> auction/submit_bit_state\";");
-    	fMsg.addOption("\"transport:hostname localhost, port 5570\";");
-    	fMsg.addConfigure(sim.getName() + ".txt");
-    	for(int i = 0; i < numHouses; i++) {
-    		fMsg.addRoute(String.format("\"presync:%s.clearingPrice -> %s%d/clearPrice;0\";", pObj.getName(), controllerPrefix, i));
-    		fMsg.addRoute(String.format("\"presync:%s.market_id -> %s%d/mktID;0\";", pObj.getName(), controllerPrefix, i));
-    		fMsg.addRoute(String.format("\"presync:%s.%s -> %s%d/avgPrice;0\";", pObj.getName(), pObj.getNetworkAveragePriceProperty(), controllerPrefix, i));
-    		fMsg.addRoute(String.format("\"presync:%s.%s -> %s%d/stdevPrice;0\";", pObj.getName(), pObj.getNetworkStdevPriceProperty(), controllerPrefix, i));
-    		fMsg.addSubscribe(String.format("\"function:auction/submit_bid_state <- %s/%s/%s%d@%s/submit_bid_state\";", ns3SimName, sim.getName(), controllerPrefix, i, pObj.getName()));
-    		fMsg.addSubscribe(String.format("\"presync:%s%d.proxy_clear_price <- %s/%s/%s@%s%d/clearPrice\";", controllerPrefix, i, ns3SimName, sim.getName(), pObj.getName(), controllerPrefix, i));
-    		fMsg.addSubscribe(String.format("\"presync:%s%d.proxy_market_id <- %s/%s/%s@%s%d/mktID\";", controllerPrefix, i, ns3SimName, sim.getName(), pObj.getName(), controllerPrefix, i));
-    		fMsg.addSubscribe(String.format("\"presync:%s%d.proxy_average <- %s/%s/%s@%s%d/avgPrice\";", controllerPrefix, i, ns3SimName, sim.getName(), pObj.getName(), controllerPrefix, i));
-    		fMsg.addSubscribe(String.format("\"presync:%s%d.proxy_standard_deviation <- %s/%s/%s@%s%d/stdevPrice\";", controllerPrefix, i, ns3SimName, sim.getName(), pObj.getName(), controllerPrefix, i));
-    	}
-    }
-
     private void createTriplex(final GldSimulator sim, final int numHouses) {
         // Create Player for the Phase A load on the substation
         final PlayerObject phaseALoad = sim.playerObject("phase_A_load");

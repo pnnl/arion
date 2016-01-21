@@ -466,4 +466,58 @@ public class Controller extends AbstractGldObject {
 		writeProperty(sb, "ramp_high", rampHigh);
 		writeProperty(sb, "ramp_low", rampLow);
 	}
+	
+	public void writeFncs2Directives(StringBuilder sb, String gldSimName, String ns3SimName) {
+	    writeRoutePresync(sb, auction.getName(), "clearingPrice", this.getName(), "clearPrice");
+	    writeRoutePresync(sb, auction.getName(), "market_id", this.getName(), "mktID");
+	    writeRoutePresync(sb, auction.getName(), auction.getNetworkAveragePriceProperty(), this.getName(), "avgPrice");
+	    writeRoutePresync(sb, auction.getName(), auction.getNetworkStdevPriceProperty(), this.getName(), "stdevPrice");
+	    writeSubmitBidState(sb, ns3SimName, gldSimName, this.getName(), auction.getName());
+	    writeSubscribePresync(sb, this.getName(), "proxy_clear_price", ns3SimName, gldSimName, auction.getName(),"clearPrice");
+	    writeSubscribePresync(sb, this.getName(), "proxy_market_id", ns3SimName, gldSimName, auction.getName(), "mktID");
+	    writeSubscribePresync(sb, this.getName(), "proxy_average", ns3SimName, gldSimName, auction.getName(), "avgPrice");
+	    writeSubscribePresync(sb, this.getName(), "proxy_standard_deviation", ns3SimName, gldSimName, auction.getName(),"stdevPrice");
+	}
+	
+	private void writeRoutePresync(StringBuilder sb, String auctionName, String auctionProperty, String controllerName, String controllerProperty) {
+	    sb.append("route \"presync:");
+	    sb.append(auctionName);
+	    sb.append('.');
+	    sb.append(auctionProperty);
+	    sb.append(" -> ");
+	    sb.append(controllerName);
+	    sb.append('/');
+	    sb.append(controllerProperty);
+	    sb.append(";0\";\n");
+	}
+	
+	private void writeSubmitBidState(StringBuilder sb, String ns3SimName, String gldSimName, String controllerName, String auctionName) {
+        sb.append("subscribe \"function:auction/submit_bid_state <- ");
+        sb.append(ns3SimName);
+        sb.append('/');
+        sb.append(gldSimName);
+        sb.append('/');
+        sb.append(controllerName);
+        sb.append('@');
+        sb.append(auctionName);
+        sb.append("/submit_bid_state\";\n");
+    }
+	
+	private void writeSubscribePresync(StringBuilder sb, String controllerName, String proxyProperty, String ns3SimName, String gldSimName, String auctionName, String controllerProperty) {
+        sb.append("subscribe \"presync:");
+        sb.append(controllerName);
+        sb.append('.');
+        sb.append(proxyProperty);
+        sb.append(" <- ");
+        sb.append(ns3SimName);
+        sb.append('/');
+        sb.append(gldSimName);
+        sb.append('/');
+        sb.append(auctionName);
+        sb.append('@');
+        sb.append(controllerName);
+        sb.append('/');
+        sb.append(controllerProperty);
+        sb.append("\";\n");
+    }
 }

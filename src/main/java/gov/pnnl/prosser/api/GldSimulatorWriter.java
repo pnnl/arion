@@ -7,7 +7,9 @@ import gov.pnnl.prosser.api.gld.AbstractGldObject;
 import gov.pnnl.prosser.api.gld.lib.GldClock;
 import gov.pnnl.prosser.api.gld.module.Module;
 import gov.pnnl.prosser.api.gld.obj.AbstractGldClass;
+import gov.pnnl.prosser.api.gld.obj.Controller;
 import gov.pnnl.prosser.api.gld.obj.FncsMsg;
+import gov.pnnl.prosser.api.gld.obj.House;
 import gov.pnnl.prosser.api.sql.SqlFile;
 
 import java.io.BufferedWriter;
@@ -40,7 +42,7 @@ public abstract class GldSimulatorWriter {
      * @throws IOException
      *             when we can't write to file
      */
-    public static void writeGldSimulator(final Path path, final GldSimulator gldSimulator) throws IOException {
+    public static void writeGldSimulator(final Path path, final GldSimulator gldSimulator, final String ns3SimName) throws IOException {
         Files.createDirectories(path);
         final Map<String, String> properties = gldSimulator.getSettings();
         final Set<Path> includes = new HashSet<>(gldSimulator.getIncludes());
@@ -79,45 +81,18 @@ public abstract class GldSimulatorWriter {
         if (objects != null) {
             final SqlFile sqlFile = new SqlFile(gldSimulator.getName());
             for (AbstractGldObject o : objects) {
-	            sb.append('\n');
-	            o.writeGldString(sb);
-	            o.createSqlObjects(sqlFile);
-	            if (o instanceof FncsMsg){
-	            	FncsMsg fMsg = (FncsMsg)o;
-	            	final List<String> publish = fMsg.getPublish();
-	            	final List<String> route = fMsg.getRoute();
-	            	final List<String> subscribe = fMsg.getSubscribe();
-	            	final List<String> configure = fMsg.getConfigure();
-	            	if (publish.size() > 0) {
-	            		for (String pubTopic : publish) {
-	            		    gldFncsConfig.append("publish ");
-	            			gldFncsConfig.append(pubTopic);
-	            		    gldFncsConfig.append('\n');
-	            		}
-	            	}
-	            	if (route.size() > 0) {
-	            		for (String rTopic : route) {
-	            		    gldFncsConfig.append("route ");
-                            gldFncsConfig.append(rTopic);
-                            gldFncsConfig.append('\n');
-	            		}
-	            	}
-	            	if (subscribe.size() > 0) {
-	            		for (String subTopic : subscribe) {
-	            		    gldFncsConfig.append("subscribe ");
-                            gldFncsConfig.append(subTopic);
-                            gldFncsConfig.append('\n');
-	            		}
-	            	}
-	            	try (final BufferedWriter confWriter = Files.newBufferedWriter(path.resolve(configure.get(0)), StandardCharsets.UTF_8)) {
-	            		confWriter.write(gldFncsConfig.toString());
-	            	}
-	            }
-	            try {
-	                o.writeExternalFiles(path);
-	            } catch (Exception e) {
-	                throw new RuntimeException("Unable to copy object file source to destination", e);
-	            }
+                sb.append('\n');
+                o.writeGldString(sb);
+                o.createSqlObjects(sqlFile);
+                if (o instanceof House) {
+                    House house = (House)o;
+                    house.getController().writeFncs2Directives(gldFncsConfig, gldSimulator.getName(), ns3SimName);
+                }
+                try {
+                    o.writeExternalFiles(path);
+                } catch (Exception e) {
+                    throw new RuntimeException("Unable to copy object file source to destination", e);
+                }
             }
             if (!sqlFile.getSqlTableDefs().isEmpty()) {
                 final StringBuilder sql = new StringBuilder();
@@ -143,6 +118,9 @@ public abstract class GldSimulatorWriter {
         }
         try (final BufferedWriter writer = Files.newBufferedWriter(path.resolve(gldSimulator.getName() + ".glm"), StandardCharsets.UTF_8)) {
             writer.write(sb.toString());
+        }
+        try (final BufferedWriter confWriter = Files.newBufferedWriter(path.resolve(gldSimulator.getName() + ".txt"), StandardCharsets.UTF_8)) {
+            confWriter.write(gldFncsConfig.toString());
         }
     }
 
