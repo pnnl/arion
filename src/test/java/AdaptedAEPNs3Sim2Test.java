@@ -32,58 +32,44 @@ public class AdaptedAEPNs3Sim2Test extends Experiment {
 
         // This is example of how network setup could be automated somewhat by user
         // Equal number of houses per backbone router not hardcoded into Prosser
-        final int numHouses = 45;
-        final int numHousesPerBackbone = 20;
-        final int numBackboneRouters = numHouses / numHousesPerBackbone + 1;
-        final int numAuctions = 2;
+        final int[] numHouses = {150, 200, 250};
 
-        final GldSimulator gldSim = this.gldSimulator("fncs_GLD_1node_Feeder_1");
-
-        final AuctionObject auction0 = createMarket(gldSim, "Market1");
-        auction0.setFncsControllerPrefix();
-
-        final AuctionObject auction1 = createMarket(gldSim, "Market2");
-        auction1.setFncsControllerPrefix();
-        
+        GldSimulator[] gldSim = new GldSimulator[numHouses.length];//{this.gldSimulator(String.format("FNCS_GLD_%d_Node_Feeder", numHouses[0])), this.gldSimulator(String.format("FNCS_GLD_%d_Node_Feeder", numHouses[1])),this.gldSimulator(String.format("FNCS_GLD_%d_Node_Feeder", numHouses[3]))};
         final Ns3Simulator2 ns3Sim2 = this.ns3Simulator2("ns3Sim");
-        ns3Sim2.addNetwork(gldSim.getName(), 20, auction0.getName(), auction0.getFncsControllerPrefix());
-        ns3Sim2.addNetwork(gldSim.getName(), 20, auction1.getName(), auction1.getFncsControllerPrefix());
-        
-        final FncsMsg fMsg = gldSim.fncsMsg(gldSim.getName());
-        fMsg.setParent(auction1);
-        // Specify the climate information
-        final ClimateObject climate = gldSim.climateObject("Columbus OH");
-        climate.setTmyFile(Paths.get("res/ColumbusWeather2009_2a.csv"));
-        climate.addCsvReader("CSVREADER");
-
-        // Add a recorder to the auction for some of the properties on the auction
-        final Recorder recorder0 = auction0.recorder("capacity_reference_bid_price", "current_market.clearing_price", "current_market.clearing_quantity");
-        recorder0.setLimit(100000000);
-        recorder0.setInterval(300L);
-        recorder0.setUsingSql(true);
-
-        final Recorder recorder1 = auction1.recorder("capacity_reference_bid_price", "current_market.clearing_price", "current_market.clearing_quantity");
-        recorder1.setLimit(100000000);
-        recorder1.setInterval(300L);
-        recorder1.setUsingSql(true);
-
-        createTriplex(gldSim, numHouses);
-
-        for (int i = 0; i < numHouses; i++) {
-            final House house;
-            if (i <= 20) {
-                house = createHouse(gldSim, i, auction0, gldSim.getName() + String.format("_C%d_", numHouses));
-            } else {
-                house = createHouse(gldSim, i, auction1, gldSim.getName() + String.format("_C%d_", numHouses));
+        AuctionObject[] aucts = new AuctionObject[gldSim.length];
+        FncsMsg[] fMsgs = new FncsMsg[gldSim.length];
+        ClimateObject[] climates = new ClimateObject[gldSim.length];
+        Recorder[] recorders = new Recorder[gldSim.length];
+        House house;
+        int i;
+        int j;
+        for (i = 0; i < gldSim.length; i++) {
+        	gldSim[i] = this.gldSimulator(String.format("FNCS_GLD_%d_Node_Feeder", numHouses[i]));
+        	aucts[i] = createMarket(gldSim[i], String.format("Market%d", i));
+            aucts[i].setFncsControllerPrefix(gldSim[i].getName() + String.format("_C%d_", numHouses[i]));
+            
+            ns3Sim2.addNetwork(gldSim[i].getName(), numHouses[i], aucts[i].getName(), aucts[i].getFncsControllerPrefix());
+            
+            fMsgs[i] = gldSim[i].fncsMsg(gldSim[i].getName());
+            fMsgs[i].setParent(aucts[i]);
+            
+            //Specify the climate information
+            climates[i] = gldSim[i].climateObject("Columbus OH");
+            climates[i].setTmyFile(Paths.get("res/ColumbusWeather2009_2a.csv"));
+            climates[i].addCsvReader("CSVREADER");
+            
+            // Add a recorder to the auction for some of the properties on the auction
+            recorders[i] = aucts[i].recorder("capacity_reference_bid_price", "current_market.clearing_price", "current_market.clearing_quantity");
+            recorders[i].setLimit(100000000);
+            recorders[i].setInterval(300L);
+            recorders[i].setUsingSql(true);
+            
+            createTriplex(gldSim[i], numHouses[i]);
+            
+            for (j = 0; j < numHouses[i]; j++) {
+                house = createHouse(gldSim[i], j, aucts[i], gldSim[i].getName() + String.format("_C%d_", numHouses[i]));
             }
-
         }
-        
-        
-
-        // Extra GLD files
-//        this.addExtraFiles(Paths.get("res/heat.yaml"));
-        // this.addExtraFiles(Paths.get("res/tzinfo.txt"), Paths.get("res/unitfile.txt"));
     }
 
     private static final Random rand = new Random(13);
