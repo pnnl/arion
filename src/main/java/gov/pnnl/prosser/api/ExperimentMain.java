@@ -3,17 +3,26 @@
  */
 package gov.pnnl.prosser.api;
 
+import java.io.BufferedOutputStream;
 import java.io.IOException;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.nio.file.DirectoryStream;
+import java.nio.file.FileVisitResult;
+import java.nio.file.FileVisitor;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.SimpleFileVisitor;
 import java.nio.file.StandardCopyOption;
+import java.nio.file.attribute.BasicFileAttributes;
 
 import javax.tools.JavaCompiler;
 import javax.tools.ToolProvider;
 
+import org.apache.commons.compress.archivers.tar.TarArchiveEntry;
+import org.apache.commons.compress.archivers.tar.TarArchiveOutputStream;
+import org.apache.commons.compress.compressors.gzip.GzipCompressorOutputStream;
 import org.apache.commons.io.FilenameUtils;
 
 /**
@@ -69,16 +78,22 @@ public abstract class ExperimentMain {
         experiment.experiment();
 
         for (final GldSimulator sim : experiment.getGldSimulators()) {
-            GldSimulatorWriter.writeGldSimulator(outPath, sim);
+            final Path simPath = outPath.resolve(sim.getName());
+            Files.createDirectories(simPath);
+            GldSimulatorWriter.writeGldSimulator(simPath, sim, "ns3Sim");
         }
 
         if (experiment.getNs3Simulator() != null) {
             final String ns3Name = experiment.getNs3Simulator().getName() + ".cc";
             // Ns3SimulatorWriter.writeNs3Simulator(outPath.resolve(ns3Name), experiment.getNs3Simulator());
-            Ns3SimulatorWriter.getInstance().writeNs3Simulator(outPath.resolve(ns3Name), experiment.getNs3Simulator());
+            final Path simPath = outPath.resolve(ns3Name);
+            Files.createDirectory(simPath);
+            Ns3SimulatorWriter.getInstance().writeNs3Simulator(simPath.resolve(ns3Name), experiment.getNs3Simulator());
         }
-        if(experiment.getNs3Simulator2() != null) {
-            experiment.getNs3Simulator2().writeSimulator(outPath);
+        if (experiment.getNs3Simulator2() != null) {
+            final Path simPath = outPath.resolve("ns3Sim");
+            Files.createDirectories(simPath);
+            experiment.getNs3Simulator2().writeSimulator(simPath);
         }
         experiment.getExtraExperimentFiles().forEach((f) -> {
             try {
@@ -91,6 +106,27 @@ public abstract class ExperimentMain {
             FncsSimulatorWriter.writeSimulator(outPath, experiment.fncsSimulator(), experiment.getGldSimulators().size());
         }
         HeatTemplateWriter.writeHeatTemplate(outPath, experiment.getGldSimulators(), experiment.getNs3Simulator(), experiment.fncsSimulator());
+        // Create the tarball
+        try (TarArchiveOutputStream tar = new TarArchiveOutputStream(new GzipCompressorOutputStream(new BufferedOutputStream(
+                Files.newOutputStream(outPath.resolve("files.tar.gz")))))) {
+            Files.walkFileTree(outPath, new SimpleFileVisitor<Path>() {
+                @Override
+                public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) {
+                    try {
+                        final String fileName = outPath.relativize(file).toString();
+                        if (!fileName.contains(".class") && !fileName.contains(".tar.gz") && !fileName.equals("heat.yaml")) {
+                            final TarArchiveEntry entry = new TarArchiveEntry(file.toFile(), fileName);
+                            tar.putArchiveEntry(entry);
+                            Files.copy(file, tar);
+                            tar.closeArchiveEntry();
+                        }
+                        return FileVisitResult.CONTINUE;
+                    } catch (IOException e) {
+                        throw new RuntimeException("Unable to write tar file", e);
+                    }
+                }
+            });
+        }
         // TODO FNCS simulator writer
         System.out.println("Written!");
     }
