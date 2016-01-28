@@ -468,7 +468,7 @@ public class Controller extends AbstractGldObject {
 	}
 	
 	public void writeFncs2Directives(StringBuilder sb, String gldSimName, String ns3SimName) {
-	    writeRoutePresync(sb, auction.getName(), "clearingPrice", this.getName(), "clearPrice");
+	    writeRoutePresync(sb, auction.getName(), "current_market.clearing_price", this.getName(), "clearPrice");
 	    writeRoutePresync(sb, auction.getName(), "market_id", this.getName(), "mktID");
 	    writeRoutePresync(sb, auction.getName(), auction.getNetworkAveragePriceProperty(), this.getName(), "avgPrice");
 	    writeRoutePresync(sb, auction.getName(), auction.getNetworkStdevPriceProperty(), this.getName(), "stdevPrice");
