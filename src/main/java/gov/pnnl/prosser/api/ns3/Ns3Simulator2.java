@@ -139,11 +139,11 @@ public class Ns3Simulator2 {
             sb.append("values\n");
             for(final AuctionNetwork network: this.networks) {
                 for(int i = 1; i <= network.getNumHouses(); i++) {
-                    writeMarketToControllerVar(sb, network, i, "var1");
-                    writeMarketToControllerVar(sb, network, i, "var2");
-                    writeMarketToControllerVar(sb, network, i, "var3");
-                    writeMarketToControllerVar(sb, network, i, "var4");
                     writeControllerToMarketVar(sb, network, i, "submit_bid_state");
+                    writeMarketToControllerVar(sb, network, i, "clearPrice");
+                    writeMarketToControllerVar(sb, network, i, "mktID");
+                    writeMarketToControllerVar(sb, network, i, "avgPrice");
+                    writeMarketToControllerVar(sb, network, i, "stdevPrice");
                 }
             }
             writer.write(sb.toString());
@@ -160,7 +160,17 @@ public class Ns3Simulator2 {
         sb.append(i);
         sb.append('/');
         sb.append(var);
+        sb.append("\n        topic = ");
+        sb.append(network.getGldSimName());
+        sb.append('/');
+        sb.append(network.getMarketName());
+        sb.append('@');
+        sb.append(network.getHousePrefix());
+        sb.append(i);
+        sb.append('/');
+        sb.append(var);
         sb.append('\n');
+        writeOptions(sb, "\"\"", "string", false);
     }
     
     private static void writeControllerToMarketVar(StringBuilder sb, AuctionNetwork network, int i, String var) {
@@ -173,6 +183,26 @@ public class Ns3Simulator2 {
         sb.append(network.getMarketName());
         sb.append('/');
         sb.append(var);
+        sb.append("\n        topic = ");
+        sb.append(network.getGldSimName());
+        sb.append('/');
+        sb.append(network.getHousePrefix());
+        sb.append(i);
+        sb.append('@');
+        sb.append(network.getMarketName());
+        sb.append('/');
+        sb.append(var);
+        sb.append('\n');
+        writeOptions(sb, "\"\"", "string", false);
+    }
+    
+    private static void writeOptions(StringBuilder sb, String def, String type, boolean list) {
+        sb.append("        default = ");
+        sb.append(def);
+        sb.append("\n        type = ");
+        sb.append(type);
+        sb.append("\n        list = ");
+        sb.append(list);
         sb.append('\n');
     }
     
