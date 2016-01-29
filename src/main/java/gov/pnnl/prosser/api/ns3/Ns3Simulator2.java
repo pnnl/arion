@@ -127,7 +127,7 @@ public class Ns3Simulator2 {
                 writer.write(String.format("%d %s %s%n", network.getNumHouses(), network.getMarketName(), network.getHousePrefix()));
             }
         }
-        try (BufferedWriter writer = Files.newBufferedWriter(outDir.resolve(this.getName() + ".zpl"), StandardCharsets.UTF_8)) {
+        try (BufferedWriter writer = Files.newBufferedWriter(outDir.resolve("fncs.zpl"), StandardCharsets.UTF_8)) {
             final StringBuilder sb = new StringBuilder();
             sb.append("name = ");
             sb.append(this.getName());
