@@ -459,9 +459,12 @@ public class AuctionObject extends AbstractGldObject {
 //        writeProperty(sb, "adjust_price_prop", networkAdjustPriceProperty);
 //        sb.append("    };\n");
 
-        // FIXME INSERT PLAYER
+        if (player != null) {
+            player.writeGldString(sb);
+            // Handle special case since we need a semicolon here
+            sb.insert(sb.length() - 1, ';');
+        }
         writeProperty(sb, "special_mode", specialMode);
-        // FIXME INSERT RECORDER
         writeProperty(sb, "init_price", initPrice);
         writeProperty(sb, "init_stdev", initStdev);
         writeProperty(sb, "use_future_mean_price", useFutureMeanPrice);

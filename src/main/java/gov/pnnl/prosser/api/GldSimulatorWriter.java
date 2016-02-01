@@ -129,12 +129,12 @@ public abstract class GldSimulatorWriter {
         sb.append(key);
         sb.append('=');
         sb.append(value);
-        sb.append(";\n");
+        sb.append("\n");
     }
 
     public static void writeInclude(final StringBuilder sb, final String include) {
         sb.append("#include \"");
         sb.append(include);
-        sb.append("\";\n");
+        sb.append("\"\n");
     }
 }

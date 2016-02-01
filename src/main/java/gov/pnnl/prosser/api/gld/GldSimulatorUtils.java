@@ -329,7 +329,7 @@ public abstract class GldSimulatorUtils {
         final double heatOffset = heatoffset_1 + heatoffset_2 * rand.nextDouble();
         final double heatTemp = (cool_1 - cool_2) + 2 * cool_2 * rand.nextDouble();
 
-        house.setCoolingSetpointFn(String.format("cooling%d*%1.3f+%2.2f", scheduleCool, coolTemp, coolOffset));
+//        house.setCoolingSetpointFn(String.format("cooling%d*%1.3f+%2.2f", scheduleCool, coolTemp, coolOffset));
         house.setHeatingSetpointFn(String.format("heating%d*%1.3f+%2.2f", scheduleHeat, heatTemp, heatOffset));
 
         // long bidDelay = 30 + Math.round((90 - 30) * rand.nextDouble());
