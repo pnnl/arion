@@ -35,7 +35,7 @@ public class AdaptedAEPNs3Sim2Test extends Experiment {
         final int[] numHouses = {150, 200, 250};
 
         GldSimulator[] gldSim = new GldSimulator[numHouses.length];//{this.gldSimulator(String.format("FNCS_GLD_%d_Node_Feeder", numHouses[0])), this.gldSimulator(String.format("FNCS_GLD_%d_Node_Feeder", numHouses[1])),this.gldSimulator(String.format("FNCS_GLD_%d_Node_Feeder", numHouses[3]))};
-        final Ns3Simulator2 ns3Sim2 = this.ns3Simulator2("ns3Sim");
+        Ns3Simulator2[] ns3Sim2 = new Ns3Simulator2[numHouses.length];
         AuctionObject[] aucts = new AuctionObject[gldSim.length];
         FncsMsg[] fMsgs = new FncsMsg[gldSim.length];
         ClimateObject[] climates = new ClimateObject[gldSim.length];
@@ -44,11 +44,12 @@ public class AdaptedAEPNs3Sim2Test extends Experiment {
         int i;
         int j;
         for (i = 0; i < gldSim.length; i++) {
-        	gldSim[i] = this.gldSimulator(String.format("FNCS_GLD_%d_Node_Feeder", numHouses[i]));
+            ns3Sim2[i] = this.ns3Simulator2(String.format("ns3Sim-%d", i));
+        	gldSim[i] = this.gldSimulator(String.format("FNCS_GLD_%d_Node_Feeder", numHouses[i]), ns3Sim2[i]);
         	aucts[i] = createMarket(gldSim[i], String.format("Market%d", i));
             aucts[i].setFncsControllerPrefix(gldSim[i].getName() + String.format("_C%d_", numHouses[i]));
             
-            ns3Sim2.addNetwork(gldSim[i].getName(), numHouses[i], aucts[i].getName(), aucts[i].getFncsControllerPrefix());
+            ns3Sim2[i].addNetwork(gldSim[i].getName(), numHouses[i], aucts[i].getName(), aucts[i].getFncsControllerPrefix());
             
             fMsgs[i] = gldSim[i].fncsMsg(gldSim[i].getName());
             fMsgs[i].setParent(aucts[i]);

@@ -25,6 +25,8 @@ import org.apache.commons.compress.archivers.tar.TarArchiveOutputStream;
 import org.apache.commons.compress.compressors.gzip.GzipCompressorOutputStream;
 import org.apache.commons.io.FilenameUtils;
 
+import gov.pnnl.prosser.api.ns3.Ns3Simulator2;
+
 /**
  * Main class referenced by the manifest for this Package
  * This class will take a java file and an output directory and compile the java file to the output directory
@@ -80,7 +82,7 @@ public abstract class ExperimentMain {
         for (final GldSimulator sim : experiment.getGldSimulators()) {
             final Path simPath = outPath.resolve(sim.getName());
             Files.createDirectories(simPath);
-            GldSimulatorWriter.writeGldSimulator(simPath, sim, "ns3Sim");
+            GldSimulatorWriter.writeGldSimulator(simPath, sim);
         }
 
         if (experiment.getNs3Simulator() != null) {
@@ -90,10 +92,10 @@ public abstract class ExperimentMain {
             Files.createDirectory(simPath);
             Ns3SimulatorWriter.getInstance().writeNs3Simulator(simPath.resolve(ns3Name), experiment.getNs3Simulator());
         }
-        if (experiment.getNs3Simulator2() != null) {
-            final Path simPath = outPath.resolve("ns3Sim");
+        for(final Ns3Simulator2 sim: experiment.getNs3Simulator2()) {
+            final Path simPath = outPath.resolve(sim.getName());
             Files.createDirectories(simPath);
-            experiment.getNs3Simulator2().writeSimulator(simPath);
+            sim.writeSimulator(simPath);
         }
         experiment.getExtraExperimentFiles().forEach((f) -> {
             try {

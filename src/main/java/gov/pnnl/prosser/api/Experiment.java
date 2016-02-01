@@ -22,7 +22,7 @@ public abstract class Experiment {
 
     private Ns3Simulator ns3Simulator = null;
     
-    private Ns3Simulator2 ns3Simulator2 = null;
+    private final List<Ns3Simulator2> ns3Simulator2 = new ArrayList<>();
 
     private FncsSimulator fncsSimulator = null;
 
@@ -51,7 +51,7 @@ public abstract class Experiment {
      * 
      * @return the simulators
     */
-    public Ns3Simulator2 getNs3Simulator2() {
+    public List<Ns3Simulator2> getNs3Simulator2() {
         return this.ns3Simulator2;
     }
 
@@ -81,7 +81,21 @@ public abstract class Experiment {
      * @return the simulator
      */
     public GldSimulator gldSimulator(final String name) {
-        final GldSimulator sim = new GldSimulator(name);
+        final GldSimulator sim = new GldSimulator(name, null);
+        this.gldSimulators.add(sim);
+        this.ensureFncs();
+        return sim;
+    }
+    
+    /**
+     * Get a new GLD Simulator
+     * 
+     * @param name
+     *            the name of the simulator, the name of the file generated is based on this name
+     * @return the simulator
+     */
+    public GldSimulator gldSimulator(final String name, final Ns3Simulator2 ns3Sim) {
+        final GldSimulator sim = new GldSimulator(name, ns3Sim);
         this.gldSimulators.add(sim);
         this.ensureFncs();
         return sim;
@@ -106,9 +120,10 @@ public abstract class Experiment {
      * @return the simulator
      */
     public Ns3Simulator2 ns3Simulator2(final String name) {
-        this.ns3Simulator2 = new Ns3Simulator2(name);
+        Ns3Simulator2 sim = new Ns3Simulator2(name);
+        this.ns3Simulator2.add(sim);
         this.ensureFncs();
-        return this.ns3Simulator2;
+        return sim;
     }
 
     /**

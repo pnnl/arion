@@ -42,7 +42,7 @@ public abstract class GldSimulatorWriter {
      * @throws IOException
      *             when we can't write to file
      */
-    public static void writeGldSimulator(final Path path, final GldSimulator gldSimulator, final String ns3SimName) throws IOException {
+    public static void writeGldSimulator(final Path path, final GldSimulator gldSimulator) throws IOException {
         Files.createDirectories(path);
         final Map<String, String> properties = gldSimulator.getSettings();
         final Set<Path> includes = new HashSet<>(gldSimulator.getIncludes());
@@ -86,7 +86,7 @@ public abstract class GldSimulatorWriter {
                 o.createSqlObjects(sqlFile);
                 if (o instanceof House) {
                     House house = (House)o;
-                    house.getController().writeFncs2Directives(gldFncsConfig, gldSimulator.getName(), ns3SimName);
+                    house.getController().writeFncs2Directives(gldFncsConfig, gldSimulator.getName(), gldSimulator.getNs3Sim().getName());
                 }
                 try {
                     o.writeExternalFiles(path);

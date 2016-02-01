@@ -40,6 +40,7 @@ import gov.pnnl.prosser.api.gld.obj.Transformer;
 import gov.pnnl.prosser.api.gld.obj.TriplexLine;
 import gov.pnnl.prosser.api.gld.obj.TriplexMeter;
 import gov.pnnl.prosser.api.gld.obj.TriplexNode;
+import gov.pnnl.prosser.api.ns3.Ns3Simulator2;
 
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -71,6 +72,8 @@ public class GldSimulator {
     private final List<Path> includes = new ArrayList<>();
 
     private final List<AbstractGldClass> classes = new ArrayList<>();
+    
+    private final Ns3Simulator2 ns3Sim;
 
     /**
      * Default constructor, requires the name
@@ -78,8 +81,9 @@ public class GldSimulator {
      * @param name
      *            Name of the simulator, will be used when naming the file on disk
      */
-    public GldSimulator(final String name) {
+    public GldSimulator(final String name, final Ns3Simulator2 ns3Sim) {
         this.name = name;
+        this.ns3Sim = ns3Sim;
     }
 
     /**
@@ -145,6 +149,13 @@ public class GldSimulator {
      */
     public List<AbstractGldClass> getClasses() {
         return this.classes;
+    }
+
+    /**
+     * @return the ns3Sim
+     */
+    public Ns3Simulator2 getNs3Sim() {
+        return ns3Sim;
     }
 
     /**
