@@ -42,7 +42,6 @@ public class GnuplotHelper extends AbstractNs3Object {
                 probe.getPath() + "\", \"" +
                 probe.getProbeSource() + "\", \"" +
                 label + "\");\n");
-        //plotProbe(probe, "KEY_INSIDE");
     }
 
     /**
