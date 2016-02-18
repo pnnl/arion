@@ -1,0 +1,18 @@
+1.	Download the Eclipse IDE for Java Developers from https://eclipse.org/downloads/
+2.	Download and install the Oracle JDK
+    http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html
+3.	Unzip eclipse and start it using eclipse.exe
+4.	In Eclipse, Go to Help -> Eclipse Marketplace and search for Subclipse and
+    install it
+5.	You’ll have to restart Eclipse to continue
+6.	Go to File -> Import…, in the filter type ‘svn’ and select checkout projects
+    from svn
+7.	The SVN url you want is ‘https://subversion.pnnl.gov/svn/Prosser’
+8.	Select the prosser-api folder
+9.	Click finish
+10.	If the project has a red X then you might need to setup the Installed JREs
+    1.	Click Window -> Preferences
+    2.	Type ‘installed’ into the filter
+    3.	Check the Installed JREs option
+    4.	If it lists jre1.8.0 then you’ll want to add the JDK to this list and
+        make it default
