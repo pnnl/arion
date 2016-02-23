@@ -11,6 +11,5 @@ package gov.pnnl.prosser.api.gld.enums;
  */
 public enum BusType {
     PQ,
-    PV,
     SWING;
 }
