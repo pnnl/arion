@@ -39,4 +39,33 @@ public enum PhaseCode {
     public static final EnumSet<PhaseCode> CS = EnumSet.of(C, S1, S2, SN);
 
     public static final EnumSet<PhaseCode> NONE = EnumSet.noneOf(PhaseCode.class);
+    
+    public static final String writeGldProperties(EnumSet<PhaseCode> phaseCodes) {
+    	final StringBuilder phaseBuilder = new StringBuilder();
+        final boolean hasAllSPhases;
+        
+        if (phaseCodes.containsAll(PhaseCode.S)) {
+        	hasAllSPhases = true;
+        	phaseBuilder.append("S");
+        } else {
+        	hasAllSPhases = false;
+        }
+        
+        for (final PhaseCode code : phaseCodes) {
+            if (hasAllSPhases) {
+                switch (code) {
+                    case S1:
+                    case S2:
+                    case SN:
+                        continue;
+                    default:
+                        break;
+
+                }
+            }
+            phaseBuilder.append(code.name());
+        }
+        
+        return phaseBuilder.toString();
+    }
 }

@@ -96,32 +96,7 @@ public abstract class PowerflowObject extends AbstractGldObject {
      */
     @Override
     protected void writeGldProperties(final StringBuilder sb) {
-        final StringBuilder phaseBuilder = new StringBuilder();
-        final boolean hasAllOfS;
-        if (this.phases.containsAll(PhaseCode.S)) {
-            hasAllOfS = true;
-        } else {
-            hasAllOfS = false;
-        }
-        for (final PhaseCode code : this.phases) {
-            if (hasAllOfS) {
-                switch (code) {
-                    case S1:
-                    case S2:
-                    case SN:
-                        continue;
-                    default:
-                        break;
-
-                }
-            }
-            phaseBuilder.append(code.name());
-        }
-        if (hasAllOfS) {
-            phaseBuilder.append("S");
-        }
-
-        writeProperty(sb, "phases", phaseBuilder.toString());
+        writeProperty(sb, "phases", PhaseCode.writeGldProperties(this.phases));
         writeProperty(sb, "nominal_voltage", this.nominalVoltage);
     }
 }
