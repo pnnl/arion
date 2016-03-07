@@ -45,7 +45,8 @@ public abstract class ExperimentMain {
      * @throws Exception
      *             when any exception occurs
      */
-    public static void main(final String... args) throws Exception {
+    public static void main(final String... args) {
+        try {
         if (args.length != 2) {
             throw new Exception("Requires two arguments");
         }
@@ -131,5 +132,8 @@ public abstract class ExperimentMain {
         }
         // TODO FNCS simulator writer
         System.out.println("Written!");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }
