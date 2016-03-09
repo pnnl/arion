@@ -45,13 +45,6 @@ public class UndergroundLineConductor extends Conductor {
 	}
 
     /**
-     * @param outerDiameter the outerDiameter to set
-     */
-    public void setGeometricMeanRadius(final double outerDiameter) {
-        this.outerDiameter = outerDiameter;
-    }
-
-    /**
      * Get the conductor gmr
      * 
      * @return the conductor gmr
@@ -66,7 +59,7 @@ public class UndergroundLineConductor extends Conductor {
      * @param conductorGmr
      *            the conductorGmr to set
      */
-    public void setResistance(final double conductorGmr) {
+    public void setConductorGmr(final double conductorGmr) {
         this.conductorGmr = conductorGmr;
     }
 

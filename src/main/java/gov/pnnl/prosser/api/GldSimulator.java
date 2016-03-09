@@ -6,13 +6,18 @@ package gov.pnnl.prosser.api;
 import gov.pnnl.prosser.api.gld.AbstractGldObject;
 import gov.pnnl.prosser.api.gld.enums.ImplicitEnduses;
 import gov.pnnl.prosser.api.gld.enums.SolverMethod;
+import gov.pnnl.prosser.api.gld.enums.SwitchStatus;
+import gov.pnnl.prosser.api.gld.enums.PhaseCode;
 import gov.pnnl.prosser.api.gld.lib.GldClock;
+import gov.pnnl.prosser.api.gld.lib.LineConfiguration;
 import gov.pnnl.prosser.api.gld.lib.LineSpacing;
 import gov.pnnl.prosser.api.gld.lib.OverheadLineConductor;
+import gov.pnnl.prosser.api.gld.lib.RegulatorConfiguration;
 import gov.pnnl.prosser.api.gld.lib.StandardLineConfiguration;
 import gov.pnnl.prosser.api.gld.lib.TransformerConfiguration;
 import gov.pnnl.prosser.api.gld.lib.TriplexLineConductor;
 import gov.pnnl.prosser.api.gld.lib.TriplexLineConfiguration;
+import gov.pnnl.prosser.api.gld.lib.UndergroundLineConductor;
 import gov.pnnl.prosser.api.gld.module.ClimateModule;
 import gov.pnnl.prosser.api.gld.module.Comm;
 import gov.pnnl.prosser.api.gld.module.Connection;
@@ -35,17 +40,21 @@ import gov.pnnl.prosser.api.gld.obj.OverheadLine;
 import gov.pnnl.prosser.api.gld.obj.PlayerClass;
 import gov.pnnl.prosser.api.gld.obj.PlayerObject;
 import gov.pnnl.prosser.api.gld.obj.Recorder;
+import gov.pnnl.prosser.api.gld.obj.Regulator;
 import gov.pnnl.prosser.api.gld.obj.Substation;
+import gov.pnnl.prosser.api.gld.obj.Switch;
 import gov.pnnl.prosser.api.gld.obj.Transformer;
 import gov.pnnl.prosser.api.gld.obj.TriplexLine;
 import gov.pnnl.prosser.api.gld.obj.TriplexMeter;
 import gov.pnnl.prosser.api.gld.obj.TriplexNode;
+import gov.pnnl.prosser.api.gld.obj.UndergroundLine;
 import gov.pnnl.prosser.api.ns3.Ns3Simulator2;
 
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.EnumSet;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -400,6 +409,19 @@ public class GldSimulator {
     }
 
     /**
+     * Create a Regulator Configuration
+     * This will add it to the internal objects list, set the name
+     * and set the simulator reference to this simulator
+     *
+     * @param name
+     *            the name to set
+     * @return the created object
+     */
+    public RegulatorConfiguration regulatorConfiguration(final String name) {
+        return setupObject(new RegulatorConfiguration(this), name);
+    }
+
+    /**
      * Create a Transformer Configuration
      * This will add it to the internal objects list, set the name
      * and set the simulator reference to this simulator
@@ -462,6 +484,23 @@ public class GldSimulator {
      */
     public Meter meter(final String name) {
         return setupObject(new Meter(this), name);
+    }
+
+    /**
+     * Create a Regulator
+     * This will add it to the internal objects list, set the name
+     * and set the simulator reference to this simulator
+     *
+     * @param name
+     *            the name to set
+     * @param config
+     *            the regulator configuration
+     * @return the created object
+     */
+    public Regulator regulator(final String name, final RegulatorConfiguration config) {
+        final Regulator t = setupObject(new Regulator(this), name);
+        t.setRegulatorConfiguration(config);
+        return t;
     }
 
     /**
@@ -560,6 +599,19 @@ public class GldSimulator {
     }
 
     /**
+     * Create a Underground Line Conductor
+     * This will add it to the internal objects list, set the name
+     * and set the simulator reference to this simulator
+     *
+     * @param name
+     *            the name to set
+     * @return the created object
+     */
+    public UndergroundLineConductor undergroundLineConductor(final String name) {
+        return setupObject(new UndergroundLineConductor(this), name);
+    }
+
+    /**
      * Create a Line Spacing
      * This will add it to the internal objects list, set the name
      * and set the simulator reference to this simulator
@@ -586,6 +638,19 @@ public class GldSimulator {
     }
 
     /**
+     * Create a Underground Line Configuration
+     * This will add it to the internal objects list, set the name
+     * and set the simulator reference to this simulator
+     *
+     * @param name
+     *            the name to set
+     * @return the created object
+     */
+    public StandardLineConfiguration<UndergroundLineConductor> undergroundLineConfiguration(final String name) {
+        return setupObject(new StandardLineConfiguration<UndergroundLineConductor>(this), name);
+    }
+
+    /**
      * Create a Node
      * This will add it to the internal objects list, set the name
      * and set the simulator reference to this simulator
@@ -609,6 +674,71 @@ public class GldSimulator {
      */
     public OverheadLine overheadLine(final String name) {
         return setupObject(new OverheadLine(this), name);
+    }
+
+    /**
+     * Create an Overhead Line
+     * This will add it to the internal objects list, set the name
+     * and set the simulator reference to this simulator
+     *
+     * @param name
+     *            the name to set
+     * @param config
+     *            the transformer configuration
+     * @return the created object
+     */
+    public OverheadLine overheadLine(final String name, final EnumSet<PhaseCode> phases, final Node fromNode, 
+            final Node toNode, final double length, final LineConfiguration<OverheadLineConductor> lineConfiguration) {
+        final OverheadLine overheadLine = setupObject(new OverheadLine(this), name);
+        overheadLine.setPhases(phases);
+        overheadLine.setFrom(fromNode);
+        overheadLine.setTo(toNode);
+        overheadLine.setLength(length);
+        overheadLine.setConfiguration(lineConfiguration);
+        return overheadLine;
+    }
+    
+    /**
+     * Create an Underground Line
+     * This will add it to the internal objects list, set the name
+     * and set the simulator reference to this simulator
+     *
+     * @param name
+     *            the name to set
+     * @param config
+     *            the transformer configuration
+     * @return the created object
+     */
+    public UndergroundLine undergroundLine(final String name, final EnumSet<PhaseCode> phases, final Node fromNode, 
+            final Node toNode, final double length, final LineConfiguration<UndergroundLineConductor> lineConfiguration) {
+        final UndergroundLine undergroundLine = setupObject(new UndergroundLine(this), name);
+        undergroundLine.setPhases(phases);
+        undergroundLine.setFrom(fromNode);
+        undergroundLine.setTo(toNode);
+        undergroundLine.setLength(length);
+        undergroundLine.setConfiguration(lineConfiguration);
+        return undergroundLine;
+    }
+    
+    /**
+     * Create a Switch
+     * This will add it to the internal objects list, set the name
+     * and set the simulator reference to this simulator
+     *
+     * @param name
+     *            the name to set
+     * @param config
+     *            the transformer configuration
+     * @return the created object
+     */
+    public Switch switchLinkObject(final String name, final EnumSet<PhaseCode> phases, final Node fromNode, 
+            final Node toNode, final SwitchStatus status) {
+        final Switch switchNode = setupObject(new Switch(this), name);
+        switchNode.setPhases(phases);
+        switchNode.setFrom(fromNode);
+        switchNode.setTo(toNode);
+        switchNode.setStatus(status);
+        return switchNode;
     }
 
     /**
