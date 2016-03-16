@@ -7,23 +7,27 @@ import gov.pnnl.prosser.api.GldSimulator;
 import gov.pnnl.prosser.api.gld.enums.BidMode;
 import gov.pnnl.prosser.api.gld.enums.ControlMode;
 import gov.pnnl.prosser.api.gld.enums.CoolingSystemType;
+import gov.pnnl.prosser.api.gld.enums.CurveOutput;
 import gov.pnnl.prosser.api.gld.enums.FanType;
 import gov.pnnl.prosser.api.gld.enums.HeatingSystemType;
 import gov.pnnl.prosser.api.gld.enums.MotorEfficiency;
 import gov.pnnl.prosser.api.gld.enums.MotorModel;
 import gov.pnnl.prosser.api.gld.enums.PhaseCode;
-import gov.pnnl.prosser.api.gld.enums.UseOverride;
+import gov.pnnl.prosser.api.gld.enums.SpecialMode;
 import gov.pnnl.prosser.api.gld.lib.TriplexLineConfiguration;
+import gov.pnnl.prosser.api.gld.obj.AuctionClass;
 import gov.pnnl.prosser.api.gld.obj.AuctionObject;
 import gov.pnnl.prosser.api.gld.obj.Controller;
+import gov.pnnl.prosser.api.gld.obj.FncsMsg;
 import gov.pnnl.prosser.api.gld.obj.House;
 import gov.pnnl.prosser.api.gld.obj.Recorder;
 import gov.pnnl.prosser.api.gld.obj.TriplexLine;
 import gov.pnnl.prosser.api.gld.obj.TriplexMeter;
 import gov.pnnl.prosser.api.gld.obj.ZIPLoad;
-import gov.pnnl.prosser.api.ns3.obj.Channel;
 
 import java.util.EnumSet;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Random;
 
 /**
@@ -65,6 +69,56 @@ public abstract class GldSimulatorUtils {
     private static final double scaleFloor = 1;
     private static final double sigmaTstat = 2;
 
+    public static void MakeTransactiveMarket(GldSimulator simulator, String marketName) {
+        String marketMean = "current_price_mean_24h";
+        String marketStDev = "current_price_stdev_24h";
+        
+        // Add an auction class to allow references to more fields from other objects
+        AuctionClass auctionClass = simulator.auctionClass();
+        auctionClass.addField(marketMean, "double");
+        auctionClass.addField(marketStDev, "double");
+        
+        // Create the FNCS auction
+        final AuctionObject auction = simulator.auctionObject(marketName);
+        auction.setUnit("kW");
+        auction.setPeriod(300);
+        auction.setPriceCap(3.78);
+        auction.setTransactionLogFile("log_file_" + simulator.getName() + ".csv");
+        auction.setCurveLogFile("bid_curve_" + simulator.getName() + ".csv");
+        auction.setCurveLogInfo(CurveOutput.EXTRA);
+        auction.setNetworkAveragePriceProperty(marketMean);
+        auction.setNetworkStdevPriceProperty(marketStDev);
+        auction.setSpecialMode(SpecialMode.BUYERS_ONLY);
+        auction.setInitPrice(0.042676);
+        auction.setInitStdev(0.02);
+        auction.setUseFutureMeanPrice(false);
+        auction.setWarmup(0);
+        auction.setFncsControllerPrefix();
+        
+        // Create the FNCS message
+        FncsMsg fncsMessage = simulator.fncsMsg(simulator.getName());
+        fncsMessage.setParent(auction);
+        
+        // Get houses and add controllers
+        List<AbstractGldObject> houses = simulator.getObjects();
+        houses.removeIf(x -> !x.getClass().equals(House.class));
+
+        for (Iterator<AbstractGldObject> i = houses.iterator(); i.hasNext(); ) {
+            House house = (House)i.next();
+            
+            // Create the base controller
+            Controller controller = house.controller(auction.getFncsControllerPrefix() + house.getName());
+            controller.setAuction(auction);
+            controller.setScheduleSkew(house.getScheduleSkew());
+            controller.setAverageTarget(auction.getNetworkAveragePriceProperty());
+            controller.setStandardDeviationTarget(auction.getNetworkStdevPriceProperty());
+            controller.setUseFncs(true);
+            
+            // Setup the controller
+            setupController(house, controller, new Random());
+        }
+    }
+    
     /**
      * Generate a house to attach to the grid
      *
