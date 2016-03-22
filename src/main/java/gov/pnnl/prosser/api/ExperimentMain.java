@@ -7,9 +7,7 @@ import java.io.BufferedOutputStream;
 import java.io.IOException;
 import java.net.URL;
 import java.net.URLClassLoader;
-import java.nio.file.DirectoryStream;
 import java.nio.file.FileVisitResult;
-import java.nio.file.FileVisitor;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -25,7 +23,7 @@ import org.apache.commons.compress.archivers.tar.TarArchiveOutputStream;
 import org.apache.commons.compress.compressors.gzip.GzipCompressorOutputStream;
 import org.apache.commons.io.FilenameUtils;
 
-import gov.pnnl.prosser.api.ns3.Ns3Simulator2;
+import gov.pnnl.prosser.api.ns3.AbstractNs3SimulatorV2;
 
 /**
  * Main class referenced by the manifest for this Package
@@ -93,7 +91,7 @@ public abstract class ExperimentMain {
             Files.createDirectory(simPath);
             Ns3SimulatorWriter.getInstance().writeNs3Simulator(simPath.resolve(ns3Name), experiment.getNs3Simulator());
         }
-        for(final Ns3Simulator2 sim: experiment.getNs3Simulator2()) {
+        for(final AbstractNs3SimulatorV2 sim: experiment.getNs3SimulatorV2()) {
             final Path simPath = outPath.resolve(sim.getName());
             Files.createDirectories(simPath);
             sim.writeSimulator(simPath);

@@ -8,7 +8,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import gov.pnnl.prosser.api.ns3.Ns3Simulator2;
+import gov.pnnl.prosser.api.ns3.AbstractNs3SimulatorV2;
+import gov.pnnl.prosser.api.ns3.Ns3SimulatorV2DelayDrop;
+import gov.pnnl.prosser.api.ns3.Ns3SimulatorV2FirstN;
 
 /**
  * Prosser Experiment comprising multiple GLD simulators and an NS-3 and FNCS Simulator
@@ -22,7 +24,7 @@ public abstract class Experiment {
 
     private Ns3Simulator ns3Simulator = null;
     
-    private final List<Ns3Simulator2> ns3Simulator2 = new ArrayList<>();
+    private final List<AbstractNs3SimulatorV2> ns3SimulatorV2 = new ArrayList<>();
 
     private FncsSimulator fncsSimulator = null;
 
@@ -51,8 +53,8 @@ public abstract class Experiment {
      * 
      * @return the simulators
     */
-    public List<Ns3Simulator2> getNs3Simulator2() {
-        return this.ns3Simulator2;
+    public List<AbstractNs3SimulatorV2> getNs3SimulatorV2() {
+        return this.ns3SimulatorV2;
     }
 
     /**
@@ -94,7 +96,7 @@ public abstract class Experiment {
      *            the name of the simulator, the name of the file generated is based on this name
      * @return the simulator
      */
-    public GldSimulator gldSimulator(final String name, final Ns3Simulator2 ns3Sim) {
+    public GldSimulator gldSimulator(final String name, final AbstractNs3SimulatorV2 ns3Sim) {
         final GldSimulator sim = new GldSimulator(name, ns3Sim);
         this.gldSimulators.add(sim);
         this.ensureFncs();
@@ -119,9 +121,21 @@ public abstract class Experiment {
      * 
      * @return the simulator
      */
-    public Ns3Simulator2 ns3Simulator2(final String name) {
-        Ns3Simulator2 sim = new Ns3Simulator2(name);
-        this.ns3Simulator2.add(sim);
+    public Ns3SimulatorV2FirstN ns3SimulatorV2FirstN(final String name) {
+        Ns3SimulatorV2FirstN sim = new Ns3SimulatorV2FirstN(name);
+        this.ns3SimulatorV2.add(sim);
+        this.ensureFncs();
+        return sim;
+    }
+    
+    /**
+     * Get a new NS-3 Simulator
+     * 
+     * @return the simulator
+     */
+    public Ns3SimulatorV2DelayDrop ns3SimulatorV2DelayDrop(final String name) {
+        Ns3SimulatorV2DelayDrop sim = new Ns3SimulatorV2DelayDrop(name);
+        this.ns3SimulatorV2.add(sim);
         this.ensureFncs();
         return sim;
     }

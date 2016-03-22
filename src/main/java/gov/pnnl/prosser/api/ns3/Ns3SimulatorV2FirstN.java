@@ -9,7 +9,6 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,13 +17,7 @@ import java.util.List;
  *
  * @author nord229
  */
-public class Ns3Simulator2 {
-    
-    private final String name;
-    
-    private String broker;
-
-    private Path ccFile;
+public class Ns3SimulatorV2FirstN extends AbstractNs3SimulatorV2 {
     
     private final List<AuctionNetwork> networks = new ArrayList<>();
     
@@ -75,53 +68,16 @@ public class Ns3Simulator2 {
 
     }
     
-    public Ns3Simulator2(final String name) {
-        this.name = name;
-        this.ccFile = Paths.get("res/firstN.cc");
-        this.broker = "tcp://localhost:5570";
-    }
-    
-    /**
-     * @return the name
-     */
-    public String getName() {
-        return name;
-    }
-
-    /**
-     * @return the broker
-     */
-    public String getBroker() {
-        return broker;
-    }
-
-    /**
-     * @param broker the broker to set
-     */
-    public void setBroker(String broker) {
-        this.broker = broker;
-    }
-
-    /**
-     * @return the ccFile
-     */
-    public Path getCcFile() {
-        return ccFile;
-    }
-
-    /**
-     * @param ccFile the ccFile to set
-     */
-    public void setCcFile(Path ccFile) {
-        this.ccFile = ccFile;
+    public Ns3SimulatorV2FirstN(final String name) {
+        super(name, Paths.get("res/firstN.cc"));
     }
     
     public void addNetwork(String gldSimName, int numHouses, String marketName, String housePrefix) {
         this.networks.add(new AuctionNetwork(gldSimName, numHouses, marketName, housePrefix));
     }
     
-    public void writeSimulator(Path outDir) throws IOException {
-        Files.copy(this.ccFile, outDir.resolve(this.ccFile.getFileName()), StandardCopyOption.REPLACE_EXISTING);
+    @Override
+    public void writeConfig(Path outDir) throws IOException {
         try (BufferedWriter writer = Files.newBufferedWriter(outDir.resolve("LinkModelGLDNS3.txt"), StandardCharsets.UTF_8)) {
             for(final AuctionNetwork network: this.networks) {
                 writer.write(String.format("%d %s %s%n", network.getNumHouses(), network.getMarketName(), network.getHousePrefix()));
@@ -151,59 +107,11 @@ public class Ns3Simulator2 {
     }
     
     private static void writeMarketToControllerVar(StringBuilder sb, AuctionNetwork network, int i, String var) {
-        sb.append("    ");
-        sb.append(network.getGldSimName());
-        sb.append('/');
-        sb.append(network.getMarketName());
-        sb.append('@');
-        sb.append(network.getHousePrefix());
-        sb.append(i);
-        sb.append('/');
-        sb.append(var);
-        sb.append("\n        topic = ");
-        sb.append(network.getGldSimName());
-        sb.append('/');
-        sb.append(network.getMarketName());
-        sb.append('@');
-        sb.append(network.getHousePrefix());
-        sb.append(i);
-        sb.append('/');
-        sb.append(var);
-        sb.append('\n');
-        writeOptions(sb, "\"\"", "string", false);
+        writeMarketToControllerVar(sb, network.getGldSimName(), network.getMarketName(), network.getHousePrefix() + i, var);
     }
     
     private static void writeControllerToMarketVar(StringBuilder sb, AuctionNetwork network, int i, String var) {
-        sb.append("    ");
-        sb.append(network.getGldSimName());
-        sb.append('/');
-        sb.append(network.getHousePrefix());
-        sb.append(i);
-        sb.append('@');
-        sb.append(network.getMarketName());
-        sb.append('/');
-        sb.append(var);
-        sb.append("\n        topic = ");
-        sb.append(network.getGldSimName());
-        sb.append('/');
-        sb.append(network.getHousePrefix());
-        sb.append(i);
-        sb.append('@');
-        sb.append(network.getMarketName());
-        sb.append('/');
-        sb.append(var);
-        sb.append('\n');
-        writeOptions(sb, "\"\"", "string", false);
-    }
-    
-    private static void writeOptions(StringBuilder sb, String def, String type, boolean list) {
-        sb.append("        default = ");
-        sb.append(def);
-        sb.append("\n        type = ");
-        sb.append(type);
-        sb.append("\n        list = ");
-        sb.append(list);
-        sb.append('\n');
+        writeControllerToMarketVar(sb, network.getGldSimName(), network.getMarketName(), network.getHousePrefix() + i, var);
     }
     
 }

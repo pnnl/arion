@@ -7,10 +7,7 @@ import gov.pnnl.prosser.api.gld.*;
 import gov.pnnl.prosser.api.gld.enums.*;
 import gov.pnnl.prosser.api.gld.lib.*;
 import gov.pnnl.prosser.api.gld.obj.*;
-import gov.pnnl.prosser.api.ns3.Ns3Simulator2;
-import gov.pnnl.prosser.api.ns3.obj.*;
-import gov.pnnl.prosser.api.ns3.obj.csma.CsmaChannel;
-import gov.pnnl.prosser.api.ns3.obj.p2p.PointToPointChannel;
+import gov.pnnl.prosser.api.ns3.Ns3SimulatorV2FirstN;
 
 import java.nio.file.*;
 import java.time.*;
@@ -35,7 +32,7 @@ public class AdaptedAEPNs3Sim2Test extends Experiment {
         final int[] numHouses = {150, 200, 250};
 
         GldSimulator[] gldSim = new GldSimulator[numHouses.length];//{this.gldSimulator(String.format("FNCS_GLD_%d_Node_Feeder", numHouses[0])), this.gldSimulator(String.format("FNCS_GLD_%d_Node_Feeder", numHouses[1])),this.gldSimulator(String.format("FNCS_GLD_%d_Node_Feeder", numHouses[3]))};
-        Ns3Simulator2[] ns3Sim2 = new Ns3Simulator2[numHouses.length];
+        Ns3SimulatorV2FirstN[] ns3Sim2 = new Ns3SimulatorV2FirstN[numHouses.length];
         AuctionObject[] aucts = new AuctionObject[gldSim.length];
         FncsMsg[] fMsgs = new FncsMsg[gldSim.length];
         ClimateObject[] climates = new ClimateObject[gldSim.length];
@@ -44,7 +41,7 @@ public class AdaptedAEPNs3Sim2Test extends Experiment {
         int i;
         int j;
         for (i = 0; i < gldSim.length; i++) {
-            ns3Sim2[i] = this.ns3Simulator2(String.format("ns3Sim-%d", i));
+            ns3Sim2[i] = this.ns3SimulatorV2FirstN(String.format("ns3Sim-%d", i));
         	gldSim[i] = this.gldSimulator(String.format("FNCS_GLD_%d_Node_Feeder", numHouses[i]), ns3Sim2[i]);
         	aucts[i] = createMarket(gldSim[i], String.format("Market%d", i));
             aucts[i].setFncsControllerPrefix(gldSim[i].getName() + String.format("_C%d_", numHouses[i]));
