@@ -28,35 +28,37 @@ import gov.pnnl.prosser.api.gld.obj.House;
  * @author nord229
  */
 public class Ns3SimulatorV2DelayDrop extends AbstractNs3SimulatorV2 {
-    
-    private static final CSVFormat AGR_FORMAT = CSVFormat.DEFAULT.withRecordSeparator('\n').withHeader("id", "aggregator", "name");
-    private static final CSVFormat MD_FORMAT = CSVFormat.DEFAULT.withRecordSeparator('\n').withHeader("id", "delay", "error");
-    
+    // Columns: id, aggregator, name
+    private static final CSVFormat AGR_FORMAT = CSVFormat.DEFAULT.withRecordSeparator('\n');
+
+    // Columns: id, delay, error
+    private static final CSVFormat MD_FORMAT = CSVFormat.DEFAULT.withRecordSeparator('\n');
+
     private final List<GldSimulator> simulators = new ArrayList<>();
-    
+
     public Ns3SimulatorV2DelayDrop(final String name) {
         super(name, Paths.get("res/delay-drop-fncs-config.cc"));
     }
-    
+
     public void attachSimulator(GldSimulator sim) {
         this.simulators.add(sim);
     }
-    
+
     @Override
     public void writeConfig(Path outDir) throws IOException {
         final StringBuilder sb = new StringBuilder();
         this.writeZplHeader(sb);
-        try(CSVPrinter agrPrinter = AGR_FORMAT.print(Files.newBufferedWriter(outDir.resolve("aggregator.csv"), StandardCharsets.UTF_8));
-            CSVPrinter mdPrinter = MD_FORMAT.print(Files.newBufferedWriter(outDir.resolve("metadata.csv"), StandardCharsets.UTF_8));) {
+        try (CSVPrinter agrPrinter = AGR_FORMAT.print(Files.newBufferedWriter(outDir.resolve("aggregator.csv"), StandardCharsets.UTF_8));
+                CSVPrinter mdPrinter = MD_FORMAT.print(Files.newBufferedWriter(outDir.resolve("metadata.csv"), StandardCharsets.UTF_8));) {
             // This may support using Auctions across GridLabD simulators but that is not feasible because of the implications on the powergrid
             final Map<String, Integer> auctionIdMap = new HashMap<>();
             int currentId = 1;
-            for(final GldSimulator gldSim: this.simulators) {
-                for (AbstractGldObject object: gldSim.getObjects()) {
+            for (final GldSimulator gldSim : this.simulators) {
+                for (AbstractGldObject object : gldSim.getObjects()) {
                     if (object instanceof AuctionObject) {
                         final AuctionObject auction = (AuctionObject) object;
                         Integer id = auctionIdMap.get(auction.getName());
-                        if(id != null) {
+                        if (id != null) {
                             throw new RuntimeException("Duplicate Auction Name Detected");
                         }
                         id = currentId;
@@ -66,11 +68,11 @@ public class Ns3SimulatorV2DelayDrop extends AbstractNs3SimulatorV2 {
                         mdPrinter.printRecord(id, 0, 0);
                     }
                 }
-                for (AbstractGldObject object: gldSim.getObjects()) {
-                    if(object instanceof House) {
+                for (AbstractGldObject object : gldSim.getObjects()) {
+                    if (object instanceof House) {
                         final House house = (House) object;
                         Integer auctionId = auctionIdMap.get(house.getController().getAuction().getName());
-                        if(auctionId == null) {
+                        if (auctionId == null) {
                             throw new RuntimeException("Auction not declared in GLD Simulator");
                         }
                         int controllerId = currentId;
@@ -89,16 +91,15 @@ public class Ns3SimulatorV2DelayDrop extends AbstractNs3SimulatorV2 {
         try (BufferedWriter writer = Files.newBufferedWriter(outDir.resolve("fncs.zpl"), StandardCharsets.UTF_8)) {
             writer.write(sb.toString());
         }
-        
-        
+
     }
-    
+
     private static void writeMarketToControllerVar(StringBuilder sb, GldSimulator gldSim, House house, String var) {
         writeMarketToControllerVar(sb, gldSim.getName(), house.getController().getAuction().getName(), house.getController().getName(), var);
     }
-    
+
     private static void writeControllerToMarketVar(StringBuilder sb, GldSimulator gldSim, House house, String var) {
         writeControllerToMarketVar(sb, gldSim.getName(), house.getController().getAuction().getName(), house.getController().getName(), var);
     }
-    
+
 }

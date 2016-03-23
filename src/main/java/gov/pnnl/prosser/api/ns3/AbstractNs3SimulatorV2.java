@@ -8,26 +8,25 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 
-
 /**
  * Stub for NS-3 Simulator configurations
  *
  * @author nord229
  */
 public abstract class AbstractNs3SimulatorV2 {
-    
+
     private final String name;
-    
+
     private String broker;
 
     private Path ccFile;
-    
+
     public AbstractNs3SimulatorV2(final String name, final Path defaultCcFile) {
         this.name = name;
         this.ccFile = defaultCcFile;
         this.broker = "tcp://localhost:5570";
     }
-    
+
     /**
      * @return the name
      */
@@ -43,7 +42,8 @@ public abstract class AbstractNs3SimulatorV2 {
     }
 
     /**
-     * @param broker the broker to set
+     * @param broker
+     *            the broker to set
      */
     public void setBroker(String broker) {
         this.broker = broker;
@@ -57,23 +57,24 @@ public abstract class AbstractNs3SimulatorV2 {
     }
 
     /**
-     * @param ccFile the ccFile to set
+     * @param ccFile
+     *            the ccFile to set
      */
     public void setCcFile(Path ccFile) {
         this.ccFile = ccFile;
     }
-    
+
     public final void writeSimulator(Path outDir) throws IOException {
         this.writeCcFile(outDir);
         this.writeConfig(outDir);
     }
-    
+
     protected void writeCcFile(Path outDir) throws IOException {
         Files.copy(this.getCcFile(), outDir.resolve(this.getCcFile().getFileName()), StandardCopyOption.REPLACE_EXISTING);
     }
-    
+
     protected abstract void writeConfig(Path outDir) throws IOException;
-    
+
     protected void writeZplHeader(StringBuilder sb) {
         sb.append("name = ");
         sb.append(this.getName());
@@ -84,7 +85,7 @@ public abstract class AbstractNs3SimulatorV2 {
         sb.append('\n');
         sb.append("values\n");
     }
-    
+
     protected static void writeMarketToControllerVar(StringBuilder sb, String gldSimName, String auctionName, String controllerName, String var) {
         sb.append("    ");
         sb.append(gldSimName);
@@ -105,7 +106,7 @@ public abstract class AbstractNs3SimulatorV2 {
         sb.append('\n');
         writeOptions(sb, "\"\"", "string", false);
     }
-    
+
     protected static void writeControllerToMarketVar(StringBuilder sb, String gldSimName, String auctionName, String controllerName, String var) {
         sb.append("    ");
         sb.append(gldSimName);
@@ -126,7 +127,7 @@ public abstract class AbstractNs3SimulatorV2 {
         sb.append('\n');
         writeOptions(sb, "\"\"", "string", false);
     }
-    
+
     protected static void writeOptions(StringBuilder sb, String def, String type, boolean list) {
         sb.append("        default = ");
         sb.append(def);
@@ -136,5 +137,5 @@ public abstract class AbstractNs3SimulatorV2 {
         sb.append(list);
         sb.append('\n');
     }
-    
+
 }

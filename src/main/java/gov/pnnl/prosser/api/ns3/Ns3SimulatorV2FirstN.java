@@ -18,26 +18,26 @@ import java.util.List;
  * @author nord229
  */
 public class Ns3SimulatorV2FirstN extends AbstractNs3SimulatorV2 {
-    
+
     private final List<AuctionNetwork> networks = new ArrayList<>();
-    
+
     public static class AuctionNetwork {
-        
+
         private final String gldSimName;
-        
+
         private final int numHouses;
-        
+
         private final String marketName;
-        
+
         private final String housePrefix;
-        
+
         public AuctionNetwork(String gldSimName, int numHouses, String marketName, String housePrefix) {
             this.gldSimName = gldSimName;
             this.numHouses = numHouses;
             this.marketName = marketName;
             this.housePrefix = housePrefix;
         }
-        
+
         /**
          * @return the gldSimName
          */
@@ -67,19 +67,19 @@ public class Ns3SimulatorV2FirstN extends AbstractNs3SimulatorV2 {
         }
 
     }
-    
+
     public Ns3SimulatorV2FirstN(final String name) {
         super(name, Paths.get("res/firstN.cc"));
     }
-    
+
     public void addNetwork(String gldSimName, int numHouses, String marketName, String housePrefix) {
         this.networks.add(new AuctionNetwork(gldSimName, numHouses, marketName, housePrefix));
     }
-    
+
     @Override
     public void writeConfig(Path outDir) throws IOException {
         try (BufferedWriter writer = Files.newBufferedWriter(outDir.resolve("LinkModelGLDNS3.txt"), StandardCharsets.UTF_8)) {
-            for(final AuctionNetwork network: this.networks) {
+            for (final AuctionNetwork network : this.networks) {
                 writer.write(String.format("%d %s %s%n", network.getNumHouses(), network.getMarketName(), network.getHousePrefix()));
             }
         }
@@ -93,8 +93,8 @@ public class Ns3SimulatorV2FirstN extends AbstractNs3SimulatorV2 {
             sb.append(this.getBroker());
             sb.append('\n');
             sb.append("values\n");
-            for(final AuctionNetwork network: this.networks) {
-                for(int i = 1; i <= network.getNumHouses(); i++) {
+            for (final AuctionNetwork network : this.networks) {
+                for (int i = 1; i <= network.getNumHouses(); i++) {
                     writeControllerToMarketVar(sb, network, i, "submit_bid_state");
                     writeMarketToControllerVar(sb, network, i, "clearPrice");
                     writeMarketToControllerVar(sb, network, i, "mktID");
@@ -105,13 +105,13 @@ public class Ns3SimulatorV2FirstN extends AbstractNs3SimulatorV2 {
             writer.write(sb.toString());
         }
     }
-    
+
     private static void writeMarketToControllerVar(StringBuilder sb, AuctionNetwork network, int i, String var) {
         writeMarketToControllerVar(sb, network.getGldSimName(), network.getMarketName(), network.getHousePrefix() + i, var);
     }
-    
+
     private static void writeControllerToMarketVar(StringBuilder sb, AuctionNetwork network, int i, String var) {
         writeControllerToMarketVar(sb, network.getGldSimName(), network.getMarketName(), network.getHousePrefix() + i, var);
     }
-    
+
 }
