@@ -30,7 +30,7 @@ public class Ns3Simulator {
 	private String name;
 	private List<Namespace> namespaces;
 	private static List<AbstractNs3Object> ns3Objects;
-	
+
 	/**
 	 * Create a new Ns3Simulator
 	 */
@@ -46,7 +46,7 @@ public class Ns3Simulator {
 	 * @param object the AbstractNs3Object to add to this Ns3Simulator's
 	 *               list of ns-3 objects
 	 */
-	public static void addObject(AbstractNs3Object object) {
+	public static void addObject(AbstractNs3Object object) { //Note: This is supposed to be like Peter's where you call get*ObjectType* from the simulator which returns the object and adds it to the list behind the scenes. Don't force users to add objects as they are defining a model and not a program so by specifiying something they are adding it.
 		// DEBUGGING
 		if (ns3Objects == null) {
 			ns3Objects = new ArrayList<>();
@@ -62,33 +62,33 @@ public class Ns3Simulator {
 	public String getName() {
 		return name;
 	}
-	
+
 	/**
-	 * Initializes the modules, namespaces, and objects used in this network based on 
+	 * Initializes the modules, namespaces, and objects used in this network based on
 	 * the user specified parameters
-	 * 
+	 *
      * @return the generated GridlabD market network interface prefix
 	 */
 	private String generateAuctionPrefix() {
-		
+
 		UUID myUUID = UUID.randomUUID();
 		String s = "auction_" + myUUID.toString().replace("-", "");
 		return s;
 	}
-	
-	
+
+
 	/**
-	 * Initializes the modules, namespaces, and objects used in this network based on 
+	 * Initializes the modules, namespaces, and objects used in this network based on
 	 * the user specified parameters
 	 * @param numAuctions
      *          the number of GridlabD auctions (aka markets) that will be created
 	 *          in this network
 	 */
-	public void setup(final int numAuctions) {
-		
+	public void setup(final int numAuctions) { //NOTE: Why is this a function? Create the NS3Network and add the namespaces in the constructor. Let the user define markets.
+
 		network = new Ns3Network();
-		
-		namespaces.add(new Namespace("ns3"));
+
+		namespaces.add(new Namespace("ns3")); //REVIEW: This should be done in the general setup of simulator; all experiments that have ns-3 will need
 		namespaces.add(new Namespace("std"));
 
 		for (int i = 0; i < numAuctions; i++) {
@@ -110,7 +110,7 @@ public class Ns3Simulator {
     public void setupGlobalRouting() {
         network.setupGlobalRouting();
     }
-	
+
     /**
      * Gets the Modules used in this simulation
      * @return the list of Modules
@@ -118,7 +118,7 @@ public class Ns3Simulator {
 	public List<Module> getModules() {
 		return network.getModules();
 	}
-	
+
     /**
      * Gets the Namespaces used in this simulation
      * @return the list of Namespaces
@@ -126,15 +126,15 @@ public class Ns3Simulator {
 	public List<Namespace> getNamespaces() {
 		return this.namespaces;
 	}
-	
+
     /**
      * Gets the ns-3 objects used in this simulation
      * @return the list of AbstractNs3Objects
      */
-	public List<AbstractNs3Object> getObjects() {		
+	public List<AbstractNs3Object> getObjects() {
 		return ns3Objects;
 	}
-	
+
 	/**
 	 * @param type
 	 * 			the NetworkType of this Channel

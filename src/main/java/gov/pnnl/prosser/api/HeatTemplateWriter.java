@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package gov.pnnl.prosser.api;
 
@@ -23,10 +23,13 @@ public class HeatTemplateWriter {
 
     private static final Pattern tokenPattern = Pattern.compile("\\@([^@]*)\\@");
 
-    public static void writeHeatTemplate(final Path path, List<GldSimulator> gldSimulators, final Ns3Simulator ns3Simulator, final FncsSimulator fncsSimulator) throws IOException {
+    public static void writeHeatTemplate(final Path path, final Experiment experiment) throws IOException {
         Files.createDirectories(path);
         final String baseTemplateString = new String(Files.readAllBytes(Paths.get("res/heat-prosser-base.yaml")), StandardCharsets.UTF_8);
-        final String subTemplateString = new String(Files.readAllBytes(Paths.get("res/heat-prosser-sub.yaml")), StandardCharsets.UTF_8);
+        final String gldTemplateString = new String(Files.readAllBytes(Paths.get("res/heat-prosser-gld.yaml")), StandardCharsets.UTF_8);
+        final String ns3TemplateString = new String(Files.readAllBytes(Paths.get("res/heat-prosser-ns3.yaml")), StandardCharsets.UTF_8);
+        final String fncsTemplateString = new String(Files.readAllBytes(Paths.get("res/heat-prosser-fncs.yaml")), StandardCharsets.UTF_8);
+        final String matpowerTemplateString = new String(Files.readAllBytes(Paths.get("res/heat-prosser-matpower.yaml")), StandardCharsets.UTF_8);
 
         Map<String, Object> params = new HashMap<>();
         final StringBuilder sb = new StringBuilder();
@@ -34,26 +37,33 @@ public class HeatTemplateWriter {
 
         params.put("FNCS", "$fncs: {get_attr: [fncs, first_address]}");
         int i = 0;
-        for (final GldSimulator sim : gldSimulators) {
+        for (final GldSimulator sim : experiment.getGldSimulators()) {
             params.put("ITEM", "gridlabd" + i);
             params.put("EXEC", "gridlabd " + sim.getName());
-            final String gldHeatNode = process(subTemplateString, params);
+            params.put("NAME", sim.getName());
+            params.put("EXP", experiment.getName());
+            params.put("UUID", experiment.getUUID());
+            final String gldHeatNode = process(gldTemplateString, params);
             sb.append(gldHeatNode);
             i++;
         }
-
-        if (ns3Simulator != null) {
+//TODO: This is janky. The file names are always the same; only the directory names differ; Fix to use different file names
+        for (final AbstractNs3SimulatorV2 ns3 : experiment.getNs3SimulatorV2()) {
             params.put("ITEM", "ns3");
-            params.put("EXEC", "./ns3");
-            final String ns3HeatNode = process(subTemplateString, params);
+            params.put("EXP", experiment.getName());
+            params.put("NAME", ns3.getName());
+            params.put("EXEC", "./firstN LinkModelGLDNS3.txt");
+            params.put("UUID", experiment.getUUID());
+            final String ns3HeatNode = process(ns3TemplateString, params);
             sb.append(ns3HeatNode);
         }
 
-        if (fncsSimulator != null) {
+        if (experiment.fncsSimulator() != null) {
             params.put("FNCS", "");
             params.put("ITEM", "fncs");
-            params.put("EXEC", "fncsbroker " + (gldSimulators.size() + 1));
-            final String fncsHeatNode = process(subTemplateString, params);
+            params.put("EXEC", "fncsbroker " + (gldSimulators.size() + ns3simulators.size()));
+            params.put("UUID", experiment.getUUID());
+            final String fncsHeatNode = process(fncsTemplateString, params);
             sb.append(fncsHeatNode);
         }
 

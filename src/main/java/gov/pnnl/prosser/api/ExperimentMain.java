@@ -29,7 +29,7 @@ import gov.pnnl.prosser.api.ns3.AbstractNs3SimulatorV2;
  * Main class referenced by the manifest for this Package
  * This class will take a java file and an output directory and compile the java file to the output directory
  * It will then reference that compiled file and output the simulator files to the output directory
- * 
+ *
  * @author nord229
  */
 public abstract class ExperimentMain {
@@ -37,7 +37,7 @@ public abstract class ExperimentMain {
     /**
      * Main method, takes two args, a java file and a output directory
      * This compiles the java file and then references it to write the experiment to the output directory
-     * 
+     *
      * @param args
      *            args[0] is the input java file and args[1] is the output directory
      * @throws Exception
@@ -68,6 +68,7 @@ public abstract class ExperimentMain {
             throw new Exception("Unable to compile");
         }
 
+
         System.out.println("Compiled!");
         final String name = FilenameUtils.getBaseName(inPath.toString());
         // final Path compiledClassPath = inPath.resolveSibling(name + ".class");
@@ -77,6 +78,7 @@ public abstract class ExperimentMain {
         final Class<? extends Experiment> experimentClass = compiledClass.asSubclass(Experiment.class);
         final Experiment experiment = experimentClass.getConstructor().newInstance();
         experiment.experiment();
+        experiment.setName(name);
 
         for (final GldSimulator sim : experiment.getGldSimulators()) {
             final Path simPath = outPath.resolve(sim.getName());
@@ -106,10 +108,10 @@ public abstract class ExperimentMain {
         if (experiment.fncsSimulator() != null) {
             FncsSimulatorWriter.writeSimulator(outPath, experiment.fncsSimulator(), experiment.getGldSimulators().size());
         }
-        HeatTemplateWriter.writeHeatTemplate(outPath, experiment.getGldSimulators(), experiment.getNs3Simulator(), experiment.fncsSimulator());
+        HeatTemplateWriter.writeHeatTemplate(outPath, experiment);
         // Create the tarball
         try (TarArchiveOutputStream tar = new TarArchiveOutputStream(new GzipCompressorOutputStream(new BufferedOutputStream(
-                Files.newOutputStream(outPath.resolve("files.tar.gz")))))) {
+                Files.newOutputStream(outPath.resolve(experiment.getName() + ".tar.gz")))))) {
             Files.walkFileTree(outPath, new SimpleFileVisitor<Path>() {
                 @Override
                 public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) {
