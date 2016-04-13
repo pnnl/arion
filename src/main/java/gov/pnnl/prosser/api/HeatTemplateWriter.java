@@ -15,6 +15,8 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import gov.pnnl.prosser.api.ns3.AbstractNs3SimulatorV2;
+
 /**
  * @author nord229
  *
@@ -61,7 +63,7 @@ public class HeatTemplateWriter {
         if (experiment.fncsSimulator() != null) {
             params.put("FNCS", "");
             params.put("ITEM", "fncs");
-            params.put("EXEC", "fncsbroker " + (gldSimulators.size() + ns3simulators.size()));
+            params.put("EXEC", "fncsbroker " + (experiment.getGldSimulators().size() + experiment.getNs3SimulatorV2().size()));
             params.put("UUID", experiment.getUUID());
             final String fncsHeatNode = process(fncsTemplateString, params);
             sb.append(fncsHeatNode);
