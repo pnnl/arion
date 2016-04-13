@@ -36,6 +36,7 @@ import gov.pnnl.prosser.api.gld.obj.Transformer;
 import gov.pnnl.prosser.api.gld.obj.TriplexLine;
 import gov.pnnl.prosser.api.gld.obj.TriplexNode;
 
+
 /**
  * @author sund130
  *
@@ -294,36 +295,36 @@ public class Ieee8500NodeTestFeeder {
             }
 
             if (dataValue[2] != null) {
-                lineConfiguration.setPhaseAConductor(this.overheadLineConductors.get(dataValue[2]));
+                lineConfiguration.setPhaseBConductor(this.overheadLineConductors.get(dataValue[2]));
                 phases.add(PhaseCode.B);
             }
 
             if (dataValue[3] != null) {
-                lineConfiguration.setPhaseAConductor(this.overheadLineConductors.get(dataValue[3]));
+                lineConfiguration.setPhaseCConductor(this.overheadLineConductors.get(dataValue[3]));
                 phases.add(PhaseCode.C);
             }
 
             if (dataValue[4] != null) {
-                lineConfiguration.setPhaseAConductor(this.overheadLineConductors.get(dataValue[4]));
+                lineConfiguration.setPhaseNConductor(this.overheadLineConductors.get(dataValue[4]));
                 phases.add(PhaseCode.N);
             }
 
             // get line spacing name
             String lineSpacingName = "";
-
-            if (phases == EnumSet.of(PhaseCode.A, PhaseCode.N)) {
+            
+            if (phases.equals(EnumSet.of(PhaseCode.A, PhaseCode.N))) {
                 lineSpacingName = "SinglePhaseA";
-            } else if (phases == EnumSet.of(PhaseCode.B, PhaseCode.N)) {
+            } else if (phases.equals(EnumSet.of(PhaseCode.B, PhaseCode.N))) {
                 lineSpacingName = "SinglePhaseB";
-            } else if (phases == EnumSet.of(PhaseCode.C, PhaseCode.N)) {
+            } else if (phases.equals(EnumSet.of(PhaseCode.C, PhaseCode.N))) {
                 lineSpacingName = "SinglePhaseC";
-            } else if (phases == EnumSet.of(PhaseCode.A, PhaseCode.B, PhaseCode.N)) {
+            } else if (phases.equals(EnumSet.of(PhaseCode.A, PhaseCode.B, PhaseCode.N))) {
                 lineSpacingName = "TwoPhaseAB";
-            } else if (phases == EnumSet.of(PhaseCode.A, PhaseCode.C, PhaseCode.N)) {
+            } else if (phases.equals(EnumSet.of(PhaseCode.A, PhaseCode.C, PhaseCode.N))) {
                 lineSpacingName = "TwoPhaseAC";
-            } else if (phases == EnumSet.of(PhaseCode.B, PhaseCode.C, PhaseCode.N)) {
+            } else if (phases.equals(EnumSet.of(PhaseCode.B, PhaseCode.C, PhaseCode.N))) {
                 lineSpacingName = "TwoPhaseBC";
-            } else if (phases == PhaseCode.ABCN) {
+            } else if (phases.equals(PhaseCode.ABCN)) {
                 lineSpacingName = "ThreePhaseABC";
             }
 
@@ -387,7 +388,7 @@ public class Ieee8500NodeTestFeeder {
                 node2.setBusType(BusType.SWING);
                 node2.setVoltageA(69512, -.7);
                 node2.setVoltageB(69557, -120.7);
-                node2.setVoltageA(69595, 119.3);
+                node2.setVoltageC(69595, 119.3);
                 node2.setNominalVoltage(69512.0);
                 this.nodes.put(nodeName2, node2);
             }
@@ -455,8 +456,8 @@ public class Ieee8500NodeTestFeeder {
 
         this.transformer = this.simulator.transformer("transformer_HVMV_Sub", this.transformerConfiguration);
         this.transformer.setPhases(PhaseCode.ABCN);
-        this.transformer.setFrom(this.nodes.get("node_HVMV_Sub_HSB"));
-        this.transformer.setTo(this.nodes.get("node_regxfmr_HVMV_Sub_LSB"));
+        this.transformer.setFrom(this.nodes.get("HVMV_Sub_HSB"));
+        this.transformer.setTo(this.nodes.get("regxfmr_HVMV_Sub_LSB"));
     }
 
     private void createRegulatorConfigurations() {

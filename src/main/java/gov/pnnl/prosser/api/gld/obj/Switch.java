@@ -10,7 +10,6 @@ import gov.pnnl.prosser.api.gld.enums.SwitchStatus;
 import java.util.EnumSet;
 
 public class Switch extends LinkObject {
-	private EnumSet<PhaseCode> phases;
 	private SwitchStatus status;
 	
 	/**
@@ -18,20 +17,6 @@ public class Switch extends LinkObject {
 	 */
 	public Switch(GldSimulator simulator) {
 		super(simulator);
-	}
-	
-	/**
-	 * @return the phases
-	 */
-	public EnumSet<PhaseCode> getPhases() {
-		return phases;
-	}
-
-	/**
-	 * @param phases the phases to set
-	 */
-	public void setPhases(EnumSet<PhaseCode> phases) {
-		this.phases = phases;
 	}
 
 	/**
@@ -63,7 +48,6 @@ public class Switch extends LinkObject {
     protected void writeGldProperties(final StringBuilder sb) {
         super.writeGldProperties(sb);
         
-        writeProperty(sb, "phases", PhaseCode.writeGldProperties(this.phases));
         writeProperty(sb, "status", this.status);
     }
 }

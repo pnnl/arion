@@ -498,7 +498,7 @@ public class GldSimulator {
      * @return the created object
      */
     public Regulator regulator(final String name, final RegulatorConfiguration config) {
-        final Regulator t = setupObject(new Regulator(this), name);
+        Regulator t = setupObject(new Regulator(this), name);
         t.setRegulatorConfiguration(config);
         return t;
     }
@@ -515,7 +515,7 @@ public class GldSimulator {
      * @return the created object
      */
     public Transformer transformer(final String name, final TransformerConfiguration config) {
-        final Transformer t = setupObject(new Transformer(this), name);
+        Transformer t = setupObject(new Transformer(this), name);
         t.setConfiguration(config);
         return t;
     }
@@ -689,7 +689,7 @@ public class GldSimulator {
      */
     public OverheadLine overheadLine(final String name, final EnumSet<PhaseCode> phases, final Node fromNode, 
             final Node toNode, final double length, final LineConfiguration<OverheadLineConductor> lineConfiguration) {
-        final OverheadLine overheadLine = setupObject(new OverheadLine(this), name);
+        OverheadLine overheadLine = setupObject(new OverheadLine(this), name);
         overheadLine.setPhases(phases);
         overheadLine.setFrom(fromNode);
         overheadLine.setTo(toNode);
@@ -711,7 +711,7 @@ public class GldSimulator {
      */
     public UndergroundLine undergroundLine(final String name, final EnumSet<PhaseCode> phases, final Node fromNode, 
             final Node toNode, final double length, final LineConfiguration<UndergroundLineConductor> lineConfiguration) {
-        final UndergroundLine undergroundLine = setupObject(new UndergroundLine(this), name);
+        UndergroundLine undergroundLine = setupObject(new UndergroundLine(this), name);
         undergroundLine.setPhases(phases);
         undergroundLine.setFrom(fromNode);
         undergroundLine.setTo(toNode);
@@ -733,7 +733,7 @@ public class GldSimulator {
      */
     public Switch switchLinkObject(final String name, final EnumSet<PhaseCode> phases, final Node fromNode, 
             final Node toNode, final SwitchStatus status) {
-        final Switch switchNode = setupObject(new Switch(this), name);
+        Switch switchNode = setupObject(new Switch(this), name);
         switchNode.setPhases(phases);
         switchNode.setFrom(fromNode);
         switchNode.setTo(toNode);
