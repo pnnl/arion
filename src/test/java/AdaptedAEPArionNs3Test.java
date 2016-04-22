@@ -20,7 +20,7 @@ import java.util.*;
  * @author nord229
  *
  */
-public class AdaptedAEPDelayDropTest extends Experiment {
+public class AdaptedAEPArionNs3Test extends Experiment {
 
     /**
      * Generate the experiment
@@ -33,7 +33,7 @@ public class AdaptedAEPDelayDropTest extends Experiment {
         final int[] numHouses = { 150, 200, 250 };
 
         GldSimulator[] gldSim = new GldSimulator[numHouses.length];// {this.gldSimulator(String.format("FNCS_GLD_%d_Node_Feeder", numHouses[0])), this.gldSimulator(String.format("FNCS_GLD_%d_Node_Feeder", numHouses[1])),this.gldSimulator(String.format("FNCS_GLD_%d_Node_Feeder", numHouses[3]))};
-        Ns3SimulatorV2DelayDrop[] ns3Sim2 = new Ns3SimulatorV2DelayDrop[numHouses.length];
+        Ns3SimulatorV2Arion[] ns3Sim2 = new Ns3SimulatorV2Arion[numHouses.length];
         AuctionObject[] aucts = new AuctionObject[gldSim.length];
         FncsMsg[] fMsgs = new FncsMsg[gldSim.length];
         ClimateObject[] climates = new ClimateObject[gldSim.length];
@@ -42,7 +42,7 @@ public class AdaptedAEPDelayDropTest extends Experiment {
         int i;
         int j;
         for (i = 0; i < gldSim.length; i++) {
-            ns3Sim2[i] = this.ns3SimulatorV2DelayDrop(String.format("ns3Sim-%d", i));
+            ns3Sim2[i] = this.ns3SimulatorV2Arion(String.format("ns3Sim-%d", i));
             gldSim[i] = this.gldSimulator(String.format("FNCS_GLD_%d_Node_Feeder", numHouses[i]), ns3Sim2[i]);
             aucts[i] = createMarket(gldSim[i], String.format("Market%d", i));
             aucts[i].setFncsControllerPrefix(gldSim[i].getName() + String.format("_C%d_", numHouses[i]));

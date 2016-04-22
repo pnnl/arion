@@ -31,7 +31,7 @@ public class HeatTemplateWriter {
         final String gldTemplateString = new String(Files.readAllBytes(Paths.get("res/heat-prosser-gld.yaml")), StandardCharsets.UTF_8);
         final String ns3TemplateString = new String(Files.readAllBytes(Paths.get("res/heat-prosser-ns3.yaml")), StandardCharsets.UTF_8);
         final String fncsTemplateString = new String(Files.readAllBytes(Paths.get("res/heat-prosser-fncs.yaml")), StandardCharsets.UTF_8);
-        final String matpowerTemplateString = new String(Files.readAllBytes(Paths.get("res/heat-prosser-matpower.yaml")), StandardCharsets.UTF_8);
+//        final String matpowerTemplateString = new String(Files.readAllBytes(Paths.get("res/heat-prosser-matpower.yaml")), StandardCharsets.UTF_8);
 
         Map<String, Object> params = new HashMap<>();
         final StringBuilder sb = new StringBuilder();

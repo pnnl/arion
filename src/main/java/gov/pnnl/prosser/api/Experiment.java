@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.UUID;
 
 import gov.pnnl.prosser.api.ns3.AbstractNs3SimulatorV2;
+import gov.pnnl.prosser.api.ns3.Ns3SimulatorV2Arion;
 import gov.pnnl.prosser.api.ns3.Ns3SimulatorV2DelayDrop;
 import gov.pnnl.prosser.api.ns3.Ns3SimulatorV2FirstN;
 
@@ -166,6 +167,18 @@ public abstract class Experiment {
      */
     public Ns3SimulatorV2DelayDrop ns3SimulatorV2DelayDrop(final String name) {
         Ns3SimulatorV2DelayDrop sim = new Ns3SimulatorV2DelayDrop(name);
+        this.ns3SimulatorV2.add(sim);
+        this.ensureFncs();
+        return sim;
+    }
+    
+    /**
+     * Get a new NS-3 Simulator
+     *
+     * @return the simulator
+     */
+    public Ns3SimulatorV2Arion ns3SimulatorV2Arion(final String name) {
+        Ns3SimulatorV2Arion sim = new Ns3SimulatorV2Arion(name);
         this.ns3SimulatorV2.add(sim);
         this.ensureFncs();
         return sim;
