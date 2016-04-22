@@ -40,8 +40,6 @@ public abstract class ExperimentMain {
      *
      * @param args
      *            args[0] is the input java file and args[1] is the output directory
-     * @throws Exception
-     *             when any exception occurs
      */
     public static void main(final String... args) {
         try {

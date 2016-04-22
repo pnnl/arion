@@ -683,8 +683,6 @@ public class GldSimulator {
      *
      * @param name
      *            the name to set
-     * @param config
-     *            the transformer configuration
      * @return the created object
      */
     public OverheadLine overheadLine(final String name, final EnumSet<PhaseCode> phases, final Node fromNode, 
@@ -705,8 +703,6 @@ public class GldSimulator {
      *
      * @param name
      *            the name to set
-     * @param config
-     *            the transformer configuration
      * @return the created object
      */
     public UndergroundLine undergroundLine(final String name, final EnumSet<PhaseCode> phases, final Node fromNode, 
@@ -727,8 +723,6 @@ public class GldSimulator {
      *
      * @param name
      *            the name to set
-     * @param config
-     *            the transformer configuration
      * @return the created object
      */
     public Switch switchLinkObject(final String name, final EnumSet<PhaseCode> phases, final Node fromNode, 
