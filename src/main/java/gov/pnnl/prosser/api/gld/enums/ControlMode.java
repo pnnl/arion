@@ -10,6 +10,10 @@ package gov.pnnl.prosser.api.gld.enums;
  *
  */
 public enum ControlMode {
+    NONE,
     RAMP,
-    DOUBLE_RAMP;
+    DOUBLE_RAMP,
+    DUTYCYCLE,
+    PROBABILITY_OFF,
+    ELASTICITY_MODEL;
 }

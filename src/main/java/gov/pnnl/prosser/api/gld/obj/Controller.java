@@ -22,7 +22,7 @@ public class Controller extends AbstractGldObject {
 	private boolean useFncs;
 	
 	/**
-	 * The auction market to comunicate with
+	 * The auction market to communicate with
 	 */
 	private AuctionObject auction;
 	
