@@ -48,6 +48,7 @@ import gov.pnnl.prosser.api.gld.obj.TriplexLine;
 import gov.pnnl.prosser.api.gld.obj.TriplexMeter;
 import gov.pnnl.prosser.api.gld.obj.TriplexNode;
 import gov.pnnl.prosser.api.gld.obj.UndergroundLine;
+import gov.pnnl.prosser.api.gld.obj.WaterHeater;
 import gov.pnnl.prosser.api.ns3.AbstractNs3SimulatorV2;
 
 import java.nio.file.Path;
@@ -746,6 +747,19 @@ public class GldSimulator {
      */
     public TriplexNode triplexNode(final String name) {
         return setupObject(new TriplexNode(this), name);
+    }
+    
+    /**
+     * Create a WaterHeate
+     * This will add it to the internal objects list, set the name
+     * and set the simulator reference to this simulator
+     *
+     * @param name
+     *            the name to set
+     * @return the created object
+     */
+    public WaterHeater waterHeater(final String name) {
+        return setupObject(new WaterHeater(this), name);
     }
 
 }

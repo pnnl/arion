@@ -26,6 +26,18 @@ public enum PhaseCode {
     public static final EnumSet<PhaseCode> ABCN = EnumSet.of(A, B, C, N);
 
     public static final EnumSet<PhaseCode> ABC = EnumSet.of(A, B, C);
+    
+    public static final EnumSet<PhaseCode> AN = EnumSet.of(A, N);
+    
+    public static final EnumSet<PhaseCode> BN = EnumSet.of(B, N);
+    
+    public static final EnumSet<PhaseCode> CN = EnumSet.of(C, N);
+    
+    public static final EnumSet<PhaseCode> ABN = EnumSet.of(A, B, N);
+    
+    public static final EnumSet<PhaseCode> ACN = EnumSet.of(A, C, N);
+    
+    public static final EnumSet<PhaseCode> BCN = EnumSet.of(B, C, N);
 
     /**
      * S is a mask of S1, S2 and SN and this translation is handled by the Gld Writer

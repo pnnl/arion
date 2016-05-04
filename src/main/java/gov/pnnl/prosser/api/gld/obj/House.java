@@ -4,6 +4,8 @@
 package gov.pnnl.prosser.api.gld.obj;
 
 import gov.pnnl.prosser.api.GldSimulator;
+import gov.pnnl.prosser.api.gld.enums.AuxiliaryStrategy;
+import gov.pnnl.prosser.api.gld.enums.AuxiliarySystemType;
 import gov.pnnl.prosser.api.gld.enums.CoolingSystemType;
 import gov.pnnl.prosser.api.gld.enums.FanType;
 import gov.pnnl.prosser.api.gld.enums.HeatingSystemType;
@@ -141,8 +143,205 @@ public class House extends ResidentialEnduse {
      * FNCS controller
      */
     private Controller controller;
+    
+    /**
+     * number of stories
+     */
+    private Integer numberOfStories;
+    
+    /**
+     * ceiling height (ft)
+     */
+    private Double ceilingHeight;
+    
+    /**
+     * over sizing factor
+     */
+    private Double overSizingFactor;
+    
+    /**
+     * glazing layers
+     */
+    private Integer glazingLayers;
+    
+    /**
+     * glass type
+     */
+    private Integer glassType;    
+    
+    /**
+     * glazing Treatment
+     */
+    private Integer glazingTreatment;
+    
+    /**
+     * window frame
+     */
+    private Integer windowFrame;
+    
+    /**
+     * heating COP
+     */
+    private Double heatingCOP;
+    
+    /**
+     * auxiliary_strategy
+     */
+    private AuxiliaryStrategy auxiliaryStrategy;
+    
+    /**
+     * auxiliary_system_type
+     */
+    private AuxiliarySystemType auxiliarySystemType;
+    
+    /**
+	 * @return the auxiliarySystemType
+	 */
+	public AuxiliarySystemType getAuxiliarySystemType() {
+		return auxiliarySystemType;
+	}
+
+	/**
+	 * @param auxiliarySystemType the auxiliarySystemType to set
+	 */
+	public void setAuxiliarySystemType(AuxiliarySystemType auxiliarySystemType) {
+		this.auxiliarySystemType = auxiliarySystemType;
+	}
 
     /**
+	 * @return the auxiliaryStrategy
+	 */
+	public AuxiliaryStrategy getAuxiliaryStrategy() {
+		return auxiliaryStrategy;
+	}
+
+	/**
+	 * @param auxiliaryStrategy the auxiliaryStrategy to set
+	 */
+	public void setAuxiliaryStrategy(AuxiliaryStrategy auxiliaryStrategy) {
+		this.auxiliaryStrategy = auxiliaryStrategy;
+	}
+
+	/**
+	 * @return the heatingCOP
+	 */
+	public Double getHeatingCOP() {
+		return heatingCOP;
+	}
+
+	/**
+	 * @param heatingCOP the heatingCOP to set
+	 */
+	public void setHeatingCOP(Double heatingCOP) {
+		this.heatingCOP = heatingCOP;
+	}
+
+	/**
+	 * @return the overSizingFactor
+	 */
+	public double getOverSizingFactor() {
+		return overSizingFactor;
+	}
+
+	/**
+	 * @param overSizingFactor the overSizingFactor to set
+	 */
+	public void setOverSizingFactor(double overSizingFactor) {
+		this.overSizingFactor = overSizingFactor;
+	}
+
+	/**
+	 * @return the numberOfStories
+	 */
+	public Integer getNumberOfStories() {
+		return numberOfStories;
+	}
+
+	/**
+	 * @param numberOfStories the numberOfStories to set
+	 */
+	public void setNumberOfStories(Integer numberOfStories) {
+		this.numberOfStories = numberOfStories;
+	}
+
+	/**
+	 * @return the ceilingHeight
+	 */
+	public Double getCeilingHeight() {
+		return ceilingHeight;
+	}
+
+	/**
+	 * @param ceilingHeight the ceilingHeight to set
+	 */
+	public void setCeilingHeight(Double ceilingHeight) {
+		this.ceilingHeight = ceilingHeight;
+	}
+
+	/**
+	 * @return the glazingLayers
+	 */
+	public Integer getGlazingLayers() {
+		return glazingLayers;
+	}
+
+	/**
+	 * @param glazingLayers the glazingLayers to set
+	 */
+	public void setGlazingLayers(Integer glazingLayers) {
+		this.glazingLayers = glazingLayers;
+	}
+
+	/**
+	 * @return the glassType
+	 */
+	public Integer getGlassType() {
+		return glassType;
+	}
+
+	/**
+	 * @param glassType the glassType to set
+	 */
+	public void setGlassType(Integer glassType) {
+		this.glassType = glassType;
+	}
+
+	/**
+	 * @return the glazingTreatment
+	 */
+	public Integer getGlazingTreatment() {
+		return glazingTreatment;
+	}
+
+	/**
+	 * @param glazingTreatment the glazingTreatment to set
+	 */
+	public void setGlazingTreatment(Integer glazingTreatment) {
+		this.glazingTreatment = glazingTreatment;
+	}
+
+	/**
+	 * @return the windowFrame
+	 */
+	public Integer getWindowFrame() {
+		return windowFrame;
+	}
+
+	/**
+	 * @param windowFrame the windowFrame to set
+	 */
+	public void setWindowFrame(Integer windowFrame) {
+		this.windowFrame = windowFrame;
+	}
+
+	/**
+	 * @param overSizingFactor the overSizingFactor to set
+	 */
+	public void setOverSizingFactor(Double overSizingFactor) {
+		this.overSizingFactor = overSizingFactor;
+	}
+
+	/**
      * the loads on the house (lights, etc.)
      */
     private final List<ZIPLoad> loads = new ArrayList<>();
@@ -674,8 +873,18 @@ public class House extends ResidentialEnduse {
         writeProperty(sb, "motor_efficiency", this.motorEfficiency);
         writeProperty(sb, "motor_model", this.motorModel);
         writeProperty(sb, "cooling_COP", this.coolingCop);
+        writeProperty(sb, "heating_COP", this.heatingCOP);
         writeProperty(sb, "floor_area", this.floorArea);
         writeProperty(sb, "number_of_doors", this.numberOfDoors);
+        writeProperty(sb, "number_of_stories", this.numberOfStories);
+        writeProperty(sb, "ceiling_height", this.ceilingHeight);
+        writeProperty(sb, "over_sizing_factor", this.overSizingFactor);
+        writeProperty(sb, "glazing_layers", this.glazingLayers);
+        writeProperty(sb, "glass_type", this.glassType);
+        writeProperty(sb, "glazing_treatment", this.glazingTreatment);
+        writeProperty(sb, "window_frame", this.windowFrame);
+        writeProperty(sb, "auxiliary_strategy", this.auxiliaryStrategy);
+        writeProperty(sb, "auxiliary_system_type", this.auxiliarySystemType);
         if (heatingSetpointFn != null) {
             writeProperty(sb, "heating_setpoint", this.heatingSetpointFn);
         } else {

@@ -68,8 +68,11 @@ public abstract class GldSimulatorUtils {
     private static final double hvacPf = 0.97;
     private static final double scaleFloor = 1;
     private static final double sigmaTstat = 2;
-
+    
     public static void MakeTransactiveMarket(GldSimulator simulator, String marketName) {
+    	MakeTransactiveMarket(simulator, marketName, 300, "kW", 3.78, 0.042676, 0.02);
+    }
+    public static void MakeTransactiveMarket(GldSimulator simulator, String marketName, int marketPeriod, String marketUnit, double priceCap, double initialPrice, double initialStandardDeviation) {
         String marketMean = "current_price_mean_24h";
         String marketStDev = "current_price_stdev_24h";
         
@@ -80,17 +83,17 @@ public abstract class GldSimulatorUtils {
         
         // Create the FNCS auction
         final AuctionObject auction = simulator.auctionObject(marketName);
-        auction.setUnit("kW");
-        auction.setPeriod(300);
-        auction.setPriceCap(3.78);
+        auction.setUnit(marketUnit);
+        auction.setPeriod(marketPeriod);
+        auction.setPriceCap(priceCap);
         auction.setTransactionLogFile("log_file_" + simulator.getName() + ".csv");
         auction.setCurveLogFile("bid_curve_" + simulator.getName() + ".csv");
         auction.setCurveLogInfo(CurveOutput.EXTRA);
         auction.setNetworkAveragePriceProperty(marketMean);
         auction.setNetworkStdevPriceProperty(marketStDev);
         auction.setSpecialMode(SpecialMode.BUYERS_ONLY);
-        auction.setInitPrice(0.042676);
-        auction.setInitStdev(0.02);
+        auction.setInitPrice(initialPrice);
+        auction.setInitStdev(initialStandardDeviation);
         auction.setUseFutureMeanPrice(false);
         auction.setWarmup(0);
         auction.setFncsControllerPrefix();
@@ -102,12 +105,12 @@ public abstract class GldSimulatorUtils {
         // Get houses and add controllers
         List<AbstractGldObject> houses = simulator.getObjects();
         houses.removeIf(x -> !x.getClass().equals(House.class));
-
+        Random randNumGen = new Random(100);
         for (Iterator<AbstractGldObject> i = houses.iterator(); i.hasNext(); ) {
             House house = (House)i.next();
             
             // Create the base controller
-            Controller controller = house.controller(auction.getFncsControllerPrefix() + house.getName());
+            Controller controller = house.controller(String.format("%s_controller", house.getName()));
             controller.setAuction(auction);
             controller.setScheduleSkew(house.getScheduleSkew());
             controller.setAverageTarget(auction.getNetworkAveragePriceProperty());
@@ -115,7 +118,7 @@ public abstract class GldSimulatorUtils {
             controller.setUseFncs(true);
             
             // Setup the controller
-            setupController(house, controller, new Random());
+            
         }
     }
     
