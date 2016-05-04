@@ -43,6 +43,7 @@ public abstract class LinkObject extends PowerflowObject {
      */
     public void setFrom(final Node from) {
         this.from = from;
+        this.from.addChild(this);
     }
 
     /**
@@ -62,6 +63,7 @@ public abstract class LinkObject extends PowerflowObject {
      */
     public void setTo(final Node to) {
         this.to = to;
+        this.addChild(to);
     }
 
     /**

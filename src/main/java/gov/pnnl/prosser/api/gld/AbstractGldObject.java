@@ -8,6 +8,8 @@ import gov.pnnl.prosser.api.gld.obj.Recorder;
 import gov.pnnl.prosser.api.sql.SqlFile;
 
 import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 import org.apache.commons.math3.complex.Complex;
@@ -47,6 +49,8 @@ public abstract class AbstractGldObject implements GldSerializable {
      * the target (parent) that is referenced
      */
     private AbstractGldObject parent;
+    
+    private final List<AbstractGldObject> children = new ArrayList<>();
 
     /**
      * Simulator reference
@@ -136,6 +140,15 @@ public abstract class AbstractGldObject implements GldSerializable {
      */
     public void setParent(final AbstractGldObject parent) {
         this.parent = parent;
+        this.parent.addChild(this);
+    }
+    
+    public void addChild(final AbstractGldObject child) {
+        this.children.add(child);
+    }
+    
+    public List<AbstractGldObject> getChildren() {
+        return this.children;
     }
     
     @Override
