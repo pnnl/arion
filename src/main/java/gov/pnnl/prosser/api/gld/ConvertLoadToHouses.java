@@ -71,6 +71,7 @@ public abstract class ConvertLoadToHouses {
 				tpm.setPhases(parentPhases);
 				tpm.setGroupId("Residential_Meter");
 				tpm.setNominalVoltage(120.0);
+				int count = 0;
 				//calculate Schedule Skews
 				skewValue = (long)(2700.0*randNumGen.nextGaussian());
 				if(skewValue < -8100){
@@ -197,16 +198,19 @@ public abstract class ConvertLoadToHouses {
 				double[][] coolsp = coolingSetpoint[rowTi];
 				int noCoolBins = coolsp.length;
 				int coolBin = randNumGen.nextInt(noCoolBins);
-				while(coolSp[coolBin][rowTi] < 1){
+				while(coolSp[coolBin][rowTi] < 1 && count < 20){
 					coolBin = randNumGen.nextInt(noCoolBins);
+					count = count + 1;
 				}
 				coolSp[coolBin][rowTi] = coolSp[coolBin][rowTi] - 1;
 				int heating_set = (int)Math.ceil(noHeatSch * randNumGen.nextDouble());
 				double[][] heatsp = heatingSetpoint[rowTi];
 				int noHeatBins = heatsp.length;
 				int heatBin = randNumGen.nextInt(noHeatBins);
-				while(heatSp[heatBin][rowTi] < 1 && heatsp[heatBin][2] >= coolsp[coolBin][3]){
+				count = 0;
+				while((heatSp[heatBin][rowTi] < 1 && count < 20) || heatsp[heatBin][2] >= coolsp[coolBin][3]){
 					heatBin = randNumGen.nextInt(noHeatBins);
+					count = count +1;
 				}
 				heatSp[heatBin][rowTi] = heatSp[heatBin][rowTi] - 1;
 				double coolNight = (coolsp[coolBin][2] - coolsp[coolBin][3])*randNumGen.nextDouble() + coolsp[coolBin][3] + 1;

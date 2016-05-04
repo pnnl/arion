@@ -79,7 +79,7 @@ public class Ieee123NodeTestFeeder {
         this.switches = new HashMap<Integer, Switch>();
         
         this.simulator.addIncludes(Paths.get("res/appliance_schedules.glm"));
-        this.simulator.addIncludes(Paths.get("water_and_setpoint_schedule_v5.glm"));
+        this.simulator.addIncludes(Paths.get("res/water_and_setpoint_schedule_v5.glm"));
         //TODO: change this to use the weather file for the chosen region
         ClimateObject climate = this.simulator.climateObject("Columbus OH");
         climate.setTmyFile(Paths.get("res/ColumbusWeather2009_2a.csv"));
