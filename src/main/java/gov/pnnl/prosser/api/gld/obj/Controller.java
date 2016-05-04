@@ -467,16 +467,17 @@ public class Controller extends AbstractGldObject {
 		writeProperty(sb, "ramp_low", rampLow);
 	}
 	
-	public void writeFncs2Directives(StringBuilder sb, String gldSimName, String ns3SimName) {
+	public void writeFncs2Directives(StringBuilder sb) {
+	    String ns3SimName = this.simulator.getNs3Sim() == null ? "" : this.simulator.getNs3Sim().getName();
 	    writeRoutePresync(sb, auction.getName(), "current_market.clearing_price", this.getName(), "clearPrice");
 	    writeRoutePresync(sb, auction.getName(), "market_id", this.getName(), "mktID");
 	    writeRoutePresync(sb, auction.getName(), auction.getNetworkAveragePriceProperty(), this.getName(), "avgPrice");
 	    writeRoutePresync(sb, auction.getName(), auction.getNetworkStdevPriceProperty(), this.getName(), "stdevPrice");
-	    writeSubmitBidState(sb, ns3SimName, gldSimName, this.getName(), auction.getName());
-	    writeSubscribePresync(sb, this.getName(), "proxy_clear_price", ns3SimName, gldSimName, auction.getName(),"clearPrice");
-	    writeSubscribePresync(sb, this.getName(), "proxy_market_id", ns3SimName, gldSimName, auction.getName(), "mktID");
-	    writeSubscribePresync(sb, this.getName(), "proxy_average", ns3SimName, gldSimName, auction.getName(), "avgPrice");
-	    writeSubscribePresync(sb, this.getName(), "proxy_standard_deviation", ns3SimName, gldSimName, auction.getName(),"stdevPrice");
+	    writeSubmitBidState(sb, ns3SimName, this.simulator.getName(), this.getName(), auction.getName());
+	    writeSubscribePresync(sb, this.getName(), "proxy_clear_price", ns3SimName, this.simulator.getName(), auction.getName(),"clearPrice");
+	    writeSubscribePresync(sb, this.getName(), "proxy_market_id", ns3SimName, this.simulator.getName(), auction.getName(), "mktID");
+	    writeSubscribePresync(sb, this.getName(), "proxy_average", ns3SimName, this.simulator.getName(), auction.getName(), "avgPrice");
+	    writeSubscribePresync(sb, this.getName(), "proxy_standard_deviation", ns3SimName, this.simulator.getName(), auction.getName(),"stdevPrice");
 	}
 	
 	private void writeRoutePresync(StringBuilder sb, String auctionName, String auctionProperty, String controllerName, String controllerProperty) {
