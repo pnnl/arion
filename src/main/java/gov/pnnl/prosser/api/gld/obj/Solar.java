@@ -90,7 +90,6 @@ public class Solar extends AbstractGldObject {
     }
 
     /**
-     * @param generatorMode
      * REQUIRED
      * Currently solar must operate in SUPPLY_DRIVEN
      */
