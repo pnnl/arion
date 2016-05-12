@@ -25,6 +25,7 @@ import gov.pnnl.prosser.api.gld.obj.TriplexLine;
 import gov.pnnl.prosser.api.gld.obj.TriplexMeter;
 import gov.pnnl.prosser.api.gld.obj.ZIPLoad;
 
+import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.Iterator;
 import java.util.List;
@@ -68,6 +69,37 @@ public abstract class GldSimulatorUtils {
     private static final double hvacPf = 0.97;
     private static final double scaleFloor = 1;
     private static final double sigmaTstat = 2;
+    
+    public static List<House> FindDownstreamHouses(GldSimulator sim, String NodeStart){
+    	List<AbstractGldObject> children = new ArrayList<AbstractGldObject>();
+    	List<House> houses = new ArrayList<House>();
+    	List<AbstractGldObject> objs = sim.getObjects();
+    	int preNumChild = 0;
+    	for(AbstractGldObject obj : objs){
+    		if(obj.getName().equals(NodeStart)){
+    			for(AbstractGldObject child : obj.getChildren()){
+    				children.add(child);
+    			}
+    		}
+    	}
+    	while(preNumChild != children.size()){
+    		preNumChild = children.size();
+    		for(AbstractGldObject parent : children){
+    			if(!parent.getGldObjectType().equals("house")){
+    				for(AbstractGldObject child : parent.getChildren()){
+    					if(!children.contains(child)){
+    						children.add(child);
+    					}
+    				}
+    			}
+    		}
+    	}
+    	children.removeIf(x -> !x.getGldObjectType().equals("house"));
+    	for(AbstractGldObject house : children){
+    		houses.add((House)house);
+    	}
+    	return houses;
+    }
     
     public static void MakeTransactiveMarket(GldSimulator simulator, String marketName) {
     	MakeTransactiveMarket(simulator, marketName, 300, "kW", 3.78, 0.042676, 0.02);
@@ -118,7 +150,8 @@ public abstract class GldSimulatorUtils {
             controller.setUseFncs(true);
             
             // Setup the controller
-            
+            Random rand = new Random(10);
+            setupController(house, controller, rand);
         }
     }
     
