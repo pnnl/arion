@@ -86,7 +86,9 @@ public abstract class GldSimulatorWriter {
                 o.createSqlObjects(sqlFile);
                 if (o instanceof House) {
                     House house = (House)o;
-                    house.getController().writeFncs2Directives(gldFncsConfig);
+                    if(house.getController() != null){
+                    	house.getController().writeFncs2Directives(gldFncsConfig);
+                    }
                 }
                 try {
                     o.writeExternalFiles(path);

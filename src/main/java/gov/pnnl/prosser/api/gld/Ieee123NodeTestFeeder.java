@@ -1281,15 +1281,15 @@ public class Ieee123NodeTestFeeder {
     public void createSwitches() {
         this.switches.put(13152, this.simulator.switchLinkObject(String.format("%s_switch_13152", this.name), PhaseCode.ABCN, this.nodes.get(13), this.nodes.get(152), SwitchStatus.CLOSED));
         this.switches.put(18135, this.simulator.switchLinkObject(String.format("%s_switch_18135", this.name), PhaseCode.ABCN, this.nodes.get(18), this.nodes.get(135), SwitchStatus.CLOSED));
-        this.switches.put(60160, this.simulator.switchLinkObject(String.format("%s_switch_60160", this.name), PhaseCode.ABCN, this.nodes.get(60), this.nodes.get(160), SwitchStatus.CLOSED));
+        this.switches.put(60160, this.simulator.switchLinkObject(String.format("%s_switch_60160", this.name), PhaseCode.ABCN, this.loads.get(60), this.nodes.get(160), SwitchStatus.CLOSED));
         this.switches.put(61611, this.simulator.switchLinkObject(String.format("%s_switch_61611", this.name), PhaseCode.ABCN, this.nodes.get(61), this.nodes.get(611), SwitchStatus.CLOSED));
         this.switches.put(97197, this.simulator.switchLinkObject(String.format("%s_switch_97197", this.name), PhaseCode.ABCN, this.nodes.get(97), this.nodes.get(197), SwitchStatus.CLOSED));
         this.switches.put(1491149, this.simulator.switchLinkObject(String.format("%s_switch_1491149", this.name), PhaseCode.ABCN, this.nodes.get(1491), this.nodes.get(149), SwitchStatus.CLOSED));
         this.switches.put(250251, this.simulator.switchLinkObject(String.format("%s_switch_250251", this.name), PhaseCode.ABCN, this.nodes.get(250), this.nodes.get(251), SwitchStatus.OPEN));
         this.switches.put(450451, this.simulator.switchLinkObject(String.format("%s_switch_450451", this.name), PhaseCode.ABCN, this.nodes.get(450), this.nodes.get(451), SwitchStatus.OPEN));
-        this.switches.put(5494, this.simulator.switchLinkObject(String.format("%s_switch_5494", this.name), EnumSet.of(PhaseCode.A, PhaseCode.N), this.nodes.get(54), this.nodes.get(94), SwitchStatus.OPEN));
+        this.switches.put(5494, this.simulator.switchLinkObject(String.format("%s_switch_5494", this.name), EnumSet.of(PhaseCode.A, PhaseCode.N), this.nodes.get(54), this.loads.get(94), SwitchStatus.OPEN));
         this.switches.put(151300, this.simulator.switchLinkObject(String.format("%s_switch_151300", this.name), PhaseCode.ABCN, this.nodes.get(151), this.nodes.get(300), SwitchStatus.OPEN));
-        this.switches.put(95195, this.simulator.switchLinkObject(String.format("%s_switch_95195", this.name), PhaseCode.ABCN, this.nodes.get(95), this.nodes.get(195), SwitchStatus.OPEN));
+        this.switches.put(95195, this.simulator.switchLinkObject(String.format("%s_switch_95195", this.name), PhaseCode.ABCN, this.loads.get(95), this.nodes.get(195), SwitchStatus.OPEN));
     }
     
     public void setNodeVoltages(Node node) {
