@@ -428,7 +428,7 @@ public class Controller extends AbstractGldObject {
 	 */
 	@Override
 	protected String getGldObjectType() {
-		return "controller";
+		return "controller_ccsi";
 	}
 
 	/* (non-Javadoc)

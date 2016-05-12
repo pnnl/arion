@@ -433,7 +433,7 @@ public class AuctionObject extends AbstractGldObject {
      */
     @Override
     protected String getGldObjectType() {
-        return "auction";
+        return "auction_ccsi";
     }
 
     /**

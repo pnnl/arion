@@ -15,5 +15,6 @@ public enum ControlMode {
     DOUBLE_RAMP,
     DUTYCYCLE,
     PROBABILITY_OFF,
-    ELASTICITY_MODEL;
+    ELASTICITY_MODEL,
+    DOUBLE_PRICE;
 }
