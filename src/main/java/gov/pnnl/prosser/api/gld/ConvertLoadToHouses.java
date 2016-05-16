@@ -217,8 +217,8 @@ public abstract class ConvertLoadToHouses {
 				double heatNight = (heatsp[heatBin][2] - heatsp[heatBin][3])*randNumGen.nextDouble() + heatsp[heatBin][3] + 1;
 				double coolNightDiff = coolsp[coolBin][1]*2*randNumGen.nextDouble();
 				double heatNightDiff = heatsp[heatBin][1]*2*randNumGen.nextDouble();
-				resHouse.setCoolingSetpointFn(String.format("cooling_setpoint cooling%d*%f+%f", coolingSet, coolNightDiff, coolNight));
-				resHouse.setHeatingSetpointFn(String.format("heating_setpoint heating%d*%f+%f", heatingSet, heatNightDiff, heatNight));
+				resHouse.setCoolingSetpointFn(String.format("cooling_setpoint cooling%d*%1.3f+%2.2f", coolingSet, coolNightDiff, coolNight));
+				resHouse.setHeatingSetpointFn(String.format("heating_setpoint heating%d*%1.3f+%2.2f", heatingSet, heatNightDiff, heatNight));
 				//Scale all of the end-use loads
 				double scalar1 = 324.9 * Math.pow(floor_area, 0.442) / 8907;
 				double scalar2 = 0.8 + (0.4 * randNumGen.nextDouble());
