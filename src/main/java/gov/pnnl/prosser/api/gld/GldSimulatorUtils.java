@@ -73,6 +73,8 @@ public abstract class GldSimulatorUtils {
     
     public static List<House> FindDownstreamHouses(GldSimulator sim, String NodeStart){
     	List<AbstractGldObject> children = new ArrayList<AbstractGldObject>();
+    	List<AbstractGldObject> newChildren = new ArrayList<AbstractGldObject>();
+    	List<AbstractGldObject> oldChildren = new ArrayList<AbstractGldObject>();
     	List<House> houses = new ArrayList<House>();
     	List<AbstractGldObject> objs = sim.getObjects();
     	int preNumChild = 0;
@@ -85,17 +87,20 @@ public abstract class GldSimulatorUtils {
     	}
     	while(preNumChild != children.size()){
     		preNumChild = children.size();
-    		final ListIterator<AbstractGldObject> iter = children.listIterator();
-    		while(iter.hasNext()) {
-    		    final AbstractGldObject parent = iter.next();
-    			if(!parent.getGldObjectType().equals("house")){
+    		for(AbstractGldObject parent : children){
+    			if(!parent.getGldObjectType().equals("house") && !oldChildren.contains(parent)){
     				for(AbstractGldObject child : parent.getChildren()){
     					if(!children.contains(child)){
-    					    iter.add(child);
+    					    newChildren.add(child);
     					}
     				}
+    				oldChildren.add(parent);
     			}
     		}
+    		for(AbstractGldObject newChild : newChildren){
+    			children.add(newChild);
+    		}
+    		newChildren.clear();
     	}
     	children.removeIf(x -> !x.getGldObjectType().equals("house"));
     	for(AbstractGldObject house : children){
@@ -411,7 +416,7 @@ public abstract class GldSimulatorUtils {
         setFloorarea(house, mobilehome_floorarea_1, 150, scaleFloor, rand);
     }
 
-    private static void setupController(final House house, final Controller controller, final Random rand) {
+    public static void setupController(final House house, final Controller controller, final Random rand) {
         // we need +1 to skip zeros
         final int scheduleCool = rand.nextInt(8) + 1;
         final double coolOffset = (cooloffset_1 - cooloffset_2) + 2 * cooloffset_2 * rand.nextDouble();
