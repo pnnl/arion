@@ -473,7 +473,9 @@ public class AuctionObject extends AbstractGldObject {
 
     @Override
     public void writeExternalFiles(Path path) throws IOException {
-        this.player.writeExternalFiles(path);
+        if (player != null) {
+            this.player.writeExternalFiles(path);
+        }
     }
 
     /**
