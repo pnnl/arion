@@ -7,14 +7,6 @@
 	<artifactId>arion-api</artifactId>
 	<version>1.0.0-SNAPSHOT</version>
 
-	<prerequisites>
-		<maven>3.0.0</maven>
-	</prerequisites>
-
-	<properties>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-	</properties>
-
 	<dependencies>
 		<dependency>
 			<groupId>org.apache.commons</groupId>
@@ -73,6 +65,14 @@
 		</dependency>
 	</dependencies>
 
+	<prerequisites>
+		<maven>3.0</maven>
+	</prerequisites>
+
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	</properties>
+
 	<build>
 		<finalName>${project.artifactId}</finalName>
 		<pluginManagement>
@@ -86,7 +86,7 @@
 				</plugin>
 				<plugin>
 					<artifactId>maven-compiler-plugin</artifactId>
-					<version>3.3</version>
+					<version>3.5.1</version>
 					<configuration>
 						<source>1.8</source>
 						<target>1.8</target>
@@ -104,6 +104,26 @@
 					</configuration>
 				</plugin>
 				<plugin>
+					<artifactId>maven-clean-plugin</artifactId>
+					<version>3.0.0</version>
+				</plugin>
+				<plugin>
+					<artifactId>maven-deploy-plugin</artifactId>
+					<version>2.8.2</version>
+				</plugin>
+				<plugin>
+					<artifactId>maven-install-plugin</artifactId>
+					<version>2.5.2</version>
+				</plugin>
+				<plugin>
+					<artifactId>maven-resources-plugin</artifactId>
+					<version>2.7</version>
+				</plugin>
+				<plugin>
+					<artifactId>maven-site-plugin</artifactId>
+					<version>3.5.1</version>
+				</plugin>
+				<plugin>
 					<groupId>org.codehaus.mojo</groupId>
 					<artifactId>versions-maven-plugin</artifactId>
 					<version>2.2</version>
@@ -113,7 +133,7 @@
 		<plugins>
 			<plugin>
 				<artifactId>maven-shade-plugin</artifactId>
-				<version>2.4.2</version>
+				<version>2.4.3</version>
 				<configuration>
 					<createDependencyReducedPom>false</createDependencyReducedPom>
 				</configuration>
@@ -154,4 +174,28 @@
 		</plugins>
 	</build>
 
+	<reporting>
+		<plugins>
+			<plugin>
+				<artifactId>maven-project-info-reports-plugin</artifactId>
+				<version>2.9</version>
+			</plugin>
+		</plugins>
+	</reporting>
+
+	<inceptionYear>2015</inceptionYear>
+	<name>Arion</name>
+	<organization>
+		<name>Pacific Northwest National Laboratory</name>
+		<url>http://www.pnnl.gov</url>
+	</organization>
+	<ciManagement>
+		<system>Jenkins</system>
+		<url>https://ci.pnnl.gov</url>
+	</ciManagement>
+	<scm>
+		<url>https://stash.pnnl.gov/projects/PR/repos/arion-api/browse</url>
+		<tag>master</tag>
+		<connection>scm:git:https://stash.pnnl.gov/scm/pr/arion-api.git</connection>
+	</scm>
 </project>
