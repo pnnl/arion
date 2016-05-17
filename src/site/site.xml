@@ -7,4 +7,7 @@
 		<artifactId>maven-fluido-skin</artifactId>
 		<version>1.5</version>
 	</skin>
+	<body>
+		<menu ref="modules" />
+	</body>
 </project>
