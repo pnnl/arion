@@ -29,6 +29,7 @@ import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Random;
 
 /**
@@ -84,11 +85,13 @@ public abstract class GldSimulatorUtils {
     	}
     	while(preNumChild != children.size()){
     		preNumChild = children.size();
-    		for(AbstractGldObject parent : children){
+    		final ListIterator<AbstractGldObject> iter = children.listIterator();
+    		while(iter.hasNext()) {
+    		    final AbstractGldObject parent = iter.next();
     			if(!parent.getGldObjectType().equals("house")){
     				for(AbstractGldObject child : parent.getChildren()){
     					if(!children.contains(child)){
-    						children.add(child);
+    					    iter.add(child);
     					}
     				}
     			}
