@@ -7,6 +7,7 @@ import gov.pnnl.prosser.api.GldSimulator;
 import gov.pnnl.prosser.api.NetworkCapable;
 import gov.pnnl.prosser.api.gld.AbstractGldObject;
 import gov.pnnl.prosser.api.gld.enums.CurveOutput;
+import gov.pnnl.prosser.api.gld.enums.MarketSetUp;
 import gov.pnnl.prosser.api.gld.enums.SpecialMode;
 import gov.pnnl.prosser.api.sql.SqlFile;
 
@@ -101,12 +102,17 @@ public class AuctionObject extends AbstractGldObject {
      * only controllers with this prefix will talk with this auction
      */
     private String fncsControllerPrefix;
+    
+    /**
+     * market set up type
+     * Set this to the particular setup market interaction desired
+     */
+    private MarketSetUp marketSetUp;
 
     public AuctionObject(final GldSimulator simulator) {
         super(simulator);
+        this.marketSetUp = MarketSetUp.NORMAL;
         simulator.ensureMarketModule();
-//        simulator.ensureCommModule();
-//        simulator.ensureConnectionModule();
     }
 
     /**
@@ -365,25 +371,6 @@ public class AuctionObject extends AbstractGldObject {
         this.networkStdevPriceProperty = networkStdevPriceProperty;
     }
 
-//    /**
-//     * Get the market network interface adjust price property
-//     * 
-//     * @return the networkAdjustPriceProperty
-//     */
-//    public String getNetworkAdjustPriceProperty() {
-//        return networkAdjustPriceProperty;
-//    }
-
-//    /**
-//     * Set the market network interface adjust price property
-//     * 
-//     * @param networkAdjustPriceProperty
-//     *            the networkAdjustPriceProperty to set
-//     */
-//    public void setNetworkAdjustPriceProperty(final String networkAdjustPriceProperty) {
-//        this.networkAdjustPriceProperty = networkAdjustPriceProperty;
-//    }
-
     /**
      * Get the controller prefix for FNCS
      * only controllers with this prefix will talk with this auction
@@ -404,8 +391,22 @@ public class AuctionObject extends AbstractGldObject {
     public void setFncsControllerPrefix(String fncsControllerPrefix) {
         this.fncsControllerPrefix = fncsControllerPrefix;
     }
-    
+        
     /**
+	 * @return the marketSetUp
+	 */
+	public MarketSetUp getMarketSetUp() {
+		return marketSetUp;
+	}
+
+	/**
+	 * @param marketSetUp the marketSetUp to set
+	 */
+	public void setMarketSetUp(MarketSetUp marketSetUp) {
+		this.marketSetUp = marketSetUp;
+	}
+
+	/**
      * Set the controller prefix for FNCS to a unique id.
      * only controllers with this prefix will talk with this auction
      * 
@@ -419,6 +420,29 @@ public class AuctionObject extends AbstractGldObject {
     	return fncsPrefix;
     }
     
+    public void writeFncs2Directives(StringBuilder sb) {
+    	if(this.getMarketSetUp().equals(MarketSetUp.AGGREGATE)){
+    		if(this.simulator.getThirdPartySim() != null){
+    			writeSubscritpionPrecommit(sb, "fixed_price", this.simulator.getThirdPartySim().getName(), "price");
+    		} else {
+    			throw new RuntimeException(String.format("GldSimulaator, %s, is missing a ThirdPartySimulator in order to set up the market", this.simulator.getName()));
+    		}
+    	}
+    }
+    
+    private void writeSubscritpionPrecommit(StringBuilder sb, String auctionProperty, String thirdPartySimName, String key){
+    	sb.append("subscribe \"precommit:");
+    	sb.append(this.getName());
+    	sb.append('.');
+    	sb.append(auctionProperty);
+    	sb.append(" <- ");
+    	sb.append(thirdPartySimName);
+    	sb.append('/');
+    	sb.append(this.getName());
+    	sb.append('_');
+    	sb.append(key);
+    	sb.append("\";\n");
+    }
 
 //    /**
 //     * {@inheritDoc}
@@ -444,25 +468,16 @@ public class AuctionObject extends AbstractGldObject {
         writeProperty(sb, "unit", unit);
         writeProperty(sb, "period", period);
         writeProperty(sb, "price_cap", priceCap);
-        writeProperty(sb, "transaction_log_file", transactionLogFile);
-        writeProperty(sb, "curve_log_file", curveLogFile);
-        writeProperty(sb, "curve_log_info", curveLogInfo);
+        if(this.marketSetUp.equals(MarketSetUp.NORMAL)){
+	        writeProperty(sb, "transaction_log_file", transactionLogFile);
+	        writeProperty(sb, "curve_log_file", curveLogFile);
+	        writeProperty(sb, "curve_log_info", curveLogInfo);
 
-//        // Market Network Interface
-//        sb.append("    object market_network_interface {\n    ");
-//        writeProperty(sb, "name", getNetworkInterfaceName());
-//        sb.append("    ");
-//        writeProperty(sb, "average_price_prop", networkAveragePriceProperty);
-//        sb.append("    ");
-//        writeProperty(sb, "stdev_price_prop", networkStdevPriceProperty);
-//        sb.append("    ");
-//        writeProperty(sb, "adjust_price_prop", networkAdjustPriceProperty);
-//        sb.append("    };\n");
-
-        if (player != null) {
-            player.writeGldString(sb);
-            // Handle special case since we need a semicolon here
-            sb.insert(sb.length() - 1, ';');
+	        if (player != null) {
+	            player.writeGldString(sb);
+	            // Handle special case since we need a semicolon here
+	            sb.insert(sb.length() - 1, ';');
+	        }
         }
         writeProperty(sb, "special_mode", specialMode);
         writeProperty(sb, "init_price", initPrice);

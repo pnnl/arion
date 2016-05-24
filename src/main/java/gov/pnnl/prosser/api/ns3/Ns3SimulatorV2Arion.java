@@ -22,7 +22,9 @@ import org.jgrapht.graph.SimpleGraph;
 
 import gov.pnnl.prosser.api.GldSimulator;
 import gov.pnnl.prosser.api.gld.AbstractGldObject;
+import gov.pnnl.prosser.api.gld.enums.MarketSetUp;
 import gov.pnnl.prosser.api.gld.obj.AuctionObject;
+import gov.pnnl.prosser.api.gld.obj.Controller;
 import gov.pnnl.prosser.api.gld.obj.House;
 
 /**
@@ -61,18 +63,24 @@ public class Ns3SimulatorV2Arion extends AbstractNs3SimulatorV2 {
                 }
             }
             for (AbstractGldObject object : gldSim.getObjects()) {
-                if (object instanceof House) {
-                    final House house = (House) object;
-                    if (!names.add(house.getController().getName())) {
-                        throw new RuntimeException("Duplicate Name Detected: " + house.getController().getName());
+                if (object instanceof Controller) {
+                    final Controller controller = (Controller) object;
+                    if (!names.add(controller.getName())) {
+                        throw new RuntimeException("Duplicate Name Detected: " + controller.getName());
                     }
-                    graph.addVertex(house.getController().getName());
-                    graph.addEdge("router1", house.getController().getName());
-                    writeControllerToMarketVar(sb, gldSim, house, "submit_bid_state");
-                    writeMarketToControllerVar(sb, gldSim, house, "clearPrice");
-                    writeMarketToControllerVar(sb, gldSim, house, "mktID");
-                    writeMarketToControllerVar(sb, gldSim, house, "avgPrice");
-                    writeMarketToControllerVar(sb, gldSim, house, "stdevPrice");
+                    graph.addVertex(controller.getName());
+                    graph.addEdge("router1", controller.getName());
+                    if(controller.getAuction().getMarketSetUp().equals(MarketSetUp.NORMAL)){
+                    	writeControllerToMarketVar(sb, gldSim, controller, "submit_bid_state");
+                    } else if(controller.getAuction().getMarketSetUp().equals(MarketSetUp.AGGREGATE)){
+                    	writeControllerToMarketVar(sb, gldSim, controller, "bid_price");
+                    	writeControllerToMarketVar(sb, gldSim, controller, "bid_quantity");
+                    	writeControllerToMarketVar(sb, gldSim, controller, "parent_unresponsive_load");
+                    }
+                    writeMarketToControllerVar(sb, gldSim, controller, "clearPrice");
+                    writeMarketToControllerVar(sb, gldSim, controller, "mktID");
+                    writeMarketToControllerVar(sb, gldSim, controller, "avgPrice");
+                    writeMarketToControllerVar(sb, gldSim, controller, "stdevPrice");
                 }
             }
         }
@@ -86,12 +94,12 @@ public class Ns3SimulatorV2Arion extends AbstractNs3SimulatorV2 {
 
     }
 
-    private static void writeMarketToControllerVar(StringBuilder sb, GldSimulator gldSim, House house, String var) {
-        writeMarketToControllerVar(sb, gldSim.getName(), house.getController().getAuction().getName(), house.getController().getName(), var);
+    private static void writeMarketToControllerVar(StringBuilder sb, GldSimulator gldSim, Controller controller, String var) {
+        writeMarketToControllerVar(sb, gldSim.getName(), controller.getAuction().getName(), controller.getName(), var);
     }
 
-    private static void writeControllerToMarketVar(StringBuilder sb, GldSimulator gldSim, House house, String var) {
-        writeControllerToMarketVar(sb, gldSim.getName(), house.getController().getAuction().getName(), house.getController().getName(), var);
+    private static void writeControllerToMarketVar(StringBuilder sb, GldSimulator gldSim, Controller controller, String var) {
+        writeControllerToMarketVar(sb, gldSim.getName(), controller.getAuction().getName(), controller.getName(), var);
     }
 
 }

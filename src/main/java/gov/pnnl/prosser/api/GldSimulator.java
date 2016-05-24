@@ -84,6 +84,8 @@ public class GldSimulator {
     private final List<AbstractGldClass> classes = new ArrayList<>();
     
     private final AbstractNs3SimulatorV2 ns3Sim;
+    
+    private ThirdPartySimulator thirdPartySim; 
 
     /**
      * Default constructor, requires the name
@@ -97,6 +99,20 @@ public class GldSimulator {
     }
 
     /**
+	 * @param thirdPartySim the thirdPartySim to set
+	 */
+	public void setThirdPartySim(ThirdPartySimulator thirdPartySim) {
+		this.thirdPartySim = thirdPartySim;
+	}
+
+	/**
+	 * @return the thirdPartySim
+	 */
+	public ThirdPartySimulator getThirdPartySim() {
+		return thirdPartySim;
+	}
+
+	/**
      * Get the Name of this simulator object - Used when naming the file on disk in an Experiment
      *
      * @return the name
@@ -304,6 +320,22 @@ public class GldSimulator {
      */
     public void addIncludes(final Path... includes) {
         this.includes.addAll(Arrays.asList(includes));
+    }
+    
+    /**
+     * Get an gld object by name
+     * @param name
+     * 				name of the object to find
+     * @return the desired object
+     */
+    public AbstractGldObject getGldObjectByName(String name){
+    	AbstractGldObject rv = null;
+    	for(AbstractGldObject o : this.objects){
+    		if(o.getName().equals(name)){
+    			rv = o;
+    		}
+    	}
+    	return rv;
     }
 
     /**
@@ -761,5 +793,4 @@ public class GldSimulator {
     public WaterHeater waterHeater(final String name) {
         return setupObject(new WaterHeater(this), name);
     }
-
 }

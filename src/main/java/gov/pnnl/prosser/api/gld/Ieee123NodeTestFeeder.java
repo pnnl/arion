@@ -4,10 +4,12 @@
 package gov.pnnl.prosser.api.gld;
 
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
@@ -30,6 +32,7 @@ import gov.pnnl.prosser.api.gld.lib.TransformerConfiguration;
 import gov.pnnl.prosser.api.gld.lib.UndergroundLineConductor;
 import gov.pnnl.prosser.api.gld.obj.ClimateObject;
 import gov.pnnl.prosser.api.gld.obj.Load;
+import gov.pnnl.prosser.api.gld.obj.Meter;
 import gov.pnnl.prosser.api.gld.obj.Node;
 import gov.pnnl.prosser.api.gld.obj.OverheadLine;
 import gov.pnnl.prosser.api.gld.obj.Regulator;
@@ -98,6 +101,7 @@ public class Ieee123NodeTestFeeder {
         this.createOverheadLines();
         this.createUndergroundLines();
         this.createSwitches();
+        this.createDgs();
         if(addMarket){
         	GldSimulatorUtils.MakeTransactiveMarket(this.simulator, String.format("%s_Market", this.name));
         }
@@ -332,9 +336,6 @@ public class Ieee123NodeTestFeeder {
         this.transformerConfiguration.setPowerRating(150.0);
         this.transformerConfiguration.setPrimaryVoltage(4160);
         this.transformerConfiguration.setSecondaryVoltage(480);
-        //TODO are these needed?
-        //this.transformerConfiguration.setResistance(.0127);
-        //this.transformerConfiguration.setReactance(.0272);
         
         this.transformer = this.simulator.transformer(String.format("%s_transformer_611610", this.name), this.transformerConfiguration);
         this.transformer.setPhases(PhaseCode.ABCN);
@@ -365,7 +366,7 @@ public class Ieee123NodeTestFeeder {
             
             for (int j = 0; j < nodes.length; j++) {
                 int key = nodes[j];
-                Node node = this.simulator.node(String.format(stringFormat, this.name, key));
+                Meter node = this.simulator.meter(String.format(stringFormat, this.name, key));
                 node.setPhases(phaseCode);
                 this.setNodeVoltages(node);
                 this.nodes.put(key, node);
@@ -613,7 +614,7 @@ public class Ieee123NodeTestFeeder {
             for (int j = 0; j < loads.length; j++) {
                 String phase = "";
             	int key = loads[j];
-                Node load = this.simulator.node(String.format(stringFormat, this.name, key));
+                Meter load = this.simulator.meter(String.format(stringFormat, this.name, key));
                 load.setPhases(phaseCode);
                 this.setNodeVoltages(load);
                 
@@ -1313,4 +1314,29 @@ public class Ieee123NodeTestFeeder {
     		spctCfg.setPhaseBRating(houseNumber*5.0);
     	}
     }
+    //TODO: Remove this from here and make it a utility function!!!!!
+    public void createDgs(){
+    	List<String> dgLocations = new ArrayList<String>();
+    	dgLocations.add(String.format("%s_node_7", this.simulator.getName()));
+    	dgLocations.add(String.format("%s_node_18", this.simulator.getName()));
+    	dgLocations.add(String.format("%s_node_56", this.simulator.getName()));
+    	dgLocations.add(String.format("%s_node_57", this.simulator.getName()));
+    	dgLocations.add(String.format("%s_node_152", this.simulator.getName()));
+    	for(String objName: dgLocations){
+    		AbstractGldObject dgParent = this.simulator.getGldObjectByName(objName);
+    		if(dgParent != null){
+    			Meter dgMeter = this.simulator.meter(String.format("%s_m_DG_%s", this.simulator.getName(), dgParent.getName()));
+    			dgMeter.setParent(dgParent);;
+    			dgMeter.setPhases(PhaseCode.ABCN);
+    			dgMeter.setNominalVoltage(2401.7771);
+    			dgMeter.setGroupId("DG_Meter");
+    			
+    			Load dgLoad = this.simulator.load(String.format("_%s_DG_%s", this.simulator.getName(), dgParent.getName()));
+    			dgLoad.setParent(dgMeter);
+    			dgLoad.setNominalVoltage(2401.7771);
+    			dgLoad.setPhases(PhaseCode.ABCN);
+    		}
+    	}
+    }
+    	
 }

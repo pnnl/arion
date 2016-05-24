@@ -91,6 +91,12 @@ public abstract class ExperimentMain {
             Files.createDirectory(simPath);
             Ns3SimulatorWriter.getInstance().writeNs3Simulator(simPath.resolve(ns3Name), experiment.getNs3Simulator());
         }
+        for (final ThirdPartySimulator sim : experiment.getThirdPartySimulator()){
+        	final String simName = sim.getName();
+        	final Path simPath = outPath.resolve(simName);
+        	Files.createDirectory(simPath);
+        	ThirdPartySimulatorWriter.writeThirdPartySimulator(simPath, sim);
+        }
         for(final AbstractNs3SimulatorV2 sim: experiment.getNs3SimulatorV2()) {
             final Path simPath = outPath.resolve(sim.getName());
             Files.createDirectories(simPath);

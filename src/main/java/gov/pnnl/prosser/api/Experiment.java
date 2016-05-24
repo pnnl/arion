@@ -13,6 +13,7 @@ import gov.pnnl.prosser.api.ns3.AbstractNs3SimulatorV2;
 import gov.pnnl.prosser.api.ns3.Ns3SimulatorV2Arion;
 import gov.pnnl.prosser.api.ns3.Ns3SimulatorV2DelayDrop;
 import gov.pnnl.prosser.api.ns3.Ns3SimulatorV2FirstN;
+import gov.pnnl.prosser.api.thirdparty.enums.SimType;
 
 /**
  * Prosser Experiment comprising multiple GLD simulators and an NS-3 and FNCS Simulator
@@ -35,6 +36,8 @@ public abstract class Experiment {
     private String experimentName;
 
     private UUID uuid = UUID.randomUUID();
+    
+    private final List<ThirdPartySimulator> thirdPartySimulators = new ArrayList<>();
 
     /**
      * Get the ExperimentName
@@ -97,7 +100,15 @@ public abstract class Experiment {
     public FncsSimulator getFncsSimulator() {
         return this.fncsSimulator;
     }*/
-
+    
+    /**
+     * Get the third party simulators
+     * 
+     * @return the simulators
+     */
+    public List<ThirdPartySimulator> getThirdPartySimulator() {
+    	return this.thirdPartySimulators;
+    }
     /**
      * Get the Extra Experiment files to be included when the experiment is compiled
      *
@@ -131,6 +142,25 @@ public abstract class Experiment {
     public GldSimulator gldSimulator(final String name, final AbstractNs3SimulatorV2 ns3Sim) {
         final GldSimulator sim = new GldSimulator(name, ns3Sim);
         this.gldSimulators.add(sim);
+        this.ensureFncs();
+        return sim;
+    }
+    
+    /**
+     * Get a new GLD Simulator
+     *
+     * @param name
+     *            the name of the simulator, the name of the file generated is based on this name
+     * @param ns3Sim
+     * 				the ns3Sim that this simulator will communicate with
+     * @param thirdPartySim
+     * 						the thridPartySimulator that this simulator will communicate with
+     * @return the simulator
+     */
+    public GldSimulator gldSimulator(final String name, final AbstractNs3SimulatorV2 ns3Sim, final ThirdPartySimulator thirdPartySim) {
+        final GldSimulator sim = new GldSimulator(name, ns3Sim);
+        this.gldSimulators.add(sim);
+        sim.setThirdPartySim(thirdPartySim);
         this.ensureFncs();
         return sim;
     }
@@ -195,6 +225,17 @@ public abstract class Experiment {
             this.fncsSimulator = new FncsSimulator();
         }
         return this.fncsSimulator;
+    }
+    
+    /**
+     * Get a new third pary simulator
+     * @return the simulator
+     */
+    public ThirdPartySimulator thirdPartySimulator(final String name, SimType simType){
+    	ThirdPartySimulator sim = new ThirdPartySimulator(name, simType);
+    	this.thirdPartySimulators.add(sim);
+    	this.ensureFncs();
+    	return sim;
     }
 
     /**

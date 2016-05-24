@@ -16,6 +16,6 @@ public class AuctionClass extends AbstractGldClass {
      */
     @Override
     protected String getGldClassName() {
-        return "auction";
+        return "auction_ccsi";
     }
 }

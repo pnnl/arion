@@ -71,7 +71,7 @@ public abstract class GldSimulatorUtils {
     private static final double scaleFloor = 1;
     private static final double sigmaTstat = 2;
     
-    public static List<House> FindDownstreamHouses(GldSimulator sim, String NodeStart){
+    public static List<House> FindDownstreamHouses(GldSimulator sim, String nodeStart){
     	List<AbstractGldObject> children = new ArrayList<AbstractGldObject>();
     	List<AbstractGldObject> newChildren = new ArrayList<AbstractGldObject>();
     	List<AbstractGldObject> oldChildren = new ArrayList<AbstractGldObject>();
@@ -79,7 +79,7 @@ public abstract class GldSimulatorUtils {
     	List<AbstractGldObject> objs = sim.getObjects();
     	int preNumChild = 0;
     	for(AbstractGldObject obj : objs){
-    		if(obj.getName().equals(NodeStart)){
+    		if(obj.getName().equals(nodeStart)){
     			for(AbstractGldObject child : obj.getChildren()){
     				children.add(child);
     			}
@@ -105,6 +105,9 @@ public abstract class GldSimulatorUtils {
     	children.removeIf(x -> !x.getGldObjectType().equals("house"));
     	for(AbstractGldObject house : children){
     		houses.add((House)house);
+    	}
+    	if(houses.size() == 0){
+    		System.out.println(String.format("Warning: No houses were found downstream from %s.", nodeStart));
     	}
     	return houses;
     }

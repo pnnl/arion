@@ -8,6 +8,7 @@ import gov.pnnl.prosser.api.NetworkCapable;
 import gov.pnnl.prosser.api.gld.AbstractGldObject;
 import gov.pnnl.prosser.api.gld.enums.BidMode;
 import gov.pnnl.prosser.api.gld.enums.ControlMode;
+import gov.pnnl.prosser.api.gld.enums.MarketSetUp;
 import gov.pnnl.prosser.api.gld.enums.UseOverride;
 
 /**
@@ -121,6 +122,11 @@ public class Controller extends AbstractGldObject {
 	 * The schedule skew
 	 */
 	private Long scheduleSkew;
+	
+	/**
+	 * boolean to send the controller bid function call
+	 */
+	private boolean sendControllerBid;
 
 	/**
 	 * @return the useFncs
@@ -423,6 +429,13 @@ public class Controller extends AbstractGldObject {
 		this.scheduleSkew = scheduleSkew;
 	}
 
+	/**
+	 * @param sendControllerBid the sendControllerBid to set
+	 */
+	public void setSendControllerBid(boolean sendControllerBid) {
+		this.sendControllerBid = sendControllerBid;
+	}
+
 	/* (non-Javadoc)
 	 * @see gov.pnnl.prosser.api.gld.AbstractGldObject#getGldObjectType()
 	 */
@@ -473,11 +486,18 @@ public class Controller extends AbstractGldObject {
 	    writeRoutePresync(sb, auction.getName(), "market_id", this.getName(), "mktID");
 	    writeRoutePresync(sb, auction.getName(), auction.getNetworkAveragePriceProperty(), this.getName(), "avgPrice");
 	    writeRoutePresync(sb, auction.getName(), auction.getNetworkStdevPriceProperty(), this.getName(), "stdevPrice");
-	    writeSubmitBidState(sb, ns3SimName, this.simulator.getName(), this.getName(), auction.getName());
+	    if(this.auction.getMarketSetUp().equals(MarketSetUp.NORMAL)){
+	    	writeSubmitBidState(sb, ns3SimName, this.simulator.getName(), this.getName(), auction.getName());
+	    }
 	    writeSubscribePresync(sb, this.getName(), "proxy_clear_price", ns3SimName, this.simulator.getName(), auction.getName(),"clearPrice");
 	    writeSubscribePresync(sb, this.getName(), "proxy_market_id", ns3SimName, this.simulator.getName(), auction.getName(), "mktID");
 	    writeSubscribePresync(sb, this.getName(), "proxy_average", ns3SimName, this.simulator.getName(), auction.getName(), "avgPrice");
 	    writeSubscribePresync(sb, this.getName(), "proxy_standard_deviation", ns3SimName, this.simulator.getName(), auction.getName(),"stdevPrice");
+	    if(this.auction.getMarketSetUp().equals(MarketSetUp.AGGREGATE)){
+	    	writeRouteCommit(sb, this.getName(), "bid_price", this.auction.getName(), "bid_price");
+	    	writeRouteCommit(sb, this.getName(), "bid_quantity", this.auction.getName(), "bid_quantity");
+	    	writeRouteCommit(sb, this.getName(), "parent_unresponsive_load", this.auction.getName(), "parent_responsive_load");
+	    }
 	}
 	
 	private void writeRoutePresync(StringBuilder sb, String auctionName, String auctionProperty, String controllerName, String controllerProperty) {
@@ -505,7 +525,7 @@ public class Controller extends AbstractGldObject {
     }
 	
 	private void writeSubscribePresync(StringBuilder sb, String controllerName, String proxyProperty, String ns3SimName, String gldSimName, String auctionName, String controllerProperty) {
-        sb.append("subscribe \"presync:");
+        sb.append("subscribe \"precommit:");
         sb.append(controllerName);
         sb.append('.');
         sb.append(proxyProperty);
@@ -521,4 +541,16 @@ public class Controller extends AbstractGldObject {
         sb.append(controllerProperty);
         sb.append("\";\n");
     }
+	
+	private void writeRouteCommit(StringBuilder sb, String controllerName, String controllerProperty, String toName, String key){
+		sb.append("Route \"commit:");
+		sb.append(controllerName);
+		sb.append('.');
+		sb.append(controllerProperty);
+		sb.append(" -> ");
+		sb.append(toName);
+		sb.append('/');
+		sb.append(key);
+		sb.append(";0\";\n");
+	}
 }

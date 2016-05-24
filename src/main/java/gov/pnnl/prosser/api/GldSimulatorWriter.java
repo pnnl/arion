@@ -7,6 +7,7 @@ import gov.pnnl.prosser.api.gld.AbstractGldObject;
 import gov.pnnl.prosser.api.gld.lib.GldClock;
 import gov.pnnl.prosser.api.gld.module.Module;
 import gov.pnnl.prosser.api.gld.obj.AbstractGldClass;
+import gov.pnnl.prosser.api.gld.obj.AuctionObject;
 import gov.pnnl.prosser.api.gld.obj.Controller;
 import gov.pnnl.prosser.api.gld.obj.FncsMsg;
 import gov.pnnl.prosser.api.gld.obj.House;
@@ -89,6 +90,14 @@ public abstract class GldSimulatorWriter {
                     if(house.getController() != null){
                     	house.getController().writeFncs2Directives(gldFncsConfig);
                     }
+                }
+                if (o instanceof AuctionObject){
+                	AuctionObject auction = (AuctionObject)o;
+                	try{
+                		auction.writeFncs2Directives(gldFncsConfig);
+                	} catch(Exception e) {
+                		throw new RuntimeException("Missing Simulator", e);
+                	}
                 }
                 try {
                     o.writeExternalFiles(path);
