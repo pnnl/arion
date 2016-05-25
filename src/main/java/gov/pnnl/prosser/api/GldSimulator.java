@@ -115,7 +115,7 @@ public class GldSimulator {
 		for(AbstractGldObject o : this.getObjects()){
 			if(o instanceof Node || o instanceof Meter){
 				node = (Node)o;
-				if(node.getBusType().equals(BusType.SWING)){
+				if(node.getBusType() != null && node.getBusType().equals(BusType.SWING)){
 					break;
 				}
 				node = null;

@@ -6,6 +6,7 @@ package gov.pnnl.prosser.api;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -25,7 +26,7 @@ public class ThirdPartySimulator {
 	
 	private GldSimulator gldSim;
 	
-	private Map<GldSimulator, String> gldSimulators = new TreeMap<>();
+	private Map<GldSimulator, String> gldSimulators = new HashMap<>();
 	
 	private final SimType simType;
 

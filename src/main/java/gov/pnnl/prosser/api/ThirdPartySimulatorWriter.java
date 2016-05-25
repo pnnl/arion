@@ -9,6 +9,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -16,6 +17,7 @@ import java.util.TreeMap;
 import gov.pnnl.prosser.api.gld.AbstractGldObject;
 import gov.pnnl.prosser.api.gld.obj.AuctionObject;
 import gov.pnnl.prosser.api.gld.obj.Controller;
+import gov.pnnl.prosser.api.gld.obj.House;
 import gov.pnnl.prosser.api.ns3.AbstractNs3SimulatorV2;
 import gov.pnnl.prosser.api.thirdparty.enums.SimType;
 
@@ -56,22 +58,32 @@ public abstract class ThirdPartySimulatorWriter {
         if(thirdPartySimulator.getSimType().equals(SimType.MATLAB_AGGREGATOR)){
         	GldSimulator gldSim = thirdPartySimulator.getGldSim();
 	        if (gldSim != null) {
-	        	Map<String, Integer> aggCounters = new TreeMap<>();
+	        	Map<String, Integer> aggCounters = new HashMap<>();
 	        	for (AbstractGldObject obj : gldSim.getObjects()){
 	        		if(obj instanceof AuctionObject){
 	        			aggCounters.put(obj.getName(), 0);
+	        			for(Map.Entry<String, Integer> entry : aggCounters.entrySet()){
+	        				//System.out.println(entry.getKey());
+	        				//System.out.println(entry.getValue());
+	        			}
 	        			writeSubscribe(thirdPartyFncsConfig, String.format("%s_load", obj.getName()),gldSim.getName(),String.format("%s_load", obj.getName()));
 	        		}
 	        	}
 	        	AbstractNs3SimulatorV2 ns3Sim = gldSim.getNs3Sim();
 	            for (AbstractGldObject o : gldSim.getObjects()) {
-	                if (o instanceof Controller) {
-	                    Controller controller = (Controller)o;
-	                    writeControllerToMarketVar(thirdPartyFncsConfig, aggCounters.get(controller.getAuction().getName()), ns3Sim, gldSim, controller, "bid_price");
-	                    writeControllerToMarketVar(thirdPartyFncsConfig, aggCounters.get(controller.getAuction().getName()), ns3Sim, gldSim, controller, "bid_quantity");
-	                    writeControllerToMarketVar(thirdPartyFncsConfig, aggCounters.get(controller.getAuction().getName()), ns3Sim, gldSim, controller, "parent_unresponsive_load");
-	                    
-	                    aggCounters.put(controller.getAuction().getName(), aggCounters.get(controller.getAuction().getName() + 1));       
+	                if (o instanceof House) {
+	                	House house = (House)o;
+	                    Controller controller = house.getController();
+	                    if(controller != null){
+	                    	//AbstractGldObject auction = controller.getAuction();
+	                    	//System.out.println(auction.getName());
+	                    	//System.out.println(aggCounters.get(auction.getName()))
+		                    writeControllerToMarketVar(thirdPartyFncsConfig, aggCounters.get(controller.getAuction().getName()), ns3Sim, gldSim, controller, "bid_price");
+		                    writeControllerToMarketVar(thirdPartyFncsConfig, aggCounters.get(controller.getAuction().getName()), ns3Sim, gldSim, controller, "bid_quantity");
+		                    writeControllerToMarketVar(thirdPartyFncsConfig, aggCounters.get(controller.getAuction().getName()), ns3Sim, gldSim, controller, "parent_unresponsive_load");
+		                    
+		                    aggCounters.put(controller.getAuction().getName(), aggCounters.get(controller.getAuction().getName() + 1));
+	                    }
 	                }
 	            }
 	        }

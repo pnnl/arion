@@ -1334,7 +1334,7 @@ public class Ieee123NodeTestFeeder {
     			dgMeter.setNominalVoltage(2401.7771);
     			dgMeter.setGroupId("DG_Meter");
     			
-    			Load dgLoad = this.simulator.load(String.format("DG_%d", this.simulator.getName(), objNum));
+    			Load dgLoad = this.simulator.load(String.format("DG_%d", objNum));
     			dgLoad.setParent(dgMeter);
     			dgLoad.setNominalVoltage(2401.7771);
     			dgLoad.setPhases(PhaseCode.ABCN);
