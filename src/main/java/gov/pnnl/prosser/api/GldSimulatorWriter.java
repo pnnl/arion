@@ -8,10 +8,9 @@ import gov.pnnl.prosser.api.gld.lib.GldClock;
 import gov.pnnl.prosser.api.gld.module.Module;
 import gov.pnnl.prosser.api.gld.obj.AbstractGldClass;
 import gov.pnnl.prosser.api.gld.obj.AuctionObject;
-import gov.pnnl.prosser.api.gld.obj.Controller;
-import gov.pnnl.prosser.api.gld.obj.FncsMsg;
 import gov.pnnl.prosser.api.gld.obj.House;
 import gov.pnnl.prosser.api.sql.SqlFile;
+import gov.pnnl.prosser.api.thirdparty.enums.SimType;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -105,15 +104,27 @@ public abstract class GldSimulatorWriter {
                     throw new RuntimeException("Unable to copy object file source to destination", e);
                 }
             }
-            //TODO: find a better way to print the Aggregator DG subscriptions
-            for(AbstractGldObject dgObject : gldSimulator.getDgList()){
-            	writeSubscribe(gldFncsConfig, "precommit", dgObject.getName(), "constant_power_A_real", gldSimulator.getThirdPartySim().getName(),String.format("%s_power_A", dgObject.getName()));
-            	writeSubscribe(gldFncsConfig, "precommit", dgObject.getName(), "constant_power_B_real", gldSimulator.getThirdPartySim().getName(),String.format("%s_power_B", dgObject.getName()));
-            	writeSubscribe(gldFncsConfig, "precommit", dgObject.getName(), "constant_power_C_real", gldSimulator.getThirdPartySim().getName(),String.format("%s_power_C", dgObject.getName()));
-            }
-            //TODO: find a better way to print the aggregator line publications
-            for(Map.Entry<AbstractGldObject, String> aggLine : gldSimulator.getAggregatorLines().entrySet()){
-            	writePublish(gldFncsConfig, "commit", aggLine.getKey().getName(), "power_out_real", String.format("%s_load", aggLine.getValue()), 0.01);
+            if(gldSimulator.getThirdPartySim().equals(SimType.MATLAB_AGGREGATOR)){
+	            //TODO: find a better way to print the Aggregator DG subscriptions
+	            for(AbstractGldObject dgObject : gldSimulator.getDgList()){
+	            	writeSubscribe(gldFncsConfig, "precommit", dgObject.getName(), "constant_power_A_real", gldSimulator.getThirdPartySim().getName(),String.format("%s_power_A", dgObject.getName()));
+	            	writeSubscribe(gldFncsConfig, "precommit", dgObject.getName(), "constant_power_B_real", gldSimulator.getThirdPartySim().getName(),String.format("%s_power_B", dgObject.getName()));
+	            	writeSubscribe(gldFncsConfig, "precommit", dgObject.getName(), "constant_power_C_real", gldSimulator.getThirdPartySim().getName(),String.format("%s_power_C", dgObject.getName()));
+	            }
+	            //TODO: find a better way to print the aggregator line publications
+	            for(Map.Entry<AbstractGldObject, String> aggLine : gldSimulator.getAggregatorLines().entrySet()){
+	            	writePublish(gldFncsConfig, "commit", aggLine.getKey().getName(), "power_out_real", String.format("%s_load", aggLine.getValue()), 0.01);
+	            }
+	            //TODO: find a better way to print the total_feeder_load
+	            AbstractGldObject totalFeederLoadNode = gldSimulator.getGldObjectByName(String.format("%s_node_150", gldSimulator.getName()));
+	            if(totalFeederLoadNode != null){
+	            	writePublish(gldFncsConfig, "commit", totalFeederLoadNode.getName(), "measured_real_power", "total_feeder_load", 0.01);
+	            }	
+	            AbstractGldObject networkNode = gldSimulator.getGldObjectByName(String.format("%s_network_node", gldSimulator.getName()));
+	            if(networkNode != null){
+	            	writePublish(gldFncsConfig, "commit", networkNode.getName(), "distribution_load", "distribution_load", 20000.0);
+	            	//TODO: subscribe to MATPOWER Voltage. Optional.
+	            }
             }
             if (!sqlFile.getSqlTableDefs().isEmpty()) {
                 final StringBuilder sql = new StringBuilder();

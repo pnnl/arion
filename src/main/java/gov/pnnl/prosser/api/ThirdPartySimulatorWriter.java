@@ -9,63 +9,14 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
-import java.util.Collection;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Set;
 import java.util.TreeMap;
-
 import gov.pnnl.prosser.api.gld.AbstractGldObject;
-import gov.pnnl.prosser.api.gld.enums.ImplicitEnduses;
-import gov.pnnl.prosser.api.gld.enums.SolverMethod;
-import gov.pnnl.prosser.api.gld.enums.SwitchStatus;
-import gov.pnnl.prosser.api.gld.enums.PhaseCode;
-import gov.pnnl.prosser.api.gld.lib.GldClock;
-import gov.pnnl.prosser.api.gld.lib.LineConfiguration;
-import gov.pnnl.prosser.api.gld.lib.LineSpacing;
-import gov.pnnl.prosser.api.gld.lib.OverheadLineConductor;
-import gov.pnnl.prosser.api.gld.lib.RegulatorConfiguration;
-import gov.pnnl.prosser.api.gld.lib.StandardLineConfiguration;
-import gov.pnnl.prosser.api.gld.lib.TransformerConfiguration;
-import gov.pnnl.prosser.api.gld.lib.TriplexLineConductor;
-import gov.pnnl.prosser.api.gld.lib.TriplexLineConfiguration;
-import gov.pnnl.prosser.api.gld.lib.UndergroundLineConductor;
-import gov.pnnl.prosser.api.gld.module.ClimateModule;
-import gov.pnnl.prosser.api.gld.module.Comm;
-import gov.pnnl.prosser.api.gld.module.Connection;
-import gov.pnnl.prosser.api.gld.module.Market;
-import gov.pnnl.prosser.api.gld.module.Module;
-import gov.pnnl.prosser.api.gld.module.PowerflowModule;
-import gov.pnnl.prosser.api.gld.module.Residential;
-import gov.pnnl.prosser.api.gld.module.Tape;
-import gov.pnnl.prosser.api.gld.obj.AbstractGldClass;
-import gov.pnnl.prosser.api.gld.obj.AuctionClass;
 import gov.pnnl.prosser.api.gld.obj.AuctionObject;
-import gov.pnnl.prosser.api.gld.obj.ClimateObject;
 import gov.pnnl.prosser.api.gld.obj.Controller;
-import gov.pnnl.prosser.api.gld.obj.CsvReader;
-import gov.pnnl.prosser.api.gld.obj.FncsMsg;
-import gov.pnnl.prosser.api.gld.obj.House;
-import gov.pnnl.prosser.api.gld.obj.Load;
-import gov.pnnl.prosser.api.gld.obj.Meter;
-import gov.pnnl.prosser.api.gld.obj.Node;
-import gov.pnnl.prosser.api.gld.obj.OverheadLine;
-import gov.pnnl.prosser.api.gld.obj.PlayerClass;
-import gov.pnnl.prosser.api.gld.obj.PlayerObject;
-import gov.pnnl.prosser.api.gld.obj.Recorder;
-import gov.pnnl.prosser.api.gld.obj.Regulator;
-import gov.pnnl.prosser.api.gld.obj.Substation;
-import gov.pnnl.prosser.api.gld.obj.Switch;
-import gov.pnnl.prosser.api.gld.obj.Transformer;
-import gov.pnnl.prosser.api.gld.obj.TriplexLine;
-import gov.pnnl.prosser.api.gld.obj.TriplexMeter;
-import gov.pnnl.prosser.api.gld.obj.TriplexNode;
-import gov.pnnl.prosser.api.gld.obj.UndergroundLine;
-import gov.pnnl.prosser.api.gld.obj.WaterHeater;
 import gov.pnnl.prosser.api.ns3.AbstractNs3SimulatorV2;
-import gov.pnnl.prosser.api.sql.SqlFile;
 import gov.pnnl.prosser.api.thirdparty.enums.SimType;
 
 /**
@@ -120,13 +71,8 @@ public abstract class ThirdPartySimulatorWriter {
 	                    writeControllerToMarketVar(thirdPartyFncsConfig, aggCounters.get(controller.getAuction().getName()), ns3Sim, gldSim, controller, "bid_quantity");
 	                    writeControllerToMarketVar(thirdPartyFncsConfig, aggCounters.get(controller.getAuction().getName()), ns3Sim, gldSim, controller, "parent_unresponsive_load");
 	                    
-	                    aggCounters.put(controller.getAuction().getName(), aggCounters.get(controller.getAuction().getName() + 1));
-	                    
+	                    aggCounters.put(controller.getAuction().getName(), aggCounters.get(controller.getAuction().getName() + 1));       
 	                }
-	            }
-	            //TODO: find a better way to print the aggregator line publications
-	            for(Map.Entry<AbstractGldObject, String> aggLine : gldSim.getAggregatorLines().entrySet()){
-	            	
 	            }
 	        }
         } else if(thirdPartySimulator.getSimType().equals(SimType.MATPOWER)){
@@ -134,6 +80,10 @@ public abstract class ThirdPartySimulatorWriter {
         	for(Map.Entry<GldSimulator, String> entry: sims.entrySet()){
         		GldSimulator gSim = entry.getKey();
         		String busName = entry.getValue();
+        		AbstractGldObject networkNode = gSim.getGldObjectByName(String.format("%s_network_node", gSim.getName()));
+        		if(networkNode != null){
+        			writeSubscribe(thirdPartyFncsConfig, busName, gSim.getName(), "distribution_load");
+        		}
         	}
         }
         try (final BufferedWriter confWriter = Files.newBufferedWriter(path.resolve("fncs.zpl"), StandardCharsets.UTF_8)) {

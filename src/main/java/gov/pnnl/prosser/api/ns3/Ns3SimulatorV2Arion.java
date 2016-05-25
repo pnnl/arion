@@ -25,7 +25,6 @@ import gov.pnnl.prosser.api.gld.AbstractGldObject;
 import gov.pnnl.prosser.api.gld.enums.MarketSetUp;
 import gov.pnnl.prosser.api.gld.obj.AuctionObject;
 import gov.pnnl.prosser.api.gld.obj.Controller;
-import gov.pnnl.prosser.api.gld.obj.House;
 
 /**
  * Stub for NS-3 Simulator configurations

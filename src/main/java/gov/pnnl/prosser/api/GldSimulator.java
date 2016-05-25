@@ -4,7 +4,10 @@
 package gov.pnnl.prosser.api;
 
 import gov.pnnl.prosser.api.gld.AbstractGldObject;
+import gov.pnnl.prosser.api.gld.enums.BusType;
+import gov.pnnl.prosser.api.gld.enums.ConnectionType;
 import gov.pnnl.prosser.api.gld.enums.ImplicitEnduses;
+import gov.pnnl.prosser.api.gld.enums.InstallationType;
 import gov.pnnl.prosser.api.gld.enums.SolverMethod;
 import gov.pnnl.prosser.api.gld.enums.SwitchStatus;
 import gov.pnnl.prosser.api.gld.enums.PhaseCode;
@@ -60,6 +63,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
+import org.apache.commons.math3.complex.Complex;
+
 /**
  * GLD Simulator
  *
@@ -90,8 +95,60 @@ public class GldSimulator {
     private final List<AbstractGldObject> dgList = new ArrayList<>();
     
     private final Map<AbstractGldObject, String> aggregatorLines = new TreeMap<>();
+    
+    private ThirdPartySimulator transmissionSim;
 
     /**
+	 * @return the transmissionSim
+	 */
+	public ThirdPartySimulator getTransmissionSim() {
+		return transmissionSim;
+	}
+
+	/**
+	 * @param transmissionSim the transmissionSim to set
+	 */
+	public void setTransmissionSim(ThirdPartySimulator transmissionSim, double transmissionVoltage) {
+		this.transmissionSim = transmissionSim;
+		Node node = null;
+		//Find the swingBus
+		for(AbstractGldObject o : this.getObjects()){
+			if(o instanceof Node || o instanceof Meter){
+				node = (Node)o;
+				if(node.getBusType().equals(BusType.SWING)){
+					break;
+				}
+				node = null;
+			}
+		}
+		if(node != null){
+			node.setBusType(BusType.PQ);
+			//create substation transformer configuration
+			TransformerConfiguration substationTransformerConfig = this.transformerConfiguration(String.format("%s_substation_transformer_config", this.getName()));
+			substationTransformerConfig.setConnectionType(ConnectionType.WYE_WYE);
+			substationTransformerConfig.setInstallationType(InstallationType.PADMOUNT);
+			substationTransformerConfig.setPrimaryVoltage(transmissionVoltage);
+			substationTransformerConfig.setSecondaryVoltage(node.getNominalVoltage());
+			substationTransformerConfig.setPowerRating(10000.0);
+			substationTransformerConfig.setImpedance(0.00033, 0.0022);
+			
+			//create substation node
+			Substation substation = this.substation(String.format("%s_network_node", this.getName()));
+			substation.setBusType(BusType.SWING);
+			substation.setPositiveSequenceVoltage(new Complex(transmissionVoltage, 0.0));
+			substation.setReferencePhase(PhaseCode.A);
+			substation.setNominalVoltage(transmissionVoltage);
+			substation.setPhases(PhaseCode.ABCN);
+			
+			//create substation transformer
+			Transformer substationTransformer = this.transformer(String.format("%s_substation_transformer", this.getName()), substationTransformerConfig);
+			substationTransformer.setFrom(substation);
+			substationTransformer.setTo(node);
+			substationTransformer.setPhases(PhaseCode.ABCN);
+		}
+	}
+
+	/**
 	 * @return the aggregatorLines
 	 */
 	public Map<AbstractGldObject, String> getAggregatorLines() {
@@ -136,6 +193,7 @@ public class GldSimulator {
 
     /**
 	 * @param thirdPartySim the thirdPartySim to set
+	 * @param the nominal voltage at the substation primary.
 	 */
 	public void setThirdPartySim(ThirdPartySimulator thirdPartySim) {
 		this.thirdPartySim = thirdPartySim;

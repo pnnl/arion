@@ -17,6 +17,7 @@ import org.apache.commons.math3.complex.Complex;
 import org.apache.commons.math3.complex.ComplexUtils;
 
 import gov.pnnl.prosser.api.GldSimulator;
+import gov.pnnl.prosser.api.gld.enums.BusType;
 import gov.pnnl.prosser.api.gld.enums.ConnectionType;
 import gov.pnnl.prosser.api.gld.enums.InstallationType;
 import gov.pnnl.prosser.api.gld.enums.PhaseCode;
@@ -370,6 +371,9 @@ public class Ieee123NodeTestFeeder {
                 node.setPhases(phaseCode);
                 this.setNodeVoltages(node);
                 this.nodes.put(key, node);
+                if(key == 150){
+                	node.setBusType(BusType.SWING);
+                }
             }
         }
     }
@@ -798,7 +802,6 @@ public class Ieee123NodeTestFeeder {
         EnumSet<PhaseCode> abn = EnumSet.of(PhaseCode.A, PhaseCode.B, PhaseCode.N);
         EnumSet<PhaseCode> acn = EnumSet.of(PhaseCode.A, PhaseCode.C, PhaseCode.N);
         EnumSet<PhaseCode> abcn = PhaseCode.ABCN;
-        EnumSet<PhaseCode> abc = PhaseCode.ABC;
         
         int key1 = 12;
         this.overheadLines.put(key1, this.simulator.overheadLine(String.format(stringFormat, this.name, key1), bn, 
@@ -1335,8 +1338,6 @@ public class Ieee123NodeTestFeeder {
     			dgLoad.setParent(dgMeter);
     			dgLoad.setNominalVoltage(2401.7771);
     			dgLoad.setPhases(PhaseCode.ABCN);
-    			
-    			
     		}
     	}
     }
