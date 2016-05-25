@@ -85,9 +85,45 @@ public class GldSimulator {
     
     private final AbstractNs3SimulatorV2 ns3Sim;
     
-    private ThirdPartySimulator thirdPartySim; 
+    private ThirdPartySimulator thirdPartySim;
+    
+    private final List<AbstractGldObject> dgList = new ArrayList<>();
+    
+    private final Map<AbstractGldObject, String> aggregatorLines = new TreeMap<>();
 
     /**
+	 * @return the aggregatorLines
+	 */
+	public Map<AbstractGldObject, String> getAggregatorLines() {
+		return aggregatorLines;
+	}
+	
+	/**
+	 * add to the aggregator line List
+	 * @param aggLine
+	 * 					The AbstractGldObject to add to the aggregator line list
+	 */
+	public void addAggregatorLineObject(AbstractGldObject dgObject, String auctionName){
+		this.aggregatorLines.put(dgObject, auctionName);
+	}
+
+	/**
+	 * @return the dgList
+	 */
+	public List<AbstractGldObject> getDgList() {
+		return dgList;
+	}
+	
+	/**
+	 * add to the dg List
+	 * @param dgObject
+	 * 					The AbstractGldObject to add to the dg list
+	 */
+	public void addDgObject(AbstractGldObject dgObject){
+		this.dgList.add(dgObject);
+	}
+
+	/**
      * Default constructor, requires the name
      *
      * @param name

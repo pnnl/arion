@@ -109,6 +109,7 @@ public abstract class ThirdPartySimulatorWriter {
 	        	for (AbstractGldObject obj : gldSim.getObjects()){
 	        		if(obj instanceof AuctionObject){
 	        			aggCounters.put(obj.getName(), 0);
+	        			writeSubscribe(thirdPartyFncsConfig, String.format("%s_load", obj.getName()),gldSim.getName(),String.format("%s_load", obj.getName()));
 	        		}
 	        	}
 	        	AbstractNs3SimulatorV2 ns3Sim = gldSim.getNs3Sim();
@@ -118,10 +119,16 @@ public abstract class ThirdPartySimulatorWriter {
 	                    writeControllerToMarketVar(thirdPartyFncsConfig, aggCounters.get(controller.getAuction().getName()), ns3Sim, gldSim, controller, "bid_price");
 	                    writeControllerToMarketVar(thirdPartyFncsConfig, aggCounters.get(controller.getAuction().getName()), ns3Sim, gldSim, controller, "bid_quantity");
 	                    writeControllerToMarketVar(thirdPartyFncsConfig, aggCounters.get(controller.getAuction().getName()), ns3Sim, gldSim, controller, "parent_unresponsive_load");
+	                    
 	                    aggCounters.put(controller.getAuction().getName(), aggCounters.get(controller.getAuction().getName() + 1));
+	                    
 	                }
 	            }
-	        }	
+	            //TODO: find a better way to print the aggregator line publications
+	            for(Map.Entry<AbstractGldObject, String> aggLine : gldSim.getAggregatorLines().entrySet()){
+	            	
+	            }
+	        }
         } else if(thirdPartySimulator.getSimType().equals(SimType.MATPOWER)){
         	final Map<GldSimulator, String> sims = thirdPartySimulator.getGldSimulators();
         	for(Map.Entry<GldSimulator, String> entry: sims.entrySet()){
@@ -165,4 +172,15 @@ public abstract class ThirdPartySimulatorWriter {
         sb.append(list);
         sb.append('\n');
     }
+	
+	protected static void writeSubscribe(final StringBuilder sb, final String shortKey, final String simName, final String subTopic){
+		sb.append("    ");
+		sb.append(shortKey);
+		sb.append("\n        topic = ");
+		sb.append(simName);
+		sb.append("/");
+		sb.append(subTopic);
+		sb.append("\n");
+		writeOptions(sb, "0", "double", false);
+	}
 }

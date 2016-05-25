@@ -105,6 +105,16 @@ public abstract class GldSimulatorWriter {
                     throw new RuntimeException("Unable to copy object file source to destination", e);
                 }
             }
+            //TODO: find a better way to print the Aggregator DG subscriptions
+            for(AbstractGldObject dgObject : gldSimulator.getDgList()){
+            	writeSubscribe(gldFncsConfig, "precommit", dgObject.getName(), "constant_power_A_real", gldSimulator.getThirdPartySim().getName(),String.format("%s_power_A", dgObject.getName()));
+            	writeSubscribe(gldFncsConfig, "precommit", dgObject.getName(), "constant_power_B_real", gldSimulator.getThirdPartySim().getName(),String.format("%s_power_B", dgObject.getName()));
+            	writeSubscribe(gldFncsConfig, "precommit", dgObject.getName(), "constant_power_C_real", gldSimulator.getThirdPartySim().getName(),String.format("%s_power_C", dgObject.getName()));
+            }
+            //TODO: find a better way to print the aggregator line publications
+            for(Map.Entry<AbstractGldObject, String> aggLine : gldSimulator.getAggregatorLines().entrySet()){
+            	writePublish(gldFncsConfig, "commit", aggLine.getKey().getName(), "power_out_real", String.format("%s_load", aggLine.getValue()), 0.01);
+            }
             if (!sqlFile.getSqlTableDefs().isEmpty()) {
                 final StringBuilder sql = new StringBuilder();
                 sql.append("CREATE DATABASE \"" + sqlFile.getDatabaseName() + "\";\n");
@@ -147,5 +157,45 @@ public abstract class GldSimulatorWriter {
         sb.append("#include \"");
         sb.append(include);
         sb.append("\"\n");
+    }
+    
+    public static void writeSubscribe(final StringBuilder sb, final String execStage, final String objectName, final String objectProperty, final String simName, final String subTopic){
+    	sb.append("subscribe \"");
+    	sb.append(execStage);
+    	sb.append(":");
+    	sb.append(objectName);
+    	sb.append(".");
+    	sb.append(objectProperty);
+    	sb.append(" <- ");
+    	sb.append(simName);
+    	sb.append("/");
+    	sb.append(subTopic);
+    	sb.append("\";\n");
+    }
+    
+    public static void writePublish(final StringBuilder sb, final String execStage, final String objectName, final String objectProperty, final String subTopic){
+    	sb.append("publish \"");
+    	sb.append(execStage);
+    	sb.append(":");
+    	sb.append(objectName);
+    	sb.append(".");
+    	sb.append(objectProperty);
+    	sb.append(" -> ");
+    	sb.append(subTopic);
+    	sb.append("\";\n");
+    }
+    
+    public static void writePublish(final StringBuilder sb, final String execStage, final String objectName, final String objectProperty, final String subTopic, final double threshold){
+    	sb.append("publish \"");
+    	sb.append(execStage);
+    	sb.append(":");
+    	sb.append(objectName);
+    	sb.append(".");
+    	sb.append(objectProperty);
+    	sb.append(" -> ");
+    	sb.append(subTopic);
+    	sb.append("; ");
+    	sb.append(threshold);
+    	sb.append("\";\n");
     }
 }

@@ -1316,14 +1316,14 @@ public class Ieee123NodeTestFeeder {
     }
     //TODO: Remove this from here and make it a utility function!!!!!
     public void createDgs(){
-    	List<String> dgLocations = new ArrayList<String>();
-    	dgLocations.add(String.format("%s_node_7", this.simulator.getName()));
-    	dgLocations.add(String.format("%s_node_18", this.simulator.getName()));
-    	dgLocations.add(String.format("%s_node_56", this.simulator.getName()));
-    	dgLocations.add(String.format("%s_node_57", this.simulator.getName()));
-    	dgLocations.add(String.format("%s_node_152", this.simulator.getName()));
-    	for(String objName: dgLocations){
-    		AbstractGldObject dgParent = this.simulator.getGldObjectByName(objName);
+    	List<Integer> dgLocations = new ArrayList<Integer>();
+    	dgLocations.add(7);
+    	dgLocations.add(18);
+    	dgLocations.add(56);
+    	dgLocations.add(57);
+    	dgLocations.add(152);
+    	for(int objNum: dgLocations){
+    		AbstractGldObject dgParent = this.simulator.getGldObjectByName(String.format("%s_node_%d", this.simulator.getName(), objNum));
     		if(dgParent != null){
     			Meter dgMeter = this.simulator.meter(String.format("%s_m_DG_%s", this.simulator.getName(), dgParent.getName()));
     			dgMeter.setParent(dgParent);;
@@ -1331,12 +1331,19 @@ public class Ieee123NodeTestFeeder {
     			dgMeter.setNominalVoltage(2401.7771);
     			dgMeter.setGroupId("DG_Meter");
     			
-    			Load dgLoad = this.simulator.load(String.format("_%s_DG_%s", this.simulator.getName(), dgParent.getName()));
+    			Load dgLoad = this.simulator.load(String.format("DG_%d", this.simulator.getName(), objNum));
     			dgLoad.setParent(dgMeter);
     			dgLoad.setNominalVoltage(2401.7771);
     			dgLoad.setPhases(PhaseCode.ABCN);
+    			
+    			
     		}
     	}
     }
-    	
+    //TODO: Remove this from here and make it a utility function!!!!
+    public void addAggLines(){
+    	this.simulator.addAggregatorLineObject(this.simulator.getGldObjectByName(String.format("%s_overhead_line_%d", this.simulator.getName(), 1821)), "Aggregator_1");
+    	this.simulator.addAggregatorLineObject(this.simulator.getGldObjectByName(String.format("%s_switch_%d", this.simulator.getName(), 18135)), "Aggregator_2");
+    	this.simulator.addAggregatorLineObject(this.simulator.getGldObjectByName(String.format("%s_overhead_line_%d", this.simulator.getName(), 5760)), "Aggregator_1");
+    }
 }
