@@ -82,7 +82,7 @@ public abstract class ThirdPartySimulatorWriter {
 		                    writeControllerToMarketVar(thirdPartyFncsConfig, aggCounters.get(controller.getAuction().getName()), ns3Sim, gldSim, controller, "bid_quantity");
 		                    writeControllerToMarketVar(thirdPartyFncsConfig, aggCounters.get(controller.getAuction().getName()), ns3Sim, gldSim, controller, "parent_unresponsive_load");
 		                    
-		                    aggCounters.put(controller.getAuction().getName(), aggCounters.get(controller.getAuction().getName() + 1));
+		                    aggCounters.put(controller.getAuction().getName(), aggCounters.get(controller.getAuction().getName()) + 1);
 	                    }
 	                }
 	            }
