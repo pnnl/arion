@@ -25,6 +25,7 @@ import gov.pnnl.prosser.api.gld.AbstractGldObject;
 import gov.pnnl.prosser.api.gld.enums.MarketSetUp;
 import gov.pnnl.prosser.api.gld.obj.AuctionObject;
 import gov.pnnl.prosser.api.gld.obj.Controller;
+import gov.pnnl.prosser.api.gld.obj.House;
 
 /**
  * Stub for NS-3 Simulator configurations
@@ -62,8 +63,12 @@ public class Ns3SimulatorV2Arion extends AbstractNs3SimulatorV2 {
                 }
             }
             for (AbstractGldObject object : gldSim.getObjects()) {
-                if (object instanceof Controller) {
-                    final Controller controller = (Controller) object;
+                if (object instanceof House) {
+                    final House house = (House) object;
+                    final Controller controller = house.getController();
+                    if(controller == null) {
+                        continue;
+                    }
                     if (!names.add(controller.getName())) {
                         throw new RuntimeException("Duplicate Name Detected: " + controller.getName());
                     }
