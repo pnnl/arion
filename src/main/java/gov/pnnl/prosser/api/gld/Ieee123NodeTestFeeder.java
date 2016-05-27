@@ -106,6 +106,7 @@ public class Ieee123NodeTestFeeder {
         if(addMarket){
         	GldSimulatorUtils.MakeTransactiveMarket(this.simulator, String.format("%s_Market", this.name));
         }
+        this.addAggLines();
     }
     
     public void createOverheadLineConductors() {

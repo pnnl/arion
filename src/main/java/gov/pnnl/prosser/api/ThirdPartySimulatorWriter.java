@@ -67,6 +67,7 @@ public abstract class ThirdPartySimulatorWriter {
 	        				//System.out.println(entry.getValue());
 	        			}
 	        			writeSubscribe(thirdPartyFncsConfig, String.format("%s_load", obj.getName()),gldSim.getName(),String.format("%s_load", obj.getName()));
+	        			writeSubscribe(thirdPartyFncsConfig, "matpowerLMP", "matpower", String.format("LMP_B%s", obj.getName().substring(obj.getName().length() - 1)));
 	        		}
 	        	}
 	        	AbstractNs3SimulatorV2 ns3Sim = gldSim.getNs3Sim();
@@ -86,6 +87,7 @@ public abstract class ThirdPartySimulatorWriter {
 	                    }
 	                }
 	            }
+	            writeSubscribe(thirdPartyFncsConfig, "total_feeder_load", gldSim.getName(), "total_feeder_load");
 	        }
         } else if(thirdPartySimulator.getSimType().equals(SimType.MATPOWER)){
         	final Map<GldSimulator, String> sims = thirdPartySimulator.getGldSimulators();

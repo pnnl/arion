@@ -59,6 +59,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.EnumSet;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -94,7 +95,7 @@ public class GldSimulator {
     
     private final List<AbstractGldObject> dgList = new ArrayList<>();
     
-    private final Map<AbstractGldObject, String> aggregatorLines = new TreeMap<>();
+    private final Map<AbstractGldObject, String> aggregatorLines = new HashMap<>();
     
     private ThirdPartySimulator transmissionSim;
 
