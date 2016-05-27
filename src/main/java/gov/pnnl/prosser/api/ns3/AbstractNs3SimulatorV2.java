@@ -8,30 +8,23 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 
+import gov.pnnl.prosser.api.AbstractSimulator;
+
 /**
  * Stub for NS-3 Simulator configurations
  *
  * @author nord229
  */
-public abstract class AbstractNs3SimulatorV2 {
-
-    private final String name;
+public abstract class AbstractNs3SimulatorV2 extends AbstractSimulator {
 
     private String broker;
 
     private Path ccFile;
 
     public AbstractNs3SimulatorV2(final String name, final Path defaultCcFile) {
-        this.name = name;
+        super(name);
         this.ccFile = defaultCcFile;
         this.broker = "tcp://localhost:5570";
-    }
-
-    /**
-     * @return the name
-     */
-    public String getName() {
-        return name;
     }
 
     /**

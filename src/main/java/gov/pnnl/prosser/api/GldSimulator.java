@@ -73,9 +73,7 @@ import org.apache.commons.math3.complex.Complex;
  *
  * @author nord229
  */
-public class GldSimulator {
-
-    private final String name;
+public class GldSimulator extends AbstractSimulator {
 
     private final List<AbstractGldObject> objects = new ArrayList<>();
 
@@ -188,7 +186,7 @@ public class GldSimulator {
      *            Name of the simulator, will be used when naming the file on disk
      */
     public GldSimulator(final String name, final AbstractNs3SimulatorV2 ns3Sim) {
-        this.name = name;
+        super(name);
         this.ns3Sim = ns3Sim;
     }
 
@@ -206,15 +204,6 @@ public class GldSimulator {
 	public ThirdPartySimulator getThirdPartySim() {
 		return thirdPartySim;
 	}
-
-	/**
-     * Get the Name of this simulator object - Used when naming the file on disk in an Experiment
-     *
-     * @return the name
-     */
-    public String getName() {
-        return this.name;
-    }
 
     /**
      * Get the Simulator objects that comprise this simulation

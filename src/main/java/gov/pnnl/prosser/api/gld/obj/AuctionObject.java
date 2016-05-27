@@ -109,12 +109,9 @@ public class AuctionObject extends AbstractGldObject {
      */
     private MarketSetUp marketSetUp;
     
-    private boolean hasMatpowerBus;
-
     public AuctionObject(final GldSimulator simulator) {
         super(simulator);
         this.marketSetUp = MarketSetUp.NORMAL;
-        this.hasMatpowerBus = false;
         simulator.ensureMarketModule();
     }
 
@@ -408,20 +405,6 @@ public class AuctionObject extends AbstractGldObject {
 	public void setMarketSetUp(MarketSetUp marketSetUp) {
 		this.marketSetUp = marketSetUp;
 	}
-
-	/**
-     * @return the hasMatpowerBus
-     */
-    public boolean getHasMatpowerBus() {
-        return hasMatpowerBus;
-    }
-
-    /**
-     * @param hasMatpowerBus the hasMatpowerBus to set
-     */
-    public void setHasMatpowerBus(boolean hasMatpowerBus) {
-        this.hasMatpowerBus = hasMatpowerBus;
-    }
 
     /**
      * Set the controller prefix for FNCS to a unique id.

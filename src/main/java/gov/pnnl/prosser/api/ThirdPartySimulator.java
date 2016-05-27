@@ -11,14 +11,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
+import gov.pnnl.prosser.api.fncs.Subscription;
 import gov.pnnl.prosser.api.thirdparty.enums.SimType;
 
 /**
  * @author fish334
  *
  */
-public class ThirdPartySimulator {
-	private final String name;
+public class ThirdPartySimulator extends AbstractSimulator {
 	
 	private String broker;
 	
@@ -29,15 +29,16 @@ public class ThirdPartySimulator {
 	private Map<GldSimulator, String> gldSimulators = new HashMap<>();
 	
 	private final SimType simType;
-
+	
+	private final List<Subscription> userSubscriptions = new ArrayList<>();
+	
 	/**
 	 * @param name
 	 * @param The simulation type: either MATPOWER, MATLAB_AGGREGATOR
 	 * 
 	 */
 	public ThirdPartySimulator(String name, SimType simType) {
-		super();
-		this.name = name;
+		super(name);
 		this.broker = "tcp://localhost:5570";
 		this.simType = simType;
 	}
@@ -70,13 +71,6 @@ public class ThirdPartySimulator {
 		this.gldSim = gldSim;
 	}
 
-	/**
-	 * @return the name
-	 */
-	public String getName() {
-		return name;
-	}
-	
 	/**
 	 * add model files for the simulator
 	 * @param Path
@@ -116,5 +110,19 @@ public class ThirdPartySimulator {
 	 */
 	public SimType getSimType() {
 		return simType;
+	}
+	
+	/**
+     * @return the userSubscriptions
+     */
+    public List<Subscription> getUserSubscriptions() {
+        return userSubscriptions;
+    }
+
+    public void addSubscription(String localVariable, AbstractSimulator remoteSimulator, String remoteVariable) {
+	    final Subscription sub = new Subscription();
+	    sub.setLocalVariable(localVariable);
+	    sub.setRemoteSimulator(remoteSimulator);
+	    sub.setRemoteVariable(remoteVariable);
 	}
 }

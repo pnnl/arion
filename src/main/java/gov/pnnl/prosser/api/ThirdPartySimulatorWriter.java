@@ -14,6 +14,8 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
+
+import gov.pnnl.prosser.api.fncs.Subscription;
 import gov.pnnl.prosser.api.gld.AbstractGldObject;
 import gov.pnnl.prosser.api.gld.obj.AuctionObject;
 import gov.pnnl.prosser.api.gld.obj.Controller;
@@ -67,9 +69,6 @@ public abstract class ThirdPartySimulatorWriter {
 	        				//System.out.println(entry.getValue());
 	        			}
 	        			writeSubscribe(thirdPartyFncsConfig, String.format("%s_load", obj.getName()),gldSim.getName(),String.format("%s_load", obj.getName()));
-	        			if(((AuctionObject) obj).getHasMatpowerBus()) {
-	        			    writeSubscribe(thirdPartyFncsConfig, "matpowerLMP", "matpower", String.format("LMP_B%s", obj.getName().substring(obj.getName().length() - 1)));
-	        			}
 	        		}
 	        	}
 	        	AbstractNs3SimulatorV2 ns3Sim = gldSim.getNs3Sim();
@@ -90,6 +89,9 @@ public abstract class ThirdPartySimulatorWriter {
 	                }
 	            }
 	            writeSubscribe(thirdPartyFncsConfig, "total_feeder_load", gldSim.getName(), "total_feeder_load");
+	            for(final Subscription sub: thirdPartySimulator.getUserSubscriptions()) {
+	                writeSubscribe(thirdPartyFncsConfig, sub.getLocalVariable(), sub.getRemoteSimulator().getName(), sub.getRemoteVariable());
+	            }
 	        }
         } else if(thirdPartySimulator.getSimType().equals(SimType.MATPOWER)){
         	final Map<GldSimulator, String> sims = thirdPartySimulator.getGldSimulators();
