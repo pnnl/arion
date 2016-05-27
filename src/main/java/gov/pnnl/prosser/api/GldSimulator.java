@@ -427,6 +427,7 @@ public class GldSimulator {
     	for(AbstractGldObject o : this.objects){
     		if(o.getName().equals(name)){
     			rv = o;
+    			break;
     		}
     	}
     	return rv;

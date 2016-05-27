@@ -104,7 +104,7 @@ public abstract class GldSimulatorWriter {
                     throw new RuntimeException("Unable to copy object file source to destination", e);
                 }
             }
-            if(gldSimulator.getThirdPartySim().equals(SimType.MATLAB_AGGREGATOR)){
+            if(gldSimulator.getThirdPartySim() != null && gldSimulator.getThirdPartySim().getSimType() == SimType.MATLAB_AGGREGATOR){
 	            //TODO: find a better way to print the Aggregator DG subscriptions
 	            for(AbstractGldObject dgObject : gldSimulator.getDgList()){
 	            	writeSubscribe(gldFncsConfig, "precommit", dgObject.getName(), "constant_power_A_real", gldSimulator.getThirdPartySim().getName(),String.format("%s_power_A", dgObject.getName()));
