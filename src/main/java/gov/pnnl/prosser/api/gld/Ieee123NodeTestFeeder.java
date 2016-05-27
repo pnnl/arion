@@ -1346,6 +1346,6 @@ public class Ieee123NodeTestFeeder {
     public void addAggLines(){
     	this.simulator.addAggregatorLineObject(this.simulator.getGldObjectByName(String.format("%s_overhead_line_%d", this.simulator.getName(), 1821)), "Aggregator_1");
     	this.simulator.addAggregatorLineObject(this.simulator.getGldObjectByName(String.format("%s_switch_%d", this.simulator.getName(), 18135)), "Aggregator_2");
-    	this.simulator.addAggregatorLineObject(this.simulator.getGldObjectByName(String.format("%s_overhead_line_%d", this.simulator.getName(), 5760)), "Aggregator_1");
+    	this.simulator.addAggregatorLineObject(this.simulator.getGldObjectByName(String.format("%s_overhead_line_%d", this.simulator.getName(), 5760)), "Aggregator_3");
     }
 }
