@@ -124,5 +124,6 @@ public class ThirdPartySimulator extends AbstractSimulator {
 	    sub.setLocalVariable(localVariable);
 	    sub.setRemoteSimulator(remoteSimulator);
 	    sub.setRemoteVariable(remoteVariable);
+	    userSubscriptions.add(sub);
 	}
 }
