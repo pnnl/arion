@@ -1314,7 +1314,7 @@ public class Ieee123NodeTestFeeder {
     	} else if(phases.contains(PhaseCode.B)) {
     		spctCfg.setPhaseBRating(houseNumber*5.0);
     	} else if(phases.contains(PhaseCode.C)) {
-    		spctCfg.setPhaseBRating(houseNumber*5.0);
+    		spctCfg.setPhaseCRating(houseNumber*5.0);
     	}
     	spctCfg.setImpedance(new Complex(0.00033, 0.0022));
     }
