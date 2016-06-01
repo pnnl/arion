@@ -1316,6 +1316,7 @@ public class Ieee123NodeTestFeeder {
     	} else if(phases.contains(PhaseCode.C)) {
     		spctCfg.setPhaseBRating(houseNumber*5.0);
     	}
+    	spctCfg.setImpedance(new Complex(0.00033, 0.0022));
     }
     //TODO: Remove this from here and make it a utility function!!!!!
     public void createDgs(){
