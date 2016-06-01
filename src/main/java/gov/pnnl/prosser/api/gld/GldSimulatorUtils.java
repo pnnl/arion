@@ -432,7 +432,7 @@ public abstract class GldSimulatorUtils {
 
 //        house.setCoolingSetpointFn(String.format("cooling%d*%1.3f+%2.2f", scheduleCool, coolTemp, coolOffset));
         house.setHeatingSetpointFn(String.format("heating%d*%1.3f+%2.2f", scheduleHeat, heatTemp, heatOffset));
-        house.setCoolingSetpointFn("");
+        house.setCoolingSetpointFn(null);
 
         // long bidDelay = 30 + Math.round((90 - 30) * rand.nextDouble());
         final double marketTest = rand.nextDouble();
