@@ -125,6 +125,22 @@ public abstract class GldSimulatorWriter {
 	            	writePublish(gldFncsConfig, "commit", networkNode.getName(), "distribution_load", "distribution_load", 20000.0);
 	            	//TODO: subscribe to MATPOWER Voltage. Optional.
 	            }
+	            //TODO: find a better way to print the subscriptions for the DG's on the load
+	            writeSubscribe(gldFncsConfig, "precommit", "DG_7", "constant_power_A_real", gldSimulator.getThirdPartySim().getName(), "DG_7_power_A");
+	            writeSubscribe(gldFncsConfig, "precommit", "DG_7", "constant_power_B_real", gldSimulator.getThirdPartySim().getName(), "DG_7_power_B");
+	            writeSubscribe(gldFncsConfig, "precommit", "DG_7", "constant_power_C_real", gldSimulator.getThirdPartySim().getName(), "DG_7_power_C");
+	            writeSubscribe(gldFncsConfig, "precommit", "DG_18", "constant_power_A_real", gldSimulator.getThirdPartySim().getName(), "DG_18_power_A");
+	            writeSubscribe(gldFncsConfig, "precommit", "DG_18", "constant_power_B_real", gldSimulator.getThirdPartySim().getName(), "DG_18_power_B");
+	            writeSubscribe(gldFncsConfig, "precommit", "DG_18", "constant_power_C_real", gldSimulator.getThirdPartySim().getName(), "DG_18_power_C");
+	            writeSubscribe(gldFncsConfig, "precommit", "DG_56", "constant_power_A_real", gldSimulator.getThirdPartySim().getName(), "DG_56_power_A");
+	            writeSubscribe(gldFncsConfig, "precommit", "DG_56", "constant_power_B_real", gldSimulator.getThirdPartySim().getName(), "DG_56_power_B");
+	            writeSubscribe(gldFncsConfig, "precommit", "DG_56", "constant_power_C_real", gldSimulator.getThirdPartySim().getName(), "DG_56_power_C");
+	            writeSubscribe(gldFncsConfig, "precommit", "DG_57", "constant_power_A_real", gldSimulator.getThirdPartySim().getName(), "DG_57_power_A");
+	            writeSubscribe(gldFncsConfig, "precommit", "DG_57", "constant_power_B_real", gldSimulator.getThirdPartySim().getName(), "DG_57_power_B");
+	            writeSubscribe(gldFncsConfig, "precommit", "DG_57", "constant_power_C_real", gldSimulator.getThirdPartySim().getName(), "DG_57_power_C");
+	            writeSubscribe(gldFncsConfig, "precommit", "DG_152", "constant_power_A_real", gldSimulator.getThirdPartySim().getName(), "DG_152_power_A");
+	            writeSubscribe(gldFncsConfig, "precommit", "DG_152", "constant_power_B_real", gldSimulator.getThirdPartySim().getName(), "DG_152_power_B");
+	            writeSubscribe(gldFncsConfig, "precommit", "DG_152", "constant_power_C_real", gldSimulator.getThirdPartySim().getName(), "DG_152_power_C");
             }
             if (!sqlFile.getSqlTableDefs().isEmpty()) {
                 final StringBuilder sql = new StringBuilder();
