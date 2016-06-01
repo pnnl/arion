@@ -338,6 +338,7 @@ public class Ieee123NodeTestFeeder {
         this.transformerConfiguration.setPowerRating(150.0);
         this.transformerConfiguration.setPrimaryVoltage(4160);
         this.transformerConfiguration.setSecondaryVoltage(480);
+        this.transformerConfiguration.setImpedance(new Complex(0.0127, 0.0272));
         
         this.transformer = this.simulator.transformer(String.format("%s_transformer_611610", this.name), this.transformerConfiguration);
         this.transformer.setPhases(PhaseCode.ABCN);
