@@ -591,7 +591,7 @@ public class Ieee123NodeTestFeeder {
         phases.put(PhaseCode.ABCN, nodesWithPhaseABCN);
         phases.put(EnumSet.of(PhaseCode.A, PhaseCode.N), nodesWithPhaseAN);
         phases.put(EnumSet.of(PhaseCode.B, PhaseCode.N), nodesWithPhaseBN);
-        phases.put(EnumSet.of(PhaseCode.A, PhaseCode.B, PhaseCode.C, PhaseCode.GROUND), nodesWithPhaseABCD);
+        phases.put(EnumSet.of(PhaseCode.A, PhaseCode.B, PhaseCode.C, PhaseCode.N), nodesWithPhaseABCD);
         phases.put(EnumSet.of(PhaseCode.A, PhaseCode.B, PhaseCode.C), nodesWithPhaseABC);
         
         HouseRegionalization regionalData = new HouseRegionalization(region);
