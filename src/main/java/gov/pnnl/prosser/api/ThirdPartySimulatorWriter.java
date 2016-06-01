@@ -149,6 +149,6 @@ public abstract class ThirdPartySimulatorWriter {
 		sb.append("/");
 		sb.append(subTopic);
 		sb.append("\n");
-		writeOptions(sb, "0", "double", false);
+		writeOptions(sb, "0 + 0 + j MVA", "complex", false);
 	}
 }
