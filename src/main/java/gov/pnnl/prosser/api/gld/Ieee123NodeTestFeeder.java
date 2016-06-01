@@ -383,12 +383,12 @@ public class Ieee123NodeTestFeeder {
         String stringFormat = "%s_node_%d";
         int[] nodesWithPhaseCN = { 4, 5, 6, 16, 17, 24, 31, 32, 34, 41, 73, 74, 75, 84, 85, 92,
                 102, 103, 104 };
-        int[] nodesWithPhaseABCN = { 1, 7, 28, 29, 30, 42, 47, 48, 49, 50, 51, 52, 53, 55, 56,
-                60, 77, 79, 80, 82, 83, 86, 87, 95, 98, 99, 100};
+        int[] nodesWithPhaseABCN = { 1, 7, 28, 29, 30, 35, 42, 47, 48, 49, 50, 51, 52, 53, 55, 56,
+                60, 65, 76, 77, 79, 80, 82, 83, 86, 87, 95, 98, 99, 100};
         int[] nodesWithPhaseAN = { 9, 10, 11, 19, 20, 33, 37, 45, 46, 68, 69, 70, 71, 88, 94,
                 109, 111, 112, 113, 114 };
         int[] nodesWithPhaseBN = { 2, 12, 22, 38, 39, 43, 58, 59, 90, 96, 106, 107 };
-        int[] nodesWithPhaseABCD = { 35, 65, 76 };
+        
         int[] nodesWithPhaseABC = { 62, 63, 64, 66 };
         double voltageLGNominal = 4160.0/Math.sqrt(3.0);
         Complex voltageA = ComplexUtils.polar2Complex(voltageLGNominal, 0.0);
@@ -591,7 +591,6 @@ public class Ieee123NodeTestFeeder {
         phases.put(PhaseCode.ABCN, nodesWithPhaseABCN);
         phases.put(EnumSet.of(PhaseCode.A, PhaseCode.N), nodesWithPhaseAN);
         phases.put(EnumSet.of(PhaseCode.B, PhaseCode.N), nodesWithPhaseBN);
-        phases.put(EnumSet.of(PhaseCode.A, PhaseCode.B, PhaseCode.C, PhaseCode.N), nodesWithPhaseABCD);
         phases.put(EnumSet.of(PhaseCode.A, PhaseCode.B, PhaseCode.C), nodesWithPhaseABC);
         
         HouseRegionalization regionalData = new HouseRegionalization(region);
