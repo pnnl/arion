@@ -68,7 +68,7 @@ public abstract class ThirdPartySimulatorWriter {
 	        				//System.out.println(entry.getKey());
 	        				//System.out.println(entry.getValue());
 	        			}
-	        			writeSubscribe(thirdPartyFncsConfig, String.format("%s_load", obj.getName()),gldSim.getName(),String.format("%s_load", obj.getName()));
+	        			writeSubscribe(thirdPartyFncsConfig, String.format("%s_load", obj.getName()),gldSim.getName(),String.format("%s_load", obj.getName()), "0", "double");
 	        		}
 	        	}
 	        	AbstractNs3SimulatorV2 ns3Sim = gldSim.getNs3Sim();
@@ -88,9 +88,9 @@ public abstract class ThirdPartySimulatorWriter {
 	                    }
 	                }
 	            }
-	            writeSubscribe(thirdPartyFncsConfig, "total_feeder_load", gldSim.getName(), "total_feeder_load");
+	            writeSubscribe(thirdPartyFncsConfig, "total_feeder_load", gldSim.getName(), "total_feeder_load", "0", "double");
 	            for(final Subscription sub: thirdPartySimulator.getUserSubscriptions()) {
-	                writeSubscribe(thirdPartyFncsConfig, sub.getLocalVariable(), sub.getRemoteSimulator().getName(), sub.getRemoteVariable());
+	                writeSubscribe(thirdPartyFncsConfig, sub.getLocalVariable(), sub.getRemoteSimulator().getName(), sub.getRemoteVariable(), "0", "double");
 	            }
 	        }
         } else if(thirdPartySimulator.getSimType().equals(SimType.MATPOWER)){
@@ -100,7 +100,7 @@ public abstract class ThirdPartySimulatorWriter {
         		String busName = entry.getValue();
         		AbstractGldObject networkNode = gSim.getGldObjectByName(String.format("%s_network_node", gSim.getName()));
         		if(networkNode != null){
-        			writeSubscribe(thirdPartyFncsConfig, busName, gSim.getName(), "distribution_load");
+        			writeSubscribe(thirdPartyFncsConfig, busName, gSim.getName(), "distribution_load", "0 + 0 j MVA", "complex");
         		}
         	}
         }
@@ -141,7 +141,7 @@ public abstract class ThirdPartySimulatorWriter {
         sb.append('\n');
     }
 	
-	protected static void writeSubscribe(final StringBuilder sb, final String shortKey, final String simName, final String subTopic){
+	protected static void writeSubscribe(final StringBuilder sb, final String shortKey, final String simName, final String subTopic, String defaultValue, String valueType){
 		sb.append("    ");
 		sb.append(shortKey);
 		sb.append("\n        topic = ");
@@ -149,6 +149,6 @@ public abstract class ThirdPartySimulatorWriter {
 		sb.append("/");
 		sb.append(subTopic);
 		sb.append("\n");
-		writeOptions(sb, "0 + 0 + j MVA", "complex", false);
+		writeOptions(sb, defaultValue, valueType, false);
 	}
 }

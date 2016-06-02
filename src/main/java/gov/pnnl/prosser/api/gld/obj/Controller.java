@@ -509,7 +509,7 @@ public class Controller extends AbstractGldObject {
 	    sb.append(controllerName);
 	    sb.append('/');
 	    sb.append(controllerProperty);
-	    sb.append(";0\";\n");
+	    sb.append("; 0\";\n");
 	}
 	
 	private void writeSubmitBidState(StringBuilder sb, String ns3SimName, String gldSimName, String controllerName, String auctionName) {
@@ -551,6 +551,6 @@ public class Controller extends AbstractGldObject {
 		sb.append(toName);
 		sb.append('/');
 		sb.append(key);
-		sb.append(";0\";\n");
+		sb.append("; 0\";\n");
 	}
 }
