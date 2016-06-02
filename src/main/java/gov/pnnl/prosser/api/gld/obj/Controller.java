@@ -543,7 +543,7 @@ public class Controller extends AbstractGldObject {
     }
 	
 	private void writeRouteCommit(StringBuilder sb, String controllerName, String controllerProperty, String toName, String key){
-		sb.append("Route \"commit:");
+		sb.append("route \"commit:");
 		sb.append(controllerName);
 		sb.append('.');
 		sb.append(controllerProperty);
