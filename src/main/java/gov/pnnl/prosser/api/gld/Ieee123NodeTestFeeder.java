@@ -1346,7 +1346,10 @@ public class Ieee123NodeTestFeeder {
     //TODO: Remove this from here and make it a utility function!!!!
     public void addAggLines(){
     	this.simulator.addAggregatorLineObject(this.simulator.getGldObjectByName(String.format("%s_overhead_line_%d", this.simulator.getName(), 1821)), "Aggregator_1");
+    	this.simulator.getGldObjectByName(String.format("%s_overhead_line_%d", this.simulator.getName(), 1821)).setGroupId("aggregator_1_line");
     	this.simulator.addAggregatorLineObject(this.simulator.getGldObjectByName(String.format("%s_switch_%d", this.simulator.getName(), 18135)), "Aggregator_2");
+    	this.simulator.getGldObjectByName(String.format("%s_switch_%d", this.simulator.getName(), 18135)).setGroupId("aggregator_2_line");
     	this.simulator.addAggregatorLineObject(this.simulator.getGldObjectByName(String.format("%s_overhead_line_%d", this.simulator.getName(), 5760)), "Aggregator_3");
+    	this.simulator.getGldObjectByName(String.format("%s_overhead_line_%d", this.simulator.getName(), 5760)).setGroupId("aggregator_3_line");
     }
 }

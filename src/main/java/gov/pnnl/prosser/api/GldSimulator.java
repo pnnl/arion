@@ -138,6 +138,7 @@ public class GldSimulator extends AbstractSimulator {
 			substation.setReferencePhase(PhaseCode.A);
 			substation.setNominalVoltage(transmissionVoltage);
 			substation.setPhases(PhaseCode.ABCN);
+			substation.setGroupId("substation");
 			
 			//create substation transformer
 			Transformer substationTransformer = this.transformer(String.format("%s_substation_transformer", this.getName()), substationTransformerConfig);
