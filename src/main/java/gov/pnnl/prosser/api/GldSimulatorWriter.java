@@ -141,6 +141,13 @@ public abstract class GldSimulatorWriter {
 	            writeSubscribe(gldFncsConfig, "precommit", "DG_152", "constant_power_A_real", gldSimulator.getThirdPartySim().getName(), "DG_152_power_A");
 	            writeSubscribe(gldFncsConfig, "precommit", "DG_152", "constant_power_B_real", gldSimulator.getThirdPartySim().getName(), "DG_152_power_B");
 	            writeSubscribe(gldFncsConfig, "precommit", "DG_152", "constant_power_C_real", gldSimulator.getThirdPartySim().getName(), "DG_152_power_C");
+	            //TODO: find a bettery to print the dummy subscriptions
+	            writeSubscribe(gldFncsConfig, "precommit", "dummy", "consensus_iterations", gldSimulator.getThirdPartySim().getName(), "consensus_iterations");
+	            writeSubscribe(gldFncsConfig, "precommit", "dummy", "theoretical_feeder_load", gldSimulator.getThirdPartySim().getName(), "theoretical_feeder_load");
+	            writeSubscribe(gldFncsConfig, "precommit", "dummy", "wholesale_LMP", gldSimulator.getThirdPartySim().getName(), "wholesale_LMP");
+	            writeSubscribe(gldFncsConfig, "precommit", "dummy", "aggregator_1_cleared_quantity", gldSimulator.getThirdPartySim().getName(), "aggregator_1_cleared_quantity");
+	            writeSubscribe(gldFncsConfig, "precommit", "dummy", "aggregator_2_cleared_quantity", gldSimulator.getThirdPartySim().getName(), "aggregator_2_cleared_quantity");
+	            writeSubscribe(gldFncsConfig, "precommit", "dummy", "aggregator_3_cleared_quantity", gldSimulator.getThirdPartySim().getName(), "aggregator_3_cleared_quantity");
             }
             if (!sqlFile.getSqlTableDefs().isEmpty()) {
                 final StringBuilder sql = new StringBuilder();
