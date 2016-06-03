@@ -58,6 +58,12 @@ public abstract class GldSimulatorWriter {
         properties.forEach((k, v) -> {
             writeSetting(sb, k, v);
         });
+        sb.append('\n');
+        clock.writeGldString(sb);
+        sb.append('\n');
+        if (modules != null) {
+            modules.forEach(m -> m.writeGldString(sb));
+        }
         includes.forEach((i) -> {
             writeInclude(sb, i.getFileName().toString());
             try {
@@ -66,12 +72,6 @@ public abstract class GldSimulatorWriter {
                 throw new RuntimeException("Unable to copy includes source to destination", e);
             }
         });
-        sb.append('\n');
-        clock.writeGldString(sb);
-        sb.append('\n');
-        if (modules != null) {
-            modules.forEach(m -> m.writeGldString(sb));
-        }
         if (classes != null) {
             classes.forEach((c) -> {
                 c.writeGldString(sb);
