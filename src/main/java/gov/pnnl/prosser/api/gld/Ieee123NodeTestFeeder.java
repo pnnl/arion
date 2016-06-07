@@ -3,6 +3,8 @@
  */
 package gov.pnnl.prosser.api.gld;
 
+import java.awt.Point;
+import java.awt.geom.Point2D;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -32,6 +34,7 @@ import gov.pnnl.prosser.api.gld.lib.StandardLineConfiguration;
 import gov.pnnl.prosser.api.gld.lib.TransformerConfiguration;
 import gov.pnnl.prosser.api.gld.lib.UndergroundLineConductor;
 import gov.pnnl.prosser.api.gld.obj.ClimateObject;
+import gov.pnnl.prosser.api.gld.obj.House;
 import gov.pnnl.prosser.api.gld.obj.Load;
 import gov.pnnl.prosser.api.gld.obj.Meter;
 import gov.pnnl.prosser.api.gld.obj.Node;
@@ -39,6 +42,7 @@ import gov.pnnl.prosser.api.gld.obj.OverheadLine;
 import gov.pnnl.prosser.api.gld.obj.Regulator;
 import gov.pnnl.prosser.api.gld.obj.Switch;
 import gov.pnnl.prosser.api.gld.obj.Transformer;
+import gov.pnnl.prosser.api.gld.obj.TriplexMeter;
 import gov.pnnl.prosser.api.gld.obj.TriplexNode;
 import gov.pnnl.prosser.api.gld.obj.UndergroundLine;
 
@@ -103,10 +107,13 @@ public class Ieee123NodeTestFeeder {
         this.createUndergroundLines();
         this.createSwitches();
         this.createDgs();
+        
         if(addMarket){
         	GldSimulatorUtils.MakeTransactiveMarket(this.simulator, String.format("%s_Market", this.name));
         }
+        
         this.addAggLines();
+        this.setLatAndLongOnNodes();
     }
     
     public void createOverheadLineConductors() {
@@ -1343,6 +1350,195 @@ public class Ieee123NodeTestFeeder {
     		}
     	}
     }
+    
+    public void setLatAndLongOnNodes() {
+    	Map<Integer, Point> nodeCoordinates = new HashMap<Integer, Point>();
+    	nodeCoordinates.put(1, new Point(0, 0));
+    	nodeCoordinates.put(2, new Point(-124, 124));
+    	nodeCoordinates.put(3, new Point(0, -250));
+    	nodeCoordinates.put(4, new Point(0, -450));
+    	nodeCoordinates.put(5, new Point(230, -480));
+    	nodeCoordinates.put(6, new Point(480, -480));
+    	nodeCoordinates.put(7, new Point(300, 0));
+    	nodeCoordinates.put(8, new Point(500, 0));
+    	nodeCoordinates.put(9, new Point(500, 225));
+    	nodeCoordinates.put(10, new Point(101, 120));
+    	nodeCoordinates.put(11, new Point(-149, 370));
+    	nodeCoordinates.put(12, new Point(341, -159));
+    	nodeCoordinates.put(13, new Point(800, 0));
+    	nodeCoordinates.put(14, new Point(101, 370));
+    	nodeCoordinates.put(15, new Point(800, -250));
+    	nodeCoordinates.put(16, new Point(800, -625));
+    	nodeCoordinates.put(17, new Point(1150, -250));
+    	nodeCoordinates.put(18, new Point(518, 775));
+    	nodeCoordinates.put(19, new Point(268, 775));
+    	nodeCoordinates.put(20, new Point(-57, 775));
+    	nodeCoordinates.put(21, new Point(518, 1075));
+    	nodeCoordinates.put(22, new Point(-7, 1075));
+    	nodeCoordinates.put(23, new Point(518, 1325));
+    	nodeCoordinates.put(24, new Point(-32, 1325));
+    	nodeCoordinates.put(25, new Point(518, 1600));
+    	nodeCoordinates.put(26, new Point(168, 1600));
+    	nodeCoordinates.put(27, new Point(-107, 1600));
+    	nodeCoordinates.put(28, new Point(518, 1800));
+    	nodeCoordinates.put(29, new Point(518, 2100));
+    	nodeCoordinates.put(30, new Point(868, 2100));
+    	nodeCoordinates.put(31, new Point(168, 1825));
+    	nodeCoordinates.put(32, new Point(168, 2125));
+    	nodeCoordinates.put(33, new Point(-107, 2100));
+    	nodeCoordinates.put(34, new Point(800, -150));
+    	nodeCoordinates.put(35, new Point(893, 775));
+    	nodeCoordinates.put(36, new Point(1456, 450));
+    	nodeCoordinates.put(37, new Point(1156, 450));
+    	nodeCoordinates.put(38, new Point(1706, 450));
+    	nodeCoordinates.put(39, new Point(2031, 450));
+    	nodeCoordinates.put(40, new Point(893, 1025));
+    	nodeCoordinates.put(41, new Point(1218, 1350));
+    	nodeCoordinates.put(42, new Point(893, 1275));
+    	nodeCoordinates.put(43, new Point(1393, 1275));
+    	nodeCoordinates.put(44, new Point(893, 1475));
+    	nodeCoordinates.put(45, new Point(1093, 1475));
+    	nodeCoordinates.put(46, new Point(1393, 1475));
+    	nodeCoordinates.put(47, new Point(893, 1725));
+    	nodeCoordinates.put(48, new Point(743, 1725));
+    	nodeCoordinates.put(49, new Point(1143, 1725));
+    	nodeCoordinates.put(50, new Point(1393, 1725));
+    	nodeCoordinates.put(51, new Point(1643, 1725));
+    	nodeCoordinates.put(52, new Point(1200, 0));
+    	nodeCoordinates.put(53, new Point(1400, 0));
+    	nodeCoordinates.put(54, new Point(1525, 0));
+    	nodeCoordinates.put(55, new Point(1800, 0));
+    	nodeCoordinates.put(56, new Point(2075, 0));
+    	nodeCoordinates.put(57, new Point(1772, 247));
+    	nodeCoordinates.put(58, new Point(1522, 247));
+    	nodeCoordinates.put(59, new Point(1272, 247));
+    	nodeCoordinates.put(60, new Point(2522, 247));
+    	nodeCoordinates.put(61, new Point(2522, -303));
+    	nodeCoordinates.put(62, new Point(2522, 497));
+    	nodeCoordinates.put(63, new Point(2522, 672));
+    	nodeCoordinates.put(64, new Point(2522, 1022));
+    	nodeCoordinates.put(65, new Point(2097, 1022));
+    	nodeCoordinates.put(66, new Point(2097, 697));
+    	nodeCoordinates.put(67, new Point(2522, 247));
+    	nodeCoordinates.put(68, new Point(2722, 247));
+    	nodeCoordinates.put(69, new Point(2997, 247));
+    	nodeCoordinates.put(70, new Point(3322, 247));
+    	nodeCoordinates.put(71, new Point(3597, 247));
+    	nodeCoordinates.put(72, new Point(2522, -28));
+    	nodeCoordinates.put(73, new Point(2797, -28));
+    	nodeCoordinates.put(74, new Point(3147, -28));
+    	nodeCoordinates.put(75, new Point(3547, -28));
+    	nodeCoordinates.put(76, new Point(2522, -228));
+    	nodeCoordinates.put(77, new Point(2922, -228));
+    	nodeCoordinates.put(78, new Point(3022, -228));
+    	nodeCoordinates.put(79, new Point(3247, -228));
+    	nodeCoordinates.put(80, new Point(3022, -703));
+    	nodeCoordinates.put(81, new Point(3022, -1178));
+    	nodeCoordinates.put(82, new Point(3022, -1428));
+    	nodeCoordinates.put(83, new Point(3272, -1428));
+    	nodeCoordinates.put(84, new Point(3697, -1178));
+    	nodeCoordinates.put(85, new Point(3697, -703));
+    	nodeCoordinates.put(86, new Point(2522, -928));
+    	nodeCoordinates.put(87, new Point(2522, -928));
+    	nodeCoordinates.put(88, new Point(2522, -753));
+    	nodeCoordinates.put(89, new Point(2247, -928));
+    	nodeCoordinates.put(90, new Point(2247, -703));
+    	nodeCoordinates.put(91, new Point(2022, -928));
+    	nodeCoordinates.put(92, new Point(2022, -628));
+    	nodeCoordinates.put(93, new Point(1797, -928));
+    	nodeCoordinates.put(94, new Point(1797, -653));
+    	nodeCoordinates.put(95, new Point(1497, -928));
+    	nodeCoordinates.put(96, new Point(1497, -728));
+    	nodeCoordinates.put(97, new Point(2522, 497));
+    	nodeCoordinates.put(98, new Point(2797, 497));
+    	nodeCoordinates.put(99, new Point(3347, 497));
+    	nodeCoordinates.put(100, new Point(3647, 497));
+    	nodeCoordinates.put(101, new Point(2522, 747));
+    	nodeCoordinates.put(102, new Point(2747, 747));
+    	nodeCoordinates.put(103, new Point(3072, 747));
+    	nodeCoordinates.put(104, new Point(3772, 747));
+    	nodeCoordinates.put(105, new Point(2522, 1022));
+    	nodeCoordinates.put(106, new Point(2747, 1022));
+    	nodeCoordinates.put(107, new Point(3322, 1022));
+    	nodeCoordinates.put(108, new Point(2522, 1347));
+    	nodeCoordinates.put(109, new Point(2840, 1665));
+    	nodeCoordinates.put(110, new Point(3052, 1877));
+    	nodeCoordinates.put(111, new Point(2645, 2284));
+    	nodeCoordinates.put(112, new Point(3140, 1789));
+    	nodeCoordinates.put(113, new Point(3511, 1418));
+    	nodeCoordinates.put(114, new Point(3741, 1188));
+    	nodeCoordinates.put(135, new Point(518, 775));
+    	nodeCoordinates.put(149, new Point(-400, 0));
+    	nodeCoordinates.put(151, new Point(2343, 1725));
+    	nodeCoordinates.put(152, new Point(800, 0));
+    	nodeCoordinates.put(160, new Point(2522, 247));
+    	nodeCoordinates.put(195, new Point(1497, -928));
+    	nodeCoordinates.put(197, new Point(2522, 497));
+    	nodeCoordinates.put(250, new Point(1068, 2100));
+    	nodeCoordinates.put(251, new Point(1068, 2100));
+    	nodeCoordinates.put(300, new Point(2022, 2213));
+    	nodeCoordinates.put(350, new Point(2022, 2213));
+    	nodeCoordinates.put(450, new Point(4447, 497));
+    	nodeCoordinates.put(451, new Point(4447, 497));
+    	nodeCoordinates.put(610, new Point(2522, -303));
+
+    	double feetToDegreeMultiplier = .3048 * 10000000 / 90;
+    	
+    	for (Map.Entry<Integer, Point>coordinate : nodeCoordinates.entrySet()) {
+    		if (this.nodes.containsKey(coordinate.getKey())) {
+    			this.nodes.get(coordinate.getKey()).setCoordinateLocation(new Point2D.Double(coordinate.getValue().getX() * feetToDegreeMultiplier,
+    					coordinate.getValue().getY() * feetToDegreeMultiplier));
+    		}
+    		else if (this.loads.containsKey(coordinate.getKey())) {
+    			Node load = this.loads.get(coordinate.getKey());
+    			load.setCoordinateLocation(new Point2D.Double(coordinate.getValue().getX() * feetToDegreeMultiplier,
+    					coordinate.getValue().getY() * feetToDegreeMultiplier));
+    			
+    			for (AbstractGldObject loadChild : load.getChildren()) {
+    				int housePerNode = 0;
+    				
+    				if (loadChild.getClass() == Transformer.class) {
+    					for (AbstractGldObject transformerChild : loadChild.getChildren()) {
+    						if (transformerChild.getClass() == TriplexNode.class) {
+    							for (AbstractGldObject triplexNodeChild : transformerChild.getChildren()) {
+    								if (triplexNodeChild.getClass() == TriplexMeter.class) {
+    									for (AbstractGldObject triplexMeterChild : triplexNodeChild.getChildren()) {
+    										if (triplexMeterChild.getClass() == House.class) {
+    											//set house coords
+    											housePerNode++;
+    											
+    											int column = housePerNode % 5;
+    											int row = Math.floorDiv(housePerNode, 5);
+    											Point2D.Double houseLocation = load.getCoordinateLocation();
+    											
+    											if (column == 2) {
+    												houseLocation.x += -30 * feetToDegreeMultiplier;
+    											}
+    											else if (column == 3) {
+    												houseLocation.x += 30 * feetToDegreeMultiplier;
+    											}
+    											else if (column == 4) {
+    												houseLocation.x += -60 * feetToDegreeMultiplier;
+    											}
+    											else if (column == 0) {
+    												houseLocation.x += 60 * feetToDegreeMultiplier;
+    											}
+    											
+    											houseLocation.y += row * 30 * feetToDegreeMultiplier;
+    											
+    											triplexMeterChild.setCoordinateLocation(houseLocation);
+    										}   											
+    									}		
+    								}
+    							}
+    						}
+    					}
+    				}
+    			}
+    		}
+    	}
+    }
+    
     //TODO: Remove this from here and make it a utility function!!!!
     public void addAggLines(){
     	this.simulator.addAggregatorLineObject(this.simulator.getGldObjectByName(String.format("%s_overhead_line_%d", this.simulator.getName(), 1821)), "Aggregator_1");

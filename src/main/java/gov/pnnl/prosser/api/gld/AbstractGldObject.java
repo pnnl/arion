@@ -7,6 +7,7 @@ import gov.pnnl.prosser.api.GldSimulator;
 import gov.pnnl.prosser.api.gld.obj.Recorder;
 import gov.pnnl.prosser.api.sql.SqlFile;
 
+import java.awt.geom.Point2D;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -51,6 +52,8 @@ public abstract class AbstractGldObject implements GldSerializable {
     private AbstractGldObject parent;
     
     private final List<AbstractGldObject> children = new ArrayList<>();
+    
+    private Point2D.Double coordinateLocation = new Point2D.Double();
 
     /**
      * Simulator reference
@@ -151,7 +154,21 @@ public abstract class AbstractGldObject implements GldSerializable {
         return this.children;
     }
     
-    @Override
+    /**
+	 * @return the coordinateLocation
+	 */
+	public Point2D.Double getCoordinateLocation() {
+		return coordinateLocation;
+	}
+
+	/**
+	 * @param coordinateLocation the coordinateLocation to set
+	 */
+	public void setCoordinateLocation(Point2D.Double coordinateLocation) {
+		this.coordinateLocation = coordinateLocation;
+	}
+
+	@Override
     public void createSqlObjects(SqlFile file) {
         if (this.recorder != null) {
             this.recorder.createSqlObjects(file);
