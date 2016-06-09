@@ -457,6 +457,7 @@ public class Controller extends AbstractGldObject {
 			writeProperty(sb, "proxy_standard_deviation", auction.getInitStdev());
 			writeProperty(sb, "proxy_market_id", "1");
 			writeProperty(sb, "proxy_clear_price", auction.getInitPrice());
+			writeProperty(sb, "proxy_initial_price", auction.getInitPrice());
 			writeProperty(sb, "proxy_price_cap", auction.getPriceCap());
 			writeProperty(sb, "proxy_market_unit", auction.getUnit());
 		}

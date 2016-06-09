@@ -29,6 +29,10 @@ import gov.pnnl.prosser.api.gld.obj.ZIPLoad;
  */
 public abstract class ConvertLoadToHouses {
 	public static double[][][] generateHouses(GldSimulator sim, AbstractGldObject parent, double feederNumberOfHouses, double loadNumberOfHouses, EnumSet<PhaseCode> parentPhases, HouseRegionalization regionData, double[][] thermalIntegrity,double[][] coolSp, double[][] heatSp, Random randNumGen){
+		double[][][] rv = generateHouses(sim, parent, feederNumberOfHouses, loadNumberOfHouses, parentPhases, regionData, thermalIntegrity, coolSp, heatSp, randNumGen, true);
+		return rv;
+	}
+	public static double[][][] generateHouses(GldSimulator sim, AbstractGldObject parent, double feederNumberOfHouses, double loadNumberOfHouses, EnumSet<PhaseCode> parentPhases, HouseRegionalization regionData, double[][] thermalIntegrity,double[][] coolSp, double[][] heatSp, Random randNumGen, boolean useThermostatSchedules){
 		final Region region = regionData.getRegion();
 		final double[][][] thermalProperties = regionData.getThermalProperties();
 		final double[][][] coolingSetpoint = regionData.getCoolingSetpoint();
@@ -217,8 +221,13 @@ public abstract class ConvertLoadToHouses {
 				double heatNight = (heatsp[heatBin][2] - heatsp[heatBin][3])*randNumGen.nextDouble() + heatsp[heatBin][3] + 1;
 				double coolNightDiff = coolsp[coolBin][1]*2*randNumGen.nextDouble();
 				double heatNightDiff = heatsp[heatBin][1]*2*randNumGen.nextDouble();
-				resHouse.setCoolingSetpointFn(String.format("cooling%d*%1.3f+%2.2f", coolingSet, coolNightDiff, coolNight));
-				resHouse.setHeatingSetpointFn(String.format("heating%d*%1.3f+%2.2f", heatingSet, heatNightDiff, heatNight));
+				if(useThermostatSchedules){
+					resHouse.setCoolingSetpointFn(String.format("cooling%d*%1.3f+%2.2f", coolingSet, coolNightDiff, coolNight));
+					resHouse.setHeatingSetpointFn(String.format("heating%d*%1.3f+%2.2f", heatingSet, heatNightDiff, heatNight));
+				} else {
+					resHouse.setCoolingSetpointFn(String.format("%2.2f", coolNight));
+					resHouse.setHeatingSetpointFn(String.format("%2.2f", heatNight));
+				}
 				//Scale all of the end-use loads
 				double scalar1 = 324.9 * Math.pow(floor_area, 0.442) / 8907;
 				double scalar2 = 0.8 + (0.4 * randNumGen.nextDouble());

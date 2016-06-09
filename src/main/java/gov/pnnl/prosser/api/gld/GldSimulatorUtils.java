@@ -429,10 +429,17 @@ public abstract class GldSimulatorUtils {
         final int scheduleHeat = rand.nextInt(8) + 1;
         final double heatOffset = heatoffset_1 + heatoffset_2 * rand.nextDouble();
         final double heatTemp = (cool_1 - cool_2) + 2 * cool_2 * rand.nextDouble();
-
-//        house.setCoolingSetpointFn(String.format("cooling%d*%1.3f+%2.2f", scheduleCool, coolTemp, coolOffset));
-        house.setHeatingSetpointFn(String.format("heating%d*%1.3f+%2.2f", scheduleHeat, heatTemp, heatOffset));
-        house.setCoolingSetpointFn(null);
+        
+        if(house.getHeatingSetpointFn() == null){
+        	house.setHeatingSetpointFn(String.format("heating%d*%1.3f+%2.2f", scheduleHeat, heatTemp, heatOffset));
+        }
+        if(house.getCoolingSetpointFn() == null){
+        	controller.setBaseSetpoint(String.format("cooling%d*%1.3f+%2.2f", scheduleCool, coolTemp, coolOffset));
+        } else {
+        	controller.setBaseSetpoint(house.getCoolingSetpointFn());
+        	house.setCoolingSetpointFn(null);
+        }
+        
 
         // long bidDelay = 30 + Math.round((90 - 30) * rand.nextDouble());
         final double marketTest = rand.nextDouble();
@@ -460,8 +467,6 @@ public abstract class GldSimulatorUtils {
 
         // FIXME Bid delay does not apper in our output files?
         // controller.setBidDelay(bidDelay);
-
-        controller.setBaseSetpoint(String.format("cooling%d*%1.3f+%2.2f", scheduleCool, coolTemp, coolOffset));
         controller.setSetPoint("cooling_setpoint");
         controller.setTarget("air_temperature");
         controller.setDeadBand("thermostat_deadband");
