@@ -36,7 +36,7 @@ public class Ns3SimulatorV2Arion extends AbstractNs3SimulatorV2 {
     private final List<GldSimulator> simulators = new ArrayList<>();
 
     public Ns3SimulatorV2Arion(final String name) {
-        super(name, Paths.get("res/download.sh"));
+        super(name, Paths.get("res/README.md"));
     }
 
     public void attachSimulator(GldSimulator sim) {
