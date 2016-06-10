@@ -7,6 +7,9 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import gov.pnnl.prosser.api.AbstractSimulator;
 
@@ -20,6 +23,8 @@ public abstract class AbstractNs3SimulatorV2 extends AbstractSimulator {
     private String broker;
 
     private Path ccFile;
+    
+    private final List<Path> modelFiles = new ArrayList<>();
 
     public AbstractNs3SimulatorV2(final String name, final Path defaultCcFile) {
         super(name);
@@ -56,10 +61,28 @@ public abstract class AbstractNs3SimulatorV2 extends AbstractSimulator {
     public void setCcFile(Path ccFile) {
         this.ccFile = ccFile;
     }
+    
+    public void addModelFiles(final Path... modelFiles) {
+        this.modelFiles.addAll(Arrays.asList(modelFiles));
+    }
+
+    /**
+     * @return the modelFiles
+     */
+    public List<Path> getModelFiles() {
+        return modelFiles;
+    }
 
     public final void writeSimulator(Path outDir) throws IOException {
         this.writeCcFile(outDir);
+        this.writeModelFiles(outDir);
         this.writeConfig(outDir);
+    }
+    
+    protected void writeModelFiles(Path outDir) throws IOException {
+        for(final Path path: this.getModelFiles()) {
+            Files.copy(path, outDir.resolve(path.getFileName()), StandardCopyOption.REPLACE_EXISTING);
+        }
     }
 
     protected void writeCcFile(Path outDir) throws IOException {
