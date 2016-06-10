@@ -69,12 +69,14 @@ public class Ieee123NodeTestFeeder {
     private Map<Integer, OverheadLine> overheadLines;
     private Map<Integer, UndergroundLine> undergroundLines;
     private Map<Integer, Switch> switches;
+    private boolean useThermostatSchedules;
 
-    public Ieee123NodeTestFeeder(final GldSimulator simulator, final int region, final double averageHouseLoad, final boolean addMarket) {
+    public Ieee123NodeTestFeeder(final GldSimulator simulator, final int region, final double averageHouseLoad, final boolean addMarket, final boolean useThermostatSchedules) {
         this.simulator = simulator;
         this.name = simulator.getName();
         this.region = region;
         this.averageHouseLoad = averageHouseLoad;
+        this.useThermostatSchedules = useThermostatSchedules;
         this.overheadLineConductors = new HashMap<Integer, OverheadLineConductor>();
         this.lineSpacings = new HashMap<Integer, LineSpacing>();
         this.lineConfigurations = new HashMap<Integer, LineConfiguration<?>>();
@@ -641,7 +643,7 @@ public class Ieee123NodeTestFeeder {
                 	spct.setFrom(load);
                 	spct.setTo(tpn);
                 	//create houses
-                	double[][][] retval = ConvertLoadToHouses.generateHouses(this.simulator, tpn, totalLoad, loadVals.get(key)[0], PhaseCode.AS, regionalData, thermalIntegrity, coolSp, heatSp, randNumGen);
+                	double[][][] retval = ConvertLoadToHouses.generateHouses(this.simulator, tpn, totalLoad, loadVals.get(key)[0], PhaseCode.AS, regionalData, thermalIntegrity, coolSp, heatSp, randNumGen, this.useThermostatSchedules);
                 	thermalIntegrity = retval[0];
                 	coolSp = retval[1];
                 	heatSp = retval[2];
@@ -657,7 +659,7 @@ public class Ieee123NodeTestFeeder {
                 	spct.setFrom(load);
                 	spct.setTo(tpn);
                 	//create houses
-                	double[][][] retval = ConvertLoadToHouses.generateHouses(this.simulator, tpn, totalLoad, loadVals.get(key)[1], PhaseCode.BS, regionalData, thermalIntegrity, coolSp, heatSp, randNumGen);
+                	double[][][] retval = ConvertLoadToHouses.generateHouses(this.simulator, tpn, totalLoad, loadVals.get(key)[1], PhaseCode.BS, regionalData, thermalIntegrity, coolSp, heatSp, randNumGen, this.useThermostatSchedules);
                 	thermalIntegrity = retval[0];
                 	coolSp = retval[1];
                 	heatSp = retval[2];
@@ -673,7 +675,7 @@ public class Ieee123NodeTestFeeder {
                 	spct.setFrom(load);
                 	spct.setTo(tpn);
                 	//create houses
-                	double[][][] retval = ConvertLoadToHouses.generateHouses(this.simulator, tpn, totalLoad, loadVals.get(key)[2], PhaseCode.CS, regionalData, thermalIntegrity, coolSp, heatSp, randNumGen);
+                	double[][][] retval = ConvertLoadToHouses.generateHouses(this.simulator, tpn, totalLoad, loadVals.get(key)[2], PhaseCode.CS, regionalData, thermalIntegrity, coolSp, heatSp, randNumGen, this.useThermostatSchedules);
                 	thermalIntegrity = retval[0];
                 	coolSp = retval[1];
                 	heatSp = retval[2];

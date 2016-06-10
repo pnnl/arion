@@ -885,6 +885,8 @@ public class House extends ResidentialEnduse {
         writeProperty(sb, "window_frame", this.windowFrame);
         writeProperty(sb, "auxiliary_strategy", this.auxiliaryStrategy);
         writeProperty(sb, "auxiliary_system_type", this.auxiliarySystemType);
+        writeProperty(sb, "air_temperature", this.airTemperature);
+        writeProperty(sb, "mass_temperature", this.massTemperature);
         if (heatingSetpointFn != null) {
             writeProperty(sb, "heating_setpoint", this.heatingSetpointFn);
         } else {
