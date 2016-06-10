@@ -162,7 +162,7 @@ public abstract class GldSimulatorUtils {
             
             // Setup the controller
             Random rand = new Random(10);
-            setupController(house, controller, rand);
+            setupController(house, controller, rand, true);
         }
     }
     
@@ -271,7 +271,7 @@ public abstract class GldSimulatorUtils {
         controller.setStandardDeviationTarget(auction.getNetworkStdevPriceProperty());
         controller.setUseFncs(true);
         // Setup the controller and loads
-        setupController(house, controller, rand);
+        setupController(house, controller, rand, true);
         setupLoads(house, houseType, applianceScalar, rand);
 
         // If we want to track this item, add a recorder
@@ -419,7 +419,7 @@ public abstract class GldSimulatorUtils {
         setFloorarea(house, mobilehome_floorarea_1, 150, scaleFloor, rand);
     }
 
-    public static void setupController(final House house, final Controller controller, final Random rand) {
+    public static void setupController(final House house, final Controller controller, final Random rand, final boolean removeCoolingSetpoint) {
         // we need +1 to skip zeros
         final int scheduleCool = rand.nextInt(8) + 1;
         final double coolOffset = (cooloffset_1 - cooloffset_2) + 2 * cooloffset_2 * rand.nextDouble();
@@ -437,7 +437,9 @@ public abstract class GldSimulatorUtils {
         	controller.setBaseSetpoint(String.format("cooling%d*%1.3f+%2.2f", scheduleCool, coolTemp, coolOffset));
         } else {
         	controller.setBaseSetpoint(house.getCoolingSetpointFn());
-        	house.setCoolingSetpointFn(null);
+        	if(removeCoolingSetpoint){
+        		house.setCoolingSetpointFn(null);
+        	}
         }
         
 
