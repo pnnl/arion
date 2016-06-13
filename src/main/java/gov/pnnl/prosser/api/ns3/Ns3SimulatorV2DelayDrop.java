@@ -17,6 +17,7 @@ import java.util.Map;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
 
+import gov.pnnl.prosser.api.Experiment;
 import gov.pnnl.prosser.api.GldSimulator;
 import gov.pnnl.prosser.api.gld.AbstractGldObject;
 import gov.pnnl.prosser.api.gld.obj.AuctionObject;
@@ -36,8 +37,8 @@ public class Ns3SimulatorV2DelayDrop extends AbstractNs3SimulatorV2 {
 
     private final List<GldSimulator> simulators = new ArrayList<>();
 
-    public Ns3SimulatorV2DelayDrop(final String name) {
-        super(name, Paths.get("res/delay-drop-fncs-config.cc"));
+    public Ns3SimulatorV2DelayDrop(final String name, Experiment experiment) {
+        super(name, Paths.get("res/delay-drop-fncs-config.cc"), experiment);
     }
 
     public void attachSimulator(GldSimulator sim) {

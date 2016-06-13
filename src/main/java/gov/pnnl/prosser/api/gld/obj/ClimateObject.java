@@ -9,6 +9,7 @@ import gov.pnnl.prosser.api.gld.AbstractGldObject;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.Objects;
 
@@ -118,14 +119,17 @@ public class ClimateObject extends AbstractGldObject {
      */
     @Override
     protected void writeGldProperties(final StringBuilder sb) {
-        writeProperty(sb, "tmyfile", this.tmyFile.getFileName().toString());
+        writeProperty(sb, "tmyfile", "../" + this.simulator.getExperiment().getSharedFolderName() + "/" + this.tmyFile.getFileName().toString());
         writeProperty(sb, "reader", reader);
     }
 
     @Override
-    public void writeExternalFiles(Path path) throws IOException {
+    public void writeSharedFiles(Path path) throws IOException {
         if (tmyFile != null) {
-            Files.copy(tmyFile, path.resolve(tmyFile.getFileName()), StandardCopyOption.REPLACE_EXISTING);
+            final Path tmyFilePath = path.resolve(tmyFile.getFileName()); 
+            if(!Files.exists(tmyFilePath)) {
+                Files.copy(tmyFile, tmyFilePath, StandardCopyOption.REPLACE_EXISTING);
+            }
         }
     }
 

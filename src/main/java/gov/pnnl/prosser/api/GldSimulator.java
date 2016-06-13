@@ -186,8 +186,8 @@ public class GldSimulator extends AbstractSimulator {
      * @param name
      *            Name of the simulator, will be used when naming the file on disk
      */
-    public GldSimulator(final String name, final AbstractNs3SimulatorV2 ns3Sim) {
-        super(name);
+    public GldSimulator(final String name, final AbstractNs3SimulatorV2 ns3Sim, final Experiment experiment) {
+        super(name, experiment);
         this.ns3Sim = ns3Sim;
     }
 

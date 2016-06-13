@@ -12,6 +12,8 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
+import gov.pnnl.prosser.api.Experiment;
+
 /**
  * Stub for NS-3 Simulator configurations
  *
@@ -68,8 +70,8 @@ public class Ns3SimulatorV2FirstN extends AbstractNs3SimulatorV2 {
 
     }
 
-    public Ns3SimulatorV2FirstN(final String name) {
-        super(name, Paths.get("res/firstN.cc"));
+    public Ns3SimulatorV2FirstN(final String name, Experiment experiment) {
+        super(name, Paths.get("res/firstN.cc"), experiment);
     }
 
     public void addNetwork(String gldSimName, int numHouses, String marketName, String housePrefix) {

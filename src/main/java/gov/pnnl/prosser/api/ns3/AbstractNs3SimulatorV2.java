@@ -12,6 +12,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import gov.pnnl.prosser.api.AbstractSimulator;
+import gov.pnnl.prosser.api.Experiment;
 
 /**
  * Stub for NS-3 Simulator configurations
@@ -26,8 +27,8 @@ public abstract class AbstractNs3SimulatorV2 extends AbstractSimulator {
     
     private final List<Path> modelFiles = new ArrayList<>();
 
-    public AbstractNs3SimulatorV2(final String name, final Path defaultCcFile) {
-        super(name);
+    public AbstractNs3SimulatorV2(final String name, final Path defaultCcFile, Experiment experiment) {
+        super(name, experiment);
         this.ccFile = defaultCcFile;
         this.broker = "tcp://localhost:5570";
     }

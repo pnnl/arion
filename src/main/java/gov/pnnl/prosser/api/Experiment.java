@@ -35,9 +35,11 @@ public abstract class Experiment {
 
     private String experimentName;
 
-    private UUID uuid = UUID.randomUUID();
+    private final UUID uuid = UUID.randomUUID();
     
     private final List<ThirdPartySimulator> thirdPartySimulators = new ArrayList<>();
+    
+    private String sharedFolderName = "shared";
 
     /**
      * Get the ExperimentName
@@ -63,6 +65,20 @@ public abstract class Experiment {
      */
     public String getUUID() {
         return this.uuid.toString();
+    }
+
+    /**
+     * @return the sharedFolderName
+     */
+    public String getSharedFolderName() {
+        return sharedFolderName;
+    }
+
+    /**
+     * @param sharedFolderName the sharedFolderName to set
+     */
+    public void setSharedFolderName(String sharedFolderName) {
+        this.sharedFolderName = sharedFolderName;
     }
 
     /**
@@ -126,7 +142,7 @@ public abstract class Experiment {
      * @return the simulator
      */
     public GldSimulator gldSimulator(final String name) {
-        final GldSimulator sim = new GldSimulator(name, null);
+        final GldSimulator sim = new GldSimulator(name, null, this);
         this.gldSimulators.add(sim);
         this.ensureFncs();
         return sim;
@@ -140,7 +156,7 @@ public abstract class Experiment {
      * @return the simulator
      */
     public GldSimulator gldSimulator(final String name, final AbstractNs3SimulatorV2 ns3Sim) {
-        final GldSimulator sim = new GldSimulator(name, ns3Sim);
+        final GldSimulator sim = new GldSimulator(name, ns3Sim, this);
         this.gldSimulators.add(sim);
         this.ensureFncs();
         return sim;
@@ -158,7 +174,7 @@ public abstract class Experiment {
      * @return the simulator
      */
     public GldSimulator gldSimulator(final String name, final AbstractNs3SimulatorV2 ns3Sim, final ThirdPartySimulator thirdPartySim) {
-        final GldSimulator sim = new GldSimulator(name, ns3Sim);
+        final GldSimulator sim = new GldSimulator(name, ns3Sim, this);
         this.gldSimulators.add(sim);
         sim.setThirdPartySim(thirdPartySim);
         this.ensureFncs();
@@ -184,7 +200,7 @@ public abstract class Experiment {
      * @return the simulator
      */
     public Ns3SimulatorV2FirstN ns3SimulatorV2FirstN(final String name) {
-        Ns3SimulatorV2FirstN sim = new Ns3SimulatorV2FirstN(name);
+        Ns3SimulatorV2FirstN sim = new Ns3SimulatorV2FirstN(name, this);
         this.ns3SimulatorV2.add(sim);
         this.ensureFncs();
         return sim;
@@ -196,7 +212,7 @@ public abstract class Experiment {
      * @return the simulator
      */
     public Ns3SimulatorV2DelayDrop ns3SimulatorV2DelayDrop(final String name) {
-        Ns3SimulatorV2DelayDrop sim = new Ns3SimulatorV2DelayDrop(name);
+        Ns3SimulatorV2DelayDrop sim = new Ns3SimulatorV2DelayDrop(name, this);
         this.ns3SimulatorV2.add(sim);
         this.ensureFncs();
         return sim;
@@ -208,7 +224,7 @@ public abstract class Experiment {
      * @return the simulator
      */
     public Ns3SimulatorV2Arion ns3SimulatorV2Arion(final String name) {
-        Ns3SimulatorV2Arion sim = new Ns3SimulatorV2Arion(name);
+        Ns3SimulatorV2Arion sim = new Ns3SimulatorV2Arion(name, this);
         this.ns3SimulatorV2.add(sim);
         this.ensureFncs();
         return sim;
@@ -232,7 +248,7 @@ public abstract class Experiment {
      * @return the simulator
      */
     public ThirdPartySimulator thirdPartySimulator(final String name, SimType simType){
-    	ThirdPartySimulator sim = new ThirdPartySimulator(name, simType);
+    	ThirdPartySimulator sim = new ThirdPartySimulator(name, simType, this);
     	this.thirdPartySimulators.add(sim);
     	this.ensureFncs();
     	return sim;

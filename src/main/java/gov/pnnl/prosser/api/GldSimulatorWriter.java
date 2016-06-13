@@ -42,7 +42,7 @@ public abstract class GldSimulatorWriter {
      * @throws IOException
      *             when we can't write to file
      */
-    public static void writeGldSimulator(final Path path, final GldSimulator gldSimulator) throws IOException {
+    public static void writeGldSimulator(final Path path, final GldSimulator gldSimulator, final Path sharedPath) throws IOException {
         Files.createDirectories(path);
         final Map<String, String> properties = gldSimulator.getSettings();
         final Set<Path> includes = new HashSet<>(gldSimulator.getIncludes());
@@ -100,6 +100,11 @@ public abstract class GldSimulatorWriter {
                 }
                 try {
                     o.writeExternalFiles(path);
+                } catch (Exception e) {
+                    throw new RuntimeException("Unable to copy object file source to destination", e);
+                }
+                try{
+                    o.writeSharedFiles(sharedPath);
                 } catch (Exception e) {
                     throw new RuntimeException("Unable to copy object file source to destination", e);
                 }

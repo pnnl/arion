@@ -36,8 +36,8 @@ public class ThirdPartySimulator extends AbstractSimulator {
 	 * @param simType The simulation type: either MATPOWER, MATLAB_AGGREGATOR
 	 * 
 	 */
-	public ThirdPartySimulator(String name, SimType simType) {
-		super(name);
+	public ThirdPartySimulator(String name, SimType simType, Experiment experiment) {
+		super(name, experiment);
 		this.broker = "tcp://localhost:5570";
 		this.simType = simType;
 	}

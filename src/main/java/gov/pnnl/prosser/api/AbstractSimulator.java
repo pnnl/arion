@@ -11,10 +11,13 @@ public abstract class AbstractSimulator {
 
     private final String name;
     
+    private final Experiment experiment;
+    
     private String outputFolderName = "output";
 
-    public AbstractSimulator(String name) {
+    public AbstractSimulator(String name, Experiment experiment) {
         this.name = name;
+        this.experiment = experiment;
     }
 
     /**
@@ -24,6 +27,13 @@ public abstract class AbstractSimulator {
      */
     public String getName() {
         return name;
+    }
+
+    /**
+     * @return the experiment
+     */
+    public Experiment getExperiment() {
+        return experiment;
     }
 
     /**

@@ -30,6 +30,13 @@ public interface GldSerializable {
     public default void writeExternalFiles(Path path) throws IOException {
     }
     
+    /**
+     * Write the referenced files in this object to the specified path
+     * @param path the output path
+     */
+    public default void writeSharedFiles(Path path) throws IOException {
+    }
+    
     public default void createSqlObjects(SqlFile file) {
     }
 

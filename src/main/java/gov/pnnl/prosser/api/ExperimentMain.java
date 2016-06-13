@@ -77,12 +77,14 @@ public abstract class ExperimentMain {
         final Experiment experiment = experimentClass.getConstructor().newInstance();
         experiment.experiment();
         experiment.setName(name);
+        Path sharedPath = outPath.resolve(experiment.getSharedFolderName());
+        Files.createDirectories(sharedPath);
 
         for (final GldSimulator sim : experiment.getGldSimulators()) {
             final Path simPath = outPath.resolve(sim.getName());
             Files.createDirectories(simPath);
             Files.createDirectories(simPath.resolve(sim.getOutputFolderName()));
-            GldSimulatorWriter.writeGldSimulator(simPath, sim);
+            GldSimulatorWriter.writeGldSimulator(simPath, sim, sharedPath);
         }
 
         if (experiment.getNs3Simulator() != null) {

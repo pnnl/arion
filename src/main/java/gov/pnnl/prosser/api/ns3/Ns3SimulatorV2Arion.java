@@ -20,6 +20,7 @@ import org.jgrapht.ext.StringNameProvider;
 import org.jgrapht.graph.DefaultEdge;
 import org.jgrapht.graph.SimpleGraph;
 
+import gov.pnnl.prosser.api.Experiment;
 import gov.pnnl.prosser.api.GldSimulator;
 import gov.pnnl.prosser.api.gld.AbstractGldObject;
 import gov.pnnl.prosser.api.gld.enums.MarketSetUp;
@@ -35,8 +36,8 @@ import gov.pnnl.prosser.api.gld.obj.House;
 public class Ns3SimulatorV2Arion extends AbstractNs3SimulatorV2 {
     private final List<GldSimulator> simulators = new ArrayList<>();
 
-    public Ns3SimulatorV2Arion(final String name) {
-        super(name, Paths.get("res/README.md"));
+    public Ns3SimulatorV2Arion(final String name, Experiment experiment) {
+        super(name, Paths.get("res/README.md"), experiment);
     }
 
     public void attachSimulator(GldSimulator sim) {
