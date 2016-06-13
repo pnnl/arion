@@ -34,7 +34,7 @@ public class ThirdPartySimulator extends AbstractSimulator {
 	
 	/**
 	 * @param name
-	 * @param The simulation type: either MATPOWER, MATLAB_AGGREGATOR
+	 * @param simType The simulation type: either MATPOWER, MATLAB_AGGREGATOR
 	 * 
 	 */
 	public ThirdPartySimulator(String name, SimType simType) {
@@ -73,7 +73,7 @@ public class ThirdPartySimulator extends AbstractSimulator {
 
 	/**
 	 * add model files for the simulator
-	 * @param Path
+	 * @param modelFiles the model files
 	 */
 	public void addModelFiles(final Path... modelFiles){
 		this.modelFiles.addAll(Arrays.asList(modelFiles));

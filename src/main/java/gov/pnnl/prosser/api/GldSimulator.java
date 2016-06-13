@@ -157,7 +157,7 @@ public class GldSimulator extends AbstractSimulator {
 	
 	/**
 	 * add to the aggregator line List
-	 * @param aggLine
+	 * @param dgObject
 	 * 					The AbstractGldObject to add to the aggregator line list
 	 */
 	public void addAggregatorLineObject(AbstractGldObject dgObject, String auctionName){
@@ -193,7 +193,6 @@ public class GldSimulator extends AbstractSimulator {
 
     /**
 	 * @param thirdPartySim the thirdPartySim to set
-	 * @param the nominal voltage at the substation primary.
 	 */
 	public void setThirdPartySim(ThirdPartySimulator thirdPartySim) {
 		this.thirdPartySim = thirdPartySim;
