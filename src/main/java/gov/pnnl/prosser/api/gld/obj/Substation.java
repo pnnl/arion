@@ -5,6 +5,9 @@ package gov.pnnl.prosser.api.gld.obj;
 
 import gov.pnnl.prosser.api.GldSimulator;
 import gov.pnnl.prosser.api.gld.enums.PhaseCode;
+
+import java.util.Objects;
+
 import org.apache.commons.math3.complex.Complex;
 
 /**
@@ -80,6 +83,27 @@ public class Substation extends Node {
         super.writeGldProperties(sb);
         writeProperty(sb, "reference_phase", "PHASE_" + this.referencePhase.name());
         writeProperty(sb, "positive_sequence_voltage", positiveSequenceVoltage);
+    }
+    
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), referencePhase, positiveSequenceVoltage);
+    }
+
+    @Override
+    public boolean equals(final Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (!super.equals(obj)) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Substation other = (Substation) obj;
+        return Objects.equals(this.referencePhase, other.referencePhase)
+                && Objects.equals(this.positiveSequenceVoltage, other.positiveSequenceVoltage);
     }
 
 }

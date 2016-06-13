@@ -6,6 +6,8 @@ package gov.pnnl.prosser.api.gld.obj;
 import gov.pnnl.prosser.api.GldSimulator;
 import gov.pnnl.prosser.api.gld.enums.BusType;
 
+import java.util.Objects;
+
 import org.apache.commons.math3.complex.Complex;
 
 /**
@@ -169,6 +171,29 @@ public class Node extends PowerflowObject {
         writeProperty(sb, "voltage_B", this.voltageB);
         writeProperty(sb, "voltage_C", this.voltageC);
         writeProperty(sb, "bustype", this.busType);
+    }
+    
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), voltageA, voltageB, voltageC, busType);
+    }
+
+    @Override
+    public boolean equals(final Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (!super.equals(obj)) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Node other = (Node) obj;
+        return Objects.equals(this.voltageA, other.voltageA)
+                && Objects.equals(this.voltageB, other.voltageB)
+                && Objects.equals(this.voltageC, other.voltageC)
+                && Objects.equals(this.busType, other.busType);
     }
 
 }

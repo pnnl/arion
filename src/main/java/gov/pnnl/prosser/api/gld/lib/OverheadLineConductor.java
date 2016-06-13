@@ -3,6 +3,8 @@
  */
 package gov.pnnl.prosser.api.gld.lib;
 
+import java.util.Objects;
+
 import gov.pnnl.prosser.api.GldSimulator;
 
 /**
@@ -104,6 +106,28 @@ public class OverheadLineConductor extends Conductor {
         writeProperty(sb, "geometric_mean_radius", this.geometricMeanRadius, "ft");
         writeProperty(sb, "resistance", this.resistance, "Ohm/mile");
         writeProperty(sb, "diameter", this.diameter, "in");
+    }
+    
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), geometricMeanRadius, resistance, diameter);
+    }
+
+    @Override
+    public boolean equals(final Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (!super.equals(obj)) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final OverheadLineConductor other = (OverheadLineConductor) obj;
+        return Objects.equals(this.geometricMeanRadius, other.geometricMeanRadius)
+                && Objects.equals(this.resistance, other.resistance)
+                && Objects.equals(this.diameter, other.diameter);
     }
 
 }

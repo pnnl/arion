@@ -3,6 +3,8 @@
  */
 package gov.pnnl.prosser.api.gld.lib;
 
+import java.util.Objects;
+
 import gov.pnnl.prosser.api.GldSimulator;
 
 /**
@@ -179,6 +181,31 @@ public class LineSpacing extends PowerflowLibrary {
         writeProperty(sb, "distance_AN", this.distanceAToN);
         writeProperty(sb, "distance_BN", this.distanceBToN);
         writeProperty(sb, "distance_CN", this.distanceCToN);
+    }
+    
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), distanceAToB, distanceBToC, distanceAToC, distanceAToN, distanceBToN, distanceCToN);
+    }
+
+    @Override
+    public boolean equals(final Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (!super.equals(obj)) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final LineSpacing other = (LineSpacing) obj;
+        return Objects.equals(this.distanceAToB, other.distanceAToB)
+                && Objects.equals(this.distanceBToC, other.distanceBToC)
+                && Objects.equals(this.distanceAToC, other.distanceAToC)
+                && Objects.equals(this.distanceAToN, other.distanceAToN)
+                && Objects.equals(this.distanceBToN, other.distanceBToN)
+                && Objects.equals(this.distanceCToN, other.distanceCToN);
     }
 
 }

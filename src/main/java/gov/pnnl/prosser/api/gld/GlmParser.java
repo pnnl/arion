@@ -591,7 +591,7 @@ public class GlmParser {
             else if (capacitorLines.get(j).trim().startsWith("switchC")) {
                 String switchC = this.propertyValue(capacitorLines.get(j), "switchC");
                 
-                capacitor.setSwitcuStatusC(Enum.valueOf(SwitchStatus.class, switchC));
+                capacitor.setSwitchStatusC(Enum.valueOf(SwitchStatus.class, switchC));
             }
             else if (capacitorLines.get(j).trim().startsWith("time_delay")) {
                 String timeDelay = this.propertyValue(capacitorLines.get(j), "time_delay");

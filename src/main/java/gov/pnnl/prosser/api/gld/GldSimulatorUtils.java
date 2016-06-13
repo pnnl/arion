@@ -27,10 +27,12 @@ import gov.pnnl.prosser.api.gld.obj.ZIPLoad;
 
 import java.util.ArrayList;
 import java.util.EnumSet;
+import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.ListIterator;
 import java.util.Random;
+import java.util.Set;
 
 /**
  * House Generation Utilites
@@ -72,23 +74,22 @@ public abstract class GldSimulatorUtils {
     private static final double sigmaTstat = 2;
     
     public static List<House> FindDownstreamHouses(GldSimulator sim, String nodeStart){
-    	List<AbstractGldObject> children = new ArrayList<AbstractGldObject>();
-    	List<AbstractGldObject> newChildren = new ArrayList<AbstractGldObject>();
-    	List<AbstractGldObject> oldChildren = new ArrayList<AbstractGldObject>();
-    	List<House> houses = new ArrayList<House>();
+    	Set<AbstractGldObject> children = new LinkedHashSet<>();
+    	List<AbstractGldObject> newChildren = new ArrayList<>();
+    	Set<AbstractGldObject> oldChildren = new HashSet<>();
+    	List<House> houses = new ArrayList<>();
     	List<AbstractGldObject> objs = sim.getObjects();
     	int preNumChild = 0;
     	for(AbstractGldObject obj : objs){
     		if(obj.getName().equals(nodeStart)){
-    			for(AbstractGldObject child : obj.getChildren()){
-    				children.add(child);
-    			}
+    		    children = new LinkedHashSet<>(obj.getChildren());
+    			break;
     		}
     	}
     	while(preNumChild != children.size()){
     		preNumChild = children.size();
     		for(AbstractGldObject parent : children){
-    			if(!parent.getGldObjectType().equals("house") && !oldChildren.contains(parent)){
+    		    if(!(parent instanceof House) && !oldChildren.contains(parent)) {
     				for(AbstractGldObject child : parent.getChildren()){
     					if(!children.contains(child)){
     					    newChildren.add(child);
@@ -102,9 +103,10 @@ public abstract class GldSimulatorUtils {
     		}
     		newChildren.clear();
     	}
-    	children.removeIf(x -> !x.getGldObjectType().equals("house"));
-    	for(AbstractGldObject house : children){
-    		houses.add((House)house);
+    	for(AbstractGldObject obj: children) {
+    	    if(obj instanceof House) {
+    	        houses.add((House) obj);
+    	    }
     	}
     	if(houses.size() == 0){
     		System.out.println(String.format("Warning: No houses were found downstream from %s.", nodeStart));

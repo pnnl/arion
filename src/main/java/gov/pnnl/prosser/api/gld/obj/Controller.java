@@ -3,13 +3,13 @@
  */
 package gov.pnnl.prosser.api.gld.obj;
 
+import java.util.Objects;
+
 import gov.pnnl.prosser.api.GldSimulator;
-import gov.pnnl.prosser.api.NetworkCapable;
 import gov.pnnl.prosser.api.gld.AbstractGldObject;
 import gov.pnnl.prosser.api.gld.enums.BidMode;
 import gov.pnnl.prosser.api.gld.enums.ControlMode;
 import gov.pnnl.prosser.api.gld.enums.MarketSetUp;
-import gov.pnnl.prosser.api.gld.enums.UseOverride;
 
 /**
  * Market Controller embedded in Houses
@@ -554,4 +554,47 @@ public class Controller extends AbstractGldObject {
 		sb.append(key);
 		sb.append("; 0\";\n");
 	}
+	
+	@Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), useFncs, auction, bidMode, bidDelay, controlMode, baseSetpoint, setPoint, target,
+                deadBand, usePredictiveBidding, averageTarget, standardDeviationTarget, demand, rangeHigh, rangeLow, rampHigh,
+                rampLow, total, load, state, scheduleSkew, sendControllerBid);
+    }
+
+    @Override
+    public boolean equals(final Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (!super.equals(obj)) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Controller other = (Controller) obj;
+        return Objects.equals(this.useFncs, other.useFncs)
+                && Objects.equals(this.auction, other.auction)
+                && Objects.equals(this.bidMode, other.bidMode)
+                && Objects.equals(this.bidDelay, other.bidDelay)
+                && Objects.equals(this.controlMode, other.controlMode)
+                && Objects.equals(this.baseSetpoint, other.baseSetpoint)
+                && Objects.equals(this.setPoint, other.setPoint)
+                && Objects.equals(this.target, other.target)
+                && Objects.equals(this.deadBand, other.deadBand)
+                && Objects.equals(this.usePredictiveBidding, other.usePredictiveBidding)
+                && Objects.equals(this.averageTarget, other.averageTarget)
+                && Objects.equals(this.standardDeviationTarget, other.standardDeviationTarget)
+                && Objects.equals(this.demand, other.demand)
+                && Objects.equals(this.rangeHigh, other.rangeHigh)
+                && Objects.equals(this.rangeLow, other.rangeLow)
+                && Objects.equals(this.rampHigh, other.rampHigh)
+                && Objects.equals(this.rampLow, other.rampLow)
+                && Objects.equals(this.total, other.total)
+                && Objects.equals(this.load, other.load)
+                && Objects.equals(this.state, other.state)
+                && Objects.equals(this.scheduleSkew, other.scheduleSkew)
+                && Objects.equals(this.sendControllerBid, other.sendControllerBid);
+    }
 }

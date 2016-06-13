@@ -4,6 +4,7 @@
 package gov.pnnl.prosser.api.gld.obj;
 
 import java.util.EnumSet;
+import java.util.Objects;
 
 import gov.pnnl.prosser.api.GldSimulator;
 import gov.pnnl.prosser.api.gld.enums.CapacitorControl;
@@ -16,7 +17,6 @@ import gov.pnnl.prosser.api.gld.enums.SwitchStatus;
  *
  */
 public class Capacitor extends Node {
-    private String name;
     private EnumSet<PhaseCode> ptPhase;
     private EnumSet<PhaseCode> phasesConnected;
     private CapacitorControl control;
@@ -26,7 +26,7 @@ public class Capacitor extends Node {
     private ControlLevel controlLevel;
     private SwitchStatus switchStatusA;
     private SwitchStatus switchStatusB;
-    private SwitchStatus switcuStatusC;
+    private SwitchStatus switchStatusC;
     private double voltageSetHigh;
     private double voltageSetLow;
     private double timeDelay;
@@ -38,20 +38,6 @@ public class Capacitor extends Node {
      */
     public Capacitor(GldSimulator simulator) {
         super(simulator);
-    }
-
-    /**
-     * @return the name
-     */
-    public String getName() {
-        return name;
-    }
-
-    /**
-     * @param name the name to set
-     */
-    public void setName(String name) {
-        this.name = name;
     }
 
     /**
@@ -181,17 +167,17 @@ public class Capacitor extends Node {
     }
 
     /**
-     * @return the switcuStatusC
+     * @return the switchStatusC
      */
-    public SwitchStatus getSwitcuStatusC() {
-        return switcuStatusC;
+    public SwitchStatus getSwitchStatusC() {
+        return switchStatusC;
     }
 
     /**
-     * @param switcuStatusC the switcuStatusC to set
+     * @param switchStatusC the switchStatusC to set
      */
-    public void setSwitcuStatusC(SwitchStatus switcuStatusC) {
-        this.switcuStatusC = switcuStatusC;
+    public void setSwitchStatusC(SwitchStatus switchStatusC) {
+        this.switchStatusC = switchStatusC;
     }
 
     /**
@@ -278,5 +264,40 @@ public class Capacitor extends Node {
     @Override
     protected void writeGldProperties(StringBuilder sb) {
         // TODO Auto-generated method stub
+    }
+    
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), ptPhase, phasesConnected, control, capacitorA, capacitorB, capacitorC, controlLevel,
+                switchStatusA, switchStatusB, switchStatusC, voltageSetHigh, voltageSetLow, timeDelay, dwellTime, capNominalVoltage);
+    }
+
+    @Override
+    public boolean equals(final Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (!super.equals(obj)) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Capacitor other = (Capacitor) obj;
+        return Objects.equals(this.ptPhase, other.ptPhase)
+                && Objects.equals(this.phasesConnected, other.phasesConnected)
+                && Objects.equals(this.control, other.control)
+                && Objects.equals(this.capacitorA, other.capacitorA)
+                && Objects.equals(this.capacitorB, other.capacitorB)
+                && Objects.equals(this.capacitorC, other.capacitorC)
+                && Objects.equals(this.controlLevel, other.controlLevel)
+                && Objects.equals(this.switchStatusA, other.switchStatusA)
+                && Objects.equals(this.switchStatusB, other.switchStatusB)
+                && Objects.equals(this.switchStatusC, other.switchStatusC)
+                && Objects.equals(this.voltageSetHigh, other.voltageSetHigh)
+                && Objects.equals(this.voltageSetLow, other.voltageSetLow)
+                && Objects.equals(this.timeDelay, other.timeDelay)
+                && Objects.equals(this.dwellTime, other.dwellTime)
+                && Objects.equals(this.capNominalVoltage, other.capNominalVoltage);
     }
 }

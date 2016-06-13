@@ -6,7 +6,7 @@ package gov.pnnl.prosser.api.gld.obj;
 
 import gov.pnnl.prosser.api.gld.enums.WaterheaterLocation;
 
-import java.util.Random;
+import java.util.Objects;
 
 import gov.pnnl.prosser.api.GldSimulator;
 
@@ -259,4 +259,35 @@ public class WaterHeater extends ResidentialEnduse {
 		writeProperty(sb, "tank_diameter", this.tankDiameter);
 		writeProperty(sb, "tank_height", this.tankHeight);
 	}
+	
+	@Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), heatingElementCapacity, tankSetpoint, temperature, thermostatDeadband, location,
+                tankUA, waterDemand, tankVolume, tankDiameter, tankHeight, waterDemandFn);
+    }
+
+    @Override
+    public boolean equals(final Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (!super.equals(obj)) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final WaterHeater other = (WaterHeater) obj;
+        return Objects.equals(this.heatingElementCapacity, other.heatingElementCapacity)
+                && Objects.equals(this.tankSetpoint, other.tankSetpoint)
+                && Objects.equals(this.temperature, other.temperature)
+                && Objects.equals(this.thermostatDeadband, other.thermostatDeadband)
+                && Objects.equals(this.location, other.location)
+                && Objects.equals(this.tankUA, other.tankUA)
+                && Objects.equals(this.waterDemand, other.waterDemand)
+                && Objects.equals(this.tankVolume, other.tankVolume)
+                && Objects.equals(this.tankDiameter, other.tankDiameter)
+                && Objects.equals(this.tankHeight, other.tankHeight)
+                && Objects.equals(this.waterDemandFn, other.waterDemandFn);
+    }
 }

@@ -6,7 +6,9 @@ package gov.pnnl.prosser.api.gld.lib;
 import gov.pnnl.prosser.api.GldSimulator;
 import gov.pnnl.prosser.api.gld.enums.*;
 
+import java.util.Arrays;
 import java.util.EnumSet;
+import java.util.Objects;
 
 /**
  * Regulator configuration
@@ -423,5 +425,42 @@ public class RegulatorConfiguration extends PowerflowLibrary {
 	    writeProperty(sb, "tap_pos_B", this.getTapPositionB());
 	    writeProperty(sb, "tap_pos_C", this.getTapPositionC());
 	}
+	
+	@Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), connectionType, bandCenter, bandWidth, timeDelay, raiseTaps, lowerTaps,
+                currentTransducerRatio, powerTransducerRatio, compensatorRSettings, compensatorXSettings, cTPhases,
+                pTPhases, regulation, regulatorControl, regulatorType, tapPositions);
+    }
+
+    @Override
+    public boolean equals(final Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (!super.equals(obj)) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final RegulatorConfiguration other = (RegulatorConfiguration) obj;
+        return Objects.equals(this.connectionType, other.connectionType)
+                && Objects.equals(this.bandCenter, other.bandCenter)
+                && Objects.equals(this.bandWidth, other.bandWidth)
+                && Objects.equals(this.timeDelay, other.timeDelay)
+                && Objects.equals(this.raiseTaps, other.raiseTaps)
+                && Objects.equals(this.lowerTaps, other.lowerTaps)
+                && Objects.equals(this.currentTransducerRatio, other.currentTransducerRatio)
+                && Objects.equals(this.powerTransducerRatio, other.powerTransducerRatio)
+                && Arrays.equals(this.compensatorRSettings, other.compensatorRSettings)
+                && Arrays.equals(this.compensatorXSettings, other.compensatorXSettings)
+                && Objects.equals(this.cTPhases, other.cTPhases)
+                && Objects.equals(this.pTPhases, other.pTPhases)
+                && Objects.equals(this.regulation, other.regulation)
+                && Objects.equals(this.regulatorControl, other.regulatorControl)
+                && Objects.equals(this.regulatorType, other.regulatorType)
+                && Arrays.equals(this.tapPositions, other.tapPositions);
+    }
 
 }

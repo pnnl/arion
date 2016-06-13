@@ -3,6 +3,8 @@
  */
 package gov.pnnl.prosser.api.gld.obj;
 
+import java.util.Objects;
+
 import gov.pnnl.prosser.api.GldSimulator;
 
 /**
@@ -105,6 +107,28 @@ public class Load extends Node {
         writeProperty(sb, "constant_power_A_real", this.phaseAConstantReal);
         writeProperty(sb, "constant_power_B_real", this.phaseBConstantReal);
         writeProperty(sb, "constant_power_C_real", this.phaseCConstantReal);
+    }
+    
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), phaseAConstantReal, phaseBConstantReal, phaseCConstantReal);
+    }
+
+    @Override
+    public boolean equals(final Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (!super.equals(obj)) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Load other = (Load) obj;
+        return Objects.equals(this.phaseAConstantReal, other.phaseAConstantReal)
+                && Objects.equals(this.phaseBConstantReal, other.phaseBConstantReal)
+                && Objects.equals(this.phaseCConstantReal, other.phaseCConstantReal);
     }
 
 }

@@ -14,6 +14,7 @@ import gov.pnnl.prosser.api.gld.enums.MotorModel;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * House Object
@@ -907,6 +908,52 @@ public class House extends ResidentialEnduse {
             // Handle special case since we need a semicolon here
             sb.insert(sb.length() - 1, ';');
         }
+    }
+    
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), Rroof, Rwall, Rfloor, Rdoors, Rwindows, airchangePerHour, hvacPowerFactor, coolingSystemType,
+                heatingSystemType, fanType, hvacBreakerRating, totalThermalMassPerFloorArea, motorEfficiency, motorModel, coolingCop,
+                floorArea, numberOfDoors, heatingSetpoint, heatingSetpointFn, coolingSetpoint, coolingSetpointFn, airTemperature,
+                massTemperature, controller, numberOfStories, ceilingHeight, overSizingFactor, glazingLayers, glassType, glazingTreatment,
+                windowFrame, heatingCOP, auxiliaryStrategy, auxiliarySystemType);
+    }
+
+    @Override
+    public boolean equals(final Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (!super.equals(obj)) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final House other = (House) obj;
+        return Objects.equals(this.Rroof, other.Rroof) && Objects.equals(this.Rwall, other.Rwall)
+                && Objects.equals(this.Rfloor, other.Rfloor) && Objects.equals(this.Rdoors, other.Rdoors)
+                && Objects.equals(this.Rwindows, other.Rwindows) && Objects.equals(this.airchangePerHour, other.airchangePerHour)
+                && Objects.equals(this.hvacPowerFactor, other.hvacPowerFactor)
+                && Objects.equals(this.coolingSystemType, other.coolingSystemType)
+                && Objects.equals(this.heatingSystemType, other.heatingSystemType)
+                && Objects.equals(this.fanType, other.fanType) && Objects.equals(this.hvacBreakerRating, other.hvacBreakerRating)
+                && Objects.equals(this.totalThermalMassPerFloorArea, other.totalThermalMassPerFloorArea)
+                && Objects.equals(this.motorEfficiency, other.motorEfficiency)
+                && Objects.equals(this.motorModel, other.motorModel) && Objects.equals(this.coolingCop, other.coolingCop)
+                && Objects.equals(this.floorArea, other.floorArea) && Objects.equals(this.numberOfDoors, other.numberOfDoors)
+                && Objects.equals(this.heatingSetpoint, other.heatingSetpoint)
+                && Objects.equals(this.heatingSetpointFn, other.heatingSetpointFn)
+                && Objects.equals(this.coolingSetpoint, other.coolingSetpoint)
+                && Objects.equals(this.coolingSetpointFn, other.coolingSetpointFn)
+                && Objects.equals(this.airTemperature, other.airTemperature)
+                && Objects.equals(this.massTemperature, other.massTemperature)
+                && Objects.equals(this.controller, other.controller) && Objects.equals(this.numberOfStories, other.numberOfStories)
+                && Objects.equals(this.ceilingHeight, other.ceilingHeight) && Objects.equals(this.overSizingFactor, other.overSizingFactor)
+                && Objects.equals(this.glazingLayers, other.glazingLayers) && Objects.equals(this.glassType, other.glassType)
+                && Objects.equals(this.glazingTreatment, other.glazingTreatment) && Objects.equals(this.windowFrame, other.windowFrame)
+                && Objects.equals(this.heatingCOP, other.heatingCOP) && Objects.equals(this.auxiliaryStrategy, other.auxiliaryStrategy)
+                && Objects.equals(this.auxiliarySystemType, other.auxiliarySystemType);
     }
 
 }

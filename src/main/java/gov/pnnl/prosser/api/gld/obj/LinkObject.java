@@ -3,6 +3,8 @@
  */
 package gov.pnnl.prosser.api.gld.obj;
 
+import java.util.Objects;
+
 import gov.pnnl.prosser.api.GldSimulator;
 
 /**
@@ -74,6 +76,27 @@ public abstract class LinkObject extends PowerflowObject {
         super.writeGldProperties(sb);
         writeProperty(sb, "from", this.from);
         writeProperty(sb, "to", this.to);
+    }
+    
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), from, to);
+    }
+
+    @Override
+    public boolean equals(final Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (!super.equals(obj)) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final LinkObject other = (LinkObject) obj;
+        return Objects.equals(this.from, other.from)
+                && Objects.equals(this.to, other.to);
     }
 
 }

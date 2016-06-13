@@ -3,6 +3,8 @@
  */
 package gov.pnnl.prosser.api.gld.obj;
 
+import java.util.Objects;
+
 import gov.pnnl.prosser.api.GldSimulator;
 
 /**
@@ -262,6 +264,35 @@ public class ZIPLoad extends ResidentialEnduse {
         writeProperty(sb, "current_fraction", this.currentFraction);
         writeProperty(sb, "impedance_pf", this.impedancePf);
         writeProperty(sb, "impedance_fraction", this.impedanceFraction);
+    }
+    
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), heatFraction, basePower, basePowerFn, powerPf, powerFraction, currentPf, currentFraction,
+                impedancePf, impedanceFraction);
+    }
+
+    @Override
+    public boolean equals(final Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (!super.equals(obj)) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final ZIPLoad other = (ZIPLoad) obj;
+        return Objects.equals(this.heatFraction, other.heatFraction)
+                && Objects.equals(this.basePower, other.basePower)
+                && Objects.equals(this.basePowerFn, other.basePowerFn)
+                && Objects.equals(this.powerPf, other.powerPf)
+                && Objects.equals(this.powerFraction, other.powerFraction)
+                && Objects.equals(this.currentPf, other.currentPf)
+                && Objects.equals(this.currentFraction, other.currentFraction)
+                && Objects.equals(this.impedancePf, other.impedancePf)
+                && Objects.equals(this.impedanceFraction, other.impedanceFraction);
     }
 
 }

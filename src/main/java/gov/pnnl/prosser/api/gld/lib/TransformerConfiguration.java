@@ -7,6 +7,8 @@ import gov.pnnl.prosser.api.GldSimulator;
 import gov.pnnl.prosser.api.gld.enums.ConnectionType;
 import gov.pnnl.prosser.api.gld.enums.InstallationType;
 
+import java.util.Objects;
+
 import org.apache.commons.math3.complex.Complex;
 
 /**
@@ -309,6 +311,36 @@ public class TransformerConfiguration extends PowerflowLibrary {
         // GLDUtils.writeProperty(sb, "reactance", this.impedance.getImaginary());
         writeProperty(sb, "impedance", this.impedance);
         writeProperty(sb, "shunt_impedance", this.shuntImpedance);
+    }
+    
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), connectionType, installationType, primaryVoltage, secondaryVoltage,
+                powerRating, phaseARating, phaseBRating, phaseCRating, impedance, shuntImpedance);
+    }
+
+    @Override
+    public boolean equals(final Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (!super.equals(obj)) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final TransformerConfiguration other = (TransformerConfiguration) obj;
+        return Objects.equals(this.connectionType, other.connectionType)
+                && Objects.equals(this.installationType, other.installationType)
+                && Objects.equals(this.primaryVoltage, other.primaryVoltage)
+                && Objects.equals(this.secondaryVoltage, other.secondaryVoltage)
+                && Objects.equals(this.powerRating, other.powerRating)
+                && Objects.equals(this.phaseARating, other.phaseARating)
+                && Objects.equals(this.phaseBRating, other.phaseBRating)
+                && Objects.equals(this.phaseCRating, other.phaseCRating)
+                && Objects.equals(this.impedance, other.impedance)
+                && Objects.equals(this.shuntImpedance, other.shuntImpedance);
     }
 
 }

@@ -4,10 +4,9 @@
 package gov.pnnl.prosser.api.gld.obj;
 
 import gov.pnnl.prosser.api.GldSimulator;
-import gov.pnnl.prosser.api.gld.enums.PhaseCode;
 import gov.pnnl.prosser.api.gld.enums.SwitchStatus;
 
-import java.util.EnumSet;
+import java.util.Objects;
 
 public class Switch extends LinkObject {
 	private SwitchStatus status;
@@ -49,5 +48,25 @@ public class Switch extends LinkObject {
         super.writeGldProperties(sb);
         
         writeProperty(sb, "status", this.status);
+    }
+    
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), status);
+    }
+
+    @Override
+    public boolean equals(final Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (!super.equals(obj)) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Switch other = (Switch) obj;
+        return Objects.equals(this.status, other.status);
     }
 }

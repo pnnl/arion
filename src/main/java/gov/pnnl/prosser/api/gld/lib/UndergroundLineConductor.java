@@ -3,6 +3,8 @@
  */
 package gov.pnnl.prosser.api.gld.lib;
 
+import java.util.Objects;
+
 import gov.pnnl.prosser.api.GldSimulator;
 
 /**
@@ -203,6 +205,36 @@ public class UndergroundLineConductor extends Conductor {
         writeProperty(sb, "neutral_strands", this.neutralStrands);
         writeProperty(sb, "shield_gmr", this.shieldGmr);
         writeProperty(sb, "shield_resistance", this.shieldResistance);
+    }
+    
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), outerDiameter, conductorGmr, conductorDiameter, conductorResistance, neutralGmr,
+                neutralResistance, neutralDiameter, neutralStrands, shieldGmr, shieldResistance);
+    }
+
+    @Override
+    public boolean equals(final Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (!super.equals(obj)) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final UndergroundLineConductor other = (UndergroundLineConductor) obj;
+        return Objects.equals(this.outerDiameter, other.outerDiameter)
+                && Objects.equals(this.conductorGmr, other.conductorGmr)
+                && Objects.equals(this.conductorDiameter, other.conductorDiameter)
+                && Objects.equals(this.conductorResistance, other.conductorResistance)
+                && Objects.equals(this.neutralGmr, other.neutralGmr)
+                && Objects.equals(this.neutralResistance, other.neutralResistance)
+                && Objects.equals(this.neutralDiameter, other.neutralDiameter)
+                && Objects.equals(this.neutralStrands, other.neutralStrands)
+                && Objects.equals(this.shieldGmr, other.shieldGmr)
+                && Objects.equals(this.shieldResistance, other.shieldResistance);
     }
 
 }

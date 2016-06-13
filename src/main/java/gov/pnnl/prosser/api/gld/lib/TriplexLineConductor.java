@@ -3,6 +3,8 @@
  */
 package gov.pnnl.prosser.api.gld.lib;
 
+import java.util.Objects;
+
 import gov.pnnl.prosser.api.GldSimulator;
 
 /**
@@ -79,6 +81,27 @@ public class TriplexLineConductor extends Conductor {
     protected void writeGldProperties(final StringBuilder sb) {
         writeProperty(sb, "resistance", this.resistance);
         writeProperty(sb, "geometric_mean_radius", this.geometricMeanRadius);
+    }
+    
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), resistance, geometricMeanRadius);
+    }
+
+    @Override
+    public boolean equals(final Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (!super.equals(obj)) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final TriplexLineConductor other = (TriplexLineConductor) obj;
+        return Objects.equals(this.resistance, other.resistance)
+                && Objects.equals(this.geometricMeanRadius, other.geometricMeanRadius);
     }
 
 }

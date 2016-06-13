@@ -4,15 +4,14 @@
 package gov.pnnl.prosser.api.gld.obj;
 
 import gov.pnnl.prosser.api.GldSimulator;
-import gov.pnnl.prosser.api.NetworkCapable;
 import gov.pnnl.prosser.api.gld.AbstractGldObject;
 import gov.pnnl.prosser.api.gld.enums.CurveOutput;
 import gov.pnnl.prosser.api.gld.enums.MarketSetUp;
 import gov.pnnl.prosser.api.gld.enums.SpecialMode;
-import gov.pnnl.prosser.api.sql.SqlFile;
 
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.Objects;
 import java.util.UUID;
 
 /**
@@ -405,6 +404,43 @@ public class AuctionObject extends AbstractGldObject {
 	public void setMarketSetUp(MarketSetUp marketSetUp) {
 		this.marketSetUp = marketSetUp;
 	}
+	
+	@Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), unit, period, priceCap, transactionLogFile, curveLogFile, curveLogInfo,
+                player, specialMode, initPrice, initStdev, useFutureMeanPrice, warmup, networkAveragePriceProperty,
+                networkStdevPriceProperty, fncsControllerPrefix, marketSetUp);
+    }
+
+    @Override
+    public boolean equals(final Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (!super.equals(obj)) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final AuctionObject other = (AuctionObject) obj;
+        return Objects.equals(this.unit, other.unit)
+                && Objects.equals(this.period, other.period)
+                && Objects.equals(this.priceCap, other.priceCap)
+                && Objects.equals(this.transactionLogFile, other.transactionLogFile)
+                && Objects.equals(this.curveLogFile, other.curveLogFile)
+                && Objects.equals(this.curveLogInfo, other.curveLogInfo)
+                && Objects.equals(this.player, other.player)
+                && Objects.equals(this.specialMode, other.specialMode)
+                && Objects.equals(this.initPrice, other.initPrice)
+                && Objects.equals(this.initStdev, other.initStdev)
+                && Objects.equals(this.useFutureMeanPrice, other.useFutureMeanPrice)
+                && Objects.equals(this.warmup, other.warmup)
+                && Objects.equals(this.networkAveragePriceProperty, other.networkAveragePriceProperty)
+                && Objects.equals(this.networkStdevPriceProperty, other.networkStdevPriceProperty)
+                && Objects.equals(this.fncsControllerPrefix, other.fncsControllerPrefix)
+                && Objects.equals(this.marketSetUp, other.marketSetUp);
+    }
 
     /**
      * Set the controller prefix for FNCS to a unique id.

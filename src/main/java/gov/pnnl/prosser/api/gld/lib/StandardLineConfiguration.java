@@ -3,6 +3,8 @@
  */
 package gov.pnnl.prosser.api.gld.lib;
 
+import java.util.Objects;
+
 import gov.pnnl.prosser.api.GldSimulator;
 
 /**
@@ -154,6 +156,30 @@ public class StandardLineConfiguration<C extends Conductor> extends LineConfigur
         writeProperty(sb, "conductor_C", this.phaseCConductor);
         writeProperty(sb, "conductor_N", this.phaseNConductor);
         writeProperty(sb, "spacing", this.spacing);
+    }
+    
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), phaseAConductor, phaseBConductor, phaseCConductor, phaseNConductor, spacing);
+    }
+
+    @Override
+    public boolean equals(final Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (!super.equals(obj)) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final StandardLineConfiguration<?> other = (StandardLineConfiguration<?>) obj;
+        return Objects.equals(this.phaseAConductor, other.phaseAConductor)
+                && Objects.equals(this.phaseBConductor, other.phaseBConductor)
+                && Objects.equals(this.phaseCConductor, other.phaseCConductor)
+                && Objects.equals(this.phaseNConductor, other.phaseNConductor)
+                && Objects.equals(this.spacing, other.spacing);
     }
 
 }

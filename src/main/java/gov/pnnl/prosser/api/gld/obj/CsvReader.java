@@ -3,6 +3,8 @@
  */
 package gov.pnnl.prosser.api.gld.obj;
 
+import java.util.Objects;
+
 import gov.pnnl.prosser.api.GldSimulator;
 import gov.pnnl.prosser.api.gld.AbstractGldObject;
 
@@ -56,6 +58,26 @@ public class CsvReader extends AbstractGldObject {
     @Override
     protected void writeGldProperties(final StringBuilder sb) {
         writeProperty(sb, "filename", filename);
+    }
+    
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), this.filename);
+    }
+
+    @Override
+    public boolean equals(final Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (!super.equals(obj)) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final CsvReader other = (CsvReader) obj;
+        return Objects.equals(this.filename, other.filename);
     }
 
 }

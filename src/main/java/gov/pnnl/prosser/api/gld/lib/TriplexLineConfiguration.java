@@ -3,6 +3,8 @@
  */
 package gov.pnnl.prosser.api.gld.lib;
 
+import java.util.Objects;
+
 import gov.pnnl.prosser.api.GldSimulator;
 
 /**
@@ -154,6 +156,30 @@ public class TriplexLineConfiguration extends LineConfiguration<TriplexLineCondu
         writeProperty(sb, "conductor_N", this.phaseNConductor);
         writeProperty(sb, "insulation_thickness", this.insulationThickness);
         writeProperty(sb, "diameter", this.diameter);
+    }
+    
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), phase1Conductor, phase2Conductor, phaseNConductor, insulationThickness, diameter);
+    }
+
+    @Override
+    public boolean equals(final Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (!super.equals(obj)) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final TriplexLineConfiguration other = (TriplexLineConfiguration) obj;
+        return Objects.equals(this.phase1Conductor, other.phase1Conductor)
+                && Objects.equals(this.phase2Conductor, other.phase2Conductor)
+                && Objects.equals(this.phaseNConductor, other.phaseNConductor)
+                && Objects.equals(this.insulationThickness, other.insulationThickness)
+                && Objects.equals(this.diameter, other.diameter);
     }
 
 }

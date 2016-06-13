@@ -3,6 +3,8 @@
  */
 package gov.pnnl.prosser.api.gld.obj;
 
+import java.util.Objects;
+
 import gov.pnnl.prosser.api.GldSimulator;
 import gov.pnnl.prosser.api.gld.lib.Conductor;
 import gov.pnnl.prosser.api.gld.lib.LineConfiguration;
@@ -74,6 +76,27 @@ public abstract class Line<C extends Conductor, Q extends LineConfiguration<C>> 
         super.writeGldProperties(sb);
         writeProperty(sb, "length", this.length, "ft");
         writeProperty(sb, "configuration", this.configuration);
+    }
+    
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), length, configuration);
+    }
+
+    @Override
+    public boolean equals(final Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (!super.equals(obj)) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Line<?, ?> other = (Line<?, ?>) obj;
+        return Objects.equals(this.length, other.length)
+                && Objects.equals(this.configuration, other.configuration);
     }
 
 }

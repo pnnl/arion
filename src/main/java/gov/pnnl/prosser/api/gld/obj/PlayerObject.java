@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
+import java.util.Objects;
 
 /**
  * Tape Player
@@ -118,6 +119,28 @@ public class PlayerObject extends AbstractGldObject {
         if (file != null) {
             Files.copy(file, path.resolve(file.getFileName()), StandardCopyOption.REPLACE_EXISTING);
         }
+    }
+    
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), this.property, this.file, this.loop);
+    }
+
+    @Override
+    public boolean equals(final Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (!super.equals(obj)) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final PlayerObject other = (PlayerObject) obj;
+        return Objects.equals(this.property, other.property)
+                && Objects.equals(this.file, other.file)
+                && Objects.equals(this.loop, other.loop);
     }
 
 }

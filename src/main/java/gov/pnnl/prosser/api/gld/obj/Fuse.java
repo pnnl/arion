@@ -3,6 +3,8 @@
  */
 package gov.pnnl.prosser.api.gld.obj;
 
+import java.util.Objects;
+
 import gov.pnnl.prosser.api.GldSimulator;
 import gov.pnnl.prosser.api.gld.enums.RepairDistributionType;
 import gov.pnnl.prosser.api.gld.enums.SwitchStatus;
@@ -86,5 +88,28 @@ public class Fuse extends LinkObject {
     @Override
     protected String getGldObjectType() {
         return "fuse";
+    }
+    
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), currentLimit, meanReplacementTime, repairDistributionType, status);
+    }
+
+    @Override
+    public boolean equals(final Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (!super.equals(obj)) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Fuse other = (Fuse) obj;
+        return Objects.equals(this.currentLimit, other.currentLimit)
+                && Objects.equals(this.meanReplacementTime, other.meanReplacementTime)
+                && Objects.equals(this.repairDistributionType, other.repairDistributionType)
+                && Objects.equals(this.status, other.status);
     }
 }
