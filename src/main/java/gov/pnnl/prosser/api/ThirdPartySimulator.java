@@ -9,7 +9,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
 
 import gov.pnnl.prosser.api.fncs.Subscription;
 import gov.pnnl.prosser.api.thirdparty.enums.SimType;
