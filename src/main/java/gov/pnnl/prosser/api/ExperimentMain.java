@@ -81,6 +81,7 @@ public abstract class ExperimentMain {
         for (final GldSimulator sim : experiment.getGldSimulators()) {
             final Path simPath = outPath.resolve(sim.getName());
             Files.createDirectories(simPath);
+            Files.createDirectories(simPath.resolve(sim.getOutputFolderName()));
             GldSimulatorWriter.writeGldSimulator(simPath, sim);
         }
 
