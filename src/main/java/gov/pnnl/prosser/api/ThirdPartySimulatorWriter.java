@@ -13,7 +13,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import java.util.TreeMap;
 
 import gov.pnnl.prosser.api.fncs.Subscription;
 import gov.pnnl.prosser.api.gld.AbstractGldObject;

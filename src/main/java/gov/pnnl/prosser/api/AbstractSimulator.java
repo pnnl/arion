@@ -10,6 +10,8 @@ package gov.pnnl.prosser.api;
 public abstract class AbstractSimulator {
 
     private final String name;
+    
+    private String outputFolderName = "output";
 
     public AbstractSimulator(String name) {
         this.name = name;
@@ -22,6 +24,20 @@ public abstract class AbstractSimulator {
      */
     public String getName() {
         return name;
+    }
+
+    /**
+     * @return the outputFolderName
+     */
+    public String getOutputFolderName() {
+        return outputFolderName;
+    }
+
+    /**
+     * @param outputFolderName the outputFolderName to set
+     */
+    public void setOutputFolderName(String outputFolderName) {
+        this.outputFolderName = outputFolderName;
     }
 
 }

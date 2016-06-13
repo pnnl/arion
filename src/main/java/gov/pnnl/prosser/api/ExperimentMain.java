@@ -81,6 +81,7 @@ public abstract class ExperimentMain {
         for (final GldSimulator sim : experiment.getGldSimulators()) {
             final Path simPath = outPath.resolve(sim.getName());
             Files.createDirectories(simPath);
+            Files.createDirectories(simPath.resolve(sim.getOutputFolderName()));
             GldSimulatorWriter.writeGldSimulator(simPath, sim);
         }
 
@@ -121,7 +122,7 @@ public abstract class ExperimentMain {
                 public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) {
                     try {
                         final String fileName = outPath.relativize(file).toString();
-                        if (!fileName.contains(".class") && !fileName.contains(".tar.gz") && !fileName.equals("heat.yaml")) {
+                        if (!fileName.contains(".class") && !fileName.contains(".tar.gz")) {
                             final TarArchiveEntry entry = new TarArchiveEntry(file.toFile(), fileName);
                             tar.putArchiveEntry(entry);
                             Files.copy(file, tar);
