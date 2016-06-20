@@ -34,6 +34,7 @@ import gov.pnnl.prosser.api.gld.obj.House;
  * @author nord229
  */
 public class Ns3SimulatorV2Arion extends AbstractNs3SimulatorV2 {
+    private static final int MAX_COUNT = 500;
     private final List<GldSimulator> simulators = new ArrayList<>();
 
     public Ns3SimulatorV2Arion(final String name, Experiment experiment) {
@@ -49,7 +50,10 @@ public class Ns3SimulatorV2Arion extends AbstractNs3SimulatorV2 {
         final StringBuilder sb = new StringBuilder();
         this.writeZplHeader(sb);
         final UndirectedGraph<String, DefaultEdge> graph = new SimpleGraph<>(DefaultEdge.class);
-        graph.addVertex("router1");
+        int nodeCount = 1;
+        int routerCount = 1;
+        String currentRouter = "router" + routerCount; 
+        graph.addVertex(currentRouter);
         // This may support using Auctions across GridLabD simulators but that is not feasible because of the implications on the powergrid
         final Set<String> names = new HashSet<>();
         for (final GldSimulator gldSim : this.simulators) {
@@ -60,7 +64,16 @@ public class Ns3SimulatorV2Arion extends AbstractNs3SimulatorV2 {
                         throw new RuntimeException("Duplicate Name Detected: " + auction.getName());
                     }
                     graph.addVertex(auction.getName());
-                    graph.addEdge("router1", auction.getName());
+                    graph.addEdge(currentRouter, auction.getName());
+                    nodeCount++;
+                    if(nodeCount >= MAX_COUNT){
+                        routerCount++;
+                        String newRouter = "router" + routerCount;
+                        graph.addVertex(newRouter);
+                        graph.addEdge(currentRouter, newRouter);
+                        currentRouter = newRouter;
+                        nodeCount = 1;
+                    }
                 }
             }
             for (AbstractGldObject object : gldSim.getObjects()) {
@@ -74,7 +87,16 @@ public class Ns3SimulatorV2Arion extends AbstractNs3SimulatorV2 {
                         throw new RuntimeException("Duplicate Name Detected: " + controller.getName());
                     }
                     graph.addVertex(controller.getName());
-                    graph.addEdge("router1", controller.getName());
+                    graph.addEdge(currentRouter, controller.getName());
+                    nodeCount++;
+                    if(nodeCount >= MAX_COUNT){
+                        routerCount++;
+                        String newRouter = "router" + routerCount;
+                        graph.addVertex(newRouter);
+                        graph.addEdge(currentRouter, newRouter);
+                        currentRouter = newRouter;
+                        nodeCount = 1;
+                    }
                     if(controller.getAuction().getMarketSetUp().equals(MarketSetUp.NORMAL)){
                     	writeControllerToMarketVar(sb, gldSim, controller, "submit_bid_state");
                     } else if(controller.getAuction().getMarketSetUp().equals(MarketSetUp.AGGREGATE)){
