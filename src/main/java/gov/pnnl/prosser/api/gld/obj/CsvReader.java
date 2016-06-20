@@ -57,7 +57,7 @@ public class CsvReader extends AbstractGldObject {
      */
     @Override
     protected void writeGldProperties(final StringBuilder sb) {
-        writeProperty(sb, "filename", filename);
+        writeProperty(sb, "filename", "../" + this.simulator.getExperiment().getSharedFolderName() + "/" + filename);
     }
     
     @Override

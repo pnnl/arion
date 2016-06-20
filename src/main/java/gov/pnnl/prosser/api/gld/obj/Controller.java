@@ -497,7 +497,7 @@ public class Controller extends AbstractGldObject {
 	    if(this.auction.getMarketSetUp().equals(MarketSetUp.AGGREGATE)){
 	    	writeRouteCommit(sb, this.getName(), "bid_price", this.auction.getName(), "bid_price");
 	    	writeRouteCommit(sb, this.getName(), "bid_quantity", this.auction.getName(), "bid_quantity");
-	    	writeRouteCommit(sb, this.getName(), "parent_unresponsive_load", this.auction.getName(), "parent_responsive_load");
+	    	writeRouteCommit(sb, this.getName(), "parent_unresponsive_load", this.auction.getName(), "parent_unresponsive_load");
 	    }
 	}
 	
