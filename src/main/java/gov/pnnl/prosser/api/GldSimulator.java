@@ -96,8 +96,24 @@ public class GldSimulator extends AbstractSimulator {
     private final Map<AbstractGldObject, String> aggregatorLines = new HashMap<>();
     
     private ThirdPartySimulator transmissionSim;
+    
+    private AbstractGldObject totalFeederLoadNode;
 
     /**
+	 * @param totalFeederLoadNode the totalFeederLoadNode to set
+	 */
+	public void setTotalFeederLoadNode(AbstractGldObject totalFeederLoadNode) {
+		this.totalFeederLoadNode = totalFeederLoadNode;
+	}
+
+	/**
+	 * @return the totalFeederLoadNode
+	 */
+	public AbstractGldObject getTotalFeederLoadNode() {
+		return totalFeederLoadNode;
+	}
+
+	/**
 	 * @return the transmissionSim
 	 */
 	public ThirdPartySimulator getTransmissionSim() {

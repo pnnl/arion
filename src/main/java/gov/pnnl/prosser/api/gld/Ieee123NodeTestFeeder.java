@@ -70,6 +70,8 @@ public class Ieee123NodeTestFeeder {
     private Map<Integer, UndergroundLine> undergroundLines;
     private Map<Integer, Switch> switches;
     private boolean useThermostatSchedules;
+    
+    
 
     public Ieee123NodeTestFeeder(final GldSimulator simulator, final int region, final double averageHouseLoad, final boolean addMarket, final boolean useThermostatSchedules) {
         this.simulator = simulator;
@@ -108,13 +110,11 @@ public class Ieee123NodeTestFeeder {
         this.createOverheadLines();
         this.createUndergroundLines();
         this.createSwitches();
-        this.createDgs();
         
         if(addMarket){
         	GldSimulatorUtils.MakeTransactiveMarket(this.simulator, String.format("%s_Market", this.name));
         }
         
-        this.addAggLines();
         this.setLatAndLongOnNodes();
     }
     
@@ -1328,30 +1328,6 @@ public class Ieee123NodeTestFeeder {
     	}
     	spctCfg.setImpedance(new Complex(0.00033, 0.0022));
     }
-    //TODO: Remove this from here and make it a utility function!!!!!
-    public void createDgs(){
-    	List<Integer> dgLocations = new ArrayList<Integer>();
-    	dgLocations.add(7);
-    	dgLocations.add(18);
-    	dgLocations.add(56);
-    	dgLocations.add(57);
-    	dgLocations.add(152);
-    	for(int objNum: dgLocations){
-    		AbstractGldObject dgParent = this.simulator.getGldObjectByName(String.format("%s_node_%d", this.simulator.getName(), objNum));
-    		if(dgParent != null){
-    			Meter dgMeter = this.simulator.meter(String.format("%s_m_DG_%s", this.simulator.getName(), dgParent.getName()));
-    			dgMeter.setParent(dgParent);;
-    			dgMeter.setPhases(PhaseCode.ABCN);
-    			dgMeter.setNominalVoltage(2401.7771);
-    			dgMeter.setGroupId("DG_Meter");
-    			
-    			Load dgLoad = this.simulator.load(String.format("DG_%d", objNum));
-    			dgLoad.setParent(dgMeter);
-    			dgLoad.setNominalVoltage(2401.7771);
-    			dgLoad.setPhases(PhaseCode.ABCN);
-    		}
-    	}
-    }
     
     public void setLatAndLongOnNodes() {
     	Map<Integer, Point> nodeCoordinates = new HashMap<Integer, Point>();
@@ -1539,15 +1515,5 @@ public class Ieee123NodeTestFeeder {
     			}
     		}
     	}
-    }
-    
-    //TODO: Remove this from here and make it a utility function!!!!
-    public void addAggLines(){
-    	this.simulator.addAggregatorLineObject(this.simulator.getGldObjectByName(String.format("%s_overhead_line_%d", this.simulator.getName(), 1821)), "Aggregator_1");
-    	this.simulator.getGldObjectByName(String.format("%s_overhead_line_%d", this.simulator.getName(), 1821)).setGroupId("aggregator_1_line");
-    	this.simulator.addAggregatorLineObject(this.simulator.getGldObjectByName(String.format("%s_switch_%d", this.simulator.getName(), 18135)), "Aggregator_2");
-    	this.simulator.getGldObjectByName(String.format("%s_switch_%d", this.simulator.getName(), 18135)).setGroupId("aggregator_2_line");
-    	this.simulator.addAggregatorLineObject(this.simulator.getGldObjectByName(String.format("%s_overhead_line_%d", this.simulator.getName(), 5760)), "Aggregator_3");
-    	this.simulator.getGldObjectByName(String.format("%s_overhead_line_%d", this.simulator.getName(), 5760)).setGroupId("aggregator_3_line");
     }
 }

@@ -8,6 +8,7 @@ import gov.pnnl.prosser.api.gld.lib.GldClock;
 import gov.pnnl.prosser.api.gld.module.Module;
 import gov.pnnl.prosser.api.gld.obj.AbstractGldClass;
 import gov.pnnl.prosser.api.gld.obj.AuctionObject;
+import gov.pnnl.prosser.api.gld.obj.Substation;
 import gov.pnnl.prosser.api.gld.obj.House;
 import gov.pnnl.prosser.api.sql.SqlFile;
 import gov.pnnl.prosser.api.thirdparty.enums.SimType;
@@ -80,6 +81,7 @@ public abstract class GldSimulatorWriter {
         sb.append('\n');
         if (objects != null) {
             final SqlFile sqlFile = new SqlFile(gldSimulator.getName());
+            AbstractGldObject networkNode = null; 
             for (AbstractGldObject o : objects) {
                 sb.append('\n');
                 o.writeGldString(sb);
@@ -98,6 +100,9 @@ public abstract class GldSimulatorWriter {
                 		throw new RuntimeException("Missing Simulator", e);
                 	}
                 }
+                if (o instanceof Substation){
+                	networkNode = o;
+                }
                 try {
                     o.writeExternalFiles(path);
                 } catch (Exception e) {
@@ -110,43 +115,23 @@ public abstract class GldSimulatorWriter {
                 }
             }
             if(gldSimulator.getThirdPartySim() != null && gldSimulator.getThirdPartySim().getSimType() == SimType.MATLAB_AGGREGATOR){
-	            //TODO: find a better way to print the Aggregator DG subscriptions
 	            for(AbstractGldObject dgObject : gldSimulator.getDgList()){
 	            	writeSubscribe(gldFncsConfig, "precommit", dgObject.getName(), "constant_power_A_real", gldSimulator.getThirdPartySim().getName(),String.format("%s_power_A", dgObject.getName()));
 	            	writeSubscribe(gldFncsConfig, "precommit", dgObject.getName(), "constant_power_B_real", gldSimulator.getThirdPartySim().getName(),String.format("%s_power_B", dgObject.getName()));
 	            	writeSubscribe(gldFncsConfig, "precommit", dgObject.getName(), "constant_power_C_real", gldSimulator.getThirdPartySim().getName(),String.format("%s_power_C", dgObject.getName()));
 	            }
-	            //TODO: find a better way to print the aggregator line publications
 	            for(Map.Entry<AbstractGldObject, String> aggLine : gldSimulator.getAggregatorLines().entrySet()){
 	            	writePublish(gldFncsConfig, "commit", aggLine.getKey().getName(), "power_out_real", String.format("%s_load", aggLine.getValue()), 0.01);
 	            }
-	            //TODO: find a better way to print the total_feeder_load
-	            AbstractGldObject totalFeederLoadNode = gldSimulator.getGldObjectByName(String.format("%s_node_150", gldSimulator.getName()));
-	            if(totalFeederLoadNode != null){
-	            	writePublish(gldFncsConfig, "commit", totalFeederLoadNode.getName(), "measured_real_power", "total_feeder_load", 0.01);
+
+	            if(gldSimulator.getTotalFeederLoadNode() != null){
+	            	writePublish(gldFncsConfig, "commit", gldSimulator.getTotalFeederLoadNode().getName(), "measured_real_power", "total_feeder_load", 0.01);
 	            }	
-	            AbstractGldObject networkNode = gldSimulator.getGldObjectByName(String.format("%s_network_node", gldSimulator.getName()));
+
 	            if(networkNode != null){
 	            	writePublish(gldFncsConfig, "commit", networkNode.getName(), "distribution_load", "distribution_load", 20000.0);
-	            	//TODO: subscribe to MATPOWER Voltage. Optional.
 	            }
-	            //TODO: find a better way to print the subscriptions for the DG's on the load
-	            writeSubscribe(gldFncsConfig, "precommit", "DG_7", "constant_power_A_real", gldSimulator.getThirdPartySim().getName(), "DG_7_power_A");
-	            writeSubscribe(gldFncsConfig, "precommit", "DG_7", "constant_power_B_real", gldSimulator.getThirdPartySim().getName(), "DG_7_power_B");
-	            writeSubscribe(gldFncsConfig, "precommit", "DG_7", "constant_power_C_real", gldSimulator.getThirdPartySim().getName(), "DG_7_power_C");
-	            writeSubscribe(gldFncsConfig, "precommit", "DG_18", "constant_power_A_real", gldSimulator.getThirdPartySim().getName(), "DG_18_power_A");
-	            writeSubscribe(gldFncsConfig, "precommit", "DG_18", "constant_power_B_real", gldSimulator.getThirdPartySim().getName(), "DG_18_power_B");
-	            writeSubscribe(gldFncsConfig, "precommit", "DG_18", "constant_power_C_real", gldSimulator.getThirdPartySim().getName(), "DG_18_power_C");
-	            writeSubscribe(gldFncsConfig, "precommit", "DG_56", "constant_power_A_real", gldSimulator.getThirdPartySim().getName(), "DG_56_power_A");
-	            writeSubscribe(gldFncsConfig, "precommit", "DG_56", "constant_power_B_real", gldSimulator.getThirdPartySim().getName(), "DG_56_power_B");
-	            writeSubscribe(gldFncsConfig, "precommit", "DG_56", "constant_power_C_real", gldSimulator.getThirdPartySim().getName(), "DG_56_power_C");
-	            writeSubscribe(gldFncsConfig, "precommit", "DG_57", "constant_power_A_real", gldSimulator.getThirdPartySim().getName(), "DG_57_power_A");
-	            writeSubscribe(gldFncsConfig, "precommit", "DG_57", "constant_power_B_real", gldSimulator.getThirdPartySim().getName(), "DG_57_power_B");
-	            writeSubscribe(gldFncsConfig, "precommit", "DG_57", "constant_power_C_real", gldSimulator.getThirdPartySim().getName(), "DG_57_power_C");
-	            writeSubscribe(gldFncsConfig, "precommit", "DG_152", "constant_power_A_real", gldSimulator.getThirdPartySim().getName(), "DG_152_power_A");
-	            writeSubscribe(gldFncsConfig, "precommit", "DG_152", "constant_power_B_real", gldSimulator.getThirdPartySim().getName(), "DG_152_power_B");
-	            writeSubscribe(gldFncsConfig, "precommit", "DG_152", "constant_power_C_real", gldSimulator.getThirdPartySim().getName(), "DG_152_power_C");
-	            //TODO: find a bettery to print the dummy subscriptions
+
 	            writeSubscribe(gldFncsConfig, "precommit", "dummy", "consensus_iterations", gldSimulator.getThirdPartySim().getName(), "consensus_iterations");
 	            writeSubscribe(gldFncsConfig, "precommit", "dummy", "theoretical_feeder_load", gldSimulator.getThirdPartySim().getName(), "theoretical_feeder_load");
 	            writeSubscribe(gldFncsConfig, "precommit", "dummy", "wholesale_LMP", gldSimulator.getThirdPartySim().getName(), "wholesale_LMP");
