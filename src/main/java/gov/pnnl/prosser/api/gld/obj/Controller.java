@@ -1,6 +1,33 @@
 /**
- *
- */
+* Arion
+* Copyright © 2016, Battelle Memorial Institute
+* All rights reserved.
+* 1. Battelle Memorial Institute (hereinafter Battelle) hereby grants permission to any person or entity
+*    lawfully obtaining a copy of this software and associated documentation files (hereinafter “the Software”)
+*    to redistribute and use the Software in source and binary forms, with or without modification.  Such person
+*    or entity may use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software,
+*    and may permit others to do so, subject to the following conditions:
+*    •  Redistributions of source code must retain the above copyright notice, this list of conditions and
+*       the following disclaimers.
+*    •  Redistributions in binary form must reproduce the above copyright notice, this list of conditions and
+*       the following disclaimer in the documentation and/or other materials provided with the distribution.
+*    •  Other than as used herein, neither the name Battelle Memorial Institute or Battelle may be used in any
+*       form whatsoever without the express written consent of Battelle.
+* 2. THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED
+*    WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
+*    PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL BATTELLE OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
+*    INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT
+*    OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
+*    ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+*    ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+*
+*                                PACIFIC NORTHWEST NATIONAL LABORATORY
+*                                            operated by
+*                                              BATTELLE
+*                                              for the
+*                                  UNITED STATES DEPARTMENT OF ENERGY
+*                                   under Contract DE-AC05-76RL01830
+*/
 package gov.pnnl.prosser.api.gld.obj;
 
 import java.util.Objects;
@@ -13,7 +40,7 @@ import gov.pnnl.prosser.api.gld.enums.MarketSetUp;
 
 /**
  * Market Controller embedded in Houses
- * 
+ *
  * @author nord229
  */
 public class Controller extends AbstractGldObject {
@@ -21,108 +48,108 @@ public class Controller extends AbstractGldObject {
 	 * Enabling fncs ns3 communication
 	 */
 	private boolean useFncs;
-	
+
 	/**
 	 * The auction market to communicate with
 	 */
 	private AuctionObject auction;
-	
+
 	/**
 	 * The bid_mode to use
 	 */
 	private BidMode bidMode;
-	
+
 	/**
 	 * The bid delay to use
 	 */
 	private Integer bidDelay;
-	
+
 	/**
 	 * The control mode to use
 	 */
 	private ControlMode controlMode;
-	
+
 	/**
 	 * The base set point if using a schedule
 	 */
 	private String baseSetpoint;
-	
+
 	/**
 	 * The set point property inside the house
 	 */
 	private String setPoint;
-	
+
 	/**
 	 * The target property inside the house
 	 */
 	private String target;
-	
+
 	/**
 	 * the dead band property inside the house
 	 */
 	private String deadBand;
-	
+
 	/**
 	 * boolean for using predictive bidding
 	 */
 	private Boolean usePredictiveBidding;
-	
+
 	/**
 	 * average property in the market
 	 */
 	private String averageTarget;
-	
+
 	/**
 	 * standard deviation property in the market
 	 */
 	private String standardDeviationTarget;
-	
-	
+
+
 	/**
 	 * The demand property in the house
 	 */
 	private String demand;
-	
+
 	/**
 	 * The range high property
 	 */
 	private Double rangeHigh;
-	
+
 	/**
 	 * The range low property
 	 */
 	private Double rangeLow;
-	
+
 	/**
 	 * The ramp high property
 	 */
 	private Double rampHigh;
-	
+
 	/**
 	 * The ramp low property
 	 */
 	private Double rampLow;
-	
+
 	/**
 	 * the total property in the house
 	 */
 	private String total;
-	
+
 	/**
 	 * the load property in the house
 	 */
 	private String load;
-	
+
 	/**
 	 * The state property in the house
 	 */
 	private String state;
-	
+
 	/**
 	 * The schedule skew
 	 */
 	private Long scheduleSkew;
-	
+
 	/**
 	 * boolean to send the controller bid function call
 	 */
@@ -407,13 +434,13 @@ public class Controller extends AbstractGldObject {
 	public void setState(String state) {
 		this.state = state;
 	}
-	
+
 	public Controller(final GldSimulator simulator) {
 		super(simulator);
 		simulator.ensureMarketModule();
 	}
-	
-	
+
+
 
 	/**
 	 * @return the scheduleSkew
@@ -480,7 +507,7 @@ public class Controller extends AbstractGldObject {
 		writeProperty(sb, "ramp_high", rampHigh);
 		writeProperty(sb, "ramp_low", rampLow);
 	}
-	
+
 	public void writeFncs2Directives(StringBuilder sb) {
 	    String ns3SimName = this.simulator.getNs3Sim() == null ? "" : this.simulator.getNs3Sim().getName();
 	    writeRoutePresync(sb, auction.getName(), "current_market.clearing_price", this.getName(), "clearPrice");
@@ -500,7 +527,7 @@ public class Controller extends AbstractGldObject {
 	    	writeRouteCommit(sb, this.getName(), "parent_unresponsive_load", this.auction.getName(), "parent_unresponsive_load");
 	    }
 	}
-	
+
 	private void writeRoutePresync(StringBuilder sb, String auctionName, String auctionProperty, String controllerName, String controllerProperty) {
 	    sb.append("route \"presync:");
 	    sb.append(auctionName);
@@ -512,7 +539,7 @@ public class Controller extends AbstractGldObject {
 	    sb.append(controllerProperty);
 	    sb.append("; 0\";\n");
 	}
-	
+
 	private void writeSubmitBidState(StringBuilder sb, String ns3SimName, String gldSimName, String controllerName, String auctionName) {
         sb.append("subscribe \"function:auction/submit_bid_state <- ");
         sb.append(ns3SimName);
@@ -524,7 +551,7 @@ public class Controller extends AbstractGldObject {
         sb.append(auctionName);
         sb.append("/submit_bid_state\";\n");
     }
-	
+
 	private void writeSubscribePresync(StringBuilder sb, String controllerName, String proxyProperty, String ns3SimName, String gldSimName, String auctionName, String controllerProperty) {
         sb.append("subscribe \"precommit:");
         sb.append(controllerName);
@@ -542,7 +569,7 @@ public class Controller extends AbstractGldObject {
         sb.append(controllerProperty);
         sb.append("\";\n");
     }
-	
+
 	private void writeRouteCommit(StringBuilder sb, String controllerName, String controllerProperty, String toName, String key){
 		sb.append("route \"commit:");
 		sb.append(controllerName);
@@ -554,7 +581,7 @@ public class Controller extends AbstractGldObject {
 		sb.append(key);
 		sb.append("; 0\";\n");
 	}
-	
+
 	@Override
     public int hashCode() {
         return Objects.hash(super.hashCode(), useFncs, auction, bidMode, bidDelay, controlMode, baseSetpoint, setPoint, target,

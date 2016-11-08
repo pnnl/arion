@@ -1,6 +1,33 @@
 /**
- *
- */
+* Arion
+* Copyright © 2016, Battelle Memorial Institute
+* All rights reserved.
+* 1. Battelle Memorial Institute (hereinafter Battelle) hereby grants permission to any person or entity
+*    lawfully obtaining a copy of this software and associated documentation files (hereinafter “the Software”)
+*    to redistribute and use the Software in source and binary forms, with or without modification.  Such person
+*    or entity may use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software,
+*    and may permit others to do so, subject to the following conditions:
+*    •  Redistributions of source code must retain the above copyright notice, this list of conditions and
+*       the following disclaimers.
+*    •  Redistributions in binary form must reproduce the above copyright notice, this list of conditions and
+*       the following disclaimer in the documentation and/or other materials provided with the distribution.
+*    •  Other than as used herein, neither the name Battelle Memorial Institute or Battelle may be used in any
+*       form whatsoever without the express written consent of Battelle.
+* 2. THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED
+*    WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
+*    PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL BATTELLE OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
+*    INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT
+*    OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
+*    ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+*    ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+*
+*                                PACIFIC NORTHWEST NATIONAL LABORATORY
+*                                            operated by
+*                                              BATTELLE
+*                                              for the
+*                                  UNITED STATES DEPARTMENT OF ENERGY
+*                                   under Contract DE-AC05-76RL01830
+*/
 package gov.pnnl.prosser.api.gld.lib;
 
 import gov.pnnl.prosser.api.GldSimulator;
@@ -74,7 +101,7 @@ public class TransformerConfiguration extends PowerflowLibrary {
 
     /**
      * Get the connection type enum: Wye-Wye, single-phase, etc.
-     * 
+     *
      * @return the connectionType
      */
     public ConnectionType getConnectionType() {
@@ -83,7 +110,7 @@ public class TransformerConfiguration extends PowerflowLibrary {
 
     /**
      * Set the connection type enum: Wye-Wye, single-phase, etc.
-     * 
+     *
      * @param connectionType
      *            the connectionType to set
      */
@@ -93,7 +120,7 @@ public class TransformerConfiguration extends PowerflowLibrary {
 
     /**
      * Get the location of the transformer installation
-     * 
+     *
      * @return the installationType
      */
     public InstallationType getInstallationType() {
@@ -102,7 +129,7 @@ public class TransformerConfiguration extends PowerflowLibrary {
 
     /**
      * Set the location of the transformer installation
-     * 
+     *
      * @param installationType
      *            the installationType to set
      */
@@ -112,7 +139,7 @@ public class TransformerConfiguration extends PowerflowLibrary {
 
     /**
      * Get the primary voltage level in L-L value kV
-     * 
+     *
      * @return the primaryVoltage
      */
     public double getPrimaryVoltage() {
@@ -121,7 +148,7 @@ public class TransformerConfiguration extends PowerflowLibrary {
 
     /**
      * Set the primary voltage level in L-L value kV
-     * 
+     *
      * @param primaryVoltage
      *            the primaryVoltage to set
      */
@@ -131,7 +158,7 @@ public class TransformerConfiguration extends PowerflowLibrary {
 
     /**
      * Get the secondary voltage level kV
-     * 
+     *
      * @return the secondaryVoltage
      */
     public double getSecondaryVoltage() {
@@ -140,7 +167,7 @@ public class TransformerConfiguration extends PowerflowLibrary {
 
     /**
      * Set the secondary voltage level kV
-     * 
+     *
      * @param secondaryVoltage
      *            the secondaryVoltage to set
      */
@@ -150,7 +177,7 @@ public class TransformerConfiguration extends PowerflowLibrary {
 
     /**
      * Get the kVA rating of transformer, total
-     * 
+     *
      * @return the powerRating
      */
     public Double getPowerRating() {
@@ -159,7 +186,7 @@ public class TransformerConfiguration extends PowerflowLibrary {
 
     /**
      * Set the kVA rating of transformer, total
-     * 
+     *
      * @param powerRating
      *            the powerRating to set
      */
@@ -169,7 +196,7 @@ public class TransformerConfiguration extends PowerflowLibrary {
 
     /**
      * Get the kVA rating of transformer, phase A
-     * 
+     *
      * @return the phaseARating
      */
     public Double getPhaseARating() {
@@ -178,7 +205,7 @@ public class TransformerConfiguration extends PowerflowLibrary {
 
     /**
      * Set the kVA rating of transformer, phase A
-     * 
+     *
      * @param phaseARating
      *            the phaseARating to set
      */
@@ -188,7 +215,7 @@ public class TransformerConfiguration extends PowerflowLibrary {
 
     /**
      * Get the kVA rating of transformer, phase B
-     * 
+     *
      * @return the phaseBRating
      */
     public Double getPhaseBRating() {
@@ -197,7 +224,7 @@ public class TransformerConfiguration extends PowerflowLibrary {
 
     /**
      * Set the kVA rating of transformer, phase B
-     * 
+     *
      * @param phaseBRating
      *            the phaseBRating to set
      */
@@ -207,7 +234,7 @@ public class TransformerConfiguration extends PowerflowLibrary {
 
     /**
      * Get the kVA rating of transformer, phase C
-     * 
+     *
      * @return the phaseCRating
      */
     public Double getPhaseCRating() {
@@ -216,7 +243,7 @@ public class TransformerConfiguration extends PowerflowLibrary {
 
     /**
      * Set the kVA rating of transformer, phase C
-     * 
+     *
      * @param phaseCRating
      *            the phaseCRating to set
      */
@@ -226,7 +253,7 @@ public class TransformerConfiguration extends PowerflowLibrary {
 
     /**
      * Get the Series impedance, pu
-     * 
+     *
      * @return the impedance
      */
     public Complex getImpedance() {
@@ -235,7 +262,7 @@ public class TransformerConfiguration extends PowerflowLibrary {
 
     /**
      * Set the Series impedance, pu
-     * 
+     *
      * @param impedance
      *            the impedance to set
      */
@@ -245,7 +272,7 @@ public class TransformerConfiguration extends PowerflowLibrary {
 
     /**
      * Set the Series impedance, pu
-     * 
+     *
      * @param real
      *            the real part of the complex number for impedance
      * @param imaginary
@@ -257,7 +284,7 @@ public class TransformerConfiguration extends PowerflowLibrary {
 
     /**
      * Get the Shunt impedance on primary side, pu
-     * 
+     *
      * @return the shuntImpedance
      */
     public Complex getShuntImpedance() {
@@ -266,7 +293,7 @@ public class TransformerConfiguration extends PowerflowLibrary {
 
     /**
      * Set the Shunt impedance on primary side, pu
-     * 
+     *
      * @param shuntImpedance
      *            the shuntImpedance to set
      */
@@ -276,7 +303,7 @@ public class TransformerConfiguration extends PowerflowLibrary {
 
     /**
      * Set the Shunt impedance on primary side, pu
-     * 
+     *
      * @param real
      *            the real part of the complex number for shunt impedance
      * @param imaginary
@@ -312,7 +339,7 @@ public class TransformerConfiguration extends PowerflowLibrary {
         writeProperty(sb, "impedance", this.impedance);
         writeProperty(sb, "shunt_impedance", this.shuntImpedance);
     }
-    
+
     @Override
     public int hashCode() {
         return Objects.hash(super.hashCode(), connectionType, installationType, primaryVoltage, secondaryVoltage,

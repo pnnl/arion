@@ -1,6 +1,33 @@
 /**
- * 
- */
+* Arion
+* Copyright © 2016, Battelle Memorial Institute
+* All rights reserved.
+* 1. Battelle Memorial Institute (hereinafter Battelle) hereby grants permission to any person or entity
+*    lawfully obtaining a copy of this software and associated documentation files (hereinafter “the Software”)
+*    to redistribute and use the Software in source and binary forms, with or without modification.  Such person
+*    or entity may use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software,
+*    and may permit others to do so, subject to the following conditions:
+*    •  Redistributions of source code must retain the above copyright notice, this list of conditions and
+*       the following disclaimers.
+*    •  Redistributions in binary form must reproduce the above copyright notice, this list of conditions and
+*       the following disclaimer in the documentation and/or other materials provided with the distribution.
+*    •  Other than as used herein, neither the name Battelle Memorial Institute or Battelle may be used in any
+*       form whatsoever without the express written consent of Battelle.
+* 2. THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED
+*    WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
+*    PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL BATTELLE OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
+*    INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT
+*    OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
+*    ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+*    ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+*
+*                                PACIFIC NORTHWEST NATIONAL LABORATORY
+*                                            operated by
+*                                              BATTELLE
+*                                              for the
+*                                  UNITED STATES DEPARTMENT OF ENERGY
+*                                   under Contract DE-AC05-76RL01830
+*/
 package gov.pnnl.prosser.api.gld;
 
 import gov.pnnl.prosser.api.GldSimulator;
@@ -36,7 +63,7 @@ import java.util.Set;
 
 /**
  * House Generation Utilites
- * 
+ *
  * @author nord229
  */
 public abstract class GldSimulatorUtils {
@@ -72,7 +99,7 @@ public abstract class GldSimulatorUtils {
     private static final double hvacPf = 0.97;
     private static final double scaleFloor = 1;
     private static final double sigmaTstat = 2;
-    
+
     public static List<House> FindDownstreamHouses(GldSimulator sim, String nodeStart){
     	Set<AbstractGldObject> children = new LinkedHashSet<>();
     	List<AbstractGldObject> newChildren = new ArrayList<>();
@@ -113,19 +140,19 @@ public abstract class GldSimulatorUtils {
     	}
     	return houses;
     }
-    
+
     public static void MakeTransactiveMarket(GldSimulator simulator, String marketName) {
     	MakeTransactiveMarket(simulator, marketName, 300, "kW", 3.78, 0.042676, 0.02);
     }
     public static void MakeTransactiveMarket(GldSimulator simulator, String marketName, int marketPeriod, String marketUnit, double priceCap, double initialPrice, double initialStandardDeviation) {
         String marketMean = "current_price_mean_24h";
         String marketStDev = "current_price_stdev_24h";
-        
+
         // Add an auction class to allow references to more fields from other objects
         AuctionClass auctionClass = simulator.auctionClass();
         auctionClass.addField(marketMean, "double");
         auctionClass.addField(marketStDev, "double");
-        
+
         // Create the FNCS auction
         final AuctionObject auction = simulator.auctionObject(marketName);
         auction.setUnit(marketUnit);
@@ -142,18 +169,18 @@ public abstract class GldSimulatorUtils {
         auction.setUseFutureMeanPrice(false);
         auction.setWarmup(0);
         auction.setFncsControllerPrefix();
-        
+
         // Create the FNCS message
         FncsMsg fncsMessage = simulator.fncsMsg(simulator.getName());
         fncsMessage.setParent(auction);
-        
+
         // Get houses and add controllers
         List<AbstractGldObject> houses = simulator.getObjects();
         houses.removeIf(x -> !x.getClass().equals(House.class));
         Random randNumGen = new Random(100);
         for (Iterator<AbstractGldObject> i = houses.iterator(); i.hasNext(); ) {
             House house = (House)i.next();
-            
+
             // Create the base controller
             Controller controller = house.controller(String.format("%s_controller", house.getName()));
             controller.setAuction(auction);
@@ -161,13 +188,13 @@ public abstract class GldSimulatorUtils {
             controller.setAverageTarget(auction.getNetworkAveragePriceProperty());
             controller.setStandardDeviationTarget(auction.getNetworkStdevPriceProperty());
             controller.setUseFncs(true);
-            
+
             // Setup the controller
             Random rand = new Random(10);
             setupController(house, controller, rand, true);
         }
     }
-    
+
     /**
      * Generate a house to attach to the grid
      *
@@ -343,7 +370,7 @@ public abstract class GldSimulatorUtils {
 
     /**
      * Setup the house for Old/Small
-     * 
+     *
      * @param house
      *            the house to setup
      */
@@ -359,7 +386,7 @@ public abstract class GldSimulatorUtils {
 
     /**
      * Setup the house for New/Small
-     * 
+     *
      * @param house
      *            the house to setup
      */
@@ -375,7 +402,7 @@ public abstract class GldSimulatorUtils {
 
     /**
      * Setup the house for Old/Large
-     * 
+     *
      * @param house
      *            the house to setup
      */
@@ -391,7 +418,7 @@ public abstract class GldSimulatorUtils {
 
     /**
      * Setup the house for New/Large
-     * 
+     *
      * @param house
      *            the house to setup
      */
@@ -407,7 +434,7 @@ public abstract class GldSimulatorUtils {
 
     /**
      * Setup the house for Mobile Homes
-     * 
+     *
      * @param house
      *            the house to setup
      */
@@ -431,7 +458,7 @@ public abstract class GldSimulatorUtils {
         final int scheduleHeat = rand.nextInt(8) + 1;
         final double heatOffset = heatoffset_1 + heatoffset_2 * rand.nextDouble();
         final double heatTemp = (cool_1 - cool_2) + 2 * cool_2 * rand.nextDouble();
-        
+
         if(house.getHeatingSetpointFn() == null){
         	house.setHeatingSetpointFn(String.format("heating%d*%1.3f+%2.2f", scheduleHeat, heatTemp, heatOffset));
         }
@@ -443,7 +470,7 @@ public abstract class GldSimulatorUtils {
         		house.setCoolingSetpointFn(null);
         	}
         }
-        
+
 
         // long bidDelay = 30 + Math.round((90 - 30) * rand.nextDouble());
         final double marketTest = rand.nextDouble();

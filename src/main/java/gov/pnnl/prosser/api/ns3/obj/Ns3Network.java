@@ -1,6 +1,33 @@
 /**
- * 
- */
+* Arion
+* Copyright © 2016, Battelle Memorial Institute
+* All rights reserved.
+* 1. Battelle Memorial Institute (hereinafter Battelle) hereby grants permission to any person or entity
+*    lawfully obtaining a copy of this software and associated documentation files (hereinafter “the Software”)
+*    to redistribute and use the Software in source and binary forms, with or without modification.  Such person
+*    or entity may use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software,
+*    and may permit others to do so, subject to the following conditions:
+*    •  Redistributions of source code must retain the above copyright notice, this list of conditions and
+*       the following disclaimers.
+*    •  Redistributions in binary form must reproduce the above copyright notice, this list of conditions and
+*       the following disclaimer in the documentation and/or other materials provided with the distribution.
+*    •  Other than as used herein, neither the name Battelle Memorial Institute or Battelle may be used in any
+*       form whatsoever without the express written consent of Battelle.
+* 2. THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED
+*    WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
+*    PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL BATTELLE OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
+*    INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT
+*    OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
+*    ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+*    ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+*
+*                                PACIFIC NORTHWEST NATIONAL LABORATORY
+*                                            operated by
+*                                              BATTELLE
+*                                              for the
+*                                  UNITED STATES DEPARTMENT OF ENERGY
+*                                   under Contract DE-AC05-76RL01830
+*/
 package gov.pnnl.prosser.api.ns3.obj;
 
 import gov.pnnl.prosser.api.c.obj.Pointer;
@@ -21,14 +48,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * This class takes the basic network parameters from the user and constructs all of the 
+ * This class takes the basic network parameters from the user and constructs all of the
  * ns-3 backbone for a functional network.
- * 
+ *
  * @author happ546
  *
  */
 public class Ns3Network {
-	
+
 	private String gldNodePrefix;
 	private int numBackboneNodes, numChannels;
 	private double stopTime;
@@ -42,7 +69,7 @@ public class Ns3Network {
 	private List<String> auctionNames;
 	private Vector<String> allNames;
 
-	
+
 	/**
 	 * Create a new Ns3Network object, used to set up an ns-3 network for use in Prosser simulation
 	 * with default values for some parameters
@@ -77,7 +104,7 @@ public class Ns3Network {
 	public void setGldNodePrefix(String gldNodePrefix) {
 		this.gldNodePrefix = gldNodePrefix;
 	}
-	
+
 	/**
 	 * @return the list of Channels
 	 */
@@ -114,21 +141,21 @@ public class Ns3Network {
 	}
 
 	/**
-	 * 
+	 *
 	 * @param mod name of the Module to add to the Modules list
 	 */
 	private void addModule(Module mod) {
 		modules.add(mod);
-	}	
+	}
 
 	/**
-	 * 
+	 *
 	 * @return allNodes the list of all allNodes in this network
 	 */
 	public NodeContainer getAllNodes() {
 		return allNodes;
 	}
-	
+
 	/**
 	 * @param node the Node to add to the list of Nodes for this network
 	 */
@@ -171,7 +198,7 @@ public class Ns3Network {
 	public List<String> getAuctionNames() {
 		return auctionNames;
 	}
-	
+
 	/**
 	 * Sets the ns-3 simulator's time to stop running
 	 * @param time in seconds
@@ -219,14 +246,14 @@ public class Ns3Network {
 	public int getNumBackboneNodes() {
 		return numBackboneNodes;
 	}
-	
+
 	/**
 	 * @param numBackboneNodes the number of backbone Nodes to set
 	 */
 	public void setNumBackboneNodes(int numBackboneNodes) {
 		this.numBackboneNodes = numBackboneNodes;
 	}
-	
+
 	/**
 	 * @param chan the Channel to add to this Ns3Network
 	 */
@@ -243,7 +270,7 @@ public class Ns3Network {
 		houseChannels.add(houseChannel);
 		addChannel(houseChannel);
 	}
-	
+
 	/**
 	 * @param i
 	 * 			integer index
@@ -321,17 +348,17 @@ public class Ns3Network {
 	}
 
 	/**
-	 * 
+	 *
 	 * @param addr the Ipv4AddressHelper
 	 * @param nodes the NodeContainer to enable for IP communication
 	 * @param devices the NetDeviceContainer to hold the IP-enabled devices
 	 */
-	private void setupIp(Ipv4AddressHelper addr, NodeContainer nodes, 
+	private void setupIp(Ipv4AddressHelper addr, NodeContainer nodes,
 						NetDeviceContainer devices) {
-				
+
 		// Install the IP stack protocols on the allNodes
 		iStackHelper.install(nodes);
-		
+
 		// Assign IPv4 addresses to devices
 		addr.assign(devices);
 	}
@@ -340,12 +367,12 @@ public class Ns3Network {
 	 * Sets up static routing on the global InternetStackHelper
 	 */
 	private void setupInternetStackAndRouting() {
-		
+
 		Ipv4StaticRoutingHelper staticRouting = new Ipv4StaticRoutingHelper("staticRoutingHelper");
-		
+
 		Ipv4ListRoutingHelper list = new Ipv4ListRoutingHelper("listRoutingHelper");
 		list.add(staticRouting, 0);
-		
+
 		iStackHelper.setRoutingHelper(list);
 
 	}
@@ -357,7 +384,7 @@ public class Ns3Network {
 
         // Setup FNCS simulator
 		FncsSimulator fncsSim = new FncsSimulator("fncsSim");
-		
+
 		// Add modules required for all simulations
 		this.addModule(new Core());
 		this.addModule(new Applications());
@@ -380,7 +407,7 @@ public class Ns3Network {
 	}
 
 	/**
-	 * 
+	 *
 	 * @param nodeCont the Nodes to set an Auction and Controllers
 	 * @param auction the AuctionObject to set on the first Node of nodeCont
 	 * @param auctionIndex the current Auction count
@@ -388,16 +415,16 @@ public class Ns3Network {
 	 * @param gldNodes a NodeContainer holding all GLD (House) Nodes for FNCSApplicationHelper
 	 * @return a StringVector of all Controller allNames
 	 */
-	private Vector<String> installAuctionsAndControllers(NodeContainer nodeCont, 
+	private Vector<String> installAuctionsAndControllers(NodeContainer nodeCont,
 			AuctionObject auction, int auctionIndex, Vector<String> names, NodeContainer gldNodes) {
-		
+
 		final int nodeContSize = nodeCont.getNumNodes();
-		
+
 	    // Installs market on 1st (0th) node of nodeCont
 	    Node firstNode = nodeCont.getNodeNoPrint(0);
 	    gldNodes.addNodeContainer(nodeCont);
 	    names.pushBack(auction.getName());
-		
+
 		for (int i = 0; i < nodeContSize; i++) {
 			// Adds each node to global List of Nodes
 			addNode(nodeCont.getNodeNoPrint(i));
@@ -408,16 +435,16 @@ public class Ns3Network {
 	    	// Adds this Node to the NodeContainer of all GLD Nodes
 	    	//gldNodes.addNode(nodeCont, i);
 		}
-		
+
 		return names;
 	}
 
 	/**
 	 * @return a List of all objects created for this network
-	 * 
+	 *
 	 */
 	public List<AbstractNs3Object> createLte() {
-		
+
 		this.addModule(new Core());
 		this.addModule(new Mobility());
 		this.addModule(new Applications());
@@ -430,26 +457,26 @@ public class Ns3Network {
 		// LTE specific
 		this.addModule(new Lte());
 		this.addModule(new Mobility());
-		
+
 		// A map<string, string> mapping AuctionObject name to a Controller name
 		StringMap<String, String> marketToControllerMap = new StringMap<String, String>("marketToControllerMap");
-		
+
 		// Things for FNCSApplicationHelper.SetApps(...) method at end of network setup
 		// A NodeContainer to hold the GLD market and house allNodes
 		NodeContainer gldNodes = new NodeContainer("gldNodes");
-		
+
 		LteHelper lteHelper = new LteHelper("lteHelper");
 		ns3Objects.add(lteHelper);
-		
+
 		PointToPointEpcHelper epcHelper = new PointToPointEpcHelper();
 		epcHelper.setNameString("epcHelper");
 		ns3Objects.add(epcHelper);
-		
+
 		Pointer<PointToPointEpcHelper> epcHelperPointer = new Pointer<>("epcHelperPointer");
 		epcHelperPointer.createObject(epcHelper);
-		
+
 		lteHelper.setEpcHelper(epcHelperPointer);
-		
+
 		Pointer<Node> pgw = new Pointer<Node>("pgw");
 		pgw.setType(new Node());
 		epcHelper.getPgwNode(pgw);
@@ -461,108 +488,108 @@ public class Ns3Network {
 		p2pHelper.setDeviceAttribute("Mtu", 1500); // TODO may be able to use string for this as well
 		p2pHelper.setChannelAttribute("Delay", "10ms");
 		ns3Objects.add(p2pHelper);
-		
+
 		// Internet helpers for IP setup
 		InternetStackHelper iStackHelper = new InternetStackHelper("iStackHelper");
 		ns3Objects.add(iStackHelper);
-		
+
 		Ipv4AddressHelper ipv4AddrHelper = new Ipv4AddressHelper("ipv4AddrHelper");
 		ns3Objects.add(ipv4AddrHelper);
-		
+
 		Ipv4InterfaceContainer ipv4Interfaces = new Ipv4InterfaceContainer("ipv4Interfaces");
 		ns3Objects.add(ipv4Interfaces);
-		
+
 		List<NetDeviceContainer> lteDeviceContainers = new ArrayList<NetDeviceContainer>();
-		
+
 		int numAuctions = this.getAuctions().size();
 		// NumAuctioNodes is total for whole simulation, so calculate AP Nodes per Market
 		int numEnbNodesPerAuction = this.getNumBackboneNodes() / numAuctions;
 		// Then calculate station Nodes per AP Node
 		int numUeNodesPerAuction = numAuctions;
 		int numUeNodesPerEnbNode = numUeNodesPerAuction / numEnbNodesPerAuction;
-		
+
 		MobilityHelper mobilityHelper = new MobilityHelper("mobilityHelper");
 		// TODO ConstantPositionMobilityModel sets all allNodes at origin (0,0,0)
 		//mobilityHelper.setMobilityModel("ns3::ConstantPositionMobilityModel");
-		
-		// Setup QoS Class Indicator 
+
+		// Setup QoS Class Indicator
 		Qci q = Qci.GBR_CONV_VOICE;
 		q.setName("q");
-		
+
 		EpsBearer bearer = new EpsBearer("bearer");
 		bearer.setQci(q);
 		ns3Objects.add(bearer);
-		
+
 		for (int i = 0; i < numAuctions; i++) {
-			
+
 			AuctionObject auction = this.getAuctions().get(i);
-			
+
 			NodeContainer enbNodes = new NodeContainer("enbNodes_" + i);
 			enbNodes.create(numEnbNodesPerAuction);
 			ns3Objects.add(enbNodes);
-			
+
 			NetDeviceContainer enbDevices = new NetDeviceContainer("enbDevices_" + i);
 			ns3Objects.add(enbDevices);
-			
+
 			lteHelper.installEnbDevice(enbNodes, enbDevices);
-			
+
 			// TODO ConstantPositionMobilityModel sets all allNodes at origin (0,0,0)
 			//mobilityHelper.setMobilityModel("ns3::ConstantPositionMobilityModel");
 			mobilityHelper.install(enbNodes);
-			
+
 			// Install the LTE protocol stack on the eNB allNodes; not for EPC
-			//lteHelper.installEnbDevice(enbNodes, enbDevices); 
-			
+			//lteHelper.installEnbDevice(enbNodes, enbDevices);
+
 			lteDeviceContainers.add(enbDevices);
-			
+
 			// Create a point-to-point network between the enbNodes
 			//createBackbone(p2pHelper, enbNodes, enbDevices, i);
-			
+
 			//ipv4AddrHelper.setBase(getAddrBase() + i + ".0", getAddrMask());
 			// Assign IP addresses to NetDevices in enbDevices
 			ipv4AddrHelper.assign(enbDevices, ipv4Interfaces);
-			
+
 			for (int j = 0; j < numEnbNodesPerAuction; j++) {
-				
+
 				// Add all Nodes from this NodeContainer to Nodes global list of allNodes
 				addNode(enbNodes.getNodeNoPrint(j));
-				
+
 				NodeContainer ueNodes = new NodeContainer("ueNodes_" + j);
 				ueNodes.create(numUeNodesPerEnbNode);
 				ns3Objects.add(ueNodes);
-				
+
 				// TODO ConstantPositionMobilityModel sets all allNodes at origin (0,0,0)
 				//mobilityHelper.setMobilityModel("ns3::ConstantPositionMobilityModel");
 				mobilityHelper.install(ueNodes);
-				
+
 				// Install IP stack on UEs
 				iStackHelper.install(ueNodes);
-				
+
 				NetDeviceContainer ueDevices = new NetDeviceContainer("ueDevices_" + j);
 				lteHelper.installUeDevice(ueNodes, ueDevices); // Install the LTE protocol stack on the UE allNodes
 				lteHelper.attach(ueDevices, enbDevices, j); // Attach the newly created UE devices to an eNB device
 				//lteHelper.activateDataRadioBearer(ueDevices, bearer); // not used for EPC
 				ns3Objects.add(ueDevices);
-				
+
 				lteDeviceContainers.add(ueDevices);
-				
+
 				Ipv4InterfaceContainer ueIpInterface = new Ipv4InterfaceContainer("ueIpInterface");
 				ns3Objects.add(ueIpInterface);
-				
+
 				for (int k = 0; k < numUeNodesPerEnbNode; k++) {
 					((PointToPointEpcHelper) epcHelperPointer.getObject()).assignUeIpv4Address(ueDevices, ueIpInterface);
 				}
 
-				
-			    // Installs the Auctions and Controllers on each Node in ueNodes, 
+
+			    // Installs the Auctions and Controllers on each Node in ueNodes,
 			    //	adds allNames to Names StringVector and Nodes to gldNodes for fncsHelper below
 				installAuctionsAndControllers(ueNodes, auction, j, allNames, gldNodes);
-	
+
 			}
-			
+
 			marketToControllerMap.put(this.getAuctions().get(i).getName(), this.getGldNodePrefix());
 		}
-		
+
 		return ns3Objects;
 
 	}

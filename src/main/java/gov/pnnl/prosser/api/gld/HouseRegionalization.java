@@ -1,14 +1,44 @@
 /**
- * Provides generalation of house parameter 
+* Arion
+* Copyright © 2016, Battelle Memorial Institute
+* All rights reserved.
+* 1. Battelle Memorial Institute (hereinafter Battelle) hereby grants permission to any person or entity
+*    lawfully obtaining a copy of this software and associated documentation files (hereinafter “the Software”)
+*    to redistribute and use the Software in source and binary forms, with or without modification.  Such person
+*    or entity may use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software,
+*    and may permit others to do so, subject to the following conditions:
+*    •  Redistributions of source code must retain the above copyright notice, this list of conditions and
+*       the following disclaimers.
+*    •  Redistributions in binary form must reproduce the above copyright notice, this list of conditions and
+*       the following disclaimer in the documentation and/or other materials provided with the distribution.
+*    •  Other than as used herein, neither the name Battelle Memorial Institute or Battelle may be used in any
+*       form whatsoever without the express written consent of Battelle.
+* 2. THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED
+*    WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
+*    PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL BATTELLE OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
+*    INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT
+*    OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
+*    ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+*    ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+*
+*                                PACIFIC NORTHWEST NATIONAL LABORATORY
+*                                            operated by
+*                                              BATTELLE
+*                                              for the
+*                                  UNITED STATES DEPARTMENT OF ENERGY
+*                                   under Contract DE-AC05-76RL01830
+*
+*
+ * Provides generalation of house parameter
  * diversity for various regions of the country
  */
 package gov.pnnl.prosser.api.gld;
 
 
 /**
- * Provides generalization of house parameter 
+ * Provides generalization of house parameter
  * diversity for various regions of the country
- * 
+ *
  * @author fish334
  *
  */
@@ -20,10 +50,10 @@ public class HouseRegionalization {
 	private static Region getRegion(int i) {
 		return regions[i-1];
 	}
-	
+
 	private static final String[] wthr = {"CA-San_francisco","IL-Chicago","AZ-Phoenix","TN-Nashville","FL-Miami","HI-Honolulu"};
 	private static final String[] tmZn = {"PST+8PDT","CST+6CDT","MST+7MDT","CST+6CDT","EST+5EDT","HST10"};
-	
+
 	/**
 	 * thermal percentage[region][type of home][age of home]
 	 * type of home: 1: single family home, 2: apartments, 3: mobile homes
@@ -64,7 +94,7 @@ public class HouseRegionalization {
 				{0.0000,0.0491,0.0333,0.0000,0.0000,0.0000,0.0000}
 			},
 	};
-	
+
 	/**
 	 * thermal properties[type of home][age of home][properties]
 	 * properties: 1:R-ceil, 2:R-wall, 3:R-floor, 4:window layers, 5:window glass, 6:glazing treatment, 7:window frame, 8:R-door, 9:air infiltration, 10:COP high, 11: COP low
@@ -90,7 +120,7 @@ public class HouseRegionalization {
 				{24.1,11.7,18.1,2.0,2.0,1.0,2.0,3.0,0.75,3.5,2.2}
 			}
 	};
-	
+
 	/**
 	 * floor area[region][type of house]
 	 * the average floor area
@@ -103,12 +133,12 @@ public class HouseRegionalization {
 			{2655.0,901.0,1069.0},
 			{2655.0,901.0,1069.0}
 	};
-	
+
 	/**
 	 * The percentage of one story homes for each region
 	 */
 	private static final double[] nStry = {0.6887,0.5210,0.7745,0.7046,0.7043,0.7043};
-	
+
 	/**
 	 * the average cooling setpoints[type of house][region][setpoint properties]
 	 * setpoint properties: 1:night time percentage, 2:night time average difference, 3: high bin value, 4: low bin value
@@ -139,7 +169,7 @@ public class HouseRegionalization {
 				{0.103,0.97,85.0,80.0}
 			},
 	};
-	
+
 	/**
 	 * the average heating setpoints[type of house][region][setpoint properties]
 	 * setpoint properties: 1:night time percentage, 2:night time average difference, 3: high bin value, 4: low bin value
@@ -170,14 +200,14 @@ public class HouseRegionalization {
 				{0.177,0.88,79.0,74.0}
 			},
 	};
-	
+
 	private static final double[] prcGs = {0.0,0.0,0.0,0.0,0.0,0.0};
 	private static final double[] prcPmp = {1.0,1.0,1.0,1.0,1.0,1.0};
 	private static final double[] prcRs = {0.0,0.0,0.0,0.0,0.0,0.0};
 	private static final double[] vrSzngFctr = {0.1,0.2,0.2,0.3,0.3,0.3};
 	private static final double[] prcPlPmps = {0.0904,0.0591,0.0818,0.0657,0.0657,0.0657};
 	private static final double[] prcWh = {0.7455,0.7485,0.6520,0.3572,0.3572,0.3572};
-	
+
 	private static final double[][] whSz = {
 			{0.0000,0.3333,0.6667},
 			{0.1459,0.5836,0.2706},
@@ -186,7 +216,7 @@ public class HouseRegionalization {
 			{0.2259,0.5267,0.2475},
 			{0.2259,0.5267,0.2475}
 	};
-	
+
 	private double[][][] thermalProperties;
 	private double[][] thermalPercentages;
 	private String weather;
@@ -448,7 +478,7 @@ public class HouseRegionalization {
 	public void setOverSizingFactor(double overSizingFactor) {
 		this.overSizingFactor = overSizingFactor;
 	}
-	
+
 	public HouseRegionalization(int reg){
 		this.region = getRegion(reg);
 		this.thermalProperties = thrmlPrprts;

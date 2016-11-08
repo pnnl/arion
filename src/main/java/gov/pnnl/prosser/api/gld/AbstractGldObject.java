@@ -1,6 +1,33 @@
 /**
- *
- */
+* Arion
+* Copyright © 2016, Battelle Memorial Institute
+* All rights reserved.
+* 1. Battelle Memorial Institute (hereinafter Battelle) hereby grants permission to any person or entity
+*    lawfully obtaining a copy of this software and associated documentation files (hereinafter “the Software”)
+*    to redistribute and use the Software in source and binary forms, with or without modification.  Such person
+*    or entity may use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software,
+*    and may permit others to do so, subject to the following conditions:
+*    •  Redistributions of source code must retain the above copyright notice, this list of conditions and
+*       the following disclaimers.
+*    •  Redistributions in binary form must reproduce the above copyright notice, this list of conditions and
+*       the following disclaimer in the documentation and/or other materials provided with the distribution.
+*    •  Other than as used herein, neither the name Battelle Memorial Institute or Battelle may be used in any
+*       form whatsoever without the express written consent of Battelle.
+* 2. THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED
+*    WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
+*    PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL BATTELLE OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
+*    INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT
+*    OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
+*    ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+*    ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+*
+*                                PACIFIC NORTHWEST NATIONAL LABORATORY
+*                                            operated by
+*                                              BATTELLE
+*                                              for the
+*                                  UNITED STATES DEPARTMENT OF ENERGY
+*                                   under Contract DE-AC05-76RL01830
+*/
 package gov.pnnl.prosser.api.gld;
 
 import gov.pnnl.prosser.api.GldSimulator;
@@ -21,7 +48,7 @@ import org.apache.commons.math3.complex.Complex;
  * @author nord229
  */
 public abstract class AbstractGldObject implements GldSerializable {
-    
+
     public static final DecimalFormat complexFormat;
 
     public static final DecimalFormat doubleFormat;
@@ -43,30 +70,30 @@ public abstract class AbstractGldObject implements GldSerializable {
      * Object groupid referenced in files
      */
     private String groupId;
-    
+
     private Recorder recorder;
-    
+
     /**
      * the target (parent) that is referenced
      */
     private AbstractGldObject parent;
-    
+
     private final List<AbstractGldObject> children = new ArrayList<>();
-    
+
     private Point2D.Double coordinateLocation = new Point2D.Double();
 
     /**
      * Simulator reference
      */
     protected final GldSimulator simulator;
-    
+
     public AbstractGldObject(final GldSimulator simulator) {
     	this.simulator = simulator;
     }
 
     /**
      * Get the object name for referencing in files
-     * 
+     *
      * @return the name
      */
     public String getName() {
@@ -75,7 +102,7 @@ public abstract class AbstractGldObject implements GldSerializable {
 
     /**
      * Set the object name for referencing in files
-     * 
+     *
      * @param name
      *            the name to set
      */
@@ -88,7 +115,7 @@ public abstract class AbstractGldObject implements GldSerializable {
 
     /**
      * Get the object groupid referenced in files
-     * 
+     *
      * @return the groupId
      */
     public String getGroupId() {
@@ -97,7 +124,7 @@ public abstract class AbstractGldObject implements GldSerializable {
 
     /**
      * Set the object groupid referenced in files
-     * 
+     *
      * @param groupId
      *            the groupId to set
      */
@@ -107,7 +134,7 @@ public abstract class AbstractGldObject implements GldSerializable {
 
     /**
      * Get the Recorder
-     * 
+     *
      * @return the recorder
      */
     public Recorder getRecorder() {
@@ -116,7 +143,7 @@ public abstract class AbstractGldObject implements GldSerializable {
 
     /**
      * Create and set the recorder on this object
-     * 
+     *
      * @return the recorder
      */
     public Recorder recorder(String... properties) {
@@ -125,10 +152,10 @@ public abstract class AbstractGldObject implements GldSerializable {
         this.recorder.setName(this.name + "_recorder");
         return recorder;
     }
-    
+
     /**
      * Get the target (parent) that is referenced
-     * 
+     *
      * @return the parent
      */
     public AbstractGldObject getParent() {
@@ -137,7 +164,7 @@ public abstract class AbstractGldObject implements GldSerializable {
 
     /**
      * Set the target (parent) that is referenced
-     * 
+     *
      * @param parent
      *            the parent to set
      */
@@ -145,15 +172,15 @@ public abstract class AbstractGldObject implements GldSerializable {
         this.parent = parent;
         this.parent.addChild(this);
     }
-    
+
     public void addChild(final AbstractGldObject child) {
         this.children.add(child);
     }
-    
+
     public List<AbstractGldObject> getChildren() {
         return this.children;
     }
-    
+
     /**
 	 * @return the coordinateLocation
 	 */
@@ -200,7 +227,7 @@ public abstract class AbstractGldObject implements GldSerializable {
 
     /**
      * The Object type to use when referencing in GLM files
-     * 
+     *
      * @return the object type string
      */
     protected abstract String getGldObjectType();
@@ -222,13 +249,13 @@ public abstract class AbstractGldObject implements GldSerializable {
 
     /**
      * Should write the properties of this object to the StringBuilder
-     * 
+     *
      * @param sb
      *            the string builder to use
      */
     protected abstract void writeGldProperties(final StringBuilder sb);
-    
-    
+
+
 
     protected void writeProperty(final StringBuilder sb, final String propName, final Double propValue) {
         writeProperty(sb, propName, propValue, null);

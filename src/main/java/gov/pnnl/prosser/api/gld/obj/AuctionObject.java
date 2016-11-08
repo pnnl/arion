@@ -1,6 +1,33 @@
 /**
- *
- */
+* Arion
+* Copyright © 2016, Battelle Memorial Institute
+* All rights reserved.
+* 1. Battelle Memorial Institute (hereinafter Battelle) hereby grants permission to any person or entity
+*    lawfully obtaining a copy of this software and associated documentation files (hereinafter “the Software”)
+*    to redistribute and use the Software in source and binary forms, with or without modification.  Such person
+*    or entity may use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software,
+*    and may permit others to do so, subject to the following conditions:
+*    •  Redistributions of source code must retain the above copyright notice, this list of conditions and
+*       the following disclaimers.
+*    •  Redistributions in binary form must reproduce the above copyright notice, this list of conditions and
+*       the following disclaimer in the documentation and/or other materials provided with the distribution.
+*    •  Other than as used herein, neither the name Battelle Memorial Institute or Battelle may be used in any
+*       form whatsoever without the express written consent of Battelle.
+* 2. THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED
+*    WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
+*    PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL BATTELLE OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
+*    INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT
+*    OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
+*    ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+*    ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+*
+*                                PACIFIC NORTHWEST NATIONAL LABORATORY
+*                                            operated by
+*                                              BATTELLE
+*                                              for the
+*                                  UNITED STATES DEPARTMENT OF ENERGY
+*                                   under Contract DE-AC05-76RL01830
+*/
 package gov.pnnl.prosser.api.gld.obj;
 
 import gov.pnnl.prosser.api.GldSimulator;
@@ -16,7 +43,7 @@ import java.util.UUID;
 
 /**
  * The auction object implements the basic auction
- * 
+ *
  * @author nord229
  */
 public class AuctionObject extends AbstractGldObject {
@@ -101,13 +128,13 @@ public class AuctionObject extends AbstractGldObject {
      * only controllers with this prefix will talk with this auction
      */
     private String fncsControllerPrefix;
-    
+
     /**
      * market set up type
      * Set this to the particular setup market interaction desired
      */
     private MarketSetUp marketSetUp;
-    
+
     public AuctionObject(final GldSimulator simulator) {
         super(simulator);
         this.marketSetUp = MarketSetUp.NORMAL;
@@ -116,7 +143,7 @@ public class AuctionObject extends AbstractGldObject {
 
     /**
      * Get the unit of quantity
-     * 
+     *
      * @return the unit
      */
     public String getUnit() {
@@ -125,7 +152,7 @@ public class AuctionObject extends AbstractGldObject {
 
     /**
      * Set the unit of quantity
-     * 
+     *
      * @param unit
      *            the unit to set
      */
@@ -135,7 +162,7 @@ public class AuctionObject extends AbstractGldObject {
 
     /**
      * Get the time period of auction closing (s)
-     * 
+     *
      * @return the period
      */
     public Integer getPeriod() {
@@ -144,7 +171,7 @@ public class AuctionObject extends AbstractGldObject {
 
     /**
      * Set the time period of auction closing (s)
-     * 
+     *
      * @param period
      *            the period to set
      */
@@ -154,7 +181,7 @@ public class AuctionObject extends AbstractGldObject {
 
     /**
      * Get the maximum price allowed
-     * 
+     *
      * @return the priceCap
      */
     public Double getPriceCap() {
@@ -163,7 +190,7 @@ public class AuctionObject extends AbstractGldObject {
 
     /**
      * Set the maximum price allowed
-     * 
+     *
      * @param priceCap
      *            the priceCap to set
      */
@@ -173,7 +200,7 @@ public class AuctionObject extends AbstractGldObject {
 
     /**
      * Get the transaction log file
-     * 
+     *
      * @return the transactionLogFile
      */
     public String getTransactionLogFile() {
@@ -182,7 +209,7 @@ public class AuctionObject extends AbstractGldObject {
 
     /**
      * Set the transaction log file
-     * 
+     *
      * @param transactionLogFile
      *            the transactionLogFile to set
      */
@@ -192,7 +219,7 @@ public class AuctionObject extends AbstractGldObject {
 
     /**
      * Get the curve log file
-     * 
+     *
      * @return the curveLogFile
      */
     public String getCurveLogFile() {
@@ -201,7 +228,7 @@ public class AuctionObject extends AbstractGldObject {
 
     /**
      * Set the curve log file
-     * 
+     *
      * @param curveLogFile
      *            the curveLogFile to set
      */
@@ -211,7 +238,7 @@ public class AuctionObject extends AbstractGldObject {
 
     /**
      * Get the output mode for curve log
-     * 
+     *
      * @return the curveLogInfo
      */
     public CurveOutput getCurveLogInfo() {
@@ -220,7 +247,7 @@ public class AuctionObject extends AbstractGldObject {
 
     /**
      * Set the output mode for curve log
-     * 
+     *
      * @param curveLogInfo
      *            the curveLogInfo to set
      */
@@ -230,7 +257,7 @@ public class AuctionObject extends AbstractGldObject {
 
     /**
      * Get the attached player for the Auction
-     * 
+     *
      * @return the player
      */
     public PlayerObject getPlayer() {
@@ -239,7 +266,7 @@ public class AuctionObject extends AbstractGldObject {
 
     /**
      * Get the auction special mode
-     * 
+     *
      * @return the specialMode
      */
     public SpecialMode getSpecialMode() {
@@ -248,7 +275,7 @@ public class AuctionObject extends AbstractGldObject {
 
     /**
      * Set the auction special mode
-     * 
+     *
      * @param specialMode
      *            the specialMode to set
      */
@@ -258,7 +285,7 @@ public class AuctionObject extends AbstractGldObject {
 
     /**
      * Get the initial price
-     * 
+     *
      * @return the initPrice
      */
     public Double getInitPrice() {
@@ -267,7 +294,7 @@ public class AuctionObject extends AbstractGldObject {
 
     /**
      * Set the initial price
-     * 
+     *
      * @param initPrice
      *            the initPrice to set
      */
@@ -277,7 +304,7 @@ public class AuctionObject extends AbstractGldObject {
 
     /**
      * Get the initial standard deviation
-     * 
+     *
      * @return the initStdev
      */
     public Double getInitStdev() {
@@ -286,7 +313,7 @@ public class AuctionObject extends AbstractGldObject {
 
     /**
      * Set the initial standard deviation
-     * 
+     *
      * @param initStdev
      *            the initStdev to set
      */
@@ -296,7 +323,7 @@ public class AuctionObject extends AbstractGldObject {
 
     /**
      * Get if should use the future mean price
-     * 
+     *
      * @return the useFutureMeanPrice
      */
     public Boolean getUseFutureMeanPrice() {
@@ -305,7 +332,7 @@ public class AuctionObject extends AbstractGldObject {
 
     /**
      * Set if should use the future mean price
-     * 
+     *
      * @param useFutureMeanPrice
      *            the useFutureMeanPrice to set
      */
@@ -315,7 +342,7 @@ public class AuctionObject extends AbstractGldObject {
 
     /**
      * Get the warmup time
-     * 
+     *
      * @return the warmup
      */
     public Integer getWarmup() {
@@ -324,7 +351,7 @@ public class AuctionObject extends AbstractGldObject {
 
     /**
      * Set the warmup time
-     * 
+     *
      * @param warmup
      *            the warmup to set
      */
@@ -334,7 +361,7 @@ public class AuctionObject extends AbstractGldObject {
 
     /**
      * Get the market network interface average price property
-     * 
+     *
      * @return the networkAveragePriceProperty
      */
     public String getNetworkAveragePriceProperty() {
@@ -343,7 +370,7 @@ public class AuctionObject extends AbstractGldObject {
 
     /**
      * Set the market network interface average price property
-     * 
+     *
      * @param networkAveragePriceProperty
      *            the networkAveragePriceProperty to set
      */
@@ -353,7 +380,7 @@ public class AuctionObject extends AbstractGldObject {
 
     /**
      * Get the market network interface standard deviation price property
-     * 
+     *
      * @return the networkStdevPriceProperty
      */
     public String getNetworkStdevPriceProperty() {
@@ -362,7 +389,7 @@ public class AuctionObject extends AbstractGldObject {
 
     /**
      * Set the market network interface standard deviation price property
-     * 
+     *
      * @param networkStdevPriceProperty
      *            the networkStdevPriceProperty to set
      */
@@ -373,7 +400,7 @@ public class AuctionObject extends AbstractGldObject {
     /**
      * Get the controller prefix for FNCS
      * only controllers with this prefix will talk with this auction
-     * 
+     *
      * @return the fncsControllerPrefix
      */
     public String getFncsControllerPrefix() {
@@ -383,14 +410,14 @@ public class AuctionObject extends AbstractGldObject {
     /**
      * Set the controller prefix for FNCS
      * only controllers with this prefix will talk with this auction
-     * 
+     *
      * @param fncsControllerPrefix
      *            the fncsControllerPrefix to set
      */
     public void setFncsControllerPrefix(String fncsControllerPrefix) {
         this.fncsControllerPrefix = fncsControllerPrefix;
     }
-        
+
     /**
 	 * @return the marketSetUp
 	 */
@@ -404,7 +431,7 @@ public class AuctionObject extends AbstractGldObject {
 	public void setMarketSetUp(MarketSetUp marketSetUp) {
 		this.marketSetUp = marketSetUp;
 	}
-	
+
 	@Override
     public int hashCode() {
         return Objects.hash(super.hashCode(), unit, period, priceCap, transactionLogFile, curveLogFile, curveLogInfo,
@@ -445,9 +472,9 @@ public class AuctionObject extends AbstractGldObject {
     /**
      * Set the controller prefix for FNCS to a unique id.
      * only controllers with this prefix will talk with this auction
-     * 
+     *
      * @return the unique fncsControllerPrefix
-     *            
+     *
      */
     public String setFncsControllerPrefix() {
     	UUID myUUID = UUID.randomUUID();
@@ -455,7 +482,7 @@ public class AuctionObject extends AbstractGldObject {
     	setFncsControllerPrefix(fncsPrefix);
     	return fncsPrefix;
     }
-    
+
     public void writeFncs2Directives(StringBuilder sb) {
     	if(this.getMarketSetUp().equals(MarketSetUp.AGGREGATE)){
     		if(this.simulator.getThirdPartySim() != null){
@@ -465,7 +492,7 @@ public class AuctionObject extends AbstractGldObject {
     		}
     	}
     }
-    
+
     private void writeSubscritpionPrecommit(StringBuilder sb, String auctionProperty, String thirdPartySimName, String key){
     	sb.append("subscribe \"precommit:");
     	sb.append(this.getName());
@@ -531,7 +558,7 @@ public class AuctionObject extends AbstractGldObject {
 
     /**
      * Create, set and return a player object
-     * 
+     *
      * @return the player object
      */
     public PlayerObject player() {

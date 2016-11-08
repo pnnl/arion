@@ -1,6 +1,33 @@
 /**
- * 
- */
+* Arion
+* Copyright © 2016, Battelle Memorial Institute
+* All rights reserved.
+* 1. Battelle Memorial Institute (hereinafter Battelle) hereby grants permission to any person or entity
+*    lawfully obtaining a copy of this software and associated documentation files (hereinafter “the Software”)
+*    to redistribute and use the Software in source and binary forms, with or without modification.  Such person
+*    or entity may use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software,
+*    and may permit others to do so, subject to the following conditions:
+*    •  Redistributions of source code must retain the above copyright notice, this list of conditions and
+*       the following disclaimers.
+*    •  Redistributions in binary form must reproduce the above copyright notice, this list of conditions and
+*       the following disclaimer in the documentation and/or other materials provided with the distribution.
+*    •  Other than as used herein, neither the name Battelle Memorial Institute or Battelle may be used in any
+*       form whatsoever without the express written consent of Battelle.
+* 2. THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED
+*    WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
+*    PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL BATTELLE OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
+*    INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT
+*    OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
+*    ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+*    ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+*
+*                                PACIFIC NORTHWEST NATIONAL LABORATORY
+*                                            operated by
+*                                              BATTELLE
+*                                              for the
+*                                  UNITED STATES DEPARTMENT OF ENERGY
+*                                   under Contract DE-AC05-76RL01830
+*/
 package gov.pnnl.prosser.api.ns3.obj;
 
 import java.util.ArrayList;
@@ -8,10 +35,10 @@ import java.util.ArrayList;
 import gov.pnnl.prosser.api.ns3.AbstractNs3Object;
 
 /**
- * This class provides a structure to efficiently hold Nodes in 
- * and make it easier to configure NetDevices on multiple Nodes 
+ * This class provides a structure to efficiently hold Nodes in
+ * and make it easier to configure NetDevices on multiple Nodes
  * simultaneously.
- * 
+ *
  * @author happ546
  *
  */
@@ -26,7 +53,7 @@ public class NodeContainer extends AbstractNs3Object {
 	 * An array containing the Nodes in this NodeContainer
 	 */
 	public ArrayList<Node> nodes;
-	
+
 	/**
 	 * Creates nameless NodeContainer; used in NetDeviceContainer
 	 */
@@ -34,7 +61,7 @@ public class NodeContainer extends AbstractNs3Object {
 		this.routers = new ArrayList<>();
 		this.nodes = new ArrayList<>();
 	}
-	
+
 	/**
 	 * Initializes an empty NodeContainer
 	 * @param name the string name
@@ -63,9 +90,9 @@ public class NodeContainer extends AbstractNs3Object {
 		this.addRouterNoPrint(router);
 		appendPrintInfo(this.getName() + ".Add (" + router.getPointerName() + ");\n");
 	}
-	
+
 	/**
-	 * 
+	 *
 	 * @param container the NodeContainer containing the Node to add to this NodeContainer
 	 * @param index the index of the Node to be added
 	 */
@@ -82,9 +109,9 @@ public class NodeContainer extends AbstractNs3Object {
 		this.nodes.add(node);
 		appendPrintInfo(this.getName() + ".Add (" + node.getName() + ");\n");
 	}
-	
+
 	/**
-	 * 
+	 *
 	 * @param sourceNodes the NodeContainer to append to this NodeContainer
 	 */
 	public void addNodeContainer(NodeContainer sourceNodes) {
@@ -93,9 +120,9 @@ public class NodeContainer extends AbstractNs3Object {
 		}
 		appendPrintInfo(this.getName() + ".Add (" + sourceNodes.getName() + ");\n");
 	}
-	
+
 	/**
-	 * 
+	 *
 	 * @param sourceNodes the NodeContainer to append to this NodeContainer
 	 */
 	public void addNodeContainerNoPrint(NodeContainer sourceNodes) {
@@ -119,7 +146,7 @@ public class NodeContainer extends AbstractNs3Object {
 
 	/**
 	 * Returns the Router at the given index without outputting any text to the C++ output file
-	 * 
+	 *
 	 * @param index the integer index of the Node to retrieve from the NodeContainer
 	 * @return the Router at the given index or null if there is no node at that index
 	 */

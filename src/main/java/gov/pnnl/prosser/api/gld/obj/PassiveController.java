@@ -1,6 +1,33 @@
 /**
- * 
- */
+* Arion
+* Copyright © 2016, Battelle Memorial Institute
+* All rights reserved.
+* 1. Battelle Memorial Institute (hereinafter Battelle) hereby grants permission to any person or entity
+*    lawfully obtaining a copy of this software and associated documentation files (hereinafter “the Software”)
+*    to redistribute and use the Software in source and binary forms, with or without modification.  Such person
+*    or entity may use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software,
+*    and may permit others to do so, subject to the following conditions:
+*    •  Redistributions of source code must retain the above copyright notice, this list of conditions and
+*       the following disclaimers.
+*    •  Redistributions in binary form must reproduce the above copyright notice, this list of conditions and
+*       the following disclaimer in the documentation and/or other materials provided with the distribution.
+*    •  Other than as used herein, neither the name Battelle Memorial Institute or Battelle may be used in any
+*       form whatsoever without the express written consent of Battelle.
+* 2. THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED
+*    WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
+*    PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL BATTELLE OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
+*    INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT
+*    OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
+*    ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+*    ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+*
+*                                PACIFIC NORTHWEST NATIONAL LABORATORY
+*                                            operated by
+*                                              BATTELLE
+*                                              for the
+*                                  UNITED STATES DEPARTMENT OF ENERGY
+*                                   under Contract DE-AC05-76RL01830
+*/
 package gov.pnnl.prosser.api.gld.obj;
 
 import gov.pnnl.prosser.api.GldSimulator;
@@ -44,7 +71,7 @@ public class PassiveController extends Controller {
     private double priceOffset = 10E-6;
     private boolean poolPumpModel;
     private double baseDutyCycle;
-    
+
     /**
      * @param simulator
      */
@@ -514,122 +541,122 @@ public class PassiveController extends Controller {
     @Override
     protected void writeGldProperties(StringBuilder sb) {
         super.writeGldProperties(sb);
-        
+
         if (this.expectationObjectName != null) {
             writeProperty(sb, "expectation_object", this.expectationObjectName);
         }
-        
+
         if (this.expectationProperty != null) {
             writeProperty(sb, "expectation_property", this.expectationProperty);
         }
-        
+
         if (this.observationObjectName != null) {
             writeProperty(sb, "observation_object", this.observationObjectName);
         }
-        
+
         if (this.observationProperty != null) {
             writeProperty(sb, "observation_property", this.observationProperty);
         }
-        
+
         if (this.observation != 0.0) {
             writeProperty(sb, "observation", this.observation);
         }
-        
+
         if (this.meanObservation != 0.0) {
             writeProperty(sb, "mean_observation", this.meanObservation);
         }
-        
+
         if (this.stdevObservation != 0.0) {
             writeProperty(sb, "stdev_observation", this.stdevObservation);
         }
-        
+
         if (this.expected != 0.0) {
             writeProperty(sb, "expected", this.expected);
         }
-        
+
         if (this.outputSetpoint != 0.0) {
             writeProperty(sb, "output_setpoint", this.outputSetpoint);
         }
-        
+
         if (this.outputState != null) {
             writeProperty(sb, "output_state", this.outputState);
         }
-        
+
         if (this.parent != null) {
             writeProperty(sb, "parent", this.parent);
         }
-        
+
         if (this.period != 0.0) {
             writeProperty(sb, "period ", this.period);
         }
-        
+
         if (this.distributionType != null) {
             writeProperty(sb, "distribution_type", this.distributionType);
         }
-        
+
         if (this.comfortLevel != 0.0) {
             writeProperty(sb, "comfort_level", this.comfortLevel);
         }
-        
+
         writeProperty(sb, "critical_day", this.criticalDay);
         writeProperty(sb, "two_tier_cpp ", this.twoTierCpp);
-        
+
         if (this.dailyElasticity != 0.0) {
             writeProperty(sb, "daily_elasticity ", this.dailyElasticity);
         }
-        
+
         if (this.subElasticityFirstSecond != 0.0) {
             writeProperty(sb, "sub_elasticity_first_second ", this.subElasticityFirstSecond);
         }
-        
+
         if (this.subElasticityFirstThird != 0.0) {
             writeProperty(sb, "sub_elasticity_first_third ", this.subElasticityFirstThird);
         }
-        
+
         if (this.firstTierHours != 0.0) {
             writeProperty(sb, "first_tier_hours ", this.firstTierHours);
         }
-        
+
         if (this.secondTierHours != 0.0) {
             writeProperty(sb, "second_tier_hours ", this.secondTierHours);
         }
-        
+
         if (this.thirdTierHours != 0.0) {
             writeProperty(sb, "third_tier_hours ", this.thirdTierHours);
         }
-        
+
         if (this.firstTierPrice != 0.0) {
             writeProperty(sb, "first_tier_price ", this.firstTierPrice);
         }
-        
+
         if (this.secondTierPrice != 0.0) {
             writeProperty(sb, "second_tier_price", this.secondTierPrice);
         }
-        
+
         if (this.thirdTierPrice != 0.0) {
             writeProperty(sb, "third_tier_price", this.thirdTierPrice);
         }
-        
+
         if (this.oldFirstTierPrice != 0.0) {
             writeProperty(sb, "old_first_tier_price", this.oldFirstTierPrice);
         }
-        
+
         if (this.oldSecondTierPrice != 0.0) {
             writeProperty(sb, "old_second_tier_price", this.oldSecondTierPrice);
         }
-        
+
         if (this.oldThirdTierPrice != 0.0) {
             writeProperty(sb, "old_third_tier_price", this.oldThirdTierPrice);
         }
-        
+
         writeProperty(sb, "linearize_elasticity", this.linearizeElasticity);
-        
+
         if (this.priceOffset != 0.0) {
             writeProperty(sb, "price_offset", this.priceOffset);
         }
-        
+
         writeProperty(sb, "pool_pump_model", this.poolPumpModel);
-        
+
         if (this.baseDutyCycle != 0.0) {
             writeProperty(sb, "base_duty_cycle", this.baseDutyCycle);
         }

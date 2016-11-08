@@ -1,6 +1,33 @@
 /**
- * 
- */
+* Arion
+* Copyright © 2016, Battelle Memorial Institute
+* All rights reserved.
+* 1. Battelle Memorial Institute (hereinafter Battelle) hereby grants permission to any person or entity
+*    lawfully obtaining a copy of this software and associated documentation files (hereinafter “the Software”)
+*    to redistribute and use the Software in source and binary forms, with or without modification.  Such person
+*    or entity may use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software,
+*    and may permit others to do so, subject to the following conditions:
+*    •  Redistributions of source code must retain the above copyright notice, this list of conditions and
+*       the following disclaimers.
+*    •  Redistributions in binary form must reproduce the above copyright notice, this list of conditions and
+*       the following disclaimer in the documentation and/or other materials provided with the distribution.
+*    •  Other than as used herein, neither the name Battelle Memorial Institute or Battelle may be used in any
+*       form whatsoever without the express written consent of Battelle.
+* 2. THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED
+*    WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
+*    PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL BATTELLE OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
+*    INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT
+*    OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
+*    ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+*    ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+*
+*                                PACIFIC NORTHWEST NATIONAL LABORATORY
+*                                            operated by
+*                                              BATTELLE
+*                                              for the
+*                                  UNITED STATES DEPARTMENT OF ENERGY
+*                                   under Contract DE-AC05-76RL01830
+*/
 package gov.pnnl.prosser.api.gld.obj;
 
 import org.apache.commons.math3.complex.Complex;
@@ -53,13 +80,13 @@ public class Solar extends AbstractGldObject {
     private boolean latitudeAngleFix;
     private Orientation orientation;
     private Inverter inverter;
-    
+
     /**
      * @param simulator
      */
     public Solar(GldSimulator simulator) {
         super(simulator);
-        
+
         this.generatorMode = GeneratorMode.SUPPLY_DRIVEN;
         this.generatorStatus = GeneratorStatus.ONLINE;
         this.panelType = PanelType.SINGLE_CRYSTAL_SILICON;
@@ -138,7 +165,7 @@ public class Solar extends AbstractGldObject {
 
     /**
      * @param solarTiltModel
-     * Defines the tilt model to utilize for tilted array calculations. 
+     * Defines the tilt model to utilize for tilted array calculations.
      */
     public void setSolarTiltModel(SolarTiltModel solarTiltModel) {
         this.solarTiltModel = solarTiltModel;
@@ -323,7 +350,7 @@ public class Solar extends AbstractGldObject {
     /**
      * @param pMaxTempCoefficient
      * Coefficient for the effects of temperature
-     * changes on the actual power output. 
+     * changes on the actual power output.
      */
     public void setpMaxTempCoefficient(double pMaxTempCoefficient) {
         this.pMaxTempCoefficient = pMaxTempCoefficient;
@@ -339,7 +366,7 @@ public class Solar extends AbstractGldObject {
     /**
      * @param vocTempCoefficient
      *  Coefficient for the effects of temperature
-     *  changes on the DC terminal voltage.  
+     *  changes on the DC terminal voltage.
      */
     public void setVocTempCoefficient(double vocTempCoefficient) {
         this.vocTempCoefficient = vocTempCoefficient;
@@ -403,7 +430,7 @@ public class Solar extends AbstractGldObject {
      * @param efficiency
      * REQUIRED
      * Defines the efficiency of power conversion
-     * from the solar insolation to DC power. 
+     * from the solar insolation to DC power.
      */
     public void setEfficiency(double efficiency) {
         this.efficiency = efficiency;
@@ -434,7 +461,7 @@ public class Solar extends AbstractGldObject {
 
     /**
      * @param soiling
-     * Soiling of the array factor - 
+     * Soiling of the array factor -
      * representing dirt on the array
      */
     public void setSoiling(double soiling) {
@@ -480,7 +507,7 @@ public class Solar extends AbstractGldObject {
 
     /**
      * @param iOut
-     * DC current passed to the inverter object 
+     * DC current passed to the inverter object
      */
     public void setiOut(Complex iOut) {
         this.iOut = iOut;
@@ -511,7 +538,7 @@ public class Solar extends AbstractGldObject {
     /**
      * @param weather
      *  Reference to a climate object from which
-     *  temperature, humidity, and solar flux are collected  
+     *  temperature, humidity, and solar flux are collected
      */
     public void setWeather(ClimateObject weather) {
         this.weather = weather;
@@ -587,7 +614,7 @@ public class Solar extends AbstractGldObject {
 
     /**
      * @param orientation
-     * Type of panel orientation. Types 
+     * Type of panel orientation. Types
      * DEFAULT and FIXED_AXIS are currently implemented
      */
     public void setOrientation(Orientation orientation) {
@@ -630,111 +657,111 @@ public class Solar extends AbstractGldObject {
         writeProperty(sb, "parent", this.inverter.getName());
         writeProperty(sb, "area", this.area);
         writeProperty(sb, "latitude_angle_fix", this.latitudeAngleFix);
-        
+
         if (this.solarTiltModel != null) {
             writeProperty(sb, "solar_tilt_model", this.solarTiltModel);
         }
-        
+
         if (this.solarPowerModel != null) {
             writeProperty(sb, "solar_power_model", this.solarPowerModel);
         }
-        
+
         if (this.aCoefficient != 0.0) {
             writeProperty(sb, "a_coeff", this.aCoefficient);
         }
-        
+
         if (this.bCoefficient != 0.0) {
             writeProperty(sb, "b_coeff", this.bCoefficient);
         }
-        
+
         if (this.dTCoefficient != 0.0) {
             writeProperty(sb, "dT_coeff", this.dTCoefficient);
         }
-        
+
         if (this.tCoefficient != 0.0) {
             writeProperty(sb, "T_coeff", this.tCoefficient);
         }
-        
+
         if (this.noct != 0.0) {
             writeProperty(sb, "noct", this.noct);
         }
-        
+
         if (this.tModule != 0.0) {
             writeProperty(sb, "Tmodule", this.tModule);
         }
-        
+
         if (this.tAmbient != 0.0) {
             writeProperty(sb, "Tambient", this.tAmbient);
         }
-        
+
         if (this.ambientTemperature != 0.0) {
             writeProperty(sb, "ambient_temperature", this.ambientTemperature);
         }
-        
+
         if (this.insolation != 0.0) {
             writeProperty(sb, "insolation", this.insolation);
         }
-        
+
         if (this.ratedInsolation != 0.0) {
             writeProperty(sb, "rated_insolation", this.ratedInsolation);
         }
-        
+
         if (this.pMaxTempCoefficient != 0.0) {
             writeProperty(sb, "pmax_temp_coeff", this.pMaxTempCoefficient);
         }
-        
+
         if (this.vocTempCoefficient != 0.0) {
             writeProperty(sb, "voc_temp_coeff", this.vocTempCoefficient);
         }
-        
+
         if (this.vMax != null) {
             writeProperty(sb, "v_max", this.vMax);
         }
-        
+
         if (this.vocMax != null) {
             writeProperty(sb, "voc_max", this.vocMax);
         }
-        
+
         if (this.voc != null) {
             writeProperty(sb, "voc", this.voc);
         }
-        
+
         if (this.soiling != 0.0) {
             writeProperty(sb, "soiling", this.soiling);
         }
-        
+
         if (this.derating != 0.0) {
             writeProperty(sb, "derating", this.derating);
         }
-        
+
         if (this.vOut != null) {
             writeProperty(sb, "v_out", this.vOut);
         }
-        
+
         if (this.iOut != null) {
             writeProperty(sb, "i_out", this.iOut);
         }
-        
+
         if (this.vaOut != null) {
             writeProperty(sb, "va_out", this.vaOut);
         }
-        
+
         if (this.weather != null) {
             writeProperty(sb, "weather", this.weather.getName());
         }
-        
+
         if (this.shadingFactor != 0.0) {
             writeProperty(sb, "shading_factor", this.shadingFactor);
         }
-        
+
         if (this.tiltAngle != 0.0) {
             writeProperty(sb, "tilt_angle", this.tiltAngle);
         }
-        
+
         if (this.orientationAzimuth != 0.0) {
             writeProperty(sb, "orientation_azimuth", this.orientationAzimuth);
         }
-        
+
         if (this.orientation != null) {
             writeProperty(sb, "orientation", this.orientation);
         }

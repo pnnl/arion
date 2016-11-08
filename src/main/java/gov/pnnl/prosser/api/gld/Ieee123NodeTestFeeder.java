@@ -1,6 +1,33 @@
 /**
- * 
- */
+* Arion
+* Copyright © 2016, Battelle Memorial Institute
+* All rights reserved.
+* 1. Battelle Memorial Institute (hereinafter Battelle) hereby grants permission to any person or entity
+*    lawfully obtaining a copy of this software and associated documentation files (hereinafter “the Software”)
+*    to redistribute and use the Software in source and binary forms, with or without modification.  Such person
+*    or entity may use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software,
+*    and may permit others to do so, subject to the following conditions:
+*    •  Redistributions of source code must retain the above copyright notice, this list of conditions and
+*       the following disclaimers.
+*    •  Redistributions in binary form must reproduce the above copyright notice, this list of conditions and
+*       the following disclaimer in the documentation and/or other materials provided with the distribution.
+*    •  Other than as used herein, neither the name Battelle Memorial Institute or Battelle may be used in any
+*       form whatsoever without the express written consent of Battelle.
+* 2. THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED
+*    WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
+*    PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL BATTELLE OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
+*    INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT
+*    OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
+*    ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+*    ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+*
+*                                PACIFIC NORTHWEST NATIONAL LABORATORY
+*                                            operated by
+*                                              BATTELLE
+*                                              for the
+*                                  UNITED STATES DEPARTMENT OF ENERGY
+*                                   under Contract DE-AC05-76RL01830
+*/
 package gov.pnnl.prosser.api.gld;
 
 import java.awt.Point;
@@ -50,12 +77,12 @@ import gov.pnnl.prosser.api.gld.obj.UndergroundLine;
  * @author sund130
  *
  */
-public class Ieee123NodeTestFeeder { 
+public class Ieee123NodeTestFeeder {
     private final GldSimulator simulator;
     private final int region;
     private final String name;
     private final double averageHouseLoad;
-    
+
     private Map<Integer, OverheadLineConductor> overheadLineConductors;
     private UndergroundLineConductor undergroundLineConductor;
     private Map<Integer, LineSpacing> lineSpacings;
@@ -70,8 +97,8 @@ public class Ieee123NodeTestFeeder {
     private Map<Integer, UndergroundLine> undergroundLines;
     private Map<Integer, Switch> switches;
     private boolean useThermostatSchedules;
-    
-    
+
+
 
     public Ieee123NodeTestFeeder(final GldSimulator simulator, final int region, final double averageHouseLoad, final boolean addMarket, final boolean useThermostatSchedules) {
         this.simulator = simulator;
@@ -89,14 +116,14 @@ public class Ieee123NodeTestFeeder {
         this.overheadLines = new HashMap<Integer, OverheadLine>();
         this.undergroundLines = new HashMap<Integer, UndergroundLine>();
         this.switches = new HashMap<Integer, Switch>();
-        
+
         this.simulator.addIncludes(Paths.get("res/appliance_schedules.glm"));
         this.simulator.addIncludes(Paths.get("res/water_and_setpoint_schedule_v5.glm"));
         //TODO: change this to use the weather file for the chosen region
         ClimateObject climate = this.simulator.climateObject("Columbus OH");
         climate.setTmyFile(Paths.get("res/ColumbusWeather2009_2a.csv"));
         climate.addCsvReader("CSVREADER");
-        
+
         //create simulator objects
         this.createOverheadLineConductors();
         this.createUndergroundLineConductor();
@@ -110,36 +137,36 @@ public class Ieee123NodeTestFeeder {
         this.createOverheadLines();
         this.createUndergroundLines();
         this.createSwitches();
-        
+
         if(addMarket){
         	GldSimulatorUtils.MakeTransactiveMarket(this.simulator, String.format("%s_Market", this.name));
         }
-        
+
         this.setLatAndLongOnNodes();
     }
-    
+
     public void createOverheadLineConductors() {
         String nameFormat = "%s_overhead_line_conductor_%d";
-        
+
         int key1 = 10001;
         OverheadLineConductor overheadLineConductor1 = this.simulator.overheadLineConductor(String.format(nameFormat, this.name, key1));
         overheadLineConductor1.setGeometricMeanRadius(.0244);
         overheadLineConductor1.setResistance(.306);
         this.overheadLineConductors.put(key1, overheadLineConductor1);
-        
+
         int key2 = 10009;
         OverheadLineConductor overheadLineConductor2 = this.simulator.overheadLineConductor(String.format(nameFormat, this.name, key2));
         overheadLineConductor2.setGeometricMeanRadius(.00446);
         overheadLineConductor2.setResistance(1.12);
         this.overheadLineConductors.put(key2, overheadLineConductor2);
-        
+
         int key3 = 10002;
         OverheadLineConductor overheadLineConductor3 = this.simulator.overheadLineConductor(String.format(nameFormat, this.name, key3));
         overheadLineConductor3.setGeometricMeanRadius(.00814);
         overheadLineConductor3.setResistance(.592);
         this.overheadLineConductors.put(key3, overheadLineConductor3);
     }
-    
+
     public void createUndergroundLineConductor() {
         this.undergroundLineConductor = this.simulator.undergroundLineConductor(String.format("%s_underground_line_conductor_10003", this.name));
         this.undergroundLineConductor.setOuterDiameter(1.06);
@@ -153,12 +180,12 @@ public class Ieee123NodeTestFeeder {
         this.undergroundLineConductor.setShieldGmr(0);
         this.undergroundLineConductor.setShieldResistance(0);
     }
-    
+
     public void createLineSpacings() {
         double radical2Times4 = 5.656854;
         double radical73over2 = 4.272002;
         String stringFormat = "%s_line_spacing_%d";
-        
+
         int key1 = 5001;
         LineSpacing lineSpacings1 = this.simulator.lineSpacing(String.format(stringFormat, this.name, key1));
         lineSpacings1.setDistanceAToB(2.5);
@@ -168,7 +195,7 @@ public class Ieee123NodeTestFeeder {
         lineSpacings1.setDistanceBToN(radical73over2);
         lineSpacings1.setDistanceCToN(5);
         this.lineSpacings.put(key1, lineSpacings1);
-        
+
         int key2 = 5002;
         LineSpacing lineSpacings2 = this.simulator.lineSpacing(String.format(stringFormat, this.name, key2));
         lineSpacings2.setDistanceAToB(4.5);
@@ -279,10 +306,10 @@ public class Ieee123NodeTestFeeder {
         lineSpacings12.setDistanceCToN(0);
         this.lineSpacings.put(key12, lineSpacings12);
     }
-    
+
     public void createLineConfigurations() {
         String stringFormat = "%s_line_configuration_%d";
-        
+
         for (int i = 0; i < 6; i++) {
             int key = 1001 + i;
             StandardLineConfiguration<OverheadLineConductor> lineConfiguration = this.simulator.overheadLineConfiguration(String.format(stringFormat, this.name, key));
@@ -292,8 +319,8 @@ public class Ieee123NodeTestFeeder {
             lineConfiguration.setPhaseNConductor(this.overheadLineConductors.get(10002));
             lineConfiguration.setSpacing(this.lineSpacings.get(5001 + i));
             this.lineConfigurations.put(key, lineConfiguration);
-        }        
-        
+        }
+
         int key7 = 1007;
         StandardLineConfiguration<OverheadLineConductor> lineConfiguration7 = this.simulator.overheadLineConfiguration(String.format(stringFormat, this.name, key7));
         lineConfiguration7.setPhaseAConductor(this.overheadLineConductors.get(10001));
@@ -301,7 +328,7 @@ public class Ieee123NodeTestFeeder {
         lineConfiguration7.setPhaseNConductor(this.overheadLineConductors.get(10002));
         lineConfiguration7.setSpacing(this.lineSpacings.get(5007));
         this.lineConfigurations.put(key7, lineConfiguration7);
-        
+
         int key8 = 1008;
         StandardLineConfiguration<OverheadLineConductor> lineConfiguration8 = this.simulator.overheadLineConfiguration(String.format(stringFormat, this.name, key8));
         lineConfiguration8.setPhaseAConductor(this.overheadLineConductors.get(10001));
@@ -309,28 +336,28 @@ public class Ieee123NodeTestFeeder {
         lineConfiguration8.setPhaseNConductor(this.overheadLineConductors.get(10002));
         lineConfiguration8.setSpacing(this.lineSpacings.get(5008));
         this.lineConfigurations.put(key8, lineConfiguration8);
-        
+
         int key9 = 1009;
         StandardLineConfiguration<OverheadLineConductor> lineConfiguration9 = this.simulator.overheadLineConfiguration(String.format(stringFormat, this.name, key9));
         lineConfiguration9.setPhaseAConductor(this.overheadLineConductors.get(10009));
         lineConfiguration9.setPhaseNConductor(this.overheadLineConductors.get(10009));
         lineConfiguration9.setSpacing(this.lineSpacings.get(5009));
         this.lineConfigurations.put(key9, lineConfiguration9);
-        
+
         int key10 = 10010;
         StandardLineConfiguration<OverheadLineConductor> lineConfiguration10 = this.simulator.overheadLineConfiguration(String.format(stringFormat, this.name, key10));
         lineConfiguration10.setPhaseBConductor(this.overheadLineConductors.get(10009));
         lineConfiguration10.setPhaseNConductor(this.overheadLineConductors.get(10009));
         lineConfiguration10.setSpacing(this.lineSpacings.get(50010));
         this.lineConfigurations.put(key10, lineConfiguration10);
-        
+
         int key11 = 10011;
         StandardLineConfiguration<OverheadLineConductor> lineConfiguration11 = this.simulator.overheadLineConfiguration(String.format(stringFormat, this.name, key11));
         lineConfiguration11.setPhaseCConductor(this.overheadLineConductors.get(10009));
         lineConfiguration11.setPhaseNConductor(this.overheadLineConductors.get(10009));
         lineConfiguration11.setSpacing(this.lineSpacings.get(50011));
         this.lineConfigurations.put(key11, lineConfiguration11);
-        
+
         int key12 = 10012;
         StandardLineConfiguration<UndergroundLineConductor> lineConfiguration12 = this.simulator.undergroundLineConfiguration(String.format(stringFormat, this.name, key12));
         lineConfiguration12.setPhaseAConductor(this.undergroundLineConductor);
@@ -339,7 +366,7 @@ public class Ieee123NodeTestFeeder {
         lineConfiguration12.setSpacing(this.lineSpacings.get(50012));
         this.lineConfigurations.put(key12, lineConfiguration12);
     }
-    
+
     public void createTransformerConfigurationAndTransformer() {
         this.transformerConfiguration = this.simulator.transformerConfiguration(String.format("%s_transformer_configuration_400", this.name));
         this.transformerConfiguration.setConnectionType(ConnectionType.DELTA_DELTA);
@@ -348,7 +375,7 @@ public class Ieee123NodeTestFeeder {
         this.transformerConfiguration.setPrimaryVoltage(4160);
         this.transformerConfiguration.setSecondaryVoltage(480);
         this.transformerConfiguration.setImpedance(new Complex(0.0127, 0.0272));
-        
+
         this.transformer = this.simulator.transformer(String.format("%s_transformer_611610", this.name), this.transformerConfiguration);
         this.transformer.setPhases(PhaseCode.ABCN);
         this.transformer.setFrom(this.nodes.get(611));
@@ -365,17 +392,17 @@ public class Ieee123NodeTestFeeder {
         int[] nodesWithPhaseACN = { 26, 2601, 27 };
         int[] nodesWithPhaseABN = { 36 };
         Map<EnumSet<PhaseCode>, int[]> phases = new HashMap<EnumSet<PhaseCode>, int[]>();
-        
+
         phases.put(EnumSet.of(PhaseCode.C, PhaseCode.N), nodesWithPhaseCN);
         phases.put(PhaseCode.ABCN, nodesWithPhaseABCN);
         phases.put(EnumSet.of(PhaseCode.A, PhaseCode.N), nodesWithPhaseAN);
         phases.put(EnumSet.of(PhaseCode.A, PhaseCode.C, PhaseCode.N), nodesWithPhaseACN);
         phases.put(EnumSet.of(PhaseCode.A, PhaseCode.B, PhaseCode.N), nodesWithPhaseABN);
-        
+
         for (Iterator<EnumSet<PhaseCode>> i = phases.keySet().iterator(); i.hasNext(); ) {
             EnumSet<PhaseCode> phaseCode = i.next();
             int[] nodes = phases.get(phaseCode);
-            
+
             for (int j = 0; j < nodes.length; j++) {
                 int key = nodes[j];
                 Meter node = this.simulator.meter(String.format(stringFormat, this.name, key));
@@ -388,7 +415,7 @@ public class Ieee123NodeTestFeeder {
             }
         }
     }
-    
+
     public void createLoads() {
         String stringFormat = "%s_node_%d";
         int[] nodesWithPhaseCN = { 4, 5, 6, 16, 17, 24, 31, 32, 34, 41, 73, 74, 75, 84, 85, 92,
@@ -398,7 +425,7 @@ public class Ieee123NodeTestFeeder {
         int[] nodesWithPhaseAN = { 9, 10, 11, 19, 20, 33, 37, 45, 46, 68, 69, 70, 71, 88, 94,
                 109, 111, 112, 113, 114 };
         int[] nodesWithPhaseBN = { 2, 12, 22, 38, 39, 43, 58, 59, 90, 96, 106, 107 };
-        
+
         int[] nodesWithPhaseABC = { 62, 63, 64, 66 };
         double voltageLGNominal = 4160.0/Math.sqrt(3.0);
         Complex voltageA = ComplexUtils.polar2Complex(voltageLGNominal, 0.0);
@@ -544,7 +571,7 @@ public class Ieee123NodeTestFeeder {
     	tc[0] = spctLoad1dA;
     	tc[1] = spctLoad1dB;
     	loadSpcts.put(35, tc);
-    	
+
         loadVals.put(47, phaseLoad7);
         totalLoad = totalLoad + (load3 * 3);
         Arrays.fill(tc, null);
@@ -552,7 +579,7 @@ public class Ieee123NodeTestFeeder {
     	tc[1] = spctLoad3B;
     	tc[2] = spctLoad3C;
     	loadSpcts.put(47, tc);
-        
+
         loadVals.put(48, phaseLoad8);
         totalLoad = totalLoad + (load4 * 4);
         Arrays.fill(tc, null);
@@ -560,7 +587,7 @@ public class Ieee123NodeTestFeeder {
     	tc[1] = spctLoad4B;
     	tc[2] = spctLoad4C;
     	loadSpcts.put(48, tc);
-        
+
         loadVals.put(49, phaseLoad9);
         totalLoad = totalLoad + load3 + load4 + load5;
         Arrays.fill(tc, null);
@@ -568,13 +595,13 @@ public class Ieee123NodeTestFeeder {
     	tc[1] = spctLoad4B;
     	tc[2] = spctLoad5C;
     	loadSpcts.put(49, tc);
-        
+
         loadVals.put(64, phaseLoad10);
         totalLoad = totalLoad + load6;
         Arrays.fill(tc, null);
     	tc[1] = spctLoad6B;
     	loadSpcts.put(64, tc);
-        
+
         loadVals.put(65, phaseLoad11);
         totalLoad = totalLoad + load3a + load3b + load4c65;
         Arrays.fill(tc, null);
@@ -582,13 +609,13 @@ public class Ieee123NodeTestFeeder {
     	tc[1] = spctLoad3B;
     	tc[2] = spctLoad4c65C;
     	loadSpcts.put(65, tc);
-        
+
         loadVals.put(66, phaseLoad12);
         totalLoad = totalLoad + load6;
         Arrays.fill(tc, null);
     	tc[2] = spctLoad6C;
     	loadSpcts.put(66, tc);
-        
+
         loadVals.put(76, phaseLoad13);
         totalLoad = totalLoad + load7 + load4b76 + load4c76;
         Arrays.fill(tc, null);
@@ -596,15 +623,15 @@ public class Ieee123NodeTestFeeder {
     	tc[1] = spctLoad4b76B;
     	tc[2] = spctLoad4c76C;
     	loadSpcts.put(76, tc);
-        
+
         phases.put(EnumSet.of(PhaseCode.C, PhaseCode.N), nodesWithPhaseCN);
         phases.put(PhaseCode.ABCN, nodesWithPhaseABCN);
         phases.put(EnumSet.of(PhaseCode.A, PhaseCode.N), nodesWithPhaseAN);
         phases.put(EnumSet.of(PhaseCode.B, PhaseCode.N), nodesWithPhaseBN);
         phases.put(EnumSet.of(PhaseCode.A, PhaseCode.B, PhaseCode.C), nodesWithPhaseABC);
-        
+
         HouseRegionalization regionalData = new HouseRegionalization(region);
-        
+
         double[][] thermalIntegrity = regionalData.getThermalPercentages();
         double[] totalHousesByType = {0, 0, 0, 0, 0, 0, 0};
         for(int i = 0; i < thermalIntegrity.length; i++){
@@ -624,14 +651,14 @@ public class Ieee123NodeTestFeeder {
         for (Iterator<EnumSet<PhaseCode>> i = phases.keySet().iterator(); i.hasNext(); ) {
             EnumSet<PhaseCode> phaseCode = i.next();
             int[] loads = phases.get(phaseCode);
-            
+
             for (int j = 0; j < loads.length; j++) {
                 String phase = "";
             	int key = loads[j];
                 Meter load = this.simulator.meter(String.format(stringFormat, this.name, key));
                 load.setPhases(phaseCode);
                 this.setNodeVoltages(load);
-                
+
                 if(phaseCode.contains(PhaseCode.A) && loadVals.get(key)[0] > 0){
                 	//create splitphase centertapped transformers and triplex nodes
                 	phase = "A";
@@ -684,10 +711,10 @@ public class Ieee123NodeTestFeeder {
             }
         }
     }
-    
+
     public void createRegulatorConfigurations() {
         String stringFormat = "%s_regulator_configuration_%d";
-        
+
         int key1 = 1501490;
         RegulatorConfiguration regulatorConfiguration1 = this.simulator.regulatorConfiguration(String.format(stringFormat, this.name, key1));
         regulatorConfiguration1.setConnectionType(ConnectionType.WYE_WYE);
@@ -707,7 +734,7 @@ public class Ieee123NodeTestFeeder {
         regulatorConfiguration1.setRegulatorType(RegulatorType.A);
         regulatorConfiguration1.setTapPositions(new int[] {7, 7, 7});
         this.regulatorConfigurations.put(key1, regulatorConfiguration1);
-        
+
         int key2 = 2526010;
         RegulatorConfiguration regulatorConfiguration2 = this.simulator.regulatorConfiguration(String.format(stringFormat, this.name, key2));
         regulatorConfiguration2.setConnectionType(ConnectionType.WYE_WYE);
@@ -728,7 +755,7 @@ public class Ieee123NodeTestFeeder {
         regulatorConfiguration2.setRegulatorType(RegulatorType.A);
         regulatorConfiguration2.setTapPositions(new int[] {0, 0, -1});
         this.regulatorConfigurations.put(key2, regulatorConfiguration2);
-        
+
         int key3 = 914010;
         RegulatorConfiguration regulatorConfiguration3 = this.simulator.regulatorConfiguration(String.format(stringFormat, this.name, key3));
         regulatorConfiguration3.setConnectionType(ConnectionType.WYE_WYE);
@@ -749,7 +776,7 @@ public class Ieee123NodeTestFeeder {
         regulatorConfiguration3.setRegulatorType(RegulatorType.A);
         regulatorConfiguration3.setTapPositions(new int[] {-1, 0, 0});
         this.regulatorConfigurations.put(key3, regulatorConfiguration3);
-        
+
         int key4 = 16067010;
         RegulatorConfiguration regulatorConfiguration4 = this.simulator.regulatorConfiguration(String.format(stringFormat, this.name, key4));
         regulatorConfiguration4.setConnectionType(ConnectionType.WYE_WYE);
@@ -770,31 +797,31 @@ public class Ieee123NodeTestFeeder {
         regulatorConfiguration4.setTapPositions(new int[] {8, 1, 5});
         this.regulatorConfigurations.put(key4, regulatorConfiguration4);
     }
-    
+
     public void createRegulators() {
         String stringFormat = "%s_regulator_%d";
-        
+
         int key1 = 1501491;
         Regulator regulator1 = this.simulator.regulator(String.format(stringFormat, this.name, key1), this.regulatorConfigurations.get(1501490));
         regulator1.setPhases(PhaseCode.ABC);
         regulator1.setFrom(this.nodes.get(150));
         regulator1.setTo(this.nodes.get(1491));
         this.regulators.put(key1, regulator1);
-        
+
         int key2 = 252601;
         Regulator regulator2 = this.simulator.regulator(String.format(stringFormat, this.name, key2), this.regulatorConfigurations.get(2526010));
         regulator2.setPhases(EnumSet.of(PhaseCode.A, PhaseCode.C));
         regulator2.setFrom(this.nodes.get(25));
         regulator2.setTo(this.nodes.get(2601));
         this.regulators.put(key2, regulator2);
-        
+
         int key3 = 91401;
         Regulator regulator3 = this.simulator.regulator(String.format(stringFormat, this.name, key3), this.regulatorConfigurations.get(914010));
         regulator3.setPhases(EnumSet.of(PhaseCode.A));
         regulator3.setFrom(this.loads.get(9));
         regulator3.setTo(this.nodes.get(1401));
         this.regulators.put(key3, regulator3);
-        
+
         int key4 = 1606701;
         Regulator regulator4 = this.simulator.regulator(String.format(stringFormat, this.name, key4), this.regulatorConfigurations.get(16067010));
         regulator4.setPhases(PhaseCode.ABC);
@@ -802,7 +829,7 @@ public class Ieee123NodeTestFeeder {
         regulator4.setTo(this.nodes.get(6701));
         this.regulators.put(key4, regulator4);
     }
-    
+
     @SuppressWarnings("unchecked")
     public void createOverheadLines() {
         String stringFormat = "%s_overhead_line_%d";
@@ -812,486 +839,486 @@ public class Ieee123NodeTestFeeder {
         EnumSet<PhaseCode> abn = EnumSet.of(PhaseCode.A, PhaseCode.B, PhaseCode.N);
         EnumSet<PhaseCode> acn = EnumSet.of(PhaseCode.A, PhaseCode.C, PhaseCode.N);
         EnumSet<PhaseCode> abcn = PhaseCode.ABCN;
-        
+
         int key1 = 12;
-        this.overheadLines.put(key1, this.simulator.overheadLine(String.format(stringFormat, this.name, key1), bn, 
+        this.overheadLines.put(key1, this.simulator.overheadLine(String.format(stringFormat, this.name, key1), bn,
                 this.loads.get(1), this.loads.get(2), 175, (StandardLineConfiguration<OverheadLineConductor>)this.lineConfigurations.get(10010)));
-        
+
         int key2 = 13;
-        this.overheadLines.put(key2, this.simulator.overheadLine(String.format(stringFormat, this.name, key2), cn, 
+        this.overheadLines.put(key2, this.simulator.overheadLine(String.format(stringFormat, this.name, key2), cn,
                 this.loads.get(1), this.nodes.get(3), 250, (StandardLineConfiguration<OverheadLineConductor>)this.lineConfigurations.get(10011)));
-        
+
         int key3 = 17;
-        this.overheadLines.put(key3, this.simulator.overheadLine(String.format(stringFormat, this.name, key3), abcn, 
+        this.overheadLines.put(key3, this.simulator.overheadLine(String.format(stringFormat, this.name, key3), abcn,
                 this.loads.get(1), this.loads.get(7), 300, (StandardLineConfiguration<OverheadLineConductor>)this.lineConfigurations.get(1001)));
-        
+
         int key4 = 34;
-        this.overheadLines.put(key4, this.simulator.overheadLine(String.format(stringFormat, this.name, key4), cn, 
+        this.overheadLines.put(key4, this.simulator.overheadLine(String.format(stringFormat, this.name, key4), cn,
                 this.nodes.get(3), this.loads.get(4), 200, (StandardLineConfiguration<OverheadLineConductor>)this.lineConfigurations.get(10011)));
-        
+
         int key5 = 35;
-        this.overheadLines.put(key5, this.simulator.overheadLine(String.format(stringFormat, this.name, key5), cn, 
+        this.overheadLines.put(key5, this.simulator.overheadLine(String.format(stringFormat, this.name, key5), cn,
                 this.nodes.get(3), this.loads.get(5), 325, (StandardLineConfiguration<OverheadLineConductor>)this.lineConfigurations.get(10011)));
-        
+
         int key6 = 56;
-        this.overheadLines.put(key6, this.simulator.overheadLine(String.format(stringFormat, this.name, key6), cn, 
+        this.overheadLines.put(key6, this.simulator.overheadLine(String.format(stringFormat, this.name, key6), cn,
                 this.loads.get(5), this.loads.get(6), 250, (StandardLineConfiguration<OverheadLineConductor>)this.lineConfigurations.get(10011)));
-        
+
         int key7 = 78;
-        this.overheadLines.put(key7, this.simulator.overheadLine(String.format(stringFormat, this.name, key7), abcn, 
+        this.overheadLines.put(key7, this.simulator.overheadLine(String.format(stringFormat, this.name, key7), abcn,
                 this.loads.get(7), this.nodes.get(8), 200, (StandardLineConfiguration<OverheadLineConductor>)this.lineConfigurations.get(1001)));
-        
+
         int key8 = 812;
-        this.overheadLines.put(key8, this.simulator.overheadLine(String.format(stringFormat, this.name, key8), bn, 
+        this.overheadLines.put(key8, this.simulator.overheadLine(String.format(stringFormat, this.name, key8), bn,
                 this.nodes.get(8), this.loads.get(12), 225, (StandardLineConfiguration<OverheadLineConductor>)this.lineConfigurations.get(10010)));
-        
+
         int key9 = 89;
-        this.overheadLines.put(key9, this.simulator.overheadLine(String.format(stringFormat, this.name, key9), an, 
+        this.overheadLines.put(key9, this.simulator.overheadLine(String.format(stringFormat, this.name, key9), an,
                 this.nodes.get(8), this.loads.get(9), 225, (StandardLineConfiguration<OverheadLineConductor>)this.lineConfigurations.get(1009)));
-        
+
         int key10 = 813;
-        this.overheadLines.put(key10, this.simulator.overheadLine(String.format(stringFormat, this.name, key10), abcn, 
+        this.overheadLines.put(key10, this.simulator.overheadLine(String.format(stringFormat, this.name, key10), abcn,
                 this.nodes.get(8), this.nodes.get(13), 300, (StandardLineConfiguration<OverheadLineConductor>)this.lineConfigurations.get(1001)));
-        
+
         int key11 = 140114;
-        this.overheadLines.put(key11, this.simulator.overheadLine(String.format(stringFormat, this.name, key11), an, 
+        this.overheadLines.put(key11, this.simulator.overheadLine(String.format(stringFormat, this.name, key11), an,
                 this.nodes.get(1401), this.nodes.get(14), 425, (StandardLineConfiguration<OverheadLineConductor>)this.lineConfigurations.get(1009)));
-        
+
         int key12 = 1334;
-        this.overheadLines.put(key12, this.simulator.overheadLine(String.format(stringFormat, this.name, key12), cn, 
+        this.overheadLines.put(key12, this.simulator.overheadLine(String.format(stringFormat, this.name, key12), cn,
                 this.nodes.get(13), this.loads.get(34), 150, (StandardLineConfiguration<OverheadLineConductor>)this.lineConfigurations.get(10011)));
-        
+
         int key13 = 1318;
-        this.overheadLines.put(key13, this.simulator.overheadLine(String.format(stringFormat, this.name, key13), abcn, 
+        this.overheadLines.put(key13, this.simulator.overheadLine(String.format(stringFormat, this.name, key13), abcn,
                 this.nodes.get(13), this.nodes.get(18), 825, (StandardLineConfiguration<OverheadLineConductor>)this.lineConfigurations.get(1002)));
-        
+
         int key14 = 1411;
-        this.overheadLines.put(key14, this.simulator.overheadLine(String.format(stringFormat, this.name, key14), an, 
+        this.overheadLines.put(key14, this.simulator.overheadLine(String.format(stringFormat, this.name, key14), an,
                 this.nodes.get(14), this.loads.get(11), 250, (StandardLineConfiguration<OverheadLineConductor>)this.lineConfigurations.get(1009)));
-        
+
         int key15 = 1410;
-        this.overheadLines.put(key15, this.simulator.overheadLine(String.format(stringFormat, this.name, key15), an, 
+        this.overheadLines.put(key15, this.simulator.overheadLine(String.format(stringFormat, this.name, key15), an,
                 this.nodes.get(14), this.loads.get(10), 250, (StandardLineConfiguration<OverheadLineConductor>)this.lineConfigurations.get(1009)));
-        
+
         int key16 = 1516;
-        this.overheadLines.put(key16, this.simulator.overheadLine(String.format(stringFormat, this.name, key16), cn, 
+        this.overheadLines.put(key16, this.simulator.overheadLine(String.format(stringFormat, this.name, key16), cn,
                 this.nodes.get(15), this.loads.get(16), 375, (StandardLineConfiguration<OverheadLineConductor>)this.lineConfigurations.get(10011)));
-        
+
         int key17 = 1517;
-        this.overheadLines.put(key17, this.simulator.overheadLine(String.format(stringFormat, this.name, key17), cn, 
+        this.overheadLines.put(key17, this.simulator.overheadLine(String.format(stringFormat, this.name, key17), cn,
                 this.nodes.get(15), this.loads.get(17), 350, (StandardLineConfiguration<OverheadLineConductor>)this.lineConfigurations.get(10011)));
-        
+
         int key18 = 1819;
-        this.overheadLines.put(key18, this.simulator.overheadLine(String.format(stringFormat, this.name, key18), an, 
+        this.overheadLines.put(key18, this.simulator.overheadLine(String.format(stringFormat, this.name, key18), an,
                 this.nodes.get(18), this.loads.get(19), 250, (StandardLineConfiguration<OverheadLineConductor>)this.lineConfigurations.get(1009)));
-        
+
         int key19 = 1821;
-        this.overheadLines.put(key19, this.simulator.overheadLine(String.format(stringFormat, this.name, key19), abcn, 
+        this.overheadLines.put(key19, this.simulator.overheadLine(String.format(stringFormat, this.name, key19), abcn,
                 this.nodes.get(18), this.nodes.get(21), 300, (StandardLineConfiguration<OverheadLineConductor>)this.lineConfigurations.get(1002)));
-        
+
         int key20 = 1920;
-        this.overheadLines.put(key20, this.simulator.overheadLine(String.format(stringFormat, this.name, key20), an, 
+        this.overheadLines.put(key20, this.simulator.overheadLine(String.format(stringFormat, this.name, key20), an,
                 this.loads.get(19), this.loads.get(20), 325, (StandardLineConfiguration<OverheadLineConductor>)this.lineConfigurations.get(1009)));
-        
+
         int key21 = 2122;
-        this.overheadLines.put(key21, this.simulator.overheadLine(String.format(stringFormat, this.name, key21), bn, 
+        this.overheadLines.put(key21, this.simulator.overheadLine(String.format(stringFormat, this.name, key21), bn,
                 this.nodes.get(21), this.loads.get(22), 525, (StandardLineConfiguration<OverheadLineConductor>)this.lineConfigurations.get(10010)));
-        
+
         int key22 = 2123;
-        this.overheadLines.put(key22, this.simulator.overheadLine(String.format(stringFormat, this.name, key22), abcn, 
+        this.overheadLines.put(key22, this.simulator.overheadLine(String.format(stringFormat, this.name, key22), abcn,
                 this.nodes.get(21), this.nodes.get(23), 250, (StandardLineConfiguration<OverheadLineConductor>)this.lineConfigurations.get(1002)));
-        
+
         int key23 = 2324;
-        this.overheadLines.put(key23, this.simulator.overheadLine(String.format(stringFormat, this.name, key23), cn, 
+        this.overheadLines.put(key23, this.simulator.overheadLine(String.format(stringFormat, this.name, key23), cn,
                 this.nodes.get(23), this.loads.get(24), 550, (StandardLineConfiguration<OverheadLineConductor>)this.lineConfigurations.get(10011)));
-        
+
         int key24 = 2325;
-        this.overheadLines.put(key24, this.simulator.overheadLine(String.format(stringFormat, this.name, key24), abcn, 
+        this.overheadLines.put(key24, this.simulator.overheadLine(String.format(stringFormat, this.name, key24), abcn,
                 this.nodes.get(23), this.nodes.get(25), 275, (StandardLineConfiguration<OverheadLineConductor>)this.lineConfigurations.get(1002)));
-        
+
         int key25 = 260126;
-        this.overheadLines.put(key25, this.simulator.overheadLine(String.format(stringFormat, this.name, key25), acn, 
+        this.overheadLines.put(key25, this.simulator.overheadLine(String.format(stringFormat, this.name, key25), acn,
                 this.nodes.get(2601), this.nodes.get(26), 350, (StandardLineConfiguration<OverheadLineConductor>)this.lineConfigurations.get(1007)));
-        
+
         int key26 = 2528;
-        this.overheadLines.put(key26, this.simulator.overheadLine(String.format(stringFormat, this.name, key26), abcn, 
+        this.overheadLines.put(key26, this.simulator.overheadLine(String.format(stringFormat, this.name, key26), abcn,
                 this.nodes.get(25), this.loads.get(28), 200, (StandardLineConfiguration<OverheadLineConductor>)this.lineConfigurations.get(1002)));
-        
+
         int key27 = 2627;
-        this.overheadLines.put(key27, this.simulator.overheadLine(String.format(stringFormat, this.name, key27), acn, 
+        this.overheadLines.put(key27, this.simulator.overheadLine(String.format(stringFormat, this.name, key27), acn,
                 this.nodes.get(26), this.nodes.get(27), 275, (StandardLineConfiguration<OverheadLineConductor>)this.lineConfigurations.get(1007)));
-        
+
         int key28 = 2631;
-        this.overheadLines.put(key28, this.simulator.overheadLine(String.format(stringFormat, this.name, key28), cn, 
+        this.overheadLines.put(key28, this.simulator.overheadLine(String.format(stringFormat, this.name, key28), cn,
                 this.nodes.get(26), this.loads.get(31), 225, (StandardLineConfiguration<OverheadLineConductor>)this.lineConfigurations.get(10011)));
-        
+
         int key29 = 2733;
-        this.overheadLines.put(key29, this.simulator.overheadLine(String.format(stringFormat, this.name, key29), an, 
+        this.overheadLines.put(key29, this.simulator.overheadLine(String.format(stringFormat, this.name, key29), an,
                 this.nodes.get(27), this.loads.get(33), 500, (StandardLineConfiguration<OverheadLineConductor>)this.lineConfigurations.get(1009)));
-        
+
         int key30 = 2829;
-        this.overheadLines.put(key30, this.simulator.overheadLine(String.format(stringFormat, this.name, key30), abcn, 
+        this.overheadLines.put(key30, this.simulator.overheadLine(String.format(stringFormat, this.name, key30), abcn,
                 this.loads.get(28), this.loads.get(29), 300, (StandardLineConfiguration<OverheadLineConductor>)this.lineConfigurations.get(1002)));
-        
+
         int key31 = 2930;
-        this.overheadLines.put(key31, this.simulator.overheadLine(String.format(stringFormat, this.name, key31), abcn, 
+        this.overheadLines.put(key31, this.simulator.overheadLine(String.format(stringFormat, this.name, key31), abcn,
                 this.loads.get(29), this.loads.get(30), 350, (StandardLineConfiguration<OverheadLineConductor>)this.lineConfigurations.get(1002)));
-        
+
         int key32 = 30250;
-        this.overheadLines.put(key32, this.simulator.overheadLine(String.format(stringFormat, this.name, key32), abcn, 
+        this.overheadLines.put(key32, this.simulator.overheadLine(String.format(stringFormat, this.name, key32), abcn,
                 this.loads.get(30), this.nodes.get(250), 200, (StandardLineConfiguration<OverheadLineConductor>)this.lineConfigurations.get(1002)));
-        
+
         int key33 = 3132;
-        this.overheadLines.put(key33, this.simulator.overheadLine(String.format(stringFormat, this.name, key33), cn, 
+        this.overheadLines.put(key33, this.simulator.overheadLine(String.format(stringFormat, this.name, key33), cn,
                 this.loads.get(31), this.loads.get(32), 300, (StandardLineConfiguration<OverheadLineConductor>)this.lineConfigurations.get(10011)));
-        
+
         int key34 = 3415;
-        this.overheadLines.put(key34, this.simulator.overheadLine(String.format(stringFormat, this.name, key34), cn, 
+        this.overheadLines.put(key34, this.simulator.overheadLine(String.format(stringFormat, this.name, key34), cn,
                 this.loads.get(34), this.nodes.get(15), 100, (StandardLineConfiguration<OverheadLineConductor>)this.lineConfigurations.get(10011)));
-        
+
         int key35 = 3536;
-        this.overheadLines.put(key35, this.simulator.overheadLine(String.format(stringFormat, this.name, key35), abn, 
+        this.overheadLines.put(key35, this.simulator.overheadLine(String.format(stringFormat, this.name, key35), abn,
                 this.loads.get(35), this.nodes.get(36), 650, (StandardLineConfiguration<OverheadLineConductor>)this.lineConfigurations.get(1008)));
-        
+
         int key36 = 3540;
-        this.overheadLines.put(key36, this.simulator.overheadLine(String.format(stringFormat, this.name, key36), abcn, 
+        this.overheadLines.put(key36, this.simulator.overheadLine(String.format(stringFormat, this.name, key36), abcn,
                 this.loads.get(35), this.nodes.get(40), 250, (StandardLineConfiguration<OverheadLineConductor>)this.lineConfigurations.get(1001)));
-        
+
         int key37 = 3637;
-        this.overheadLines.put(key37, this.simulator.overheadLine(String.format(stringFormat, this.name, key37), an, 
+        this.overheadLines.put(key37, this.simulator.overheadLine(String.format(stringFormat, this.name, key37), an,
                 this.nodes.get(36), this.loads.get(37), 250, (StandardLineConfiguration<OverheadLineConductor>)this.lineConfigurations.get(1009)));
-        
+
         int key38 = 3638;
-        this.overheadLines.put(key38, this.simulator.overheadLine(String.format(stringFormat, this.name, key38), bn, 
+        this.overheadLines.put(key38, this.simulator.overheadLine(String.format(stringFormat, this.name, key38), bn,
                 this.nodes.get(36), this.loads.get(38), 250, (StandardLineConfiguration<OverheadLineConductor>)this.lineConfigurations.get(10010)));
-        
+
         int key39 = 3839;
-        this.overheadLines.put(key39, this.simulator.overheadLine(String.format(stringFormat, this.name, key39), bn, 
+        this.overheadLines.put(key39, this.simulator.overheadLine(String.format(stringFormat, this.name, key39), bn,
                 this.loads.get(38), this.loads.get(39), 325, (StandardLineConfiguration<OverheadLineConductor>)this.lineConfigurations.get(10010)));
-        
+
         int key40 = 4041;
-        this.overheadLines.put(key40, this.simulator.overheadLine(String.format(stringFormat, this.name, key40), cn, 
+        this.overheadLines.put(key40, this.simulator.overheadLine(String.format(stringFormat, this.name, key40), cn,
                 this.nodes.get(40), this.loads.get(41), 325, (StandardLineConfiguration<OverheadLineConductor>)this.lineConfigurations.get(10011)));
-        
+
         int key41 = 4042;
-        this.overheadLines.put(key41, this.simulator.overheadLine(String.format(stringFormat, this.name, key41), abcn, 
+        this.overheadLines.put(key41, this.simulator.overheadLine(String.format(stringFormat, this.name, key41), abcn,
                 this.nodes.get(40), this.loads.get(42), 325, (StandardLineConfiguration<OverheadLineConductor>)this.lineConfigurations.get(1001)));
-        
+
         int key42 = 4243;
-        this.overheadLines.put(key42, this.simulator.overheadLine(String.format(stringFormat, this.name, key42), bn, 
+        this.overheadLines.put(key42, this.simulator.overheadLine(String.format(stringFormat, this.name, key42), bn,
                 this.loads.get(42), this.loads.get(43), 500, (StandardLineConfiguration<OverheadLineConductor>)this.lineConfigurations.get(10010)));
-        
+
         int key43 = 4244;
-        this.overheadLines.put(key43, this.simulator.overheadLine(String.format(stringFormat, this.name, key43), abcn, 
+        this.overheadLines.put(key43, this.simulator.overheadLine(String.format(stringFormat, this.name, key43), abcn,
                 this.loads.get(42), this.nodes.get(44), 200, (StandardLineConfiguration<OverheadLineConductor>)this.lineConfigurations.get(1001)));
-        
+
         int key44 = 4445;
-        this.overheadLines.put(key44, this.simulator.overheadLine(String.format(stringFormat, this.name, key44), an, 
+        this.overheadLines.put(key44, this.simulator.overheadLine(String.format(stringFormat, this.name, key44), an,
                 this.nodes.get(44), this.loads.get(45), 200, (StandardLineConfiguration<OverheadLineConductor>)this.lineConfigurations.get(1009)));
-        
+
         int key45 = 4447;
-        this.overheadLines.put(key45, this.simulator.overheadLine(String.format(stringFormat, this.name, key45), abcn, 
+        this.overheadLines.put(key45, this.simulator.overheadLine(String.format(stringFormat, this.name, key45), abcn,
                 this.nodes.get(44), this.loads.get(47), 250, (StandardLineConfiguration<OverheadLineConductor>)this.lineConfigurations.get(1001)));
-        
+
         int key46 = 4546;
-        this.overheadLines.put(key46, this.simulator.overheadLine(String.format(stringFormat, this.name, key46), an, 
+        this.overheadLines.put(key46, this.simulator.overheadLine(String.format(stringFormat, this.name, key46), an,
                 this.loads.get(45), this.loads.get(46), 300, (StandardLineConfiguration<OverheadLineConductor>)this.lineConfigurations.get(1009)));
-        
+
         int key47 = 4748;
-        this.overheadLines.put(key47, this.simulator.overheadLine(String.format(stringFormat, this.name, key47), abcn, 
+        this.overheadLines.put(key47, this.simulator.overheadLine(String.format(stringFormat, this.name, key47), abcn,
                 this.loads.get(47), this.loads.get(48), 150, (StandardLineConfiguration<OverheadLineConductor>)this.lineConfigurations.get(1004)));
-        
+
         int key48 = 4749;
-        this.overheadLines.put(key48, this.simulator.overheadLine(String.format(stringFormat, this.name, key48), abcn, 
+        this.overheadLines.put(key48, this.simulator.overheadLine(String.format(stringFormat, this.name, key48), abcn,
                 this.loads.get(47), this.loads.get(49), 250, (StandardLineConfiguration<OverheadLineConductor>)this.lineConfigurations.get(1004)));
-        
+
         int key49 = 4950;
-        this.overheadLines.put(key49, this.simulator.overheadLine(String.format(stringFormat, this.name, key49), abcn, 
+        this.overheadLines.put(key49, this.simulator.overheadLine(String.format(stringFormat, this.name, key49), abcn,
                 this.loads.get(49), this.loads.get(50), 250, (StandardLineConfiguration<OverheadLineConductor>)this.lineConfigurations.get(1004)));
-        
+
         int key50 = 5051;
-        this.overheadLines.put(key50, this.simulator.overheadLine(String.format(stringFormat, this.name, key50), abcn, 
+        this.overheadLines.put(key50, this.simulator.overheadLine(String.format(stringFormat, this.name, key50), abcn,
                 this.loads.get(50), this.loads.get(51), 250, (StandardLineConfiguration<OverheadLineConductor>)this.lineConfigurations.get(1004)));
-        
+
         int key51 = 51151;
-        this.overheadLines.put(key51, this.simulator.overheadLine(String.format(stringFormat, this.name, key51), abcn, 
+        this.overheadLines.put(key51, this.simulator.overheadLine(String.format(stringFormat, this.name, key51), abcn,
                 this.loads.get(51), this.nodes.get(151), 700, (StandardLineConfiguration<OverheadLineConductor>)this.lineConfigurations.get(1004)));
-        
+
         int key52 = 5253;
-        this.overheadLines.put(key52, this.simulator.overheadLine(String.format(stringFormat, this.name, key52), abcn, 
+        this.overheadLines.put(key52, this.simulator.overheadLine(String.format(stringFormat, this.name, key52), abcn,
                 this.loads.get(52), this.loads.get(53), 200, (StandardLineConfiguration<OverheadLineConductor>)this.lineConfigurations.get(1001)));
-        
+
         int key53 = 5354;
-        this.overheadLines.put(key53, this.simulator.overheadLine(String.format(stringFormat, this.name, key53), abcn, 
+        this.overheadLines.put(key53, this.simulator.overheadLine(String.format(stringFormat, this.name, key53), abcn,
                 this.loads.get(53), this.nodes.get(54), 125, (StandardLineConfiguration<OverheadLineConductor>)this.lineConfigurations.get(1001)));
-        
+
         int key54 = 5455;
-        this.overheadLines.put(key54, this.simulator.overheadLine(String.format(stringFormat, this.name, key54), abcn, 
+        this.overheadLines.put(key54, this.simulator.overheadLine(String.format(stringFormat, this.name, key54), abcn,
                 this.nodes.get(54), this.loads.get(55), 275, (StandardLineConfiguration<OverheadLineConductor>)this.lineConfigurations.get(1001)));
-        
+
         int key55 = 5457;
-        this.overheadLines.put(key55, this.simulator.overheadLine(String.format(stringFormat, this.name, key55), abcn, 
+        this.overheadLines.put(key55, this.simulator.overheadLine(String.format(stringFormat, this.name, key55), abcn,
                 this.nodes.get(54), this.nodes.get(57), 350, (StandardLineConfiguration<OverheadLineConductor>)this.lineConfigurations.get(1003)));
-        
+
         int key56 = 5556;
-        this.overheadLines.put(key56, this.simulator.overheadLine(String.format(stringFormat, this.name, key56), abcn, 
+        this.overheadLines.put(key56, this.simulator.overheadLine(String.format(stringFormat, this.name, key56), abcn,
                 this.loads.get(55), this.loads.get(56), 275, (StandardLineConfiguration<OverheadLineConductor>)this.lineConfigurations.get(1001)));
-        
+
         int key57 = 5758;
-        this.overheadLines.put(key57, this.simulator.overheadLine(String.format(stringFormat, this.name, key57), bn, 
+        this.overheadLines.put(key57, this.simulator.overheadLine(String.format(stringFormat, this.name, key57), bn,
                 this.nodes.get(57), this.loads.get(58), 250, (StandardLineConfiguration<OverheadLineConductor>)this.lineConfigurations.get(10010)));
-        
+
         int key58 = 5760;
-        this.overheadLines.put(key58, this.simulator.overheadLine(String.format(stringFormat, this.name, key58), abcn, 
+        this.overheadLines.put(key58, this.simulator.overheadLine(String.format(stringFormat, this.name, key58), abcn,
                 this.nodes.get(57), this.loads.get(60), 750, (StandardLineConfiguration<OverheadLineConductor>)this.lineConfigurations.get(1003)));
-        
+
         int key59 = 5859;
-        this.overheadLines.put(key59, this.simulator.overheadLine(String.format(stringFormat, this.name, key59), bn, 
+        this.overheadLines.put(key59, this.simulator.overheadLine(String.format(stringFormat, this.name, key59), bn,
                 this.loads.get(58), this.loads.get(59), 250, (StandardLineConfiguration<OverheadLineConductor>)this.lineConfigurations.get(10010)));
-        
+
         int key60 = 6061;
-        this.overheadLines.put(key60, this.simulator.overheadLine(String.format(stringFormat, this.name, key60), abcn, 
+        this.overheadLines.put(key60, this.simulator.overheadLine(String.format(stringFormat, this.name, key60), abcn,
                 this.loads.get(60), this.nodes.get(61), 550, (StandardLineConfiguration<OverheadLineConductor>)this.lineConfigurations.get(1005)));
-        
+
         int key66 = 6768;
-        this.overheadLines.put(key66, this.simulator.overheadLine(String.format(stringFormat, this.name, key66), an, 
+        this.overheadLines.put(key66, this.simulator.overheadLine(String.format(stringFormat, this.name, key66), an,
                 this.nodes.get(67), this.loads.get(68), 200, (StandardLineConfiguration<OverheadLineConductor>)this.lineConfigurations.get(1009)));
-        
+
         int key67 = 6772;
-        this.overheadLines.put(key67, this.simulator.overheadLine(String.format(stringFormat, this.name, key67), abcn, 
+        this.overheadLines.put(key67, this.simulator.overheadLine(String.format(stringFormat, this.name, key67), abcn,
                 this.nodes.get(67), this.nodes.get(72), 275, (StandardLineConfiguration<OverheadLineConductor>)this.lineConfigurations.get(1003)));
-        
+
         int key68 = 6797;
-        this.overheadLines.put(key68, this.simulator.overheadLine(String.format(stringFormat, this.name, key68), abcn, 
+        this.overheadLines.put(key68, this.simulator.overheadLine(String.format(stringFormat, this.name, key68), abcn,
                 this.nodes.get(67), this.nodes.get(97), 250, (StandardLineConfiguration<OverheadLineConductor>)this.lineConfigurations.get(1003)));
-        
+
         int key69 = 6869;
-        this.overheadLines.put(key69, this.simulator.overheadLine(String.format(stringFormat, this.name, key69), an, 
+        this.overheadLines.put(key69, this.simulator.overheadLine(String.format(stringFormat, this.name, key69), an,
                 this.loads.get(68), this.loads.get(69), 275, (StandardLineConfiguration<OverheadLineConductor>)this.lineConfigurations.get(1009)));
-        
+
         int key70 = 6970;
-        this.overheadLines.put(key70, this.simulator.overheadLine(String.format(stringFormat, this.name, key70), an, 
+        this.overheadLines.put(key70, this.simulator.overheadLine(String.format(stringFormat, this.name, key70), an,
                 this.loads.get(69), this.loads.get(70), 325, (StandardLineConfiguration<OverheadLineConductor>)this.lineConfigurations.get(1009)));
-        
+
         int key71 = 7071;
-        this.overheadLines.put(key71, this.simulator.overheadLine(String.format(stringFormat, this.name, key71), an, 
+        this.overheadLines.put(key71, this.simulator.overheadLine(String.format(stringFormat, this.name, key71), an,
                 this.loads.get(70), this.loads.get(71), 275, (StandardLineConfiguration<OverheadLineConductor>)this.lineConfigurations.get(1009)));
-        
+
         int key72 = 7273;
-        this.overheadLines.put(key72, this.simulator.overheadLine(String.format(stringFormat, this.name, key72), cn, 
+        this.overheadLines.put(key72, this.simulator.overheadLine(String.format(stringFormat, this.name, key72), cn,
                 this.nodes.get(72), this.loads.get(73), 275, (StandardLineConfiguration<OverheadLineConductor>)this.lineConfigurations.get(10011)));
-        
+
         int key73 = 7276;
-        this.overheadLines.put(key73, this.simulator.overheadLine(String.format(stringFormat, this.name, key73), abcn, 
+        this.overheadLines.put(key73, this.simulator.overheadLine(String.format(stringFormat, this.name, key73), abcn,
                 this.nodes.get(72), this.loads.get(76), 200, (StandardLineConfiguration<OverheadLineConductor>)this.lineConfigurations.get(1003)));
-        
+
         int key74 = 7374;
-        this.overheadLines.put(key74, this.simulator.overheadLine(String.format(stringFormat, this.name, key74), cn, 
+        this.overheadLines.put(key74, this.simulator.overheadLine(String.format(stringFormat, this.name, key74), cn,
                 this.loads.get(73), this.loads.get(74), 350, (StandardLineConfiguration<OverheadLineConductor>)this.lineConfigurations.get(10011)));
-        
+
         int key75 = 7475;
-        this.overheadLines.put(key75, this.simulator.overheadLine(String.format(stringFormat, this.name, key75), cn, 
+        this.overheadLines.put(key75, this.simulator.overheadLine(String.format(stringFormat, this.name, key75), cn,
                 this.loads.get(74), this.loads.get(75), 400, (StandardLineConfiguration<OverheadLineConductor>)this.lineConfigurations.get(10011)));
-        
+
         int key76 = 7677;
-        this.overheadLines.put(key76, this.simulator.overheadLine(String.format(stringFormat, this.name, key76), abcn, 
+        this.overheadLines.put(key76, this.simulator.overheadLine(String.format(stringFormat, this.name, key76), abcn,
                 this.loads.get(76), this.loads.get(77), 400, (StandardLineConfiguration<OverheadLineConductor>)this.lineConfigurations.get(1006)));
-        
+
         int key77 = 7686;
-        this.overheadLines.put(key77, this.simulator.overheadLine(String.format(stringFormat, this.name, key77), abcn, 
+        this.overheadLines.put(key77, this.simulator.overheadLine(String.format(stringFormat, this.name, key77), abcn,
                 this.loads.get(76), this.loads.get(86), 700, (StandardLineConfiguration<OverheadLineConductor>)this.lineConfigurations.get(1003)));
-        
+
         int key78 = 7778;
-        this.overheadLines.put(key78, this.simulator.overheadLine(String.format(stringFormat, this.name, key78), abcn, 
+        this.overheadLines.put(key78, this.simulator.overheadLine(String.format(stringFormat, this.name, key78), abcn,
                 this.loads.get(77), this.nodes.get(78), 100, (StandardLineConfiguration<OverheadLineConductor>)this.lineConfigurations.get(1006)));
-        
+
         int key79 = 7879;
-        this.overheadLines.put(key79, this.simulator.overheadLine(String.format(stringFormat, this.name, key79), abcn, 
+        this.overheadLines.put(key79, this.simulator.overheadLine(String.format(stringFormat, this.name, key79), abcn,
                 this.nodes.get(78), this.loads.get(79), 225, (StandardLineConfiguration<OverheadLineConductor>)this.lineConfigurations.get(1006)));
-        
+
         int key80 = 7880;
-        this.overheadLines.put(key80, this.simulator.overheadLine(String.format(stringFormat, this.name, key80), abcn, 
+        this.overheadLines.put(key80, this.simulator.overheadLine(String.format(stringFormat, this.name, key80), abcn,
                 this.nodes.get(78), this.loads.get(80), 475, (StandardLineConfiguration<OverheadLineConductor>)this.lineConfigurations.get(1006)));
-        
+
         int key81 = 8081;
-        this.overheadLines.put(key81, this.simulator.overheadLine(String.format(stringFormat, this.name, key81), abcn, 
+        this.overheadLines.put(key81, this.simulator.overheadLine(String.format(stringFormat, this.name, key81), abcn,
                 this.loads.get(80), this.nodes.get(81), 475, (StandardLineConfiguration<OverheadLineConductor>)this.lineConfigurations.get(1006)));
-        
+
         int key82 = 8182;
-        this.overheadLines.put(key82, this.simulator.overheadLine(String.format(stringFormat, this.name, key82), abcn, 
+        this.overheadLines.put(key82, this.simulator.overheadLine(String.format(stringFormat, this.name, key82), abcn,
                 this.nodes.get(81), this.loads.get(82), 250, (StandardLineConfiguration<OverheadLineConductor>)this.lineConfigurations.get(1006)));
-        
+
         int key83 = 8184;
-        this.overheadLines.put(key83, this.simulator.overheadLine(String.format(stringFormat, this.name, key83), cn, 
+        this.overheadLines.put(key83, this.simulator.overheadLine(String.format(stringFormat, this.name, key83), cn,
                 this.nodes.get(81), this.loads.get(84), 675, (StandardLineConfiguration<OverheadLineConductor>)this.lineConfigurations.get(10011)));
-        
+
         int key84 = 8283;
-        this.overheadLines.put(key84, this.simulator.overheadLine(String.format(stringFormat, this.name, key84), abcn, 
+        this.overheadLines.put(key84, this.simulator.overheadLine(String.format(stringFormat, this.name, key84), abcn,
                 this.loads.get(82), this.loads.get(83), 250, (StandardLineConfiguration<OverheadLineConductor>)this.lineConfigurations.get(1006)));
-        
+
         int key85 = 8485;
-        this.overheadLines.put(key85, this.simulator.overheadLine(String.format(stringFormat, this.name, key85), cn, 
+        this.overheadLines.put(key85, this.simulator.overheadLine(String.format(stringFormat, this.name, key85), cn,
                 this.loads.get(84), this.loads.get(85), 475, (StandardLineConfiguration<OverheadLineConductor>)this.lineConfigurations.get(10011)));
-        
+
         int key86 = 8687;
-        this.overheadLines.put(key86, this.simulator.overheadLine(String.format(stringFormat, this.name, key86), abcn, 
+        this.overheadLines.put(key86, this.simulator.overheadLine(String.format(stringFormat, this.name, key86), abcn,
                 this.loads.get(86), this.loads.get(87), 450, (StandardLineConfiguration<OverheadLineConductor>)this.lineConfigurations.get(1006)));
-        
+
         int key87 = 8788;
-        this.overheadLines.put(key87, this.simulator.overheadLine(String.format(stringFormat, this.name, key87), an, 
+        this.overheadLines.put(key87, this.simulator.overheadLine(String.format(stringFormat, this.name, key87), an,
                 this.loads.get(87), this.loads.get(88), 175, (StandardLineConfiguration<OverheadLineConductor>)this.lineConfigurations.get(1009)));
-        
+
         int key88 = 8789;
-        this.overheadLines.put(key88, this.simulator.overheadLine(String.format(stringFormat, this.name, key88), abcn, 
+        this.overheadLines.put(key88, this.simulator.overheadLine(String.format(stringFormat, this.name, key88), abcn,
                 this.loads.get(87), this.nodes.get(89), 275, (StandardLineConfiguration<OverheadLineConductor>)this.lineConfigurations.get(1006)));
-        
+
         int key89 = 8990;
-        this.overheadLines.put(key89, this.simulator.overheadLine(String.format(stringFormat, this.name, key89), bn, 
+        this.overheadLines.put(key89, this.simulator.overheadLine(String.format(stringFormat, this.name, key89), bn,
                 this.nodes.get(89), this.loads.get(90), 225, (StandardLineConfiguration<OverheadLineConductor>)this.lineConfigurations.get(10010)));
-        
+
         int key90 = 8991;
-        this.overheadLines.put(key90, this.simulator.overheadLine(String.format(stringFormat, this.name, key90), abcn, 
+        this.overheadLines.put(key90, this.simulator.overheadLine(String.format(stringFormat, this.name, key90), abcn,
                 this.nodes.get(89), this.nodes.get(91), 225, (StandardLineConfiguration<OverheadLineConductor>)this.lineConfigurations.get(1006)));
-        
+
         int key91 = 9192;
-        this.overheadLines.put(key91, this.simulator.overheadLine(String.format(stringFormat, this.name, key91), cn, 
+        this.overheadLines.put(key91, this.simulator.overheadLine(String.format(stringFormat, this.name, key91), cn,
                 this.nodes.get(91), this.loads.get(92), 300, (StandardLineConfiguration<OverheadLineConductor>)this.lineConfigurations.get(10011)));
-        
+
         int key92 = 9193;
-        this.overheadLines.put(key92, this.simulator.overheadLine(String.format(stringFormat, this.name, key92), abcn, 
+        this.overheadLines.put(key92, this.simulator.overheadLine(String.format(stringFormat, this.name, key92), abcn,
                 this.nodes.get(91), this.nodes.get(93), 225, (StandardLineConfiguration<OverheadLineConductor>)this.lineConfigurations.get(1006)));
-        
+
         int key93 = 9394;
-        this.overheadLines.put(key93, this.simulator.overheadLine(String.format(stringFormat, this.name, key93), an, 
+        this.overheadLines.put(key93, this.simulator.overheadLine(String.format(stringFormat, this.name, key93), an,
                 this.nodes.get(93), this.loads.get(94), 275, (StandardLineConfiguration<OverheadLineConductor>)this.lineConfigurations.get(1009)));
-        
+
         int key94 = 9395;
-        this.overheadLines.put(key94, this.simulator.overheadLine(String.format(stringFormat, this.name, key94), abcn, 
+        this.overheadLines.put(key94, this.simulator.overheadLine(String.format(stringFormat, this.name, key94), abcn,
                 this.nodes.get(93), this.loads.get(95), 300, (StandardLineConfiguration<OverheadLineConductor>)this.lineConfigurations.get(1006)));
-        
+
         int key95 = 9596;
-        this.overheadLines.put(key95, this.simulator.overheadLine(String.format(stringFormat, this.name, key95), bn, 
+        this.overheadLines.put(key95, this.simulator.overheadLine(String.format(stringFormat, this.name, key95), bn,
                 this.loads.get(95), this.loads.get(96), 200, (StandardLineConfiguration<OverheadLineConductor>)this.lineConfigurations.get(10010)));
-        
+
         int key96 = 9798;
-        this.overheadLines.put(key96, this.simulator.overheadLine(String.format(stringFormat, this.name, key96), abcn, 
+        this.overheadLines.put(key96, this.simulator.overheadLine(String.format(stringFormat, this.name, key96), abcn,
                 this.nodes.get(97), this.loads.get(98), 275, (StandardLineConfiguration<OverheadLineConductor>)this.lineConfigurations.get(1003)));
-        
+
         int key97 = 9899;
-        this.overheadLines.put(key97, this.simulator.overheadLine(String.format(stringFormat, this.name, key97), abcn, 
+        this.overheadLines.put(key97, this.simulator.overheadLine(String.format(stringFormat, this.name, key97), abcn,
                 this.loads.get(98), this.loads.get(99), 550, (StandardLineConfiguration<OverheadLineConductor>)this.lineConfigurations.get(1003)));
-        
+
         int key98 = 99100;
-        this.overheadLines.put(key98, this.simulator.overheadLine(String.format(stringFormat, this.name, key98), abcn, 
+        this.overheadLines.put(key98, this.simulator.overheadLine(String.format(stringFormat, this.name, key98), abcn,
                 this.loads.get(99), this.loads.get(100), 300, (StandardLineConfiguration<OverheadLineConductor>)this.lineConfigurations.get(1003)));
-        
+
         int key99 = 100450;
-        this.overheadLines.put(key99, this.simulator.overheadLine(String.format(stringFormat, this.name, key99), abcn, 
+        this.overheadLines.put(key99, this.simulator.overheadLine(String.format(stringFormat, this.name, key99), abcn,
                 this.loads.get(100), this.nodes.get(450), 800, (StandardLineConfiguration<OverheadLineConductor>)this.lineConfigurations.get(1003)));
-        
+
         int key100 = 101102;
-        this.overheadLines.put(key100, this.simulator.overheadLine(String.format(stringFormat, this.name, key100), cn, 
+        this.overheadLines.put(key100, this.simulator.overheadLine(String.format(stringFormat, this.name, key100), cn,
                 this.nodes.get(101), this.loads.get(102), 225, (StandardLineConfiguration<OverheadLineConductor>)this.lineConfigurations.get(10011)));
-        
+
         int key101 = 101105;
-        this.overheadLines.put(key101, this.simulator.overheadLine(String.format(stringFormat, this.name, key101), abcn, 
+        this.overheadLines.put(key101, this.simulator.overheadLine(String.format(stringFormat, this.name, key101), abcn,
                 this.nodes.get(101), this.nodes.get(105), 275, (StandardLineConfiguration<OverheadLineConductor>)this.lineConfigurations.get(1003)));
-        
+
         int key102 = 102103;
-        this.overheadLines.put(key102, this.simulator.overheadLine(String.format(stringFormat, this.name, key102), cn, 
+        this.overheadLines.put(key102, this.simulator.overheadLine(String.format(stringFormat, this.name, key102), cn,
                 this.loads.get(102), this.loads.get(103), 325, (StandardLineConfiguration<OverheadLineConductor>)this.lineConfigurations.get(10011)));
-        
+
         int key103 = 103104;
-        this.overheadLines.put(key103, this.simulator.overheadLine(String.format(stringFormat, this.name, key103), cn, 
+        this.overheadLines.put(key103, this.simulator.overheadLine(String.format(stringFormat, this.name, key103), cn,
                 this.loads.get(103), this.loads.get(104), 700, (StandardLineConfiguration<OverheadLineConductor>)this.lineConfigurations.get(10011)));
-        
+
         int key104 = 105106;
-        this.overheadLines.put(key104, this.simulator.overheadLine(String.format(stringFormat, this.name, key104), bn, 
+        this.overheadLines.put(key104, this.simulator.overheadLine(String.format(stringFormat, this.name, key104), bn,
                 this.nodes.get(105), this.loads.get(106), 225, (StandardLineConfiguration<OverheadLineConductor>)this.lineConfigurations.get(10010)));
-        
+
         int key105 = 105108;
-        this.overheadLines.put(key105, this.simulator.overheadLine(String.format(stringFormat, this.name, key105), abcn, 
+        this.overheadLines.put(key105, this.simulator.overheadLine(String.format(stringFormat, this.name, key105), abcn,
                 this.nodes.get(105), this.nodes.get(108), 325, (StandardLineConfiguration<OverheadLineConductor>)this.lineConfigurations.get(1003)));
-        
+
         int key106 = 106107;
-        this.overheadLines.put(key106, this.simulator.overheadLine(String.format(stringFormat, this.name, key106), bn, 
+        this.overheadLines.put(key106, this.simulator.overheadLine(String.format(stringFormat, this.name, key106), bn,
                 this.loads.get(106), this.loads.get(107), 575, (StandardLineConfiguration<OverheadLineConductor>)this.lineConfigurations.get(10010)));
-        
+
         int key107 = 108109;
-        this.overheadLines.put(key107, this.simulator.overheadLine(String.format(stringFormat, this.name, key107), an, 
+        this.overheadLines.put(key107, this.simulator.overheadLine(String.format(stringFormat, this.name, key107), an,
                 this.nodes.get(108), this.loads.get(109), 450, (StandardLineConfiguration<OverheadLineConductor>)this.lineConfigurations.get(1009)));
-        
+
         int key108 = 108300;
-        this.overheadLines.put(key108, this.simulator.overheadLine(String.format(stringFormat, this.name, key108), abcn, 
+        this.overheadLines.put(key108, this.simulator.overheadLine(String.format(stringFormat, this.name, key108), abcn,
                 this.nodes.get(108), this.nodes.get(300), 1000, (StandardLineConfiguration<OverheadLineConductor>)this.lineConfigurations.get(1003)));
-        
+
         int key109 = 109110;
-        this.overheadLines.put(key109, this.simulator.overheadLine(String.format(stringFormat, this.name, key109), an, 
+        this.overheadLines.put(key109, this.simulator.overheadLine(String.format(stringFormat, this.name, key109), an,
                 this.loads.get(109), this.nodes.get(110), 300, (StandardLineConfiguration<OverheadLineConductor>)this.lineConfigurations.get(1009)));
-        
+
         int key110 = 110111;
-        this.overheadLines.put(key110, this.simulator.overheadLine(String.format(stringFormat, this.name, key110), an, 
+        this.overheadLines.put(key110, this.simulator.overheadLine(String.format(stringFormat, this.name, key110), an,
                 this.nodes.get(110), this.loads.get(111), 575, (StandardLineConfiguration<OverheadLineConductor>)this.lineConfigurations.get(1009)));
-        
+
         int key111 = 110112;
-        this.overheadLines.put(key111, this.simulator.overheadLine(String.format(stringFormat, this.name, key111), an, 
+        this.overheadLines.put(key111, this.simulator.overheadLine(String.format(stringFormat, this.name, key111), an,
                 this.nodes.get(110), this.loads.get(112), 125, (StandardLineConfiguration<OverheadLineConductor>)this.lineConfigurations.get(1009)));
-        
+
         int key112 = 112113;
-        this.overheadLines.put(key112, this.simulator.overheadLine(String.format(stringFormat, this.name, key112), an, 
+        this.overheadLines.put(key112, this.simulator.overheadLine(String.format(stringFormat, this.name, key112), an,
                 this.loads.get(112), this.loads.get(113), 525, (StandardLineConfiguration<OverheadLineConductor>)this.lineConfigurations.get(1009)));
-        
+
         int key113 = 113114;
-        this.overheadLines.put(key113, this.simulator.overheadLine(String.format(stringFormat, this.name, key113), an, 
+        this.overheadLines.put(key113, this.simulator.overheadLine(String.format(stringFormat, this.name, key113), an,
                 this.loads.get(113), this.loads.get(114), 325, (StandardLineConfiguration<OverheadLineConductor>)this.lineConfigurations.get(1009)));
-        
+
         int key114 = 13535;
-        this.overheadLines.put(key114, this.simulator.overheadLine(String.format(stringFormat, this.name, key114), abcn, 
+        this.overheadLines.put(key114, this.simulator.overheadLine(String.format(stringFormat, this.name, key114), abcn,
                 this.nodes.get(135), this.loads.get(35), 375, (StandardLineConfiguration<OverheadLineConductor>)this.lineConfigurations.get(1004)));
-        
+
         int key115 = 1491;
-        this.overheadLines.put(key115, this.simulator.overheadLine(String.format(stringFormat, this.name, key115), abcn, 
+        this.overheadLines.put(key115, this.simulator.overheadLine(String.format(stringFormat, this.name, key115), abcn,
                 this.nodes.get(149), this.loads.get(1), 400, (StandardLineConfiguration<OverheadLineConductor>)this.lineConfigurations.get(1001)));
-        
+
         int key116 = 15252;
-        this.overheadLines.put(key116, this.simulator.overheadLine(String.format(stringFormat, this.name, key116), abcn, 
+        this.overheadLines.put(key116, this.simulator.overheadLine(String.format(stringFormat, this.name, key116), abcn,
                 this.nodes.get(152), this.loads.get(52), 400, (StandardLineConfiguration<OverheadLineConductor>)this.lineConfigurations.get(1001)));
-        
+
         int key117 = 670167;
-        this.overheadLines.put(key117, this.simulator.overheadLine(String.format(stringFormat, this.name, key117), abcn, 
+        this.overheadLines.put(key117, this.simulator.overheadLine(String.format(stringFormat, this.name, key117), abcn,
                 this.nodes.get(6701), this.nodes.get(67), 350, (StandardLineConfiguration<OverheadLineConductor>)this.lineConfigurations.get(1006)));
-        
+
         int key118 = 197101;
-        this.overheadLines.put(key118, this.simulator.overheadLine(String.format(stringFormat, this.name, key118), abcn, 
+        this.overheadLines.put(key118, this.simulator.overheadLine(String.format(stringFormat, this.name, key118), abcn,
                 this.nodes.get(197), this.nodes.get(101), 250, (StandardLineConfiguration<OverheadLineConductor>)this.lineConfigurations.get(1003)));
     }
-    
+
     @SuppressWarnings("unchecked")
     public void createUndergroundLines() {
         String stringFormat = "%s_underground_line_%d";
-        
+
         int key61 = 6062;
-        this.undergroundLines.put(key61, this.simulator.undergroundLine(String.format(stringFormat, this.name, key61), PhaseCode.ABC, 
+        this.undergroundLines.put(key61, this.simulator.undergroundLine(String.format(stringFormat, this.name, key61), PhaseCode.ABC,
                 this.loads.get(60), this.loads.get(62), 250, (StandardLineConfiguration<UndergroundLineConductor>)this.lineConfigurations.get(10012)));
-        
+
         int key62 = 6263;
-        this.undergroundLines.put(key62, this.simulator.undergroundLine(String.format(stringFormat, this.name, key62), PhaseCode.ABC, 
+        this.undergroundLines.put(key62, this.simulator.undergroundLine(String.format(stringFormat, this.name, key62), PhaseCode.ABC,
                 this.loads.get(62), this.loads.get(63), 175, (StandardLineConfiguration<UndergroundLineConductor>)this.lineConfigurations.get(10012)));
-        
+
         int key63 = 6364;
-        this.undergroundLines.put(key63, this.simulator.undergroundLine(String.format(stringFormat, this.name, key63), PhaseCode.ABC, 
+        this.undergroundLines.put(key63, this.simulator.undergroundLine(String.format(stringFormat, this.name, key63), PhaseCode.ABC,
                 this.loads.get(63), this.loads.get(64), 350, (StandardLineConfiguration<UndergroundLineConductor>)this.lineConfigurations.get(10012)));
-        
+
         int key64 = 6465;
-        this.undergroundLines.put(key64, this.simulator.undergroundLine(String.format(stringFormat, this.name, key64), PhaseCode.ABC, 
+        this.undergroundLines.put(key64, this.simulator.undergroundLine(String.format(stringFormat, this.name, key64), PhaseCode.ABC,
                 this.loads.get(64), this.loads.get(65), 425, (StandardLineConfiguration<UndergroundLineConductor>)this.lineConfigurations.get(10012)));
-        
+
         int key65 = 6566;
-        this.undergroundLines.put(key65, this.simulator.undergroundLine(String.format(stringFormat, this.name, key65), PhaseCode.ABC, 
+        this.undergroundLines.put(key65, this.simulator.undergroundLine(String.format(stringFormat, this.name, key65), PhaseCode.ABC,
                 this.loads.get(65), this.loads.get(66), 325, (StandardLineConfiguration<UndergroundLineConductor>)this.lineConfigurations.get(10012)));
-        
+
     }
-    
+
     public void createSwitches() {
         this.switches.put(13152, this.simulator.switchLinkObject(String.format("%s_switch_13152", this.name), PhaseCode.ABCN, this.nodes.get(13), this.nodes.get(152), SwitchStatus.CLOSED));
         this.switches.put(18135, this.simulator.switchLinkObject(String.format("%s_switch_18135", this.name), PhaseCode.ABCN, this.nodes.get(18), this.nodes.get(135), SwitchStatus.CLOSED));
@@ -1305,14 +1332,14 @@ public class Ieee123NodeTestFeeder {
         this.switches.put(151300, this.simulator.switchLinkObject(String.format("%s_switch_151300", this.name), PhaseCode.ABCN, this.nodes.get(151), this.nodes.get(300), SwitchStatus.OPEN));
         this.switches.put(95195, this.simulator.switchLinkObject(String.format("%s_switch_95195", this.name), PhaseCode.ABCN, this.loads.get(95), this.nodes.get(195), SwitchStatus.OPEN));
     }
-    
+
     public void setNodeVoltages(Node node) {
         node.setVoltageA(2401.7771, 0);
         node.setVoltageB(-1200.8886, -2080);
         node.setVoltageC(-1200.8886, 2080);
         node.setNominalVoltage(2401.7771);
     }
-    
+
     public void setSpctConfig(TransformerConfiguration spctCfg, EnumSet<PhaseCode> phases, int houseNumber) {
     	spctCfg.setConnectionType(ConnectionType.SINGLE_PHASE_CENTER_TAPPED);
     	spctCfg.setInstallationType(InstallationType.PADMOUNT);
@@ -1328,7 +1355,7 @@ public class Ieee123NodeTestFeeder {
     	}
     	spctCfg.setImpedance(new Complex(0.00033, 0.0022));
     }
-    
+
     public void setLatAndLongOnNodes() {
     	Map<Integer, Point> nodeCoordinates = new HashMap<Integer, Point>();
     	nodeCoordinates.put(1, new Point(0, 0));
@@ -1461,7 +1488,7 @@ public class Ieee123NodeTestFeeder {
     	nodeCoordinates.put(610, new Point(2522, -303));
 
     	double feetToDegreeMultiplier = .3048 * 10000000 / 90;
-    	
+
     	for (Map.Entry<Integer, Point>coordinate : nodeCoordinates.entrySet()) {
     		if (this.nodes.containsKey(coordinate.getKey())) {
     			this.nodes.get(coordinate.getKey()).setCoordinateLocation(new Point2D.Double(coordinate.getValue().getX() * feetToDegreeMultiplier,
@@ -1471,10 +1498,10 @@ public class Ieee123NodeTestFeeder {
     			Node load = this.loads.get(coordinate.getKey());
     			load.setCoordinateLocation(new Point2D.Double(coordinate.getValue().getX() * feetToDegreeMultiplier,
     					coordinate.getValue().getY() * feetToDegreeMultiplier));
-    			
+
     			for (AbstractGldObject loadChild : load.getChildren()) {
     				int housePerNode = 0;
-    				
+
     				if (loadChild.getClass() == Transformer.class) {
     					for (AbstractGldObject transformerChild : loadChild.getChildren()) {
     						if (transformerChild.getClass() == TriplexNode.class) {
@@ -1484,11 +1511,11 @@ public class Ieee123NodeTestFeeder {
     										if (triplexMeterChild.getClass() == House.class) {
     											//set house coords
     											housePerNode++;
-    											
+
     											int column = housePerNode % 5;
     											int row = Math.floorDiv(housePerNode, 5);
     											Point2D.Double houseLocation = load.getCoordinateLocation();
-    											
+
     											if (column == 2) {
     												houseLocation.x += -30 * feetToDegreeMultiplier;
     											}
@@ -1501,12 +1528,12 @@ public class Ieee123NodeTestFeeder {
     											else if (column == 0) {
     												houseLocation.x += 60 * feetToDegreeMultiplier;
     											}
-    											
+
     											houseLocation.y += row * 30 * feetToDegreeMultiplier;
-    											
+
     											triplexMeterChild.setCoordinateLocation(houseLocation);
-    										}   											
-    									}		
+    										}
+    									}
     								}
     							}
     						}

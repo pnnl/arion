@@ -1,6 +1,33 @@
 /**
- *
- */
+* Arion
+* Copyright © 2016, Battelle Memorial Institute
+* All rights reserved.
+* 1. Battelle Memorial Institute (hereinafter Battelle) hereby grants permission to any person or entity
+*    lawfully obtaining a copy of this software and associated documentation files (hereinafter “the Software”)
+*    to redistribute and use the Software in source and binary forms, with or without modification.  Such person
+*    or entity may use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software,
+*    and may permit others to do so, subject to the following conditions:
+*    •  Redistributions of source code must retain the above copyright notice, this list of conditions and
+*       the following disclaimers.
+*    •  Redistributions in binary form must reproduce the above copyright notice, this list of conditions and
+*       the following disclaimer in the documentation and/or other materials provided with the distribution.
+*    •  Other than as used herein, neither the name Battelle Memorial Institute or Battelle may be used in any
+*       form whatsoever without the express written consent of Battelle.
+* 2. THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED
+*    WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
+*    PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL BATTELLE OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
+*    INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT
+*    OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
+*    ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+*    ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+*
+*                                PACIFIC NORTHWEST NATIONAL LABORATORY
+*                                            operated by
+*                                              BATTELLE
+*                                              for the
+*                                  UNITED STATES DEPARTMENT OF ENERGY
+*                                   under Contract DE-AC05-76RL01830
+*/
 package gov.pnnl.prosser.api.gld.lib;
 
 import java.util.Objects;
@@ -45,7 +72,7 @@ public class StandardLineConfiguration<C extends Conductor> extends LineConfigur
 
     /**
      * Get the Conductor for Phase A
-     * 
+     *
      * @return the phaseAConductor
      */
     public C getPhaseAConductor() {
@@ -54,7 +81,7 @@ public class StandardLineConfiguration<C extends Conductor> extends LineConfigur
 
     /**
      * Set the Conductor for Phase A
-     * 
+     *
      * @param phaseAConductor
      *            the phaseAConductor to set
      */
@@ -64,7 +91,7 @@ public class StandardLineConfiguration<C extends Conductor> extends LineConfigur
 
     /**
      * Get the Conductor for Phase B
-     * 
+     *
      * @return the phaseBConductor
      */
     public C getPhaseBConductor() {
@@ -73,7 +100,7 @@ public class StandardLineConfiguration<C extends Conductor> extends LineConfigur
 
     /**
      * Set the Conductor for Phase B
-     * 
+     *
      * @param phaseBConductor
      *            the phaseBConductor to set
      */
@@ -83,7 +110,7 @@ public class StandardLineConfiguration<C extends Conductor> extends LineConfigur
 
     /**
      * Get the Conductor for Phase C
-     * 
+     *
      * @return the phaseCConductor
      */
     public C getPhaseCConductor() {
@@ -92,7 +119,7 @@ public class StandardLineConfiguration<C extends Conductor> extends LineConfigur
 
     /**
      * Set the Conductor for Phase C
-     * 
+     *
      * @param phaseCConductor
      *            the phaseCConductor to set
      */
@@ -102,7 +129,7 @@ public class StandardLineConfiguration<C extends Conductor> extends LineConfigur
 
     /**
      * Get the Conductor for Neutral Phase
-     * 
+     *
      * @return the phaseNConductor
      */
     public C getPhaseNConductor() {
@@ -111,7 +138,7 @@ public class StandardLineConfiguration<C extends Conductor> extends LineConfigur
 
     /**
      * Set the Conductor for Neutral Phase
-     * 
+     *
      * @param phaseNConductor
      *            the phaseNConductor to set
      */
@@ -121,7 +148,7 @@ public class StandardLineConfiguration<C extends Conductor> extends LineConfigur
 
     /**
      * Get the Line Spacing for this Line
-     * 
+     *
      * @return the spacing
      */
     public LineSpacing getSpacing() {
@@ -130,7 +157,7 @@ public class StandardLineConfiguration<C extends Conductor> extends LineConfigur
 
     /**
      * Set the Line Spacing for this Line
-     * 
+     *
      * @param spacing
      *            the spacing to set
      */
@@ -157,7 +184,7 @@ public class StandardLineConfiguration<C extends Conductor> extends LineConfigur
         writeProperty(sb, "conductor_N", this.phaseNConductor);
         writeProperty(sb, "spacing", this.spacing);
     }
-    
+
     @Override
     public int hashCode() {
         return Objects.hash(super.hashCode(), phaseAConductor, phaseBConductor, phaseCConductor, phaseNConductor, spacing);

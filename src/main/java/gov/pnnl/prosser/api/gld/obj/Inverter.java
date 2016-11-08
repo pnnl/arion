@@ -1,6 +1,33 @@
 /**
- * 
- */
+* Arion
+* Copyright © 2016, Battelle Memorial Institute
+* All rights reserved.
+* 1. Battelle Memorial Institute (hereinafter Battelle) hereby grants permission to any person or entity
+*    lawfully obtaining a copy of this software and associated documentation files (hereinafter “the Software”)
+*    to redistribute and use the Software in source and binary forms, with or without modification.  Such person
+*    or entity may use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software,
+*    and may permit others to do so, subject to the following conditions:
+*    •  Redistributions of source code must retain the above copyright notice, this list of conditions and
+*       the following disclaimers.
+*    •  Redistributions in binary form must reproduce the above copyright notice, this list of conditions and
+*       the following disclaimer in the documentation and/or other materials provided with the distribution.
+*    •  Other than as used herein, neither the name Battelle Memorial Institute or Battelle may be used in any
+*       form whatsoever without the express written consent of Battelle.
+* 2. THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED
+*    WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
+*    PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL BATTELLE OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
+*    INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT
+*    OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
+*    ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+*    ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+*
+*                                PACIFIC NORTHWEST NATIONAL LABORATORY
+*                                            operated by
+*                                              BATTELLE
+*                                              for the
+*                                  UNITED STATES DEPARTMENT OF ENERGY
+*                                   under Contract DE-AC05-76RL01830
+*/
 package gov.pnnl.prosser.api.gld.obj;
 
 import org.apache.commons.math3.complex.Complex;
@@ -59,13 +86,13 @@ public class Inverter extends AbstractGldObject {
     private double q2;
     private double q3;
     private double q4;
-    
+
     /**
      * @param simulator
      */
     public Inverter(GldSimulator simulator) {
         super(simulator);
-    }    
+    }
     /**
      * @return the inverterType
      */
@@ -154,7 +181,7 @@ public class Inverter extends AbstractGldObject {
     /**
      * @param powerFactor
      * Defines desired power factor in generator mode CONSTANT PF mode
-     * and in four quadrant control mode CONSTANT_PF 
+     * and in four quadrant control mode CONSTANT_PF
      */
     public void setPowerFactor(double powerFactor) {
         this.powerFactor = powerFactor;
@@ -263,9 +290,9 @@ public class Inverter extends AbstractGldObject {
     }
     /**
      * @param c0
-     * The coefficient descibing the parabolic relationship 
+     * The coefficient descibing the parabolic relationship
      * between AC and DC power of the inverter,
-     * only used when use_multipoint_efficiency is TRUE 
+     * only used when use_multipoint_efficiency is TRUE
      */
     public void setC0(double c0) {
         this.c0 = c0;
@@ -280,7 +307,7 @@ public class Inverter extends AbstractGldObject {
      * @param c1
      * The coefficient allowing the maximum DC power
      * to vary linearly with DC voltage,
-     * only used when use_multipoint_efficiency is TRUE 
+     * only used when use_multipoint_efficiency is TRUE
      */
     public void setC1(double c1) {
         this.c1 = c1;
@@ -294,8 +321,8 @@ public class Inverter extends AbstractGldObject {
     /**
      * @param c2
      *  The coefficient allowing the minimum DC power
-     *  to vary linearly with DC voltage, 
-     *  only used when use_multipoint_efficiency is TRUE  
+     *  to vary linearly with DC voltage,
+     *  only used when use_multipoint_efficiency is TRUE
      */
     public void setC2(double c2) {
         this.c2 = c2;
@@ -309,7 +336,7 @@ public class Inverter extends AbstractGldObject {
     /**
      * @param c3
      * The coefficient allowing c_0 to vary linearly with DC voltage,
-     * only used when use_multipoint_efficiency is TRUE 
+     * only used when use_multipoint_efficiency is TRUE
      */
     public void setC3(double c3) {
         this.c3 = c3;
@@ -322,8 +349,8 @@ public class Inverter extends AbstractGldObject {
     }
     /**
      * @param senseObject
-     * FOUR QUADRANT MODEL: name of the object the inverter is 
-     * trying to mitigate the load on (node/link) in LOAD_FOLLOWING 
+     * FOUR QUADRANT MODEL: name of the object the inverter is
+     * trying to mitigate the load on (node/link) in LOAD_FOLLOWING
      */
     public void setSenseObject(PowerflowObject senseObject) {
         this.senseObject = senseObject;
@@ -337,7 +364,7 @@ public class Inverter extends AbstractGldObject {
     /**
      * @param maxChargeRate
      *  FOUR QUADRANT MODEL: name of the object the inverter is
-     *  trying to mitigate the load on (node/link) in LOAD_FOLLOWING  
+     *  trying to mitigate the load on (node/link) in LOAD_FOLLOWING
      */
     public void setMaxChargeRate(double maxChargeRate) {
         this.maxChargeRate = maxChargeRate;
@@ -350,7 +377,7 @@ public class Inverter extends AbstractGldObject {
     }
     /**
      * @param maxDischargeRate
-     * FOUR QUADRANT MODEL: maximum rate the battery can be 
+     * FOUR QUADRANT MODEL: maximum rate the battery can be
      * discharged in LOAD_FOLLOWING
      */
     public void setMaxDischargeRate(double maxDischargeRate) {
@@ -365,7 +392,7 @@ public class Inverter extends AbstractGldObject {
     /**
      * @param chargeOnThreshold
      * FOUR QUADRANT MODEL: power level at which the inverter should
-     * try charging the battery in LOAD_FOLLOWING 
+     * try charging the battery in LOAD_FOLLOWING
      */
     public void setChargeOnThreshold(double chargeOnThreshold) {
         this.chargeOnThreshold = chargeOnThreshold;
@@ -379,7 +406,7 @@ public class Inverter extends AbstractGldObject {
     /**
      * @param chargeOffThreshold
      * FOUR QUADRANT MODEL: power level at which the inverter should
-     * cease charging the battery in LOAD_FOLLOWING 
+     * cease charging the battery in LOAD_FOLLOWING
      */
     public void setChargeOffThreshold(double chargeOffThreshold) {
         this.chargeOffThreshold = chargeOffThreshold;
@@ -393,7 +420,7 @@ public class Inverter extends AbstractGldObject {
     /**
      * @param dischargeOnThreshold
      * FOUR QUADRANT MODEL: power level at which the inverter should
-     * try discharging the battery in LOAD_FOLLOWING 
+     * try discharging the battery in LOAD_FOLLOWING
      */
     public void setDischargeOnThreshold(double dischargeOnThreshold) {
         this.dischargeOnThreshold = dischargeOnThreshold;
@@ -407,7 +434,7 @@ public class Inverter extends AbstractGldObject {
     /**
      * @param dischargeOffThreshold
      * FOUR QUADRANT MODEL: power level at which the inverter should
-     * cease discharging the battery in LOAD_FOLLOWING 
+     * cease discharging the battery in LOAD_FOLLOWING
      */
     public void setDischargeOffThreshold(double dischargeOffThreshold) {
         this.dischargeOffThreshold = dischargeOffThreshold;
@@ -421,7 +448,7 @@ public class Inverter extends AbstractGldObject {
     /**
      * @param excessInputPower
      * FOUR QUADRANT MODEL: Excess power at the input of the inverter
-     * that is otherwise just lost, or could be shunted to a battery 
+     * that is otherwise just lost, or could be shunted to a battery
      */
     public void setExcessInputPower(double excessInputPower) {
         this.excessInputPower = excessInputPower;
@@ -435,7 +462,7 @@ public class Inverter extends AbstractGldObject {
     /**
      * @param chargeLockoutTime
      *  FOUR QUADRANT MODEL: Lockout time when a charging operation
-     *  occurs before another LOAD_FOLLOWING dispatch operation can occur  
+     *  occurs before another LOAD_FOLLOWING dispatch operation can occur
      */
     public void setChargeLockoutTime(double chargeLockoutTime) {
         this.chargeLockoutTime = chargeLockoutTime;
@@ -449,7 +476,7 @@ public class Inverter extends AbstractGldObject {
     /**
      * @param dischargeLockoutTime
      * FOUR QUADRANT MODEL: Lockout time when a discharging operation
-     * occurs before another LOAD_FOLLOWING dispatch operation can occur 
+     * occurs before another LOAD_FOLLOWING dispatch operation can occur
      */
     public void setDischargeLockoutTime(double dischargeLockoutTime) {
         this.dischargeLockoutTime = dischargeLockoutTime;
@@ -463,7 +490,7 @@ public class Inverter extends AbstractGldObject {
     /**
      * @param pfRegActivate
      * FOUR QUADRANT MODEL: Lowest acceptable power-factor level
-     * below which power-factor regulation will activate 
+     * below which power-factor regulation will activate
      */
     public void setPfRegActivate(double pfRegActivate) {
         this.pfRegActivate = pfRegActivate;
@@ -490,8 +517,8 @@ public class Inverter extends AbstractGldObject {
     }
     /**
      * @param pfRegActivateLockoutTime
-     * FOUR QUADRANT MODEL: Mandatory pause between the deactivation 
-     * of power-factor regulation and it reactivation 
+     * FOUR QUADRANT MODEL: Mandatory pause between the deactivation
+     * of power-factor regulation and it reactivation
      */
     public void setPfRegActivateLockoutTime(double pfRegActivateLockoutTime) {
         this.pfRegActivateLockoutTime = pfRegActivateLockoutTime;
@@ -505,7 +532,7 @@ public class Inverter extends AbstractGldObject {
     /**
      * @param chargeThreshold
      * FOUR QUADRANT MODEL: Level at which all inverters in the group
-     * will begin charging attached batteries. Regulated minimum load level 
+     * will begin charging attached batteries. Regulated minimum load level
      */
     public void setChargeThreshold(double chargeThreshold) {
         this.chargeThreshold = chargeThreshold;
@@ -519,7 +546,7 @@ public class Inverter extends AbstractGldObject {
     /**
      * @param dischargeThreshold
      * FOUR QUADRANT MODEL: Level at which all inverters in the group
-     * will begin discharging attached batteries. Regulated maximum load level 
+     * will begin discharging attached batteries. Regulated maximum load level
      */
     public void setDischargeThreshold(double dischargeThreshold) {
         this.dischargeThreshold = dischargeThreshold;
@@ -533,7 +560,7 @@ public class Inverter extends AbstractGldObject {
     /**
      * @param groupMaxChargeRate
      * FOUR QUADRANT MODEL: Sum of the charge rates of the batteries
-     * involved in the group load-following 
+     * involved in the group load-following
      */
     public void setGroupMaxChargeRate(double groupMaxChargeRate) {
         this.groupMaxChargeRate = groupMaxChargeRate;
@@ -547,7 +574,7 @@ public class Inverter extends AbstractGldObject {
     /**
      * @param groupMaxDischargeRate
      * FOUR QUADRANT MODEL: Sum of the discharge rates of the batteries
-     * involved in the group load-following 
+     * involved in the group load-following
      */
     public void setGroupMaxDischargeRate(double groupMaxDischargeRate) {
         this.groupMaxDischargeRate = groupMaxDischargeRate;
@@ -561,7 +588,7 @@ public class Inverter extends AbstractGldObject {
     /**
      * @param groupRatedPower
      * FOUR QUADRANT MODEL: Sum of the inverter power ratings
-     * of the inverters involved in the group power-factor regulation 
+     * of the inverters involved in the group power-factor regulation
      */
     public void setGroupRatedPower(double groupRatedPower) {
         this.groupRatedPower = groupRatedPower;
@@ -575,7 +602,7 @@ public class Inverter extends AbstractGldObject {
     /**
      * @param vBase
      *  FOUR QUADRANT MODEL: The base voltage on the
-     *  grid side of the inverter. Used in VOLT_VAR control mode  
+     *  grid side of the inverter. Used in VOLT_VAR control mode
      */
     public void setvBase(double vBase) {
         this.vBase = vBase;
@@ -706,32 +733,32 @@ public class Inverter extends AbstractGldObject {
     protected void writeGldProperties(StringBuilder sb) {
         writeProperty(sb, "generator_mode", this.generatorMode);
         writeProperty(sb, "use_multipoint_efficiency", this.useMultipointEfficiency);
-        
+
         if (this.inverterType != null) {
-            writeProperty(sb, "inverter_type", this.inverterType);    
+            writeProperty(sb, "inverter_type", this.inverterType);
         }
-        
+
         if (this.fourQuadrantControlMode != null) {
             writeProperty(sb, "four_quadrant_control_mode", this.fourQuadrantControlMode);
         }
-        
+
         if (this.generatorStatus != null) {
             writeProperty(sb, "generator_status", this.generatorStatus);
         }
-        
+
         if (this.vIn != null) {
             writeProperty(sb, "V_In", this.vIn);
         }
-        
+
         if (this.iIn != null) {
             writeProperty(sb, "I_In", this.iIn);
         }
-        
+
         if (this.generatorMode == GeneratorMode.CONSTANT_PF ||
                 this.fourQuadrantControlMode == FourQuadrantControlMode.CONSTANT_PF) {
             writeProperty(sb, "power_factor", this.powerFactor);
         }
-        
+
         if (this.fourQuadrantControlMode != null) {
             writeProperty(sb, "excess_input_power", this.excessInputPower);
             writeProperty(sb, "pf_reg_activate", this.pfRegActivate);
@@ -739,7 +766,7 @@ public class Inverter extends AbstractGldObject {
             writeProperty(sb, "pf_reg_activate_lockout_time", this.pfRegActivateLockoutTime);
             writeProperty(sb, "charge_threshold", this.chargeThreshold);
             writeProperty(sb, "discharge_threshold", this.dischargeThreshold);
-            
+
             if (this.fourQuadrantControlMode == FourQuadrantControlMode.CONSTANT_PQ) {
                 writeProperty(sb, "P_Out", this.pOut);
                 writeProperty(sb, "Q_Out", this.qOut);
@@ -769,11 +796,11 @@ public class Inverter extends AbstractGldObject {
                 writeProperty(sb, "Q4", this.q4);
             }
         }
-        
+
         if (this.inverterManufacturer != null) {
             writeProperty(sb, "inverter_manufacturer", this.inverterManufacturer);
         }
-        
+
         if (this.useMultipointEfficiency) {
             writeProperty(sb, "maximum_dc_power", this.maximumDcPower);
             writeProperty(sb, "maximum_dc_voltage", this.maximumDcPower);

@@ -1,6 +1,33 @@
 /**
- *
- */
+* Arion
+* Copyright © 2016, Battelle Memorial Institute
+* All rights reserved.
+* 1. Battelle Memorial Institute (hereinafter Battelle) hereby grants permission to any person or entity
+*    lawfully obtaining a copy of this software and associated documentation files (hereinafter “the Software”)
+*    to redistribute and use the Software in source and binary forms, with or without modification.  Such person
+*    or entity may use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software,
+*    and may permit others to do so, subject to the following conditions:
+*    •  Redistributions of source code must retain the above copyright notice, this list of conditions and
+*       the following disclaimers.
+*    •  Redistributions in binary form must reproduce the above copyright notice, this list of conditions and
+*       the following disclaimer in the documentation and/or other materials provided with the distribution.
+*    •  Other than as used herein, neither the name Battelle Memorial Institute or Battelle may be used in any
+*       form whatsoever without the express written consent of Battelle.
+* 2. THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED
+*    WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
+*    PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL BATTELLE OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
+*    INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT
+*    OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
+*    ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+*    ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+*
+*                                PACIFIC NORTHWEST NATIONAL LABORATORY
+*                                            operated by
+*                                              BATTELLE
+*                                              for the
+*                                  UNITED STATES DEPARTMENT OF ENERGY
+*                                   under Contract DE-AC05-76RL01830
+*/
 package gov.pnnl.prosser.api.gld.obj;
 
 import java.util.Objects;
@@ -67,7 +94,7 @@ public class ZIPLoad extends ResidentialEnduse {
 
     /**
      * Get the Fraction of ZIPload that is transferred as heat
-     * 
+     *
      * @return the heatFraction
      */
     public double getHeatFraction() {
@@ -76,7 +103,7 @@ public class ZIPLoad extends ResidentialEnduse {
 
     /**
      * Set the Fraction of ZIPload that is transferred as heat
-     * 
+     *
      * @param heatFraction
      *            the heatFraction to set
      */
@@ -86,7 +113,7 @@ public class ZIPLoad extends ResidentialEnduse {
 
     /**
      * Get the base real power of the overall load in kW
-     * 
+     *
      * @return the basePower
      */
     public double getBasePower() {
@@ -95,7 +122,7 @@ public class ZIPLoad extends ResidentialEnduse {
 
     /**
      * Set the base real power of the overall load in kW
-     * 
+     *
      * @param basePower
      *            the basePower to set
      */
@@ -106,7 +133,7 @@ public class ZIPLoad extends ResidentialEnduse {
     /**
      * Get the Base Power Function
      * If the base power is a function of another value, it will be here
-     * 
+     *
      * @return the basePowerFn
      */
     public String getBasePowerFn() {
@@ -116,7 +143,7 @@ public class ZIPLoad extends ResidentialEnduse {
     /**
      * Set the Base Power Function
      * If the base power is a function of another value, enter that here
-     * 
+     *
      * @param basePowerFn
      *            the basePowerFn to set
      */
@@ -126,7 +153,7 @@ public class ZIPLoad extends ResidentialEnduse {
 
     /**
      * Get the power factor for constant power portion
-     * 
+     *
      * @return the powerPf
      */
     public double getPowerPf() {
@@ -135,7 +162,7 @@ public class ZIPLoad extends ResidentialEnduse {
 
     /**
      * Set the power factor for constant power portion
-     * 
+     *
      * @param powerPf
      *            the powerPf to set
      */
@@ -145,7 +172,7 @@ public class ZIPLoad extends ResidentialEnduse {
 
     /**
      * Get the fraction of the total power that is constant power
-     * 
+     *
      * @return the powerFraction
      */
     public double getPowerFraction() {
@@ -154,7 +181,7 @@ public class ZIPLoad extends ResidentialEnduse {
 
     /**
      * Set the fraction of the total power that is constant power
-     * 
+     *
      * @param powerFraction
      *            the powerFraction to set
      */
@@ -164,7 +191,7 @@ public class ZIPLoad extends ResidentialEnduse {
 
     /**
      * Get the power factor for constant current portion
-     * 
+     *
      * @return the currentPf
      */
     public double getCurrentPf() {
@@ -173,7 +200,7 @@ public class ZIPLoad extends ResidentialEnduse {
 
     /**
      * Set the power factor for constant current portion
-     * 
+     *
      * @param currentPf
      *            the currentPf to set
      */
@@ -183,7 +210,7 @@ public class ZIPLoad extends ResidentialEnduse {
 
     /**
      * Get the fraction of total power that is constant current
-     * 
+     *
      * @return the currentFraction
      */
     public double getCurrentFraction() {
@@ -192,7 +219,7 @@ public class ZIPLoad extends ResidentialEnduse {
 
     /**
      * Set the fraction of total power that is constant current
-     * 
+     *
      * @param currentFraction
      *            the currentFraction to set
      */
@@ -202,7 +229,7 @@ public class ZIPLoad extends ResidentialEnduse {
 
     /**
      * Get the power factor for constant impedance portion
-     * 
+     *
      * @return the impedancePf
      */
     public double getImpedancePf() {
@@ -211,7 +238,7 @@ public class ZIPLoad extends ResidentialEnduse {
 
     /**
      * Set the power factor for constant impedance portion
-     * 
+     *
      * @param impedancePf
      *            the impedancePf to set
      */
@@ -221,7 +248,7 @@ public class ZIPLoad extends ResidentialEnduse {
 
     /**
      * Get the fraction of total power that is constant impedance
-     * 
+     *
      * @return the impedanceFraction
      */
     public double getImpedanceFraction() {
@@ -230,7 +257,7 @@ public class ZIPLoad extends ResidentialEnduse {
 
     /**
      * Set the fraction of total power that is constant impedance
-     * 
+     *
      * @param impedanceFraction
      *            the impedanceFraction to set
      */
@@ -265,7 +292,7 @@ public class ZIPLoad extends ResidentialEnduse {
         writeProperty(sb, "impedance_pf", this.impedancePf);
         writeProperty(sb, "impedance_fraction", this.impedanceFraction);
     }
-    
+
     @Override
     public int hashCode() {
         return Objects.hash(super.hashCode(), heatFraction, basePower, basePowerFn, powerPf, powerFraction, currentPf, currentFraction,

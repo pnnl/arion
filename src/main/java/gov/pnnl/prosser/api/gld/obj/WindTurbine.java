@@ -1,6 +1,33 @@
 /**
- * 
- */
+* Arion
+* Copyright © 2016, Battelle Memorial Institute
+* All rights reserved.
+* 1. Battelle Memorial Institute (hereinafter Battelle) hereby grants permission to any person or entity
+*    lawfully obtaining a copy of this software and associated documentation files (hereinafter “the Software”)
+*    to redistribute and use the Software in source and binary forms, with or without modification.  Such person
+*    or entity may use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software,
+*    and may permit others to do so, subject to the following conditions:
+*    •  Redistributions of source code must retain the above copyright notice, this list of conditions and
+*       the following disclaimers.
+*    •  Redistributions in binary form must reproduce the above copyright notice, this list of conditions and
+*       the following disclaimer in the documentation and/or other materials provided with the distribution.
+*    •  Other than as used herein, neither the name Battelle Memorial Institute or Battelle may be used in any
+*       form whatsoever without the express written consent of Battelle.
+* 2. THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED
+*    WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
+*    PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL BATTELLE OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
+*    INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT
+*    OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
+*    ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+*    ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+*
+*                                PACIFIC NORTHWEST NATIONAL LABORATORY
+*                                            operated by
+*                                              BATTELLE
+*                                              for the
+*                                  UNITED STATES DEPARTMENT OF ENERGY
+*                                   under Contract DE-AC05-76RL01830
+*/
 package gov.pnnl.prosser.api.gld.obj;
 
 import java.lang.reflect.Field;
@@ -42,26 +69,26 @@ public class WindTurbine extends AbstractGldObject {
     private double generatorElectricEfficiency;
     private Complex rotorCurrentGeneratedA;
     private Complex rotorCurrentGeneratedB;
-    private Complex rotorCurrentGeneratedC;    
-    private double  maxSynchronousInducedVoltage; 
+    private Complex rotorCurrentGeneratedC;
+    private double  maxSynchronousInducedVoltage;
     private double  maxSynchronousRealPowerCapacity;
     private double  maxSynchronousReactivePowerCapactiy;
     private double  maxInductionInducedVoltage;
     private double  minSynchronousInducedVoltage;
     private double  minSynchronousRealPowerCapacity;
     private double  minSynchronousReactivePowerCapcity;
-    private double  minInductionInducedVoltage; 
+    private double  minInductionInducedVoltage;
     private int n;
-    private double pairDensity; 
+    private double pairDensity;
     private double powerConverted;
     private double desiredPowerFactor;
-    private EnumSet<PhaseCode> phases;    
+    private EnumSet<PhaseCode> phases;
     private Complex powerA;
     private Complex powerB;
-    private Complex powerC; 
-    private double pPress; 
-    private double pTemp; 
-    private double pWS; 
+    private Complex powerC;
+    private double pPress;
+    private double pTemp;
+    private double pWS;
     private double numberOfGearBoxStages;
     private double ratedV;
     private double ratedVA;
@@ -72,20 +99,20 @@ public class WindTurbine extends AbstractGldObject {
     private double rotorInternalResistance;
     private double internalTransientResistance;
     private double statorInternalResistance;
-    private double  storeLastCurrent; 
-    private long timeAdvance; 
-    private double totalReactivePower; 
-    private double totalRealPower; 
-    private double turbineHeight; 
-    private TurbineModel turbineModel; 
+    private double  storeLastCurrent;
+    private long timeAdvance;
+    private double totalReactivePower;
+    private double totalRealPower;
+    private double turbineHeight;
+    private TurbineModel turbineModel;
     private Complex voltageA;
     private Complex voltageB;
     private Complex voltageC;
-    private Complex vRotorA; 
+    private Complex vRotorA;
     private Complex vRotorB;
     private Complex vRotorC;
     private double windSpeed;
-    private double windSpeedForMaxCoefficientOfPerformance; 
+    private double windSpeedForMaxCoefficientOfPerformance;
     private double ratedWindSpeed;
     private double adjustedWindSpeed;
     private double groundingImpedance;
@@ -94,7 +121,7 @@ public class WindTurbine extends AbstractGldObject {
     private double internalTransientImpedance;
     private double statorInternalImpedance;
     private Meter meter;
-    
+
     /**
      * @param simulator
      */
@@ -1124,7 +1151,7 @@ public class WindTurbine extends AbstractGldObject {
     @Override
     protected void writeGldProperties(StringBuilder sb) {
         PhaseCode.writeGldProperties(phases);
-        
+
         if (this.coefficientOfPerformanceData != null) {
             writeProperty(sb, "CP_Data", this.coefficientOfPerformanceData);
         }
@@ -1133,29 +1160,29 @@ public class WindTurbine extends AbstractGldObject {
         if (this.generatorMode != null) {
             writeProperty(sb, "Gen_mode", this.generatorMode);
         }
-        
+
         if (this.generatorStatus != null) {
             writeProperty(sb, "Gen_status", this.generatorStatus);
         }
-        
+
         if (this.generatorType != null) {
             writeProperty(sb, "Gen_type", this.generatorType);
         }
-        
+
         if (this.turbineModel != null) {
             writeProperty(sb, "Turbine_Model", this.turbineModel);
         }
-        
+
         if (this.meter != null) {
             writeProperty(sb, "parent", this.meter.getName());
         }
-        
+
         Field[] fields = getClass().getDeclaredFields(); // get all the fields from your class.
         for (Field f : fields) {                         // iterate over each field...
             try {
                 if (f.getClass().equals(double.class) && (double)f.get(this) != 0.0) {
                     writeProperty(sb, f.getName(), (double)f.get(this));
-                } 
+                }
                 else if (f.getClass().equals(Complex.class) && !((Complex)f.get(this)).isNaN()) {
                     writeProperty(sb, f.getName(), ((Complex)f.get(this)));
                 }

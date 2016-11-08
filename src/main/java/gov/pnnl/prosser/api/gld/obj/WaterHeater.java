@@ -1,6 +1,33 @@
 /**
- * 
- */
+* Arion
+* Copyright © 2016, Battelle Memorial Institute
+* All rights reserved.
+* 1. Battelle Memorial Institute (hereinafter Battelle) hereby grants permission to any person or entity
+*    lawfully obtaining a copy of this software and associated documentation files (hereinafter “the Software”)
+*    to redistribute and use the Software in source and binary forms, with or without modification.  Such person
+*    or entity may use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software,
+*    and may permit others to do so, subject to the following conditions:
+*    •  Redistributions of source code must retain the above copyright notice, this list of conditions and
+*       the following disclaimers.
+*    •  Redistributions in binary form must reproduce the above copyright notice, this list of conditions and
+*       the following disclaimer in the documentation and/or other materials provided with the distribution.
+*    •  Other than as used herein, neither the name Battelle Memorial Institute or Battelle may be used in any
+*       form whatsoever without the express written consent of Battelle.
+* 2. THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED
+*    WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
+*    PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL BATTELLE OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
+*    INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT
+*    OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
+*    ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+*    ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+*
+*                                PACIFIC NORTHWEST NATIONAL LABORATORY
+*                                            operated by
+*                                              BATTELLE
+*                                              for the
+*                                  UNITED STATES DEPARTMENT OF ENERGY
+*                                   under Contract DE-AC05-76RL01830
+*/
 package gov.pnnl.prosser.api.gld.obj;
 
 
@@ -19,58 +46,58 @@ public class WaterHeater extends ResidentialEnduse {
 	 * The heating element capacity in kW
 	 */
 	private Double heatingElementCapacity;
-	
+
 	/**
 	 * The tank thermostat setpoint in degrees F
 	 */
 	private Double tankSetpoint;
-	
+
 	/**
 	 * The temperature of the tank in degrees F
 	 */
 	private Double temperature;
-	
+
 	/**
 	 * The thermostat deadband in degrees F
 	 */
 	private Double thermostatDeadband;
-	
+
 	/**
 	 * The location of the waterheater: Either INSIDE or OUTSIDE
 	 */
 	private WaterheaterLocation location;
-	
+
 	/**
 	 * The tank UA in Btu*h/degF
 	 */
 	private Double tankUA;
-	
+
 	/**
 	 * The water demand from the waterheater in gallons per minute
 	 */
 	private Double waterDemand;
-	
+
 	/**
 	 * The tank volume in gal
 	 */
 	private Double tankVolume;
-	
+
 	/**
 	 * The tank diameter in ft
 	 */
 	private Double tankDiameter;
-	
+
 	/**
 	 * The tank height in ft
 	 */
 	private Double tankHeight;
-	
+
 	/**
 	 * water demand (gal/min)function
 	 * if the water demand is a function of another property set that here
 	 */
 	private String waterDemandFn;
-	
+
 	/**
 	 * @return the heatingElementCapacity
 	 */
@@ -203,7 +230,7 @@ public class WaterHeater extends ResidentialEnduse {
 	public Double getTankHeight() {
 		return tankHeight;
 	}
-	
+
 	/**
 	 * @param tankHeight the tankHeight to set
 	 */
@@ -224,14 +251,14 @@ public class WaterHeater extends ResidentialEnduse {
 	public void setWaterDemandFn(final String waterDemandFn) {
 		this.waterDemandFn = waterDemandFn;
 	}
-	
+
 	/**
 	 * @param simulator
 	 */
 	public WaterHeater(GldSimulator simulator) {
 		super(simulator);
 		this.location = WaterheaterLocation.INSIDE;
-		
+
 	}
 
 	/* (non-Javadoc)
@@ -259,7 +286,7 @@ public class WaterHeater extends ResidentialEnduse {
 		writeProperty(sb, "tank_diameter", this.tankDiameter);
 		writeProperty(sb, "tank_height", this.tankHeight);
 	}
-	
+
 	@Override
     public int hashCode() {
         return Objects.hash(super.hashCode(), heatingElementCapacity, tankSetpoint, temperature, thermostatDeadband, location,

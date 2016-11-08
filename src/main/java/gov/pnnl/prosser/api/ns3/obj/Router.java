@@ -1,6 +1,33 @@
 /**
- * 
- */
+* Arion
+* Copyright © 2016, Battelle Memorial Institute
+* All rights reserved.
+* 1. Battelle Memorial Institute (hereinafter Battelle) hereby grants permission to any person or entity
+*    lawfully obtaining a copy of this software and associated documentation files (hereinafter “the Software”)
+*    to redistribute and use the Software in source and binary forms, with or without modification.  Such person
+*    or entity may use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software,
+*    and may permit others to do so, subject to the following conditions:
+*    •  Redistributions of source code must retain the above copyright notice, this list of conditions and
+*       the following disclaimers.
+*    •  Redistributions in binary form must reproduce the above copyright notice, this list of conditions and
+*       the following disclaimer in the documentation and/or other materials provided with the distribution.
+*    •  Other than as used herein, neither the name Battelle Memorial Institute or Battelle may be used in any
+*       form whatsoever without the express written consent of Battelle.
+* 2. THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED
+*    WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
+*    PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL BATTELLE OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
+*    INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT
+*    OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
+*    ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+*    ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+*
+*                                PACIFIC NORTHWEST NATIONAL LABORATORY
+*                                            operated by
+*                                              BATTELLE
+*                                              for the
+*                                  UNITED STATES DEPARTMENT OF ENERGY
+*                                   under Contract DE-AC05-76RL01830
+*/
 package gov.pnnl.prosser.api.ns3.obj;
 
 import java.util.ArrayList;
@@ -23,7 +50,7 @@ import gov.pnnl.prosser.api.ns3.obj.wifi.*;
  *
  */
 public class Router extends AbstractNs3Object {
-	
+
 	private Node node;
 	private List<Channel> channels;
 	private boolean ipStackInstalled, ready, pcap, ascii;
@@ -33,8 +60,8 @@ public class Router extends AbstractNs3Object {
 	 * Create a new Router with the given Name
 	 * @param name
 	 */
-	public Router(String name) 
-	{	
+	public Router(String name)
+	{
 		setNameString(name);
 		node = new Node(name);
 		channels = new ArrayList<>();
@@ -56,63 +83,63 @@ public class Router extends AbstractNs3Object {
 	public void AddStaticRoute(String dest, String hop, int interFace) {
 		this.AddStaticRoute(dest, hop, interFace, 0);
 	}
-	
+
 	public void AddStaticRoute(String dest, String hop, int interFace, int metric) {
 		Node myNode = this.getNode();
-		
-		String Ipv4Object 
-			= "Ipv4_" 
+
+		String Ipv4Object
+			= "Ipv4_"
 			+ java.util.UUID.randomUUID().toString().replace("-", "");
-		
-		String Ipv4StaticRoutingHelperObject 
-			= "Ipv4StaticRoutingHelper_" 
+
+		String Ipv4StaticRoutingHelperObject
+			= "Ipv4StaticRoutingHelper_"
 			+ java.util.UUID.randomUUID().toString().replace("-", "");
-		
-		String Ipv4StaticRoutingObject 
-			= "Ipv4StaticRouting_" 
+
+		String Ipv4StaticRoutingObject
+			= "Ipv4StaticRouting_"
 			+ java.util.UUID.randomUUID().toString().replace("-", "");
-		
-	
+
+
 		appendPrintInfo("Ptr<Ipv4> " + Ipv4Object + " = " +	myNode.getName() + "->GetObject<Ipv4> ();\n");
 		appendPrintInfo("Ipv4StaticRoutingHelper " + Ipv4StaticRoutingHelperObject + ";\n");
-		appendPrintInfo("Ptr<Ipv4StaticRouting> " + Ipv4StaticRoutingObject 
+		appendPrintInfo("Ptr<Ipv4StaticRouting> " + Ipv4StaticRoutingObject
 				+ " = " +  Ipv4StaticRoutingHelperObject + ".GetStaticRouting(" + Ipv4Object + ");\n");
 		appendPrintInfo(Ipv4StaticRoutingObject + "->AddHostRouteTo( "
 				+ "Ipv4Address(\"" + dest + "\"), "
 				+ "Ipv4Address(\"" + hop + "\"), "
 				+ interFace + ", " + metric + ");\n" );
 	}
-	
-	
+
+
 	/**
-	 *  returns a string with the c++ variable name that represents an Ipv4Address Object 
+	 *  returns a string with the c++ variable name that represents an Ipv4Address Object
 	 */
-	public String getIp4Addr() 
+	public String getIp4Addr()
 	{
 		Node myNode = this.getNode();
 		NetDevice myNetDevice = myNode.getDevice(0);
 		String ifIndex = myNetDevice.getInterface();
-		
+
 		Ipv4 myIpv4 = myNode.getObjectIpv4();
-		
+
 		String varName
 		= "Ipv4Address_" + java.util.UUID.randomUUID().toString().replace("-", "");
-		
-		appendPrintInfo("Ipv4Address " + varName + " = " 
+
+		appendPrintInfo("Ipv4Address " + varName + " = "
 					+ myIpv4.getPointerName() + "->GetAddress(" + ifIndex  + ", 0).GetLocal().Get();\n");
-		
+
 		return varName;
 	}
-	
+
 	/**
 	 * Stores the given Channel on this Node and
 	 * installs the protocols specified by the Channel type
 	 * @param channel
 	 */
 	public void setChannel(Channel channel) {
-		
+
 		channels.add(channel);
-		
+
 		if (channel.getType().equals(NetworkType.CSMA)) {
 
 			// TODO move network helpers to 1 per channel, then just get() here & use
@@ -136,7 +163,7 @@ public class Router extends AbstractNs3Object {
 			PointToPointHelper p2pHelper = new PointToPointHelper("p2pHelper_" + getName() + "_" + channel.getName());
 
 			if (((PointToPointChannel) channel).getRouterA() == null) {
-			
+
 				((PointToPointChannel) channel).setRouterA(this);
 
 				// This router is not ready for IP stack install; needs another p2p router attached to channel
@@ -144,13 +171,13 @@ public class Router extends AbstractNs3Object {
 
 				// Checks if routerA attached to P2PChannel is same as this router
 			} else if (!((PointToPointChannel) channel).getRouterA().equals(this)) {
-				
+
 				p2pHelper.install(((PointToPointChannel) channel).getRouterA().getNode(),
 						getNode(), (PointToPointChannel) channel, channel.getDevices());
 
 				// This router is ready for IP stack install
 				ready = true;
-				
+
 			} else {
 				System.out.println("This PointToPointChannel " + channel.getName() + " is already attached to Router " +
 						getName() + ".  Router not added to channel.");
@@ -191,7 +218,7 @@ public class Router extends AbstractNs3Object {
                 wifiPhyHelper.enableAsciiAll(channel.getName());
             }
 		}
-		
+
 		if (!ipStackInstalled && ready) {
 
 			// Create NodeContainer for InternetStackHelper.Install

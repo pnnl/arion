@@ -1,6 +1,33 @@
 /**
- * 
- */
+* Arion
+* Copyright © 2016, Battelle Memorial Institute
+* All rights reserved.
+* 1. Battelle Memorial Institute (hereinafter Battelle) hereby grants permission to any person or entity
+*    lawfully obtaining a copy of this software and associated documentation files (hereinafter “the Software”)
+*    to redistribute and use the Software in source and binary forms, with or without modification.  Such person
+*    or entity may use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software,
+*    and may permit others to do so, subject to the following conditions:
+*    •  Redistributions of source code must retain the above copyright notice, this list of conditions and
+*       the following disclaimers.
+*    •  Redistributions in binary form must reproduce the above copyright notice, this list of conditions and
+*       the following disclaimer in the documentation and/or other materials provided with the distribution.
+*    •  Other than as used herein, neither the name Battelle Memorial Institute or Battelle may be used in any
+*       form whatsoever without the express written consent of Battelle.
+* 2. THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED
+*    WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
+*    PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL BATTELLE OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
+*    INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT
+*    OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
+*    ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+*    ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+*
+*                                PACIFIC NORTHWEST NATIONAL LABORATORY
+*                                            operated by
+*                                              BATTELLE
+*                                              for the
+*                                  UNITED STATES DEPARTMENT OF ENERGY
+*                                   under Contract DE-AC05-76RL01830
+*/
 package gov.pnnl.prosser.api;
 
 import java.io.BufferedWriter;
@@ -29,7 +56,7 @@ import gov.pnnl.prosser.api.thirdparty.enums.SimType;
 public abstract class ThirdPartySimulatorWriter {
 	/**
      * Write a third party simulator to a file
-     * 
+     *
      * @param path
      *            the file to write the simulator
      * @param thirdPartySimulator
@@ -82,7 +109,7 @@ public abstract class ThirdPartySimulatorWriter {
 		                    writeControllerToMarketVar(thirdPartyFncsConfig, aggCounters.get(controller.getAuction().getName()), ns3Sim, gldSim, controller, "bid_price");
 		                    writeControllerToMarketVar(thirdPartyFncsConfig, aggCounters.get(controller.getAuction().getName()), ns3Sim, gldSim, controller, "bid_quantity");
 		                    writeControllerToMarketVar(thirdPartyFncsConfig, aggCounters.get(controller.getAuction().getName()), ns3Sim, gldSim, controller, "parent_unresponsive_load");
-		                    
+
 		                    aggCounters.put(controller.getAuction().getName(), aggCounters.get(controller.getAuction().getName()) + 1);
 	                    }
 	                }
@@ -107,7 +134,7 @@ public abstract class ThirdPartySimulatorWriter {
             confWriter.write(thirdPartyFncsConfig.toString());
         }
     }
-	
+
 	private static void writeControllerToMarketVar(StringBuilder sb, int aggCount, AbstractNs3SimulatorV2 ns3Sim, GldSimulator gldSim, Controller controller, String var) {
 		sb.append("    ");
 		sb.append("controller_");
@@ -129,7 +156,7 @@ public abstract class ThirdPartySimulatorWriter {
         sb.append('\n');
         writeOptions(sb, "\"\"", "string", false);
     }
-	
+
 	protected static void writeOptions(StringBuilder sb, String def, String type, boolean list) {
         sb.append("        default = ");
         sb.append(def);
@@ -139,7 +166,7 @@ public abstract class ThirdPartySimulatorWriter {
         sb.append(list);
         sb.append('\n');
     }
-	
+
 	protected static void writeSubscribe(final StringBuilder sb, final String shortKey, final String simName, final String subTopic, String defaultValue, String valueType){
 		sb.append("    ");
 		sb.append(shortKey);

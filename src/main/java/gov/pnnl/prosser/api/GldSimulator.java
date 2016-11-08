@@ -1,6 +1,33 @@
 /**
- *
- */
+* Arion
+* Copyright © 2016, Battelle Memorial Institute
+* All rights reserved.
+* 1. Battelle Memorial Institute (hereinafter Battelle) hereby grants permission to any person or entity
+*    lawfully obtaining a copy of this software and associated documentation files (hereinafter “the Software”)
+*    to redistribute and use the Software in source and binary forms, with or without modification.  Such person
+*    or entity may use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software,
+*    and may permit others to do so, subject to the following conditions:
+*    •  Redistributions of source code must retain the above copyright notice, this list of conditions and
+*       the following disclaimers.
+*    •  Redistributions in binary form must reproduce the above copyright notice, this list of conditions and
+*       the following disclaimer in the documentation and/or other materials provided with the distribution.
+*    •  Other than as used herein, neither the name Battelle Memorial Institute or Battelle may be used in any
+*       form whatsoever without the express written consent of Battelle.
+* 2. THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED
+*    WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
+*    PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL BATTELLE OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
+*    INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT
+*    OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
+*    ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+*    ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+*
+*                                PACIFIC NORTHWEST NATIONAL LABORATORY
+*                                            operated by
+*                                              BATTELLE
+*                                              for the
+*                                  UNITED STATES DEPARTMENT OF ENERGY
+*                                   under Contract DE-AC05-76RL01830
+*/
 package gov.pnnl.prosser.api;
 
 import gov.pnnl.prosser.api.gld.AbstractGldObject;
@@ -86,17 +113,17 @@ public class GldSimulator extends AbstractSimulator {
     private final List<Path> includes = new ArrayList<>();
 
     private final List<AbstractGldClass> classes = new ArrayList<>();
-    
+
     private final AbstractNs3SimulatorV2 ns3Sim;
-    
+
     private ThirdPartySimulator thirdPartySim;
-    
+
     private final List<AbstractGldObject> dgList = new ArrayList<>();
-    
+
     private final Map<AbstractGldObject, String> aggregatorLines = new HashMap<>();
-    
+
     private ThirdPartySimulator transmissionSim;
-    
+
     private AbstractGldObject totalFeederLoadNode;
 
     /**
@@ -146,7 +173,7 @@ public class GldSimulator extends AbstractSimulator {
 			substationTransformerConfig.setSecondaryVoltage(node.getNominalVoltage());
 			substationTransformerConfig.setPowerRating(10000.0);
 			substationTransformerConfig.setImpedance(0.00033, 0.0022);
-			
+
 			//create substation node
 			Substation substation = this.substation(String.format("%s_network_node", this.getName()));
 			substation.setBusType(BusType.SWING);
@@ -155,7 +182,7 @@ public class GldSimulator extends AbstractSimulator {
 			substation.setNominalVoltage(transmissionVoltage);
 			substation.setPhases(PhaseCode.ABCN);
 			substation.setGroupId("substation");
-			
+
 			//create substation transformer
 			Transformer substationTransformer = this.transformer(String.format("%s_substation_transformer", this.getName()), substationTransformerConfig);
 			substationTransformer.setFrom(substation);
@@ -170,7 +197,7 @@ public class GldSimulator extends AbstractSimulator {
 	public Map<AbstractGldObject, String> getAggregatorLines() {
 		return aggregatorLines;
 	}
-	
+
 	/**
 	 * add to the aggregator line List
 	 * @param dgObject
@@ -186,7 +213,7 @@ public class GldSimulator extends AbstractSimulator {
 	public List<AbstractGldObject> getDgList() {
 		return dgList;
 	}
-	
+
 	/**
 	 * add to the dg List
 	 * @param dgObject
@@ -260,7 +287,7 @@ public class GldSimulator extends AbstractSimulator {
     /**
      * Get the includes definitions for this simulator
      * Includes are extra GLM files that contribute to this simulator
-     * 
+     *
      * @return the includes
      */
     public List<Path> getIncludes() {
@@ -328,14 +355,14 @@ public class GldSimulator extends AbstractSimulator {
     public void connnectionModule() {
         this.modules.put(Connection.class, new Connection());
     }
-    
+
     /**
      * Add default connection module if it does not exist
      */
     public void ensureConnectionModule() {
         this.modules.computeIfAbsent(Connection.class, k -> new Connection());
     }
-    
+
     /**
      * Add the comm module to this simulator. Only exist for FNCS 1.0
      */
@@ -421,7 +448,7 @@ public class GldSimulator extends AbstractSimulator {
     public void addIncludes(final Path... includes) {
         this.includes.addAll(Arrays.asList(includes));
     }
-    
+
     /**
      * Get an gld object by name
      * @param name
@@ -466,7 +493,7 @@ public class GldSimulator extends AbstractSimulator {
     /**
      * Create a Recorder
      * This will also add it to the internal classes list
-     * 
+     *
      * @return the created object
      */
     public Recorder recorder() {
@@ -477,7 +504,7 @@ public class GldSimulator extends AbstractSimulator {
 
     /**
      * Private method to encapsulate common constructor functionality
-     * 
+     *
      * @param object
      *            the object to use when setting common properties
      * @param name
@@ -528,13 +555,13 @@ public class GldSimulator extends AbstractSimulator {
     public AuctionObject auctionObject(final String name) {
         return setupObject(new AuctionObject(this), name);
     }
-    
+
     /**
      * Create a fncs msg
      * this will add it to the internal objects list, set the name
      * and set the simulator reference to this simulator
-     * 
-     * @param name 
+     *
+     * @param name
      * 			the name to set
      * @return the created object
      */
@@ -819,7 +846,7 @@ public class GldSimulator extends AbstractSimulator {
      *            the name to set
      * @return the created object
      */
-    public OverheadLine overheadLine(final String name, final EnumSet<PhaseCode> phases, final Node fromNode, 
+    public OverheadLine overheadLine(final String name, final EnumSet<PhaseCode> phases, final Node fromNode,
             final Node toNode, final double length, final LineConfiguration<OverheadLineConductor> lineConfiguration) {
         OverheadLine overheadLine = setupObject(new OverheadLine(this), name);
         overheadLine.setPhases(phases);
@@ -829,7 +856,7 @@ public class GldSimulator extends AbstractSimulator {
         overheadLine.setConfiguration(lineConfiguration);
         return overheadLine;
     }
-    
+
     /**
      * Create an Underground Line
      * This will add it to the internal objects list, set the name
@@ -839,7 +866,7 @@ public class GldSimulator extends AbstractSimulator {
      *            the name to set
      * @return the created object
      */
-    public UndergroundLine undergroundLine(final String name, final EnumSet<PhaseCode> phases, final Node fromNode, 
+    public UndergroundLine undergroundLine(final String name, final EnumSet<PhaseCode> phases, final Node fromNode,
             final Node toNode, final double length, final LineConfiguration<UndergroundLineConductor> lineConfiguration) {
         UndergroundLine undergroundLine = setupObject(new UndergroundLine(this), name);
         undergroundLine.setPhases(phases);
@@ -849,7 +876,7 @@ public class GldSimulator extends AbstractSimulator {
         undergroundLine.setConfiguration(lineConfiguration);
         return undergroundLine;
     }
-    
+
     /**
      * Create a Switch
      * This will add it to the internal objects list, set the name
@@ -859,7 +886,7 @@ public class GldSimulator extends AbstractSimulator {
      *            the name to set
      * @return the created object
      */
-    public Switch switchLinkObject(final String name, final EnumSet<PhaseCode> phases, final Node fromNode, 
+    public Switch switchLinkObject(final String name, final EnumSet<PhaseCode> phases, final Node fromNode,
             final Node toNode, final SwitchStatus status) {
         Switch switchNode = setupObject(new Switch(this), name);
         switchNode.setPhases(phases);
@@ -881,7 +908,7 @@ public class GldSimulator extends AbstractSimulator {
     public TriplexNode triplexNode(final String name) {
         return setupObject(new TriplexNode(this), name);
     }
-    
+
     /**
      * Create a WaterHeate
      * This will add it to the internal objects list, set the name

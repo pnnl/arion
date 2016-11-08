@@ -1,15 +1,42 @@
 /**
- * 
- */
+* Arion
+* Copyright © 2016, Battelle Memorial Institute
+* All rights reserved.
+* 1. Battelle Memorial Institute (hereinafter Battelle) hereby grants permission to any person or entity
+*    lawfully obtaining a copy of this software and associated documentation files (hereinafter “the Software”)
+*    to redistribute and use the Software in source and binary forms, with or without modification.  Such person
+*    or entity may use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software,
+*    and may permit others to do so, subject to the following conditions:
+*    •  Redistributions of source code must retain the above copyright notice, this list of conditions and
+*       the following disclaimers.
+*    •  Redistributions in binary form must reproduce the above copyright notice, this list of conditions and
+*       the following disclaimer in the documentation and/or other materials provided with the distribution.
+*    •  Other than as used herein, neither the name Battelle Memorial Institute or Battelle may be used in any
+*       form whatsoever without the express written consent of Battelle.
+* 2. THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED
+*    WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
+*    PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL BATTELLE OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
+*    INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT
+*    OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
+*    ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+*    ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+*
+*                                PACIFIC NORTHWEST NATIONAL LABORATORY
+*                                            operated by
+*                                              BATTELLE
+*                                              for the
+*                                  UNITED STATES DEPARTMENT OF ENERGY
+*                                   under Contract DE-AC05-76RL01830
+*/
 package gov.pnnl.prosser.api.ns3.obj.echo;
 
 import java.util.HashMap;
 import java.util.Map;
 
 /**
- * The UdpEchoClientHelper is a client helper class to simplify the setup of 
+ * The UdpEchoClientHelper is a client helper class to simplify the setup of
  * UDP (User Datagram Protocol) ping devices to test network connectivity.
- * 
+ *
  * @author happ546
  *
  */
@@ -18,10 +45,10 @@ public class UdpEchoClientHelper extends UdpEchoHelper {
 	 * A map of attributes and their values (e.g. "Interval" to 1.0 (seconds))
 	 */
 	private Map<String, Double> attributes;
-	
+
 	/**
 	 * Creates a new UdpEchoClientHelper with the given name
-	 * 
+	 *
 	 * @param name
 	 */
 	public UdpEchoClientHelper(String name) {
@@ -31,18 +58,18 @@ public class UdpEchoClientHelper extends UdpEchoHelper {
 
 	/**
 	 * Sets the given attribute to the given value
-	 * 
+	 *
 	 * @param attr
 	 * @param value
 	 */
 	public void setAttribute(String attr, double value) {
 		attributes.put(attr, value);
 		String modifier = "";
-		if (attr.equalsIgnoreCase("interval") 
+		if (attr.equalsIgnoreCase("interval")
 				|| attr.equalsIgnoreCase("starttime")
 				|| attr.equalsIgnoreCase("stoptime")) {
 			modifier = "TimeValue";
-		} else if (attr.equalsIgnoreCase("maxpackets") 
+		} else if (attr.equalsIgnoreCase("maxpackets")
 				|| attr.equalsIgnoreCase("packetsize")
 				|| attr.equalsIgnoreCase("remoteport")) {
 			modifier = "UintegerValue";
@@ -53,12 +80,12 @@ public class UdpEchoClientHelper extends UdpEchoHelper {
 
 	/**
 	 * Sets the IP address for this UdpEchoClientHelper
-	 * 
+	 *
 	 * @param address the IP address
 	 */
 	public void setAddress(String address) {
 		appendPrintInfo("UdpEchoClientHelper " + this.getName() + "(" + address + ","
 				+ this.getPort() + ");\n");
-	}	
+	}
 
 }
