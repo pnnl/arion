@@ -22,7 +22,7 @@
 			<source>target/${project.build.finalName}-javadoc.jar</source>
 		</file>
 		<file>
-			<source>README</source>
+			<source>README.md</source>
 		</file>
 		<file>
 			<source>src/test/java/TestSeanZExperiment.java</source>
